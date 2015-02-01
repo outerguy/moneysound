@@ -183,7 +183,6 @@ if(strpos($body, "‡Œ¾—tŠm”F‚Q") !== false) {
 		$shitsumon = trim(strip_tags($spans[$c]["innerHTML"]));
 	}
 	
-	
 	$forms = parse_tag($body, "form");
 	$c = parse_tag_search($forms, "name", "LOGWRD_00100B");
 	if($c != -1) {
