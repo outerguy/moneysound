@@ -1,0 +1,176 @@
+* {
+	font-family: sans-serif;
+}
+body {
+	margin: 20px 0px 20px 0px;
+	color: #000000;
+	background: #FFFFFF;
+	background: #FFFFFF linear-gradient(to right, #EEEEEE, #FFFFFF 25%, #FFFFFF 75%, #EEEEEE);
+}
+h1#title {
+	display: none;
+}
+p#menu {
+	margin: 0px 0px 20px 0px;
+}
+p#link a {
+	font-size: 90%;
+	margin: 0px 0.25em 0px 0.25em;
+}
+div#overlay {
+	position: fixed;
+	top: 0px;
+	left: 0px;
+	z-index: 1000;
+	width: 100%;
+	height: 100%;
+	color: inherit;
+	background: #CCCCCC;
+	background: rgba(204, 204, 204, 0.5);
+}
+form#modal {
+	border: solid 2px #666666;
+	border-radius: 10px 10px 0px 0px;
+	padding: 0px;
+	box-shadow: 0px 0px 10px 0px #666666;
+	color: inherit;
+	background: #666666;
+	background: #666666 linear-gradient(to bottom, #999999, #666666 15px, #999999);
+}
+h2#modalhead {
+	border: 0px;
+	padding: 5px 10px 5px 10px;
+	margin: 0px;
+	color: #FFFFFF;
+	background: transparent;
+	font-weight: bold;
+	text-shadow: 0px 0px 5px #333333;
+	text-align: center;
+	font-size: 90%;
+	line-height: 120%;
+	text-indent: 1px;
+	letter-spacing: 1px;
+}
+div#modalbody {
+	padding: 10px;
+	font-size: 90%;
+	background: #FFFFFF;
+}
+div#modalfoot {
+	padding: 0px 10px 10px 10px;
+	background: #FFFFFF;
+}
+table {
+	border: solid 1px #CCCCCC;
+	margin: 0px auto 0px auto;
+	color: inherit;
+	background: #FFFFFF;
+}
+thead, tfoot {
+	color: #666666;
+	background: #CCCCCC;
+	text-shadow: 0px 0px 2px #CCCCCC;
+}
+thead {
+	background: #EEEEEE;
+	background: #EEEEEE linear-gradient(to bottom, #EEEEEE, #FFFFFF);
+}
+tfoot {
+	background: #EEEEEE;
+	background: #EEEEEE linear-gradient(to bottom, #FFFFFF, #EEEEEE);
+}
+tbody.pending {
+	color: #FFFFFF;
+	background: #FF6600;
+}
+tbody.ready {
+	color: #999999;
+	background: transparent;
+}
+tbody.error {
+	color: #FF6600;
+	background: transparent;
+}
+thead th.fi, thead th.accttype, thead th.balance, thead th.timestamp, tbody td.fi, tbody td.accttype, tbody td.balance, tbody td.timestamp, tfoot th {
+	font-size: 90%;
+}
+tbody.pending td a:link, tbody.pending td a:hover, tbody.pending td a:visited, tbody.pending td a:active {
+	color: #FFFFFF;
+	background: transparent;
+}
+caption {
+	border: solid 1px #CCCCCC;
+	border-radius: 10px 10px 0px 0px;
+	padding: 5px 10px 5px 10px;
+	color: inherit;
+	background: #CCCCCC;
+	background: #CCCCCC linear-gradient(to bottom, #FFFFFF, #CCCCCC 50%, #FFFFFF);
+	text-shadow: 0px 0px 5px #999999;
+	font-size: 85%;
+	font-weight: bold;
+	line-height: 150%;
+	text-indent: 2px;
+	letter-spacing: 2px;
+}
+th, td {
+	border: solid #CCCCCC;
+	border-width: 1px 0px 1px 0px;
+}
+th {
+	font-weight: normal;
+}
+td.fi {
+	max-width: 90px;
+}
+td.accttype {
+	max-width: 120px;
+}
+td.timestamp {
+	max-width: 60px;
+}
+a:link, a:visited {
+	color: #FF6600;
+	background: transparent;
+	text-decoration: underline;
+	cursor: pointer;
+}
+a:hover, a:active {
+	color: #FF0000;
+	background: transparent;
+}
+.btn {
+	border: 0px;
+	border-radius: 5px;
+	padding: 10px;
+	margin: 5px 0px 5px 0px;
+	color: #FFFFFF;
+	background: #FF6600;
+	background: #FF6600 linear-gradient(to bottom, #FF9933, #FF6600 50%, #FF9933);
+	box-shadow: 0px 0px 2px 0px #666666;
+	text-shadow: 0px 0px 5px #FF9933;
+	text-decoration: none;
+	font-weight: bold;
+}
+.btn:hover {
+	color: #FFFFFF;
+	background: #CC3300;
+	background: #CC3300 linear-gradient(to bottom, #FF6600, #CC3300 50%, #FF6600);
+}
+.btn:active {
+	color: #FFFFFF;
+	background: #FF6600;
+	text-shadow: 0px 0px 5px #FF6600;
+	box-shadow: 0px 0px 2px 0px #FFFFFF;
+}
+.btn:disabled {
+	color: #FFFFFF;
+	background: #999999;
+	text-shadow: 0px 0px 5px #999999;
+	box-shadow: 0px 0px 2px 0px #FFFFFF;
+}
+.btn + .btn {
+	margin: 0px 0px 0px 8px;
+}
+input, select {
+	font-size: 110%;
+}

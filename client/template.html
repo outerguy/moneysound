@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" dir="ltr" id="main">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta http-equiv="Content-Style-Type" content="text/css" />
+<meta http-equiv="Content-Script-Type" content="text/javascript" />
+<meta http-equiv="Content-Language" content="ja-JP" />
+<meta http-equiv="Cache-Control" content="no-cache" />
+<meta http-equiv="Last-Modified" content="Thu, 01 Jan 1970 00:00:00 GMT" />
+<meta name="description" content="マネーサウンドは、対応金融機関の口座情報一覧を取得するアカウントアグリゲーションサービスです。生成した電子明細をOFX対応マネー管理ソフトに取り込めます。" />
+<meta name="keywords" content="マネーサウンド,MoneySound,アカウントアグリゲーションサービス,Account Aggregation Service,金融機関,残高照会,口座管理,OFX,Open Financial Exchange" />
+<meta name="viewport" content="width=device-width, initial-scale=0.66, user-scalable=yes" />
+<meta name="msapplication-navbutton-color" content="#0099FF" />
+<meta name="msapplication-window" content="width=800; height=450" />
+<meta name="msapplication-tooltip" content="マネーサウンドは、対応金融機関の口座情報一覧を取得するアカウントアグリゲーションサービスです。" />
+<title>マネーサウンド</title>
+<link rel="stylesheet" type="text/css" href="./client/rule.css" id="css_rule" />
+<link rel="stylesheet" type="text/css" href="./client/standard.css" id="css_theme" />
+<link rel="shortcut icon" type="image/vnd.microsoft.icon" href="./client/icon.ico" />
+</head>
+
+<body onload="fnc_load();">
+
+<h1 id="title">マネーサウンド</h1>
+
+<form action="javascript: void(0);" id="root" onreset="fnc_cancel();">
+
+<p id="menu"><input type="button" value="ログオン" id="btn_logon" class="btn" onclick="fnc_logon();" onkeypress="this.onclick();" /><input type="button" value="ログオフ" id="btn_logoff" class="btn" onclick="fnc_logoff();" onkeypress="this.onclick();" /><input type="button" value="登録" id="btn_register" class="btn" onclick="fnc_register();" onkeypress="this.onclick();" /><input type="button" value="抹消" id="btn_erase" class="btn" onclick="fnc_erase();" onkeypress="this.onclick();" /><input type="button" value="デバッグ情報" id="btn_debug" class="btn" style="display: none;" onclick="fnc_debug();" onkeypress="this.onclick();" /><input type="button" value="設定" id="btn_option" class="btn" onclick="fnc_option();" onkeypress="this.onclick();" /><input type="button" value="バージョン情報" id="btn_version" class="btn" onclick="fnc_version();" onkeypress="this.onclick();" /></p>
+
+<h2 class="none">口座情報一覧</h2>
+
+<table summary="口座情報一覧" id="account">
+<caption id="logon">表示中</caption>
+<thead><tr><th class="fi">金融機関</th><th class="accttype">口座種目</th><th class="balance">残高</th><th class="timestamp">更新日時</th><th class="al"><input type="button" value="更新" id="btn_get_all" class="btn" onclick="fnc_update_all();" onkeypress="this.onclick();" /><input type="reset" value="中止" id="btn_get_stop" class="btn" /><input type="button" value="OFX" id="btn_ofx_all" class="btn" onclick="fnc_ofx_all();" onkeypress="this.onclick();" /><input type="button" value="追加" id="btn_add" class="btn" onclick="fnc_create();" onkeypress="this.onclick();" /></th></tr></thead>
+<tfoot><tr><th></th><th class="al">合計</th><th id="total" class="ar">0</th><th colspan="2"></th></tr></tfoot>
+<tbody><tr><td colspan="5" class="none">口座情報一覧</td></tr></tbody>
+</table>
+
+</form>
+
+<script type="text/javascript" src="./client.php"></script>
+<script type="text/javascript" src="./cryptojs.js"></script>
+<noscript>
+<p class="ac">ご利用のブラウザーのJavaScriptが無効になっているため、実行できません。</p>
+</noscript>
+
+</body>
+</html>

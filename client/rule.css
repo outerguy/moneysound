@@ -1,0 +1,145 @@
+body {
+	font-size: 85%;
+}
+form#root p {
+	text-align: center;
+}
+div#overlay {
+	position: fixed;
+	top: 0px;
+	left: 0px;
+	z-index: 1000;
+	width: 100%;
+	height: 100%;
+}
+form#modal {
+	position: fixed;
+	top: 0px;
+	left: 0px;
+	z-index: 9999;
+	white-space: nowrap;
+}
+form#modal p {
+	border: 0px;
+	padding: 0px;
+	margin: 0px;
+}
+h2#modalhead, div#modalbody, div#modalfoot {
+	cursor: default;
+}
+p#link {
+	text-align: center;
+}
+div#modalbody {
+	max-width: 640px;
+	max-height: 360px;
+	overflow: hidden;
+}
+div#modalbody p.label {
+	padding: 10px 0px 0px 0px;
+	font-size: 90%;
+	font-weight: bold;
+}
+div#modalbody p.label:first-child {
+	padding: 0px;
+}
+div#modalbody p.label:after {
+	content: ":";
+}
+div#modalfoot {
+	text-align: right;
+}
+div#details {
+	margin: 10px 0px 0px 0px;
+	min-height: 192px;
+	max-height: 192px;
+	overflow-x: hidden;
+	overflow-y: scroll;
+}
+table#detail {
+	table-layout: fixed;
+	width: 512px;
+}
+table#detail th.dt {
+	width: 64px;
+}
+table#detail th.note {
+	width: 328px;
+}
+table#detail th.amt {
+	width: 120px;
+}
+table#detail td {
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+table {
+	border-collapse: collapse;
+	border-spacing: 0px;
+	empty-cells: show;
+	caption-side: top;
+	word-wrap: break-word;
+}
+thead, tfoot {
+	line-height: 200%;
+}
+tbody {
+	line-height: 120%;
+}
+th, td {
+	padding: 2px;
+	margin: 0px;
+	text-indent: 1px;
+	letter-spacing: 1px;
+}
+td.fi {
+	text-align: left;
+}
+td.accttype {
+	text-align: left;
+}
+td.balance {
+	text-align: right;
+}
+td.status {
+	text-align: center;
+}
+td.timestamp {
+	text-align: center;
+}
+.control {
+	text-align: left;
+}
+.pending, .pending .btn:disabled {
+	cursor: wait;
+}
+a img {
+	border: 0px;
+}
+a {
+	cursor: pointer;
+}
+.btn {
+	font-size: 85%;
+	cursor: pointer;
+	line-height: 150%;
+}
+.btn:disabled {
+	cursor: default;
+}
+.ipt {
+	width: 320px;
+}
+.al {
+	text-align: left;
+}
+.ac {
+	text-align: center;
+}
+.ar {
+	text-align: right;
+}
+.none {
+	display: none;
+}
+

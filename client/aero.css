@@ -1,0 +1,150 @@
+* {
+	font-family: "Meiryo UI", "メイリオ", "Meiryo", sans-serif;
+}
+body {
+	margin: 10px 0px 10px 0px;
+	font-size: 85%;
+	color: #000000;
+	background: #FFFFFF;
+}
+h1#title {
+	display: none;
+}
+p#menu {
+	margin: 0px 0px 10px 0px;
+}
+p#link a {
+	margin: 0px 0.2em 0px 0.2em;
+}
+div#overlay {
+	color: inherit;
+	background: #CCCCCC;
+	background: rgba(204, 204, 204, 0.5);
+}
+form#modal {
+	border: solid 1px #000000;
+	border-radius: 7px 7px 6px 6px;
+	padding: 0px;
+	box-shadow: 3px 3px 30px 0px rgba(0, 0, 0, 0.9);
+	color: inherit;
+	background: transparent;
+	background: transparent linear-gradient(to bottom, rgba(204, 204, 204, 0.8), rgba(153, 153, 153, 0.6) 30px, rgba(255, 255, 255, 0.8) 40%, rgba(153, 153, 153, 0.6) 40%, rgba(153, 153, 153, 0.8));
+}
+h2#modalhead {
+	padding: 5px 10px 5px 10px;
+	margin: 0px;
+	color: #000000;
+	background: transparent;
+	font-weight: normal;
+	text-shadow: 0px 0px 10px #EEEEEE, -5px 0px 5px #EEEEEE, 5px 0px 5px #EEEEEE;
+	text-align: left;
+	font-size: 95%;
+	line-height: 140%;
+	text-indent: 0px;
+	letter-spacing: 0px;
+}
+div#modalbody {
+	border: solid #666666;
+	border-width: 1px 1px 0px 1px;
+	padding: 10px;
+	margin: 0px 5px 0px 5px;
+	background: #FFFFFF;
+}
+div#modalfoot {
+	border: solid #666666;
+	border-width: 0px 1px 1px 1px;
+	padding: 0px 10px 10px 10px;
+	margin: 0px 5px 5px 5px;
+	background: #FFFFFF;
+}
+table {
+	border: solid 1px #999999;
+	padding: 0px;
+	margin: 0px auto 0px auto;
+}
+thead, tfoot {
+	color: #000000;
+	background: #EEEEEE;
+}
+tbody {
+	color: inherit;
+	background: #FFFFFF;
+}
+tbody.pending {
+	color: inherit;
+	background: #00CC33;
+}
+tbody.ready {
+	color: #888888;
+	background: #FFFFFF;
+}
+tbody.error {
+	color: #FF0000;
+	background: #FFFFFF;
+}
+caption {
+	border: solid #333333;
+	border-width: 1px 1px 0px 1px;
+	border-radius: 7px 7px 0px 0px;
+	padding: 5px 10px 5px 10px;
+	color: #FFFFFF;
+	background: #666666;
+	background: #666666 linear-gradient(to bottom, #777777, #444444 50%, #222222 50%, #111111);
+	font-size: 85%;
+	font-weight: bold;
+	line-height: 150%;
+}
+th, td {
+	border: solid #999999;
+	border-width: 1px 0px 1px 0px;
+}
+th {
+	font-weight: normal;
+}
+td.fi {
+	max-width: 160px;
+}
+td.accttype {
+	max-width: 240px;
+}
+td.balance {
+	max-width: 120px;
+}
+a:link, a:visited {
+	color: #0000FF;
+	background: transparent;
+	text-decoration: underline;
+}
+a:hover, a:active {
+	color: #FF0000;
+	background: transparent;
+}
+.btn {
+	border: solid 1px #666666;
+	border-radius: 4px;
+	padding: 4px 9px 4px 9px;
+	margin: 0px;
+	color: #000000;
+	background: #DDDDDD;
+	background: #DDDDDD linear-gradient(to bottom, #EEEEEE 50%, #DDDDDD 50%);
+	text-decoration: none;
+	font-weight: normal;
+}
+.btn:hover {
+	border: solid 1px #3377AA;
+	background: #AADDEE;
+	background: #AADDEE linear-gradient(to bottom, #DDEEFF 50%, #AADDEE 50%);
+}
+.btn:active {
+	border: solid 1px #336688;
+	background: #DDDDDD;
+	background: #DDDDDD linear-gradient(to bottom, #D7E7F7 50%, #66BBDD 60%);
+}
+.btn:disabled {
+	border: solid 1px #AAAAAA;
+	color: #888888;
+	background: #EEEEEE;
+}
+.btn + .btn {
+	margin: 0px 0px 0px 5px;
+}

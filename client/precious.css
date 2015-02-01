@@ -1,0 +1,170 @@
+* {
+	font-family: "メイリオ", "Meiryo", sans-serif;
+}
+body {
+	margin: 0px 0px 40px 0px;
+	color: #000000;
+	background: #CC9933;
+	background: #CC9933 linear-gradient(to bottom, #CC9933, #996600 40px, #CC9933 200px) center top no-repeat;
+}
+h1 {
+	color: #663300;
+	background: transparent;
+	font-size: 180%;
+	text-align: center;
+	text-shadow: 0px -2px 2px #FFFF99;
+	line-height: 150%;
+}
+p#menu {
+	margin: 0px 0px 20px 0px;
+}
+p#link a {
+	margin: 0px 0.25em 0px 0.25em;
+}
+div#overlay {
+	color: inherit;
+	background: #000000;
+	background: rgba(0, 0, 0, 0.5);
+}
+form#modal {
+	border: solid 2px #996633;
+	border-radius: 10px 10px 0px 0px;
+	padding: 0px;
+	box-shadow: 0px 0px 10px 0px #666666;
+	color: inherit;
+	background: #DDAA77;
+	background: #DDAA77 linear-gradient(to bottom, #FFFFCC, #996633 15px, #CC9966 25px, #FFFFCC 30px);
+}
+h2#modalhead {
+	border: solid #996633;
+	border-width: 0px 0px 2px 0px;
+	padding: 8px 10px 5px 10px;
+	margin: 0px;
+	color: #663300;
+	background: transparent;
+	font-weight: bold;
+	text-shadow: 0px -2px 2px #FFFFCC;
+	text-align: center;
+	font-size: 100%;
+	line-height: 100%;
+	text-indent: 2px;
+	letter-spacing: 2px;
+}
+div#modalbody {
+	padding: 15px;
+	background: #FFFFFF;
+	line-height: 175%;
+	font-size: 95%;
+	letter-spacing: 1px;
+}
+div#modalfoot {
+	padding: 0px 15px 15px 15px;
+	background: #FFFFFF;
+}
+table {
+	border: solid 2px #996600;
+	padding: 0px;
+	margin: 0px auto 0px auto;
+}
+thead, tfoot {
+	color: #333333;
+	background: #DDDDDD;
+	background: #DDDDDD linear-gradient(to bottom, #FFFFFF, #CCCCCC 50%, #FFFFFF);
+	text-shadow: 0px -2px 2px #FFFFFF;
+}
+tbody {
+	color: #996600;
+	background: #FFFFFF;
+	text-shadow: 0px -1px 2px #FFFF99;
+}
+tbody td.control .btn {
+	opacity: 0.5;
+}
+tbody:hover td.control .btn {
+	opacity: 1;
+}
+tbody.pending, tbody.pending td a:link, tbody.pending td a:hover, tbody.pending td a:visited, tbody.pending td a:active {
+	color: #FFFFFF;
+	background: #996600;
+}
+tbody.ready {
+	color: #999999;
+	background: #FFFFFF;
+}
+tbody.error {
+	color: #CC3333;
+	background: #FFFFFF;
+}
+caption {
+	border: solid #996600;
+	border-width: 2px 2px 0px 2px;
+	border-radius: 10px 10px 0px 0px;
+	padding: 5px 10px 5px 10px;
+	color: #663300;
+	background: #DDAA44;
+	background: #DDAA44 linear-gradient(to bottom, #FFFF99, #996600 50%, #CC9933 75%, #CCCC66);
+	text-shadow: 0px -2px 2px #FFFF99;
+	font-size: 85%;
+	font-weight: bold;
+	line-height: 150%;
+	text-indent: 2px;
+	letter-spacing: 2px;
+}
+th, td {
+	border: solid #CC9933;
+	border-width: 1px 0px 1px 0px;
+}
+th {
+	font-weight: normal;
+}
+a:link, a:visited {
+	color: #996600;
+	background: transparent;
+	text-decoration: underline;
+}
+a:hover {
+	color: #CC3333;
+	background: transparent;
+}
+a:active {
+	color: #660000;
+	background: transparent;
+}
+.btn {
+	border: 0px;
+	border-radius: 5px;
+	padding: 3px 9px 3px 9px;
+	color: #333333;
+	background: #AAAAAA;
+	background: #AAAAAA linear-gradient(to bottom, #FFFFFF, #666666 50%, #999999 75%, #CCCCCC);
+	text-shadow: 0px -2px 2px #FFFFFF;
+	box-shadow: 0px 0px 0px 2px #666666;
+	text-decoration: none;
+	font-weight: bold;
+	text-indent: 2px;
+	letter-spacing: 2px;
+}
+.btn:hover {
+	color: #663300;
+	background: #DDAA44;
+	background: #DDAA44 linear-gradient(to bottom, #FFFF99, #996600 50%, #CC9933 75%, #CCCC66);
+	text-shadow: 0px -2px 2px #FFFF99;
+	box-shadow: 0px 0px 0px 2px #996600;
+}
+.btn:active {
+	color: #663300;
+	background: #DDAA77;
+	background: #DDAA77 linear-gradient(to bottom, #FFFFCC, #996633 50%, #CC9966 75%, #FFFFCC);
+	text-shadow: 0px -2px 2px #FFFFCC;
+	box-shadow: 0px 0px 0px 2px #996633;
+}
+.btn:disabled {
+	color: #999999;
+	background: #CCCCCC;
+	background: #CCCCCC linear-gradient(to bottom, #FFFFFF, #CCCCCC 50%, #DDDDDD 75%, #EEEEEE);
+	text-shadow: 0px 2px 2px #FFFFFF;
+	box-shadow: 0px 0px 0px 2px #999999;
+}
+.btn + .btn {
+	margin: 0px 0px 0px 6px;
+}
