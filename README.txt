@@ -6,3 +6,6 @@
 
 ソースコード（GitHub）
 https://github.com/outerguy/moneysound/
+
+プロジェクトサイト（Beatrek）
+http://www.beatrek.com/home/money.htm
