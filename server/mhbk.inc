@@ -124,14 +124,10 @@ if($sid == 0) {
 
 if(strpos($body, "合言葉確認１") !== false) {
 	// 合言葉を入力する（１）
-	$trs = parse_tag($body, "tr");
-	$bufs = array();
-	foreach($trs as $tr) {
-		$tds = parse_tag($tr["innerHTML"], "td");
-		if(count($tds) == 2 && trim(strip_tags($tds[0]["innerHTML"])) == "質問：") {
-			$shitsumon = trim(strip_tags($tds[1]["innerHTML"]));
-			break;
-		}
+	$spans = parse_tag($body, "span");
+	$c = parse_tag_search($spans, "id", "txtQuery");
+	if($c != -1) {
+		$shitsumon = trim(strip_tags($spans[$c]["innerHTML"]));
 	}
 	
 	$forms = parse_tag($body, "form");
@@ -181,15 +177,12 @@ if(strpos($body, "合言葉確認１") !== false) {
 
 if(strpos($body, "合言葉確認２") !== false) {
 	// 合言葉を入力する（２）
-	$trs = parse_tag($body, "tr");
-	$bufs = array();
-	foreach($trs as $tr) {
-		$tds = parse_tag($tr["innerHTML"], "td");
-		if(count($tds) == 2 && trim(strip_tags($tds[0]["innerHTML"])) == "質問：") {
-			$shitsumon = trim(strip_tags($tds[1]["innerHTML"]));
-			break;
-		}
+	$spans = parse_tag($body, "span");
+	$c = parse_tag_search($spans, "id", "txtQuery");
+	if($c != -1) {
+		$shitsumon = trim(strip_tags($spans[$c]["innerHTML"]));
 	}
+	
 	
 	$forms = parse_tag($body, "form");
 	$c = parse_tag_search($forms, "name", "LOGWRD_00100B");
