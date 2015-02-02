@@ -16,4 +16,5 @@
 *.rtf	 diff=astextplain
 *.RTF	 diff=astextplain
 
-*bat	eol=crlf
+*.bat	eol=crlf
+*.ini	eol=crlf
