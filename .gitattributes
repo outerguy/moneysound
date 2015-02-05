@@ -18,3 +18,4 @@
 
 *.bat	eol=crlf
 *.ini	eol=crlf
+*.xml	eol=crlf
