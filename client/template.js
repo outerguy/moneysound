@@ -35,13 +35,14 @@ themes["aqua.css"] = "Aqua";
 themes["precious.css"] = "プレシャス";
 
 (function() {
+	self.window.onload = fnc_load;
 	self.document.onkeydown = function(e) {
 		var ret = true;
 		if(typeof e == "undefined") e = event;
 		if(e != null) switch(e.keyCode) {
 		case 27: // esc
 			if(xhr != null && xhr.readyState != 4) {
-				dom_get_id("root").onreset();
+				dom_get_id("root").reset();
 				ret = false;
 			}
 			break;
@@ -69,6 +70,19 @@ function fnc_load() {
 		tag_root.parentNode.insertBefore(tag_p, tag_root);
 		dom_get_id("btn_debug").style.display = "inline";
 	}
+	
+	// ボタンと機能を関連付ける
+	tag_root.onreset = fnc_cancel;
+	with(dom_get_id("btn_logon")) onclick = onkeypress = fnc_logon;
+	with(dom_get_id("btn_logoff")) onclick = onkeypress = fnc_logoff;
+	with(dom_get_id("btn_register")) onclick = onkeypress = fnc_register;
+	with(dom_get_id("btn_erase")) onclick = onkeypress = fnc_erase;
+	with(dom_get_id("btn_debug")) onclick = onkeypress = fnc_debug;
+	with(dom_get_id("btn_option")) onclick = onkeypress = fnc_option;
+	with(dom_get_id("btn_version")) onclick = onkeypress = fnc_version;
+	with(dom_get_id("btn_get_all")) onclick = onkeypress = fnc_update_all;
+	with(dom_get_id("btn_ofx_all")) onclick = onkeypress = fnc_ofx_all;
+	with(dom_get_id("btn_add")) onclick = onkeypress = fnc_create;
 	
 	// リンク先を設定する
 	for(i = 0; i < tag_as.length; i++) tag_as[i].target = "link";
@@ -1547,11 +1561,11 @@ function fnc_listone(list) {
 				
 				// 操作
 				tag_td = dom_create_tag("td", { "rowspan": banks.length.toString(), "class": "control" });
-				tag_td.appendChild(dom_create_tag("input", { "type": "button", "value": "更新", "class": "btn", "onclick": "fnc_update(\"" + settings["rowid"] + "\");" }));
-				tag_td.appendChild(dom_create_tag("input", { "type": "button", "value": "明細", "class": "btn", "onclick": "fnc_detail(\"" + settings["rowid"] + "\");" }));
-				tag_td.appendChild(dom_create_tag("input", { "type": "button", "value": "OFX", "class": "btn", "onclick": "fnc_ofx(\"" + settings["rowid"] + "\");" }));
-				tag_td.appendChild(dom_create_tag("input", { "type": "button", "value": "変更", "class": "btn", "onclick": "fnc_modify(\"" + settings["rowid"] + "\");" }));
-				tag_td.appendChild(dom_create_tag("input", { "type": "button", "value": "削除", "class": "btn", "onclick": "fnc_delete(\"" + settings["rowid"] + "\");" }));
+				tag_td.appendChild(dom_create_tag("input", { "type": "button", "value": "更新", "class": "btn", "onclick": "fnc_update(\"" + settings["rowid"] + "\");", "onkeypress": "this.onclick();" }));
+				tag_td.appendChild(dom_create_tag("input", { "type": "button", "value": "明細", "class": "btn", "onclick": "fnc_detail(\"" + settings["rowid"] + "\");", "onkeypress": "this.onclick();" }));
+				tag_td.appendChild(dom_create_tag("input", { "type": "button", "value": "OFX", "class": "btn", "onclick": "fnc_ofx(\"" + settings["rowid"] + "\");", "onkeypress": "this.onclick();" }));
+				tag_td.appendChild(dom_create_tag("input", { "type": "button", "value": "変更", "class": "btn", "onclick": "fnc_modify(\"" + settings["rowid"] + "\");", "onkeypress": "this.onclick();" }));
+				tag_td.appendChild(dom_create_tag("input", { "type": "button", "value": "削除", "class": "btn", "onclick": "fnc_delete(\"" + settings["rowid"] + "\");", "onkeypress": "this.onclick();" }));
 				tag_tr.appendChild(tag_td);
 			}
 			
@@ -1605,11 +1619,11 @@ function fnc_listone(list) {
 				
 				// 操作
 				tag_td = dom_create_tag("td", { "rowspan": banks.length.toString(), "class": "control" });
-				tag_td.appendChild(dom_create_tag("input", { "type": "button", "value": "更新", "class": "btn", "onclick": "fnc_update(\"" + settings["rowid"] + "\");" }));
-				tag_td.appendChild(dom_create_tag("input", { "type": "button", "value": "明細", "class": "btn", "onclick": "fnc_detail(\"" + settings["rowid"] + "\");" }));
-				tag_td.appendChild(dom_create_tag("input", { "type": "button", "value": "OFX", "class": "btn", "onclick": "fnc_ofx(\"" + settings["rowid"] + "\");" }));
-				tag_td.appendChild(dom_create_tag("input", { "type": "button", "value": "変更", "class": "btn", "onclick": "fnc_modify(\"" + settings["rowid"] + "\");" }));
-				tag_td.appendChild(dom_create_tag("input", { "type": "button", "value": "削除", "class": "btn", "onclick": "fnc_delete(\"" + settings["rowid"] + "\");" }));
+				tag_td.appendChild(dom_create_tag("input", { "type": "button", "value": "更新", "class": "btn", "onclick": "fnc_update(\"" + settings["rowid"] + "\");", "onkeypress": "this.onclick();" }));
+				tag_td.appendChild(dom_create_tag("input", { "type": "button", "value": "明細", "class": "btn", "onclick": "fnc_detail(\"" + settings["rowid"] + "\");", "onkeypress": "this.onclick();" }));
+				tag_td.appendChild(dom_create_tag("input", { "type": "button", "value": "OFX", "class": "btn", "onclick": "fnc_ofx(\"" + settings["rowid"] + "\");", "onkeypress": "this.onclick();" }));
+				tag_td.appendChild(dom_create_tag("input", { "type": "button", "value": "変更", "class": "btn", "onclick": "fnc_modify(\"" + settings["rowid"] + "\");", "onkeypress": "this.onclick();" }));
+				tag_td.appendChild(dom_create_tag("input", { "type": "button", "value": "削除", "class": "btn", "onclick": "fnc_delete(\"" + settings["rowid"] + "\");", "onkeypress": "this.onclick();" }));
 				tag_tr.appendChild(tag_td);
 			}
 			
@@ -1665,11 +1679,11 @@ function fnc_listone(list) {
 				
 				// 操作
 				tag_td = dom_create_tag("td", { "rowspan": (investments.length + 1).toString(), "class": "control" });
-				tag_td.appendChild(dom_create_tag("input", { "type": "button", "value": "更新", "class": "btn", "onclick": "fnc_update(\"" + settings["rowid"] + "\");" }));
-				tag_td.appendChild(dom_create_tag("input", { "type": "button", "value": "明細", "class": "btn", "onclick": "fnc_detail(\"" + settings["rowid"] + "\");" }));
-				tag_td.appendChild(dom_create_tag("input", { "type": "button", "value": "OFX", "class": "btn", "onclick": "fnc_ofx(\"" + settings["rowid"] + "\");" }));
-				tag_td.appendChild(dom_create_tag("input", { "type": "button", "value": "変更", "class": "btn", "onclick": "fnc_modify(\"" + settings["rowid"] + "\");" }));
-				tag_td.appendChild(dom_create_tag("input", { "type": "button", "value": "削除", "class": "btn", "onclick": "fnc_delete(\"" + settings["rowid"] + "\");" }));
+				tag_td.appendChild(dom_create_tag("input", { "type": "button", "value": "更新", "class": "btn", "onclick": "fnc_update(\"" + settings["rowid"] + "\");", "onkeypress": "this.onclick();" }));
+				tag_td.appendChild(dom_create_tag("input", { "type": "button", "value": "明細", "class": "btn", "onclick": "fnc_detail(\"" + settings["rowid"] + "\");", "onkeypress": "this.onclick();" }));
+				tag_td.appendChild(dom_create_tag("input", { "type": "button", "value": "OFX", "class": "btn", "onclick": "fnc_ofx(\"" + settings["rowid"] + "\");", "onkeypress": "this.onclick();" }));
+				tag_td.appendChild(dom_create_tag("input", { "type": "button", "value": "変更", "class": "btn", "onclick": "fnc_modify(\"" + settings["rowid"] + "\");", "onkeypress": "this.onclick();" }));
+				tag_td.appendChild(dom_create_tag("input", { "type": "button", "value": "削除", "class": "btn", "onclick": "fnc_delete(\"" + settings["rowid"] + "\");", "onkeypress": "this.onclick();" }));
 				tag_tr.appendChild(tag_td);
 			}
 			
@@ -1734,19 +1748,19 @@ function fnc_listone(list) {
 		
 		// 操作
 		tag_td = dom_create_tag("td", { "class": "control" });
-		tag_td.appendChild(dom_create_tag("input", { "type": "button", "value": "更新", "class": "btn", "onclick": "fnc_update(\"" + settings["rowid"] + "\");" }));
+		tag_td.appendChild(dom_create_tag("input", { "type": "button", "value": "更新", "class": "btn", "onclick": "fnc_update(\"" + settings["rowid"] + "\");", "onkeypress": "this.onclick();" }));
 		if(status != "200" && parser != null) {
-			tag_td.appendChild(dom_create_tag("input", { "type": "button", "value": "明細", "class": "btn", "disabled": "true", "onclick": "fnc_detail(\"" + settings["rowid"] + "\");" }));
+			tag_td.appendChild(dom_create_tag("input", { "type": "button", "value": "明細", "class": "btn", "disabled": "true", "onclick": "fnc_detail(\"" + settings["rowid"] + "\");", "onkeypress": "this.onclick();" }));
 		} else {
-			tag_td.appendChild(dom_create_tag("input", { "type": "button", "value": "明細", "class": "btn", "onclick": "fnc_detail(\"" + settings["rowid"] + "\");" }));
+			tag_td.appendChild(dom_create_tag("input", { "type": "button", "value": "明細", "class": "btn", "onclick": "fnc_detail(\"" + settings["rowid"] + "\");", "onkeypress": "this.onclick();" }));
 		}
 		if(status != "200" && parser != null && debug == false) {
-			tag_td.appendChild(dom_create_tag("input", { "type": "button", "value": "OFX", "class": "btn", "disabled": "true", "onclick": "fnc_ofx(\"" + settings["rowid"] + "\");" }));
+			tag_td.appendChild(dom_create_tag("input", { "type": "button", "value": "OFX", "class": "btn", "disabled": "true", "onclick": "fnc_ofx(\"" + settings["rowid"] + "\");", "onkeypress": "this.onclick();" }));
 		} else {
-			tag_td.appendChild(dom_create_tag("input", { "type": "button", "value": "OFX", "class": "btn", "onclick": "fnc_ofx(\"" + settings["rowid"] + "\");" }));
+			tag_td.appendChild(dom_create_tag("input", { "type": "button", "value": "OFX", "class": "btn", "onclick": "fnc_ofx(\"" + settings["rowid"] + "\");", "onkeypress": "this.onclick();" }));
 		}
-		tag_td.appendChild(dom_create_tag("input", { "type": "button", "value": "変更", "class": "btn", "onclick": "fnc_modify(\"" + settings["rowid"] + "\");" }));
-		tag_td.appendChild(dom_create_tag("input", { "type": "button", "value": "削除", "class": "btn", "onclick": "fnc_delete(\"" + settings["rowid"] + "\");" }));
+		tag_td.appendChild(dom_create_tag("input", { "type": "button", "value": "変更", "class": "btn", "onclick": "fnc_modify(\"" + settings["rowid"] + "\");", "onkeypress": "this.onclick();" }));
+		tag_td.appendChild(dom_create_tag("input", { "type": "button", "value": "削除", "class": "btn", "onclick": "fnc_delete(\"" + settings["rowid"] + "\");", "onkeypress": "this.onclick();" }));
 		tag_tr.appendChild(tag_td);
 		
 		tag_tbody.appendChild(tag_tr);
