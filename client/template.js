@@ -886,7 +886,7 @@ function fnc_update_all(auth) {
 	var auths = dom_get_storage(logons["localid"], logons["localpass"]).split("\r\n");
 	var rowid;
 	
-	if(typeof auth == "undefined" || auth.indexOf("=") == -1) {
+	if(typeof auth != "string" || auth.indexOf("=") == -1) {
 		rowid = 0;
 	} else {
 		rowid = parseInt(auth.substring(0, auth.indexOf("=")), 10) + 1;
