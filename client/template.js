@@ -1041,142 +1041,57 @@ function fnc_detail(rowid) {
 				if(tag_stmttrnrss.length == 0) tag_stmttrnrss = current.getElementsByTagName("CCSTMTTRNRS");
 				if(tag_stmttrnrss.length == 0) tag_stmttrnrss = current.getElementsByTagName("INVSTMTTRNRS");
 				
-				tag_select = dom_create_tag("select", { "id": "acct", "onchange": "fnc_detail_change();" });
-				for(i = 0; i < tag_stmttrnrss.length; i++) {
-					mktginfo = (tag_stmttrnrss[i].getElementsByTagName("MKTGINFO").length == 0? "": tag_stmttrnrss[i].getElementsByTagName("MKTGINFO")[0].firstChild.nodeValue);
-					j = mktginfo.indexOf("　");
-					group = (j == -1? "預金": mktginfo.substring(j + 1)) + " " + tag_stmttrnrss[i].getElementsByTagName("ACCTID")[0].firstChild.nodeValue;
-					
-					tag_option = dom_create_tag("option", { "value": i.toString() });
-					tag_option.appendChild(dom_create_text(str_to_hankaku(group)));
-					tag_select.appendChild(tag_option);
-				}
-				
-				body.appendChild(tag_select);
-				
-				// 一覧を生成する
-				tag_div = dom_create_tag("div", { "id": "details" });
-				tag_table = dom_create_tag("table", { "id": "detail" });
-				tag_thead = dom_create_tag("thead");
-				tag_tr = dom_create_tag("tr");
-				
-				tag_th = dom_create_tag("th", { "class": "dt" });
-				tag_th.appendChild(dom_create_text("日付"));
-				tag_tr.appendChild(tag_th);
-				
-				tag_th = dom_create_tag("th", { "class": "note" });
-				tag_th.appendChild(dom_create_text("摘要"));
-				tag_tr.appendChild(tag_th);
-				
-				tag_th = dom_create_tag("th", { "class": "amt" });
-				tag_th.appendChild(dom_create_text("金額"));
-				tag_tr.appendChild(tag_th);
-				
-				tag_thead.appendChild(tag_tr);
-				tag_table.appendChild(tag_thead);
-				
-				for(i = 0; i < tag_stmttrnrss.length; i++) {
-					tag_stmttrns = tag_stmttrnrss[i].getElementsByTagName("STMTTRN");
-					tag_tbody = dom_create_tag("tbody", { "id": "acct" + i.toString() });
-					
-					if(tag_stmttrns.length > 0) {
-						for(j = 0; j < tag_stmttrns.length; j++) {
-							dtposted = tag_stmttrns[j].getElementsByTagName("DTPOSTED")[0].firstChild.nodeValue;
-							name = tag_stmttrns[j].getElementsByTagName("NAME")[0].firstChild.nodeValue;
-							trnamt = tag_stmttrns[j].getElementsByTagName("TRNAMT")[0].firstChild.nodeValue;
-							
-							tag_tr = dom_create_tag("tr");
-							
-							tag_td = dom_create_tag("td", { "class": "ac" });
-							tag_td.appendChild(dom_create_text(parseInt(dtposted.substring(4, 6), 10).toString() + "/" + parseInt(dtposted.substring(6, 8), 10).toString()));
-							tag_tr.appendChild(tag_td);
-							
-							tag_td = dom_create_tag("td");
-							tag_td.appendChild(dom_create_text(str_to_hankaku(name)));
-							tag_tr.appendChild(tag_td);
-							
-							tag_td = dom_create_tag("td", { "class": "ar" });
-							tag_td.appendChild(dom_create_text(to_amount(trnamt)));
-							tag_tr.appendChild(tag_td);
-							
-							tag_tbody.appendChild(tag_tr);
-						}
-					} else {
-						tag_tr = dom_create_tag("tr");
+				if(tag_stmttrnrss.length == 0) {
+					modal_showonly("警告", "表示可能な明細がありません。", false);
+				} else {
+					tag_select = dom_create_tag("select", { "id": "acct", "onchange": "fnc_detail_change();" });
+					for(i = 0; i < tag_stmttrnrss.length; i++) {
+						mktginfo = (tag_stmttrnrss[i].getElementsByTagName("MKTGINFO").length == 0? "": tag_stmttrnrss[i].getElementsByTagName("MKTGINFO")[0].firstChild.nodeValue);
+						j = mktginfo.indexOf("　");
+						group = (j == -1? "預金": mktginfo.substring(j + 1)) + " " + tag_stmttrnrss[i].getElementsByTagName("ACCTID")[0].firstChild.nodeValue;
 						
-						tag_td = dom_create_tag("td", { "colspan": "3", "class": "ac" } );
-						tag_td.appendChild(dom_create_text("明細がありません。"));
-						tag_tr.appendChild(tag_td);
-						
-						tag_tbody.appendChild(tag_tr);
-					}
-					
-					tag_table.appendChild(tag_tbody);
-					
-					
-					// 売買一覧を生成する
-					tag_invtrans = tag_stmttrnrss[i].getElementsByTagName("INVTRAN");
-					tag_secids = tag_stmttrnrss[i].getElementsByTagName("SECID");
-					tag_totals = tag_stmttrnrss[i].getElementsByTagName("TOTAL");
-					
-					if(tag_invtrans.length > 0) {
-						tag_tbody = dom_create_tag("tbody", { "id": "acct" + tag_stmttrnrss.length.toString() });
-						
-						tag_option = dom_create_tag("option", { "value": tag_stmttrnrss.length.toString() });
-						tag_option.appendChild(dom_create_text("売買"));
+						tag_option = dom_create_tag("option", { "value": i.toString() });
+						tag_option.appendChild(dom_create_text(str_to_hankaku(group)));
 						tag_select.appendChild(tag_option);
-						
-						for(j = 0; j < tag_invtrans.length; j++) {
-							dttrade = tag_invtrans[j].getElementsByTagName("DTTRADE")[0].firstChild.nodeValue;
-							security = securitys[tag_secids[j].getElementsByTagName("UNIQUEIDTYPE")[0].firstChild.nodeValue + " " + tag_secids[j].getElementsByTagName("UNIQUEID")[0].firstChild.nodeValue];
-							total = tag_totals[j].firstChild.nodeValue;
-							
-							tag_tr = dom_create_tag("tr");
-							
-							tag_td = dom_create_tag("td", { "class": "ac" });
-							tag_td.appendChild(dom_create_text(parseInt(dttrade.substring(4, 6), 10).toString() + "/" + parseInt(dttrade.substring(6, 8), 10).toString()));
-							tag_tr.appendChild(tag_td);
-							
-							tag_td = dom_create_tag("td");
-							tag_td.appendChild(dom_create_text(str_to_hankaku((parseInt(total, 10) < 0? "買付": "売付") + " " + security)));
-							tag_tr.appendChild(tag_td);
-							
-							tag_td = dom_create_tag("td", { "class": "ar" });
-							tag_td.appendChild(dom_create_text(to_amount(Math.abs(total))));
-							tag_tr.appendChild(tag_td);
-							
-							tag_tbody.appendChild(tag_tr);
-						}
-						
-						tag_tbody.appendChild(tag_tr);
-						tag_table.appendChild(tag_tbody);
 					}
 					
-					// 有価証券残高一覧を生成する
-					tag_invposlists = tag_stmttrnrss[i].getElementsByTagName("INVPOSLIST");
+					body.appendChild(tag_select);
 					
-					if(tag_invposlists.length > 0) {
-						uniqueidtypes = tag_invposlists[0].getElementsByTagName("UNIQUEIDTYPE");
-						uniqueids = tag_invposlists[0].getElementsByTagName("UNIQUEID");
-						dtpriceasofs = tag_invposlists[0].getElementsByTagName("DTPRICEASOF");
-						mktvals = tag_invposlists[0].getElementsByTagName("MKTVAL");
+					// 一覧を生成する
+					tag_div = dom_create_tag("div", { "id": "details" });
+					tag_table = dom_create_tag("table", { "id": "detail" });
+					tag_thead = dom_create_tag("thead");
+					tag_tr = dom_create_tag("tr");
+					
+					tag_th = dom_create_tag("th", { "class": "dt" });
+					tag_th.appendChild(dom_create_text("日付"));
+					tag_tr.appendChild(tag_th);
+					
+					tag_th = dom_create_tag("th", { "class": "note" });
+					tag_th.appendChild(dom_create_text("摘要"));
+					tag_tr.appendChild(tag_th);
+					
+					tag_th = dom_create_tag("th", { "class": "amt" });
+					tag_th.appendChild(dom_create_text("金額"));
+					tag_tr.appendChild(tag_th);
+					
+					tag_thead.appendChild(tag_tr);
+					tag_table.appendChild(tag_thead);
+					
+					for(i = 0; i < tag_stmttrnrss.length; i++) {
+						tag_stmttrns = tag_stmttrnrss[i].getElementsByTagName("STMTTRN");
+						tag_tbody = dom_create_tag("tbody", { "id": "acct" + i.toString() });
 						
-						if(dtpriceasofs.length > 0) {
-							tag_tbody = dom_create_tag("tbody", { "id": "acct" + (tag_stmttrnrss.length + 1).toString() });
-							
-							tag_option = dom_create_tag("option", { "value": (tag_stmttrnrss.length + 1).toString() });
-							tag_option.appendChild(dom_create_text("有価証券残高"));
-							tag_select.appendChild(tag_option);
-							
-							for(j = 0; j < dtpriceasofs.length; j++) {
-								dtpriceasof = dtpriceasofs[j].firstChild.nodeValue;
-								name = securitys[uniqueidtypes[j].firstChild.nodeValue + " " + uniqueids[j].firstChild.nodeValue];
-								mktval = mktvals[j].firstChild.nodeValue;
+						if(tag_stmttrns.length > 0) {
+							for(j = 0; j < tag_stmttrns.length; j++) {
+								dtposted = tag_stmttrns[j].getElementsByTagName("DTPOSTED")[0].firstChild.nodeValue;
+								name = tag_stmttrns[j].getElementsByTagName("NAME")[0].firstChild.nodeValue;
+								trnamt = tag_stmttrns[j].getElementsByTagName("TRNAMT")[0].firstChild.nodeValue;
 								
 								tag_tr = dom_create_tag("tr");
 								
 								tag_td = dom_create_tag("td", { "class": "ac" });
-								tag_td.appendChild(dom_create_text(parseInt(dtpriceasof.substring(4, 6), 10).toString() + "/" + parseInt(dtpriceasof.substring(6, 8), 10).toString()));
+								tag_td.appendChild(dom_create_text(parseInt(dtposted.substring(4, 6), 10).toString() + "/" + parseInt(dtposted.substring(6, 8), 10).toString()));
 								tag_tr.appendChild(tag_td);
 								
 								tag_td = dom_create_tag("td");
@@ -1184,7 +1099,53 @@ function fnc_detail(rowid) {
 								tag_tr.appendChild(tag_td);
 								
 								tag_td = dom_create_tag("td", { "class": "ar" });
-								tag_td.appendChild(dom_create_text(to_amount(mktval)));
+								tag_td.appendChild(dom_create_text(to_amount(trnamt)));
+								tag_tr.appendChild(tag_td);
+								
+								tag_tbody.appendChild(tag_tr);
+							}
+						} else {
+							tag_tr = dom_create_tag("tr");
+							
+							tag_td = dom_create_tag("td", { "colspan": "3", "class": "ac" } );
+							tag_td.appendChild(dom_create_text("明細がありません。"));
+							tag_tr.appendChild(tag_td);
+							
+							tag_tbody.appendChild(tag_tr);
+						}
+						
+						tag_table.appendChild(tag_tbody);
+						
+						
+						// 売買一覧を生成する
+						tag_invtrans = tag_stmttrnrss[i].getElementsByTagName("INVTRAN");
+						tag_secids = tag_stmttrnrss[i].getElementsByTagName("SECID");
+						tag_totals = tag_stmttrnrss[i].getElementsByTagName("TOTAL");
+						
+						if(tag_invtrans.length > 0) {
+							tag_tbody = dom_create_tag("tbody", { "id": "acct" + tag_stmttrnrss.length.toString() });
+							
+							tag_option = dom_create_tag("option", { "value": tag_stmttrnrss.length.toString() });
+							tag_option.appendChild(dom_create_text("売買"));
+							tag_select.appendChild(tag_option);
+							
+							for(j = 0; j < tag_invtrans.length; j++) {
+								dttrade = tag_invtrans[j].getElementsByTagName("DTTRADE")[0].firstChild.nodeValue;
+								security = securitys[tag_secids[j].getElementsByTagName("UNIQUEIDTYPE")[0].firstChild.nodeValue + " " + tag_secids[j].getElementsByTagName("UNIQUEID")[0].firstChild.nodeValue];
+								total = tag_totals[j].firstChild.nodeValue;
+								
+								tag_tr = dom_create_tag("tr");
+								
+								tag_td = dom_create_tag("td", { "class": "ac" });
+								tag_td.appendChild(dom_create_text(parseInt(dttrade.substring(4, 6), 10).toString() + "/" + parseInt(dttrade.substring(6, 8), 10).toString()));
+								tag_tr.appendChild(tag_td);
+								
+								tag_td = dom_create_tag("td");
+								tag_td.appendChild(dom_create_text(str_to_hankaku((parseInt(total, 10) < 0? "買付": "売付") + " " + security)));
+								tag_tr.appendChild(tag_td);
+								
+								tag_td = dom_create_tag("td", { "class": "ar" });
+								tag_td.appendChild(dom_create_text(to_amount(Math.abs(total))));
 								tag_tr.appendChild(tag_td);
 								
 								tag_tbody.appendChild(tag_tr);
@@ -1193,16 +1154,59 @@ function fnc_detail(rowid) {
 							tag_tbody.appendChild(tag_tr);
 							tag_table.appendChild(tag_tbody);
 						}
+						
+						// 有価証券残高一覧を生成する
+						tag_invposlists = tag_stmttrnrss[i].getElementsByTagName("INVPOSLIST");
+						
+						if(tag_invposlists.length > 0) {
+							uniqueidtypes = tag_invposlists[0].getElementsByTagName("UNIQUEIDTYPE");
+							uniqueids = tag_invposlists[0].getElementsByTagName("UNIQUEID");
+							dtpriceasofs = tag_invposlists[0].getElementsByTagName("DTPRICEASOF");
+							mktvals = tag_invposlists[0].getElementsByTagName("MKTVAL");
+							
+							if(dtpriceasofs.length > 0) {
+								tag_tbody = dom_create_tag("tbody", { "id": "acct" + (tag_stmttrnrss.length + 1).toString() });
+								
+								tag_option = dom_create_tag("option", { "value": (tag_stmttrnrss.length + 1).toString() });
+								tag_option.appendChild(dom_create_text("有価証券残高"));
+								tag_select.appendChild(tag_option);
+								
+								for(j = 0; j < dtpriceasofs.length; j++) {
+									dtpriceasof = dtpriceasofs[j].firstChild.nodeValue;
+									name = securitys[uniqueidtypes[j].firstChild.nodeValue + " " + uniqueids[j].firstChild.nodeValue];
+									mktval = mktvals[j].firstChild.nodeValue;
+									
+									tag_tr = dom_create_tag("tr");
+									
+									tag_td = dom_create_tag("td", { "class": "ac" });
+									tag_td.appendChild(dom_create_text(parseInt(dtpriceasof.substring(4, 6), 10).toString() + "/" + parseInt(dtpriceasof.substring(6, 8), 10).toString()));
+									tag_tr.appendChild(tag_td);
+									
+									tag_td = dom_create_tag("td");
+									tag_td.appendChild(dom_create_text(str_to_hankaku(name)));
+									tag_tr.appendChild(tag_td);
+									
+									tag_td = dom_create_tag("td", { "class": "ar" });
+									tag_td.appendChild(dom_create_text(to_amount(mktval)));
+									tag_tr.appendChild(tag_td);
+									
+									tag_tbody.appendChild(tag_tr);
+								}
+								
+								tag_tbody.appendChild(tag_tr);
+								tag_table.appendChild(tag_tbody);
+							}
+						}
+						
+						tag_div.appendChild(tag_table);
+						body.appendChild(tag_div);
 					}
 					
-					tag_div.appendChild(tag_table);
-					body.appendChild(tag_div);
+					// ダイアログを開く
+					modal_show("明細", body, false, "acct");
+					
+					fnc_detail_change();
 				}
-				
-				// ダイアログを開く
-				modal_show("明細", body, false, "acct");
-				
-				fnc_detail_change();
 			}
 		} else {
 			// ダイアログを閉じる
@@ -1260,6 +1264,7 @@ function fnc_ofx_all() {
 	var serializer = null;
 	var merge = null;
 	var current = null;
+	var f = false;
 	var logons, auths, timestamp, settings, filename, str, ofx;
 	var tag_ofx, tag_signonmsgsrsv1, tag_sonrs, tag_status, tag_code, tag_severity, tag_dtserver, tag_language, tag_fi, tag_org, tag_bankmsgsrsv1, tag_creditcardmsgsrsv1, tag_invstmtmsgsrsv1, tag_seclistmsgsrsv1, tag_stmttrnrss, tag_seclist, tag_ccstmttrnrss, tag_invstmttrnrss, tag_seclists, tag_seclisttrnrs, tag_trnuid;
 	var tag_a;
@@ -1333,15 +1338,24 @@ function fnc_ofx_all() {
 				
 				// 銀行
 				tag_stmttrnrss = (current != null? current.getElementsByTagName("STMTTRNRS"): new Array());
-				for(j = 0; j < tag_stmttrnrss.length; j++) tag_bankmsgsrsv1.appendChild(tag_stmttrnrss[j].cloneNode(true));
+				for(j = 0; j < tag_stmttrnrss.length; j++) {
+					tag_bankmsgsrsv1.appendChild(tag_stmttrnrss[j].cloneNode(true));
+					f = true;
+				}
 				
 				// クレジットカード
 				tag_ccstmttrnrss = (current != null? current.getElementsByTagName("CCSTMTTRNRS"): new Array());
-				for(j = 0; j < tag_ccstmttrnrss.length; j++) tag_creditcardmsgsrsv1.appendChild(tag_ccstmttrnrss[j].cloneNode(true));
+				for(j = 0; j < tag_ccstmttrnrss.length; j++) {
+					tag_creditcardmsgsrsv1.appendChild(tag_ccstmttrnrss[j].cloneNode(true));
+					f = true;
+				}
 				
 				// 証券
 				tag_invstmttrnrss = (current != null? current.getElementsByTagName("INVSTMTTRNRS"): new Array());
-				for(j = 0; j < tag_invstmttrnrss.length; j++) tag_invstmtmsgsrsv1.appendChild(tag_invstmttrnrss[j].cloneNode(true));
+				for(j = 0; j < tag_invstmttrnrss.length; j++) {
+					tag_invstmtmsgsrsv1.appendChild(tag_invstmttrnrss[j].cloneNode(true));
+					f = true;
+				}
 				
 				// 証券
 				tag_seclists = (current != null? current.getElementsByTagName("SECLIST"): new Array());
@@ -1387,16 +1401,20 @@ function fnc_ofx_all() {
 		ofx = new Blob([str]);
 		filename = "MoneySound_" + timestamp + ".ofx";
 		
-		if(self.window.navigator.msSaveOrOpenBlob) {
-			self.window.navigator.msSaveOrOpenBlob(ofx, filename);
+		if(f == false) {
+			modal_showonly("警告", "ダウンロード可能なOFXがありません。", false);
 		} else {
-			url = self.window.URL || self.window.webkitURL;
-			db = dom_get_tag("body")[0];
-			tag_a = dom_create_tag("a", { "href": url.createObjectURL(ofx), "id": "download", "type": "application/x-ofx; charset=UTF-8", "download": filename });
-			tag_a.appendChild(dom_create_text("ダウンロード"));
-			db.appendChild(tag_a);
-			dom_get_id("download").click();
-			db.removeChild(tag_a);
+			if(self.window.navigator.msSaveOrOpenBlob) {
+				self.window.navigator.msSaveOrOpenBlob(ofx, filename);
+			} else {
+				url = self.window.URL || self.window.webkitURL;
+				db = dom_get_tag("body")[0];
+				tag_a = dom_create_tag("a", { "href": url.createObjectURL(ofx), "id": "download", "type": "application/x-ofx; charset=UTF-8", "download": filename });
+				tag_a.appendChild(dom_create_text("ダウンロード"));
+				db.appendChild(tag_a);
+				dom_get_id("download").click();
+				db.removeChild(tag_a);
+			}
 		}
 	}
 }
@@ -1492,8 +1510,8 @@ function fnc_listone(list) {
 		tag_tbody.className = "error";
 		break;
 	case "500":
-		group = "OFXファイル破損: サーバーの状態を確認してください";
-		caption = "サーバーより取得したOFXファイルが破損していました。再試行しても同じエラーが発生する場合、サーバーの管理者にお問い合わせください。";
+		group = "OFX破損: サーバーの状態を確認してください";
+		caption = "サーバーより取得したOFXが破損していました。再試行しても同じエラーが発生する場合、サーバーの管理者にお問い合わせください。";
 		tag_tbody.className = "error";
 		break;
 	case "503":
@@ -1711,13 +1729,21 @@ function fnc_listone(list) {
 	
 	if(broken == true) {
 		status = "500";
-		group = "OFXファイル破損: サーバーの状態を確認してください";
-		caption = "サーバーより取得したOFXファイルが破損していました。再試行しても同じエラーが発生する場合、サーバーの管理者にお問い合わせください。";
+		group = "OFX破損: サーバーの状態を確認してください";
+		caption = "サーバーより取得したOFXが破損していました。再試行しても同じエラーが発生する場合、サーバーの管理者にお問い合わせください。";
 		tag_tbody.className = "error";
 	}
 	
+	if(banks.length == 0 && creditcards.length == 0 && investments.length == 0) {
+		status = "204";
+		group = "データなし: 金融機関のサイトで状況を確認してください";
+		caption = "サーバーより取得したデータが空でした。金融機関のサイトに直接ログインし、状況を確認した後、再試行してください。";
+		tag_tbody.className = "error";
+		broken = true;
+	}
+	
 	// いずれにも該当しない、またはstatusが200以外の場合
-	if(banks.length == 0 && creditcards.length == 0 && investments.length == 0 || broken == true) {
+	if(broken == true) {
 		tag_tr = dom_create_tag("tr");
 		
 		// 金融機関名称
