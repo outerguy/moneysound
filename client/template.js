@@ -893,7 +893,7 @@ function fnc_update_all(auth) {
 	}
 	
 	if(typeof auths[rowid] != "undefined") {
-		var settings = auth_parse(auths[rowid])
+		var settings = auth_parse(auths[rowid]);
 		get_all = rowid;
 		fnc_update(settings["rowid"]);
 	} else {
@@ -1734,7 +1734,8 @@ function fnc_listone(list) {
 		tag_tbody.className = "error";
 	}
 	
-	if(banks.length == 0 && creditcards.length == 0 && investments.length == 0) {
+	// statusが200、かつデータなしの場合
+	if(status == 200 && banks.length == 0 && creditcards.length == 0 && investments.length == 0) {
 		status = "204";
 		group = "データなし: 金融機関のサイトで状況を確認してください";
 		caption = "サーバーより取得したデータが空でした。金融機関のサイトに直接ログインし、状況を確認した後、再試行してください。";
@@ -1742,8 +1743,8 @@ function fnc_listone(list) {
 		broken = true;
 	}
 	
-	// いずれにも該当しない、またはstatusが200以外の場合
-	if(broken == true) {
+	// OFX破損、またはデータなしの場合
+	if(broken == true || (banks.length == 0 && creditcards.length == 0 && investments.length == 0)) {
 		tag_tr = dom_create_tag("tr");
 		
 		// 金融機関名称
@@ -1809,7 +1810,7 @@ function modal_show(head, body, showcancel, focusto) {
 	
 	if(dom_get_id("modal") == null) {
 		// モーダルウィンドウを生成する
-		tag_form = dom_create_tag("form", { "id": "modal", "onsubmit": "(" + arguments.callee.caller + ")(); return false;", "onreset": "modal_hide();" });
+		tag_form = dom_create_tag("form", { "method": "post", "id": "modal", "onsubmit": "(" + arguments.callee.caller + ")(); return false;", "onreset": "modal_hide();" });
 		
 		tag_h2 = dom_create_tag("h2", { "id": "modalhead" });
 		tag_h2.appendChild(dom_create_text(head));
@@ -2047,6 +2048,7 @@ function auth_parse(auth) {
 function logoninfo_add(auth) {
 	var logons = local_current();
 	var lists = new Array();
+	var settings;
 	var enc;
 	
 	// ログオン情報を追加する
@@ -2107,13 +2109,13 @@ function auths_sort(auths) {
 	var logons = local_current();
 	
 	var rets = new Array();
-	var flag_ofx = true;
 	var settings;
 	var rowid, auth, ofx;
-	var i, j, k;
+	var i, j, k, l;
 	
 	// authsをfiids[]の登録順でソートする
 	k = 0;
+	l = -1;
 	for(i in fiids) {
 		for(j = 0; j < auths.length; j++) {
 			settings = auth_parse(auths[j]);
@@ -2121,37 +2123,50 @@ function auths_sort(auths) {
 				// fiidが一致した場合
 				if(settings["rownum"] != k) {
 					// ソート順が崩れた場合
+					if(l == -1) l = k;
 					rowid = (settings["rownum"] == -1? k.toString() + settings["rowid"]: settings["rowid"].replace(settings["rownum"].toString(), k.toString()));
+					// if(settings["rownum"] == -1) alert(k.toString() + settings["rowid"]);
 					auth = auths[j].replace(settings["rowid"], rowid);
-					
-					ofx = dom_get_storage(logons["localid"] + ":" + settings["rowid"], logons["localpass"]);
-					if(ofx != null && ofx != "") {
-						// OFXを削除・登録する
-						dom_set_storage(logons["localid"] + ":" + rowid, ofx, logons["localpass"]);
-						dom_del_storage(logons["localid"] + ":" + settings["rowid"], logons["localpass"]);
-					}
 				} else {
 					auth = auths[j];
 				}
-				
-				// OFXの存在を確認する
-				ofx = dom_get_storage(logons["localid"] + ":" + settings["rowid"], logons["localpass"]);
-				if(ofx != null && ofx != "" && flag_ofx == true) flag_ofx = false;
-				
 				rets.push(auth);
 				k++;
 			}
 		}
 	}
 	
-	// （すべて）更新ボタンの押下を設定する
-	dom_get_id("btn_get_all").disabled = (rets.length == "0"? true: false);
-	
-	// （すべて）OFXボタンの押下を設定する
-	for(i = 0; i < auths.length; i++) {
-		settings = auth_parse(auths[i]);
+	if(l != -1) {
+		if(settings["rownum"] == -1) {
+			// 追加の場合、OFXを後から前に送る
+			for(k = rets.length - 1; k >= l; k--) {
+				settings = auth_parse(rets[(k == rets.length - 1? k: k + 1)]);
+				rowid = settings["rowid"].replace(settings["rownum"].toString(), k.toString());
+				// alert("+" + rowid + ":" + settings["rowid"]);
+				
+				ofx = dom_get_storage(logons["localid"] + ":" + rowid, logons["localpass"]);
+				if(ofx != null && ofx != "") {
+					// OFXを削除・登録する
+					dom_set_storage(logons["localid"] + ":" + settings["rowid"], ofx, logons["localpass"]);
+					dom_del_storage(logons["localid"] + ":" + rowid, logons["localpass"]);
+				}
+			}
+		} else {
+			// 削除の場合、OFXを前から後に送る
+			for(k = l; k <= rets.length; k++) {
+				settings = auth_parse(rets[(k == 0? k: k - 1)]);
+				rowid = settings["rowid"].replace(settings["rownum"].toString(), (k == 0? k + 1: k).toString());
+				// alert("-" + rowid + ":" + settings["rowid"]);
+				
+				ofx = dom_get_storage(logons["localid"] + ":" + rowid, logons["localpass"]);
+				if(ofx != null && ofx != "") {
+					// OFXを削除・登録する
+					dom_set_storage(logons["localid"] + ":" + settings["rowid"], ofx, logons["localpass"]);
+					dom_del_storage(logons["localid"] + ":" + rowid, logons["localpass"]);
+				}
+			}
+		}
 	}
-	dom_get_id("btn_ofx_all").disabled = flag_ofx;
 	
 	return rets;
 }
