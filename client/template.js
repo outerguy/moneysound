@@ -1873,9 +1873,21 @@ function modal_show(head, body, showcancel, focusto) {
 			return false;
 		};
 		
+		/*
 		with(dom_get_id(typeof focusto != "string"? "modalok": focusto)) {
 			focus();
 			if(tagName == "input") select();
+		}
+		*/
+		if(typeof focusto == "string") with(dom_get_id(focusto)) {
+			focus();
+			if(tagName == "input") select();
+		} else {
+			// Mobile SafariでOKボタンを押下できない場合がある問題を改善する
+			var f = function() {
+				dom_get_id("modalok").focus();
+			};
+			self.window.setTimeout(f, 1);
 		}
 		
 		// オーバーレイを生成する

@@ -150,6 +150,7 @@ a:hover, a:active {
 	text-shadow: 0px 0px 5px #FF9933;
 	text-decoration: none;
 	font-weight: bold;
+	-webkit-appearance: none;
 }
 .btn:hover {
 	color: #FFFFFF;
