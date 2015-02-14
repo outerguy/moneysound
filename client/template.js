@@ -6,7 +6,7 @@ mailto:contact@beatrek.com
 Dual-licensed under the Apache License 2.0 and Beatrek Origin License.
 */
 
-var rel = "3.0";
+var rel = "3.1";
 var get_all = -1;
 var xhr;
 
