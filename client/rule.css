@@ -1,5 +1,10 @@
 body {
+	width: 100%;
 	font-size: 85%;
+}
+body.noscroll {
+	position: fixed;
+	overflow-y: scroll;
 }
 form#root p {
 	text-align: center;

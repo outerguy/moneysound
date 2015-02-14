@@ -1806,7 +1806,7 @@ function modal_show(head, body, showcancel, focusto) {
 	var db = dom_get_tag("body")[0];
 	var dragging = false;
 	var tag_div, tag_h2, tag_form;
-	var x, y;
+	var x, y, z;
 	
 	if(dom_get_id("modal") == null) {
 		// モーダルウィンドウを生成する
@@ -1873,12 +1873,11 @@ function modal_show(head, body, showcancel, focusto) {
 			return false;
 		};
 		
-		/*
-		with(dom_get_id(typeof focusto != "string"? "modalok": focusto)) {
-			focus();
-			if(tagName == "input") select();
-		}
-		*/
+		// 親ウィンドウのスクロールを禁止する
+		z = self.window.pageYOffset;
+		db.className = "noscroll";
+		db.style.top = (z * -1).toString() + "px";
+		
 		if(typeof focusto == "string") with(dom_get_id(focusto)) {
 			focus();
 			if(tagName == "input") select();
@@ -1942,6 +1941,10 @@ function modal_hide() {
 		
 		// ウィンドウサイズが変更された場合、何もしない
 		self.window.onresize = null;
+		
+		// 親ウィンドウのスクロールを許可する
+		className = "";
+		self.window.scrollTo(0, parseInt(style.top.replace("px", ""), 10) * -1);
 	}
 }
 
