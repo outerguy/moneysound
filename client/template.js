@@ -6,7 +6,7 @@ mailto:contact@beatrek.com
 Dual-licensed under the Apache License 2.0 and Beatrek Origin License.
 */
 
-var rel = "3.1";
+var rel = "3.2";
 var get_all = -1;
 var xhr;
 
@@ -1504,7 +1504,7 @@ function fnc_listone(list) {
 		group = "追加認証あり: 更新ボタンを押下してください";
 		tag_tbody.className = "error";
 		break;
-	case "400":
+	case "403":
 		group = "認証失敗: 認証情報が正しいか否かを確認してください";
 		caption = "金融機関のサイトにログインできませんでした。認証情報が正しいか否か、および追加認証の入力内容が正しいか否かを確認した後、再試行してください。";
 		tag_tbody.className = "error";
@@ -1519,7 +1519,7 @@ function fnc_listone(list) {
 		caption = "金融機関のサイトがメンテナンス中でした。メンテナンスが終了した後、再試行してください。";
 		tag_tbody.className = "error";
 		break;
-	case "504":
+	case "511":
 		group = "重要通知あり: 金融機関のサイトで画面を確認してください";
 		caption = "金融機関のサイトに「重要なお知らせ」等の画面が表示されました。金融機関のサイトに直接ログインし、内容を確認した後、再試行してください。";
 		tag_tbody.className = "error";
@@ -1875,8 +1875,10 @@ function modal_show(head, body, showcancel, focusto) {
 		
 		// 親ウィンドウのスクロールを禁止する
 		z = self.window.pageYOffset;
-		db.className = "noscroll";
-		db.style.top = (z * -1).toString() + "px";
+		with(db) {
+			style.position = "fixed";
+			style.top = (z * -1).toString() + "px";
+		}
 		
 		if(typeof focusto == "string") with(dom_get_id(focusto)) {
 			focus();
@@ -1932,6 +1934,7 @@ function modal_resize() {
 
 // ダイアログを閉じる
 function modal_hide() {
+	var z;
 	if(dom_get_id("modal") != null) with(dom_get_tag("body")[0]) {
 		// モーダルウィンドウを削除する
 		removeChild(dom_get_id("modal"));
@@ -1943,8 +1946,10 @@ function modal_hide() {
 		self.window.onresize = null;
 		
 		// 親ウィンドウのスクロールを許可する
-		className = "";
-		self.window.scrollTo(0, parseInt(style.top.replace("px", ""), 10) * -1);
+		z = parseInt(style.top.replace("px", ""), 10) * -1;
+		style.position = "static";
+		style.top = "auto";
+		self.window.scrollTo(0, z);
 	}
 }
 

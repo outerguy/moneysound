@@ -4,9 +4,6 @@ body {
 	overflow-y: scroll;
 	font-size: 85%;
 }
-body.noscroll {
-	position: fixed;
-}
 form#root p {
 	text-align: center;
 }
