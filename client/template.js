@@ -6,7 +6,7 @@ mailto:contact@beatrek.com
 Dual-licensed under the Apache License 2.0 and Beatrek Origin License.
 */
 
-var rel = "3.2";
+var ver = "<!--[version]-->";
 var get_all = -1;
 var xhr;
 
@@ -488,7 +488,7 @@ function fnc_version() {
 		tag_a = dom_create_tag("a", { "href": "https://github.com/outerguy/moneysound/", "target": "_blank", "style": "margin-right: 0.5em;" });
 		tag_a.appendChild(dom_create_text(title));
 		tag_p.appendChild(tag_a);
-		tag_p.appendChild(dom_create_text("R" + rel));
+		tag_p.appendChild(dom_create_text("Version " + ver));
 		body.appendChild(tag_p);
 		
 		tag_p = dom_create_tag("p");
@@ -1309,7 +1309,7 @@ function fnc_ofx_all() {
 		tag_fi = merge.createElement("FI");
 		
 		tag_org = merge.createElement("ORG");
-		tag_org.appendChild(merge.createTextNode("MoneySound/" + rel));
+		tag_org.appendChild(merge.createTextNode("MoneySound/" + ver));
 		tag_fi.appendChild(tag_org);
 		tag_sonrs.appendChild(tag_fi);
 		
