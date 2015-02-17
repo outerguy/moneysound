@@ -536,6 +536,16 @@ if($sid > 0) {
 			$balamts = parse_tag($str, "BALAMT");
 			foreach($balamts as $balamt) $str = str_replace($balamt["match"], "<BALAMT>" . (string)((integer)$balamt["innerHTML"]) . "</BALAMT>", $str);
 			
+			// FITID‚Ì”’l‚ğ•â³‚·‚é
+			$fitids = parse_tag($str, "FITID");
+			$fitidbuf = "";
+			$cd_num = 0;
+			foreach($fitids as $fitid) {
+				if(substr($fitid["innerHTML"], 0, 8) == substr($fitidbuf, 0, 8)) $cd_num++; else $cd_num = 0;
+				$str = str_replace($fitid["match"], "<FITID>" . substr($fitid["innerHTML"], 0, 8) . sprintf("%04d", (integer)$account["id"]) . "000" . sprintf("%05d", $cd_num) . "</FITID>", $str);
+				$fitidbuf = $fitid["innerHTML"];
+			}
+			
 			// ŒûÀ–¼Ì‚ğo—Í‚·‚é
 			if($account["acctname"] != "") $str = str_replace("</STMTRS>", "<MKTGINFO>" . mb_convert_string($account["acctname"]) . "</MKTGINFO>\r\n</STMTRS>", $str);
 			
