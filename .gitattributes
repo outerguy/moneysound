@@ -16,6 +16,9 @@
 *.rtf	 diff=astextplain
 *.RTF	 diff=astextplain
 
+*.php	diff=php
+*.inc	diff=php
+
 *.bat	eol=crlf
 *.ini	eol=crlf
 *.xml	eol=crlf
