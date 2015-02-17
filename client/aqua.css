@@ -8,6 +8,9 @@ body {
 	background: #1A294A;
 	background: #1A294A linear-gradient(to right, #1A294A, #2C6E94, #1A294A);
 }
+hr {
+	display: none;
+}
 h1#title {
 	display: none;
 }

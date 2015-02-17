@@ -6,6 +6,12 @@ body {
 	color: #000000;
 	background: #ECE9D8;
 }
+hr {
+	border-top: solid 1px #ACA899;
+	border-right: 0px;
+	border-bottom: solid 1px #FFFFFF;
+	border-left: 0px;
+}
 h1 {
 	border: solid #ACA899;
 	border-width: 0px 0px 1px 0px;

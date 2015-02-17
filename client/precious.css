@@ -7,6 +7,9 @@ body {
 	background: #CC9933;
 	background: #CC9933 linear-gradient(to bottom, #CC9933, #996600 40px, #CC9933 200px) center top no-repeat;
 }
+hr {
+	display: none;
+}
 h1 {
 	color: #663300;
 	background: transparent;

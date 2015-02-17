@@ -7,6 +7,9 @@ body {
 	color: #000000;
 	background: #FFFFFF;
 }
+hr {
+	display: none;
+}
 h1#title {
 	display: none;
 }

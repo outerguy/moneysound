@@ -471,7 +471,7 @@ function fnc_option_change() {
 function fnc_version() {
 	var body = document.createDocumentFragment();
 	var title = dom_get_id("title").firstChild.nodeValue;
-	var tag_p, tag_a, tag_img;
+	var tag_p, tag_a, tag_img, tag_hr;
 	
 	if(dom_get_id("modal") == null) {
 		tag_p = dom_create_tag("p");
@@ -490,6 +490,9 @@ function fnc_version() {
 		tag_p.appendChild(tag_a);
 		tag_p.appendChild(dom_create_text("Version " + ver));
 		body.appendChild(tag_p);
+		
+		tag_hr = dom_create_tag("hr");
+		body.appendChild(tag_hr);
 		
 		tag_p = dom_create_tag("p");
 		tag_p.appendChild(dom_create_text("Copyright &copy; 2008-2015 OFFICE OUTERGUY. All rights reserved."));

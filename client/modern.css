@@ -7,6 +7,9 @@ body {
 	color: #000000;
 	background: #1D1D1D;
 }
+hr {
+	display: none;
+}
 h1 {
 	padding: 30px;
 	margin: 0px;
