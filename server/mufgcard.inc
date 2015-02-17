@@ -198,19 +198,32 @@ if(strpos($body, "Œ»ÝƒT[ƒrƒX’âŽ~’†") !== false || strpos($body, "ƒVƒXƒeƒ€ƒƒ“ƒ
 	$ofxdom = new ofxDOM($account['acctid']);
 	
 	// –¾×‚ðƒp[ƒX
-	$cds_s = "";
-	$cds_e = "";
+    $cds = array();
 	foreach($bodies as $body){
-		list($cds, $tmp_s, $tmp_e) = mufgcard_parsedom($body);
-		if($cds_s == "") $cds_s = $tmp_s;
-		if($tmp_e !== "") $cds_e = $tmp_e;
-		$ofxdom->setTrans($cds);
+        $cds = array_merge($cds, mufgcard_parsedom($body));
 	}
+    usort($cds, function($a, $b) {
+        return $a['DTPOSTED'] > $b['DTPOSTED'];
+    });
+    $ofxdom->setTrans($cds);
+
+    $cd_num = 0;
+    $cds_s = "";
+    $cds_e = "";
+    $items = $ofxdom->getTrans();
+    foreach ($items as $item) {
+        $dtposted = $item->getElementsByTagName('DTPOSTED')->item(0)->nodeValue;
+         // ƒgƒ‰ƒ“ƒUƒNƒVƒ‡ƒ“”Ô†iŒã”¼j‚ð¶¬‚·‚é
+        if ($dtposted == $cds_e) $cd_num++; else $cd_num = 0;
+        $fitid = $item->getElementsByTagName('FITID')->item(0);
+        $fitid->nodeValue .= sprintf("%05d", $cd_num);
+        // DTSTART, DTEND‚ðŽæ“¾
+        if($cds_s == "") $cds_s = $dtposted;
+        $cds_e = $dtposted;
+    }
 	
 	// BANKTRANLIST
-	$ofxdom->setBankTranList($cds_s . ENV_STR_OFX_TZ, $cds_e . ENV_STR_OFX_TZ);
-	
-	$cds_balamt = (-1)*$cds_balamt;
+	$ofxdom->setBankTranList($cds_s, $cds_e);
 	
 	// Žc‚‚ðˆ—
 	$account["ledge_balamt"] = parse_amount($account["ledge_balamt"]);
@@ -308,11 +321,6 @@ function mufgcard_parsedom($str) {
 	
 	$ret = "";
 	$cds = array();
-	$cds_balamt = 0;
-	$cds_s = "";
-	$cds_e = "";
-	$cd_date = "";
-	$cd_num = 0;
 	$nrow = $rows->length;
 	for($i=3; $i<$nrow; $i++) {
 		$cd = array();
@@ -325,12 +333,8 @@ function mufgcard_parsedom($str) {
 		
 		// “ú•t‚ðŽæ“¾‚·‚é
 		$cd["DTPOSTED"] = parse_date(trim($cols->item(0)->nodeValue));
-		if($cds_s == "") $cds_s = $cd["DTPOSTED"];
-		$cds_e = $cd["DTPOSTED"];
-		// ’Ê”Ô‚ð¶¬‚·‚é
-		if($cd["DTPOSTED"] == $cd_date) $cd_num++; else $cd_num = 0;
-		// ƒgƒ‰ƒ“ƒUƒNƒVƒ‡ƒ“”Ô†‚ð¶¬‚·‚é
-		$cd["FITID"] = sprintf("%02d", $month) . "0" . sprintf("%05d", $cd_num);
+        // ƒgƒ‰ƒ“ƒUƒNƒVƒ‡ƒ“”Ô†i‘O”¼j‚ð¶¬‚·‚é
+		$cd["FITID"] = sprintf("%02d0", $month);
 		// “E—v‚ðŽæ“¾‚·‚é
 		$cd["NAME"] = $cols->item(1)->nodeValue;
 		// ‹àŠz‚ðŽæ“¾‚·‚é
@@ -339,6 +343,6 @@ function mufgcard_parsedom($str) {
 		array_push($cds, $cd);
 		$cd_date = $cd["DTPOSTED"];
 	}
-	return array($cds, $cds_s, $cds_e);
+	return $cds;
 }
 ?>
