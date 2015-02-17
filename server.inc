@@ -7,7 +7,7 @@ mailto:contact@beatrek.com
 Dual-licensed under the GNU AGPLv3 and Beatrek Origin License.
 
 class ofxDOM
-Copyright (C) 2012-2015 Hiromu Takahashi. All Rights Reserved.
+Copyright (C) 2012-2015 Hiromu2000. All Rights Reserved.
 mailto:hiromu2000@hotmail.com
 Licensed under the GNU AGPLv3.
 */
@@ -179,7 +179,7 @@ class ofxDOM {
 			$node->appendChild($dom->createTextNode($cd["TRNTYPE"]));
 			
 			$node = $stmttrn->appendChild($dom->createElement('DTPOSTED'));
-			$node->appendChild($dom->createTextNode($cd["DTPOSTED"]));
+			$node->appendChild($dom->createTextNode($cd["DTPOSTED"] . ENV_STR_OFX_TZ));
 			
 			$node = $stmttrn->appendChild($dom->createElement('TRNAMT'));
 			$node->appendChild($dom->createTextNode($cd["TRNAMT"]));

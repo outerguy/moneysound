@@ -499,7 +499,7 @@ function fnc_version() {
 		body.appendChild(tag_p);
 		
 		tag_p = dom_create_tag("p");
-		tag_p.appendChild(dom_create_text("Portions Copyright &copy; 2012-2015 Hiromu Takahashi. All rights reserved."));
+		tag_p.appendChild(dom_create_text("Portions Copyright &copy; 2012-2015 Hiromu2000. All rights reserved."));
 		body.appendChild(tag_p);
 		
 		tag_p = dom_create_tag("p", { "class": "label" });

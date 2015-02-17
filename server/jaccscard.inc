@@ -1,7 +1,7 @@
 <?php
 /*
 jaccscard.inc: ジャックスカードのHTMLよりOFXファイルを生成する
-Copyright (C) 2012-2015 Hiromu Takahashi. All Rights Reserved.
+Copyright (C) 2012-2015 Hiromu2000. All Rights Reserved.
 mailto:hiromu2000@hotmail.com
 Licensed under the GNU AGPLv3.
 */
@@ -176,7 +176,7 @@ if(strpos($body, "メンテナンスを行っております") !== false) {
 	}
 	
 	// BANKTRANLIST
-	$ofxdom->setBankTranList($cds_s . ENV_STR_OFX_TZ, $cds_e . ENV_STR_OFX_TZ);
+	$ofxdom->setBankTranList($cds_s, $cds_e);
 	
 	// 残高を処理
 	$cds_balamt = (-1)*$cds_balamt;

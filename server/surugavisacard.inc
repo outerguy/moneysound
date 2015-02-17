@@ -1,7 +1,7 @@
 <?php
 /*
 surugavisacard.inc: スルガ銀行 VISAデビット/VISAクレジットのHTMLよりOFXファイルを生成する
-Copyright (C) 2012-2015 Hiromu All Rights Reserved.
+Copyright (C) 2012-2015 Hiromu2000. All Rights Reserved.
 mailto:hiromu2000@hotmail.com
 Licensed under the GNU AGPLv3.
 */
@@ -129,7 +129,7 @@ if(strpos($body, "只今メンテナンス中です") !== false) {
     }
 
 	// BANKTRANLIST
-	$ofxdom->setBankTranList($cds_s . ENV_STR_OFX_TZ, $cds_e . ENV_STR_OFX_TZ);
+	$ofxdom->setBankTranList($cds_s, $cds_e);
 	
 	// 残高を処理
 	$cds_balamt = (-1)*$cds_balamt;
