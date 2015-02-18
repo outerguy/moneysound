@@ -207,16 +207,11 @@ if(strpos($body, "Œ»ÝƒT[ƒrƒX’âŽ~’†") !== false || strpos($body, "ƒVƒXƒeƒ€ƒƒ“ƒ
     });
     $ofxdom->setTrans($cds);
     
-    $cd_num = 0;
     $cds_s = "";
     $cds_e = "";
     $items = $ofxdom->getTrans();
     foreach ($items as $item) {
         $dtposted = $item->getElementsByTagName('DTPOSTED')->item(0)->nodeValue;
-         // ƒgƒ‰ƒ“ƒUƒNƒVƒ‡ƒ“”Ô†iŒã”¼j‚ð¶¬‚·‚é
-        if ($dtposted == $cds_e) $cd_num++; else $cd_num = 0;
-        $fitid = $item->getElementsByTagName('FITID')->item(0);
-        $fitid->nodeValue .= sprintf("%05d", $cd_num);
         // DTSTART, DTEND‚ðŽæ“¾
         if($cds_s == "") $cds_s = $dtposted;
         $cds_e = $dtposted;
@@ -333,7 +328,7 @@ function mufgcard_parsedom($str) {
         
         // “ú•t‚ðŽæ“¾‚·‚é
         $cd["DTPOSTED"] = parse_date(trim($cols->item(0)->nodeValue));
-        // ƒgƒ‰ƒ“ƒUƒNƒVƒ‡ƒ“”Ô†i‘O”¼j‚ð¶¬‚·‚é
+        // ƒgƒ‰ƒ“ƒUƒNƒVƒ‡ƒ“”Ô†i¿‹ŒŽ‚Æƒf[ƒ^Ží•Êj‚ð¶¬‚·‚é
         $cd["FITID"] = sprintf("%02d0", $month);
         // “E—v‚ðŽæ“¾‚·‚é
         $cd["NAME"] = $cols->item(1)->nodeValue;

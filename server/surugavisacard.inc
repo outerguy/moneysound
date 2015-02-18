@@ -111,16 +111,11 @@ if(strpos($body, "只今メンテナンス中です") !== false) {
     });
     $ofxdom->setTrans($cds);
     $cds_balamt = 0;
-    $cd_num = 0;
     $cds_s = "";
     $cds_e = "";
     $items = $ofxdom->getTrans();
     foreach ($items as $item) {
         $dtposted = $item->getElementsByTagName('DTPOSTED')->item(0)->nodeValue;
-        // トランザクション番号（後半）を生成する
-        if ($dtposted == $cds_e) $cd_num++; else $cd_num = 0;
-        $fitid = $item->getElementsByTagName('FITID')->item(0);
-        $fitid->nodeValue .= sprintf("%05d", $cd_num);
         // DTSTART, DTENDを取得
         if($cds_s == "") $cds_s = $dtposted;
         $cds_e = $dtposted;
@@ -219,7 +214,7 @@ function surugavisa_parsedom($str) {
         preg_match("/([0-9]{4}).*?([0-9]{1,2}).*?([0-9]{1,2})/", str_replace(" ", "", $cols1->item(1)->nodeValue), $matches);
         $cd["DTPOSTED"] = sprintf("%d%02d%02d", $matches[1], $matches[2], $matches[3]);
         
-        // トランザクション番号（前半）を生成する
+        // トランザクション番号（請求月とデータ種別）を生成する
         $cd["FITID"] = '000';
         // 摘要を取得する
         $cd["NAME"] = $cols2->item(0)->nodeValue;

@@ -184,8 +184,9 @@ class ofxDOM {
 			$node = $stmttrn->appendChild($dom->createElement('TRNAMT'));
 			$node->appendChild($dom->createTextNode($cd["TRNAMT"]));
 			
+			// この時点では、FITIDは請求月とデータ種別のみ
 			$node = $stmttrn->appendChild($dom->createElement('FITID'));
-			$node->appendChild($dom->createTextNode($cd["DTPOSTED"] . $acctid . $cd["FITID"]));
+			$node->appendChild($dom->createTextNode($cd["FITID"]));
 			
 			$node = $stmttrn->appendChild($dom->createElement('NAME'));
 			$node->appendChild($dom->createTextNode($cd["NAME"]));
@@ -219,7 +220,23 @@ class ofxDOM {
 		$node = $stmtrs->appendChild($dom->createElement('MKTGINFO'));
 		$node->appendChild($dom->createTextNode($mktginfo));
 	}
+	private function setFitid() {
+		$acctid = $this->dom->getElementsByTagName('ACCTID')->item(0)->nodeValue;
+		$cd_num = 0;
+		$last_dtposted = "";
+		foreach ($this->getTrans() as $tran) {
+			$dtposted = $tran->getElementsByTagName('DTPOSTED')->item(0)->nodeValue;
+			// 年月日のみを抽出
+			$dtposted = substr($dtposted, 0, 8);
+			if ($dtposted == $last_dtposted) $cd_num++; else $cd_num = 0;
+			$fitid = $tran->getElementsByTagName('FITID')->item(0);
+			$fitid->nodeValue = sprintf("%s%s%s%05d", $dtposted, $acctid, $fitid->nodeValue, $cd_num);
+			$last_dtposted = $dtposted;
+		}
+	}
 	public function getXML() {
+		// FITIDを仕上げる
+		$this->setFitid();
 		$this->dom->formatOutput = true;
 		$xml = $this->dom->saveXML();
 		// XMLのヘッダは削除
