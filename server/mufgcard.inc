@@ -27,69 +27,69 @@ list($head, $body) = mun_http11($method, $uris, $query, $cookie);
 // ƒƒOƒCƒ“‰æ–Ê‚ğæ“¾‚·‚éiNEWS+PLUSj
 $as = parse_tag($body, "a");
 foreach($as as $a) if(parse_tag_search(parse_tag($a["innerHTML"], "img"), "alt", "ƒƒOƒCƒ“") != -1) {
-	$method = "GET";
-	$uris = parse_uri($a["href"], $uris);
-	$cookie = mun_update_cookie($head, $cookie);
-	list($head, $body) = mun_http11($method, $uris, $query, $cookie);
-	break;
+    $method = "GET";
+    $uris = parse_uri($a["href"], $uris);
+    $cookie = mun_update_cookie($head, $cookie);
+    list($head, $body) = mun_http11($method, $uris, $query, $cookie);
+    break;
 }
 
 // ƒƒOƒCƒ“‚·‚éiNEWS+PLUSj
 $forms = parse_tag($body, "form");
 $c = parse_tag_search($forms, "id", "loginFormNavi");
 if($c != -1) {
-	$inputs = parse_tag($forms[$c]["innerHTML"], "input");
-	$queries = array();
-	foreach($inputs as $input) if($input["name"] != "") $queries[$input["name"]] = urlencode($input["name"]) . "=" . urlencode($input["value"]);
-	$queries["cardBrand"] = "cardBrand=" . $settings["brand"];
-	$queries["webId"] = "webId=" . $user;
-	$queries["webPassword"] = "webPassword=" . $pass;
-	$queries["webAddAuthType"] = "webAddAuthType=2";
-	$queries["webBirthDay"] = "webBirthDay=" . $birth;
-	
-	$head .= "Set-Cookie: m_cardBrand=" . $settings["brand"] . "\r\n";
-	
-	$method = $forms[$c]["method"];
-	$uris = parse_uri($forms[$c]["action"], $uris);
-	$query = implode("&", $queries);
-	$cookie = mun_update_cookie($head, $cookie);
-	list($head, $body) = mun_http11($method, $uris, $query, $cookie);
+    $inputs = parse_tag($forms[$c]["innerHTML"], "input");
+    $queries = array();
+    foreach($inputs as $input) if($input["name"] != "") $queries[$input["name"]] = urlencode($input["name"]) . "=" . urlencode($input["value"]);
+    $queries["cardBrand"] = "cardBrand=" . $settings["brand"];
+    $queries["webId"] = "webId=" . $user;
+    $queries["webPassword"] = "webPassword=" . $pass;
+    $queries["webAddAuthType"] = "webAddAuthType=2";
+    $queries["webBirthDay"] = "webBirthDay=" . $birth;
+    
+    $head .= "Set-Cookie: m_cardBrand=" . $settings["brand"] . "\r\n";
+    
+    $method = $forms[$c]["method"];
+    $uris = parse_uri($forms[$c]["action"], $uris);
+    $query = implode("&", $queries);
+    $cookie = mun_update_cookie($head, $cookie);
+    list($head, $body) = mun_http11($method, $uris, $query, $cookie);
 }
 
 // ƒŠƒ_ƒCƒŒƒNƒg‚·‚é
 $retry = 0;
 while($retry++ < ENV_NUM_HTTP11_RETRY) {
-	$locations = parse_header($head, "location");
-	if(count($locations) > 0) {
-		$method = "GET";
-		$uris = parse_uri($locations[0], $uris);
-		$query = "";
-		$cookie = mun_update_cookie($head, $cookie);
-		list($head, $body) = mun_http11($method, $uris, $query, $cookie);
-	}
+    $locations = parse_header($head, "location");
+    if(count($locations) > 0) {
+        $method = "GET";
+        $uris = parse_uri($locations[0], $uris);
+        $query = "";
+        $cookie = mun_update_cookie($head, $cookie);
+        list($head, $body) = mun_http11($method, $uris, $query, $cookie);
+    }
 }
 
 $as = parse_tag($body, "a");
 foreach($as as $a) {
-	switch(trim(strip_tags($a["innerHTML"]))) {
-	case "ƒƒOƒAƒEƒg":
-		// ƒƒOƒAƒEƒg‰æ–Ê‚ğ‘Ş”ğ‚·‚éiNEWS+PLUSj
-		$method_mun = "GET";
-		$uris_mun = parse_uri($a["href"], $uris);
-		$query_mun = "";
-		$cookie_mun = $cookie;
-		break;
-	case "WEBƒT[ƒrƒXƒgƒbƒv":
-		// WEBƒT[ƒrƒXƒgƒbƒv‰æ–Ê‚ğæ“¾‚·‚éiNEWS+PLUSj
-		$method = "GET";
-		$uris = parse_uri($a["href"], $uris);
-		$query = "";
-		$cookie = mun_update_cookie($head, $cookie);
-		list($head, $body) = mun_http11($method, $uris, $query, $cookie);
-		break;
-	default:
-		break;
-	}
+    switch(trim(strip_tags($a["innerHTML"]))) {
+    case "ƒƒOƒAƒEƒg":
+        // ƒƒOƒAƒEƒg‰æ–Ê‚ğ‘Ş”ğ‚·‚éiNEWS+PLUSj
+        $method_mun = "GET";
+        $uris_mun = parse_uri($a["href"], $uris);
+        $query_mun = "";
+        $cookie_mun = $cookie;
+        break;
+    case "WEBƒT[ƒrƒXƒgƒbƒv":
+        // WEBƒT[ƒrƒXƒgƒbƒv‰æ–Ê‚ğæ“¾‚·‚éiNEWS+PLUSj
+        $method = "GET";
+        $uris = parse_uri($a["href"], $uris);
+        $query = "";
+        $cookie = mun_update_cookie($head, $cookie);
+        list($head, $body) = mun_http11($method, $uris, $query, $cookie);
+        break;
+    default:
+        break;
+    }
 }
 
 // ˆÈ~‚ÍŠeƒJ[ƒhƒuƒ‰ƒ“ƒh‚Ì‰æ–Ê‚É‘JˆÚ‚·‚é
@@ -102,111 +102,111 @@ $cookie = "";
 $forms = parse_tag($body, "form");
 $c = parse_tag_search($forms, "id", "seamlessForm");
 if($c != -1) {
-	$inputs = parse_tag($forms[$c]["innerHTML"], "input");
-	$queries = array();
-	foreach($inputs as $input) if($input["name"] != "") $queries[$input["name"]] = urlencode($input["name"]) . "=" . urlencode($input["value"]);
-	
-	$method = $forms[$c]["method"];
-	$uris = parse_uri($forms[$c]["action"], $uris);
-	$query = implode("&", $queries);
-	$cookie = mufgcard_updatecookie($head, $cookie);
-	list($head, $body) = mufgcard_http11($method, $uris["scheme"], $uris["host"], $uris["path"], $query, $cookie);
+    $inputs = parse_tag($forms[$c]["innerHTML"], "input");
+    $queries = array();
+    foreach($inputs as $input) if($input["name"] != "") $queries[$input["name"]] = urlencode($input["name"]) . "=" . urlencode($input["value"]);
+    
+    $method = $forms[$c]["method"];
+    $uris = parse_uri($forms[$c]["action"], $uris);
+    $query = implode("&", $queries);
+    $cookie = mufgcard_updatecookie($head, $cookie);
+    list($head, $body) = mufgcard_http11($method, $uris["scheme"], $uris["host"], $uris["path"], $query, $cookie);
 }
 
 // ƒŠƒ_ƒCƒŒƒNƒg‚·‚é
 $retry = 0;
 while($retry++ < ENV_NUM_HTTP11_RETRY) {
-	$locations = parse_header($head, "location");
-	if(count($locations) > 0) {
-		$method = "GET";
-		$uris = parse_uri($locations[0], $uris);
-		$query = "";
-		$cookie = mufgcard_updatecookie($head, $cookie);
-		list($head, $body) = mufgcard_http11($method, $uris["scheme"], $uris["host"], $uris["path"], $query, $cookie);
-	}
+    $locations = parse_header($head, "location");
+    if(count($locations) > 0) {
+        $method = "GET";
+        $uris = parse_uri($locations[0], $uris);
+        $query = "";
+        $cookie = mufgcard_updatecookie($head, $cookie);
+        list($head, $body) = mufgcard_http11($method, $uris["scheme"], $uris["host"], $uris["path"], $query, $cookie);
+    }
 }
 
 if(strpos($body, "Œ»İƒT[ƒrƒX’â~’†") !== false || strpos($body, "ƒVƒXƒeƒ€ƒƒ“ƒeƒiƒ“ƒX‚Ì‚½‚ß") !== false) {
-	// ƒVƒXƒeƒ€ƒƒ“ƒeƒiƒ“ƒX‰æ–Ê‚Ìê‡
-	$resp["status"] = ENV_NUM_STATUS_MAINTENANCE;
-	$resp["method"] = $method;
-	$resp["uri"] = $uris["scheme"] . "://" . $uris["host"] . $uris["path"];
-	$resp["query"] = $query;
-	$resp["cookie"] = $cookie;
-	$resp["head"] = $head;
-	$resp["body"] = $body;
-	$resp["ofx"] = generate_ofx($resp["status"]);
+    // ƒVƒXƒeƒ€ƒƒ“ƒeƒiƒ“ƒX‰æ–Ê‚Ìê‡
+    $resp["status"] = ENV_NUM_STATUS_MAINTENANCE;
+    $resp["method"] = $method;
+    $resp["uri"] = $uris["scheme"] . "://" . $uris["host"] . $uris["path"];
+    $resp["query"] = $query;
+    $resp["cookie"] = $cookie;
+    $resp["head"] = $head;
+    $resp["body"] = $body;
+    $resp["ofx"] = generate_ofx($resp["status"]);
 } else if(strpos($body, "‘O‰ñƒƒOƒCƒ“") === false) {
-	// ƒƒOƒCƒ“¸”s‚Ìê‡
-	$resp["status"] = ENV_NUM_STATUS_FAILURE;
-	$resp["method"] = $method;
-	$resp["uri"] = $uris["scheme"] . "://" . $uris["host"] . $uris["path"];
-	$resp["query"] = $query;
-	$resp["cookie"] = $cookie;
-	$resp["head"] = $head;
-	$resp["body"] = $body;
-	$resp["ofx"] = generate_ofx($resp["status"]);
+    // ƒƒOƒCƒ“¸”s‚Ìê‡
+    $resp["status"] = ENV_NUM_STATUS_FAILURE;
+    $resp["method"] = $method;
+    $resp["uri"] = $uris["scheme"] . "://" . $uris["host"] . $uris["path"];
+    $resp["query"] = $query;
+    $resp["cookie"] = $cookie;
+    $resp["head"] = $head;
+    $resp["body"] = $body;
+    $resp["ofx"] = generate_ofx($resp["status"]);
 } else {
-	// ƒƒOƒAƒEƒg‰æ–Ê‚ğ‘Ş”ğ‚·‚é
-	$uris_old = parse_uri("/inet/dy/logout.html", $uris);
-		
-	// ¿‹ŠzE—˜—p–¾×Æ‰ï	
-	$method = "GET";
-	$uris = parse_uri("/inet/dy/meisaisyokai/index.html", $uris);
-	$query = "";
-	$cookie = mufgcard_updatecookie($head, $cookie);
-	list($head, $body) = mufgcard_http11($method, $uris["scheme"], $uris["host"], $uris["path"], $query, $cookie);
-	
-	$tables = parse_tag($body, "table");
-	$tds = parse_tag($tables[0]["innerHTML"], "td");
-	// ƒJ[ƒh–¼Ì‚ğæ“¾‚·‚é
-	$account["acctname"] = implode(ENV_CHR_CONCATENATOR, array($settings["name"], $tds[1]["innerHTML"]));
-	
-	// ƒJ[ƒh”Ô†‚ğæ“¾‚·‚é
-	if(preg_match("/XXXX-([0-9X]{4})/", $tds[2]["innerHTML"], $matches) > 0) {
-		$account["acctid"] = $matches[1];
-	}
-	
-	// ‚¨x•¥“ú‚ğæ“¾‚·‚é
-	$tds = parse_tag($tables[1]["innerHTML"], "td");
-	$account["paydate"] = parse_date($tds[1]["innerHTML"]);
-	
-	// ¡‰ñ‚²¿‹‡ŒvŠz‚ğæ“¾‚·‚é
-	$account["ledge_balamt"] = 0;
-	for( $i = 0 ; $i < 3 ; $i++ ) {
-		$tmp = parse_amount($tds[2+$i*4]["innerHTML"]);
-		$account["ledge_balamt"] += (-1)*$tmp;
-	}
-	
-	// ÀsŠÔiƒ^ƒCƒ€ƒAƒEƒgj‚ğÄİ’è‚·‚é
-	@set_time_limit(ENV_NUM_TIMEOUT);
-	
-	$bodies = array();
-	// ƒJ[ƒhEÆ‰ïŒ‚ğ‘I‘ğ‚·‚é
-	$as = parse_tag($body, "a");
-	foreach($as as $a){
-		if(preg_match("/.*detail.*/", $a["href"])) {
-			$method = "GET";
-			$uris = parse_uri($a["href"], $uris);
-			$cookie = mufgcard_updatecookie($head, $cookie);
-			list($head, $body) = mufgcard_http11($method, $uris["scheme"], $uris["host"], $uris["path"], $uris["query"], $cookie);
-			array_push($bodies, $body);
-		}
-	}
-	
-	// DOMƒcƒŠ[‚ğ¶¬
-	$ofxdom = new ofxDOM($account['acctid']);
-	
-	// –¾×‚ğƒp[ƒX
+    // ƒƒOƒAƒEƒg‰æ–Ê‚ğ‘Ş”ğ‚·‚é
+    $uris_old = parse_uri("/inet/dy/logout.html", $uris);
+    
+    // ¿‹ŠzE—˜—p–¾×Æ‰ï 
+    $method = "GET";
+    $uris = parse_uri("/inet/dy/meisaisyokai/index.html", $uris);
+    $query = "";
+    $cookie = mufgcard_updatecookie($head, $cookie);
+    list($head, $body) = mufgcard_http11($method, $uris["scheme"], $uris["host"], $uris["path"], $query, $cookie);
+    
+    $tables = parse_tag($body, "table");
+    $tds = parse_tag($tables[0]["innerHTML"], "td");
+    // ƒJ[ƒh–¼Ì‚ğæ“¾‚·‚é
+    $account["acctname"] = implode(ENV_CHR_CONCATENATOR, array($settings["name"], $tds[1]["innerHTML"]));
+    
+    // ƒJ[ƒh”Ô†‚ğæ“¾‚·‚é
+    if(preg_match("/XXXX-([0-9X]{4})/", $tds[2]["innerHTML"], $matches) > 0) {
+        $account["acctid"] = $matches[1];
+    }
+    
+    // ‚¨x•¥“ú‚ğæ“¾‚·‚é
+    $tds = parse_tag($tables[1]["innerHTML"], "td");
+    $account["paydate"] = parse_date($tds[1]["innerHTML"]);
+    
+    // ¡‰ñ‚²¿‹‡ŒvŠz‚ğæ“¾‚·‚é
+    $account["ledge_balamt"] = 0;
+    for( $i = 0 ; $i < 3 ; $i++ ) {
+        $tmp = parse_amount($tds[2+$i*4]["innerHTML"]);
+        $account["ledge_balamt"] += (-1)*$tmp;
+    }
+    
+    // ÀsŠÔiƒ^ƒCƒ€ƒAƒEƒgj‚ğÄİ’è‚·‚é
+    @set_time_limit(ENV_NUM_TIMEOUT);
+    
+    $bodies = array();
+    // ƒJ[ƒhEÆ‰ïŒ‚ğ‘I‘ğ‚·‚é
+    $as = parse_tag($body, "a");
+    foreach($as as $a){
+        if(preg_match("/.*detail.*/", $a["href"])) {
+            $method = "GET";
+            $uris = parse_uri($a["href"], $uris);
+            $cookie = mufgcard_updatecookie($head, $cookie);
+            list($head, $body) = mufgcard_http11($method, $uris["scheme"], $uris["host"], $uris["path"], $uris["query"], $cookie);
+            array_push($bodies, $body);
+        }
+    }
+    
+    // DOMƒcƒŠ[‚ğ¶¬
+    $ofxdom = new ofxDOM($account['acctid']);
+    
+    // –¾×‚ğƒp[ƒX
     $cds = array();
-	foreach($bodies as $body){
+    foreach($bodies as $body){
         $cds = array_merge($cds, mufgcard_parsedom($body));
-	}
+    }
     usort($cds, function($a, $b) {
         return $a['DTPOSTED'] > $b['DTPOSTED'];
     });
     $ofxdom->setTrans($cds);
-
+    
     $cd_num = 0;
     $cds_s = "";
     $cds_e = "";
@@ -221,128 +221,128 @@ if(strpos($body, "Œ»İƒT[ƒrƒX’â~’†") !== false || strpos($body, "ƒVƒXƒeƒ€ƒƒ“ƒ
         if($cds_s == "") $cds_s = $dtposted;
         $cds_e = $dtposted;
     }
-	
-	// BANKTRANLIST
-	$ofxdom->setBankTranList($cds_s, $cds_e);
-	
-	// c‚‚ğˆ—
-	$account["ledge_balamt"] = parse_amount($account["ledge_balamt"]);
-	$ofxdom->setLedgerBalance($account["ledge_balamt"], ENV_STR_DATE_TODAY . ENV_STR_OFX_TZ);
-	
-	//MKGTINFO‚ğİ’è
-	$ofxdom->setMktginfo(mb_convert_string($account["acctname"]));
-	
-	// XML DOMƒcƒŠ[‚ğ•¶š—ñ‚É•ÏŠ·
-	$xml = $ofxdom->getXML();
-	
-	$resp["status"] = ENV_NUM_STATUS_SUCCESS;
-	$resp["ofx"] = generate_ofx($resp["status"], $xml);
-	
-	// ÀsŠÔiƒ^ƒCƒ€ƒAƒEƒgj‚ğÄİ’è‚·‚é
-	@set_time_limit(ENV_NUM_TIMEOUT);
-	
-	// ƒƒOƒAƒEƒg‚·‚é
-	$method = "GET";
-	$uris = $uris_old;
-	$query = "";
-	$cookie = mufgcard_updatecookie($head, $cookie);
-	list($head, $body) = mufgcard_http11($method, $uris["scheme"], $uris["host"], $uris["path"], $query, $cookie);
-	
-	// ƒƒOƒAƒEƒg‚·‚éiNEWS+PLUSj
-	$method = $method_mun;
-	$uris = $uris_mun;
-	$query = $query_mun;
-	$cookie = $cookie_mun;
-	list($head, $body) = mun_http11($method, $uris, $query, $cookie);
+    
+    // BANKTRANLIST
+    $ofxdom->setBankTranList($cds_s, $cds_e);
+    
+    // c‚‚ğˆ—
+    $account["ledge_balamt"] = parse_amount($account["ledge_balamt"]);
+    $ofxdom->setLedgerBalance($account["ledge_balamt"], ENV_STR_DATE_TODAY . ENV_STR_OFX_TZ);
+    
+    //MKGTINFO‚ğİ’è
+    $ofxdom->setMktginfo(mb_convert_string($account["acctname"]));
+    
+    // XML DOMƒcƒŠ[‚ğ•¶š—ñ‚É•ÏŠ·
+    $xml = $ofxdom->getXML();
+    
+    $resp["status"] = ENV_NUM_STATUS_SUCCESS;
+    $resp["ofx"] = generate_ofx($resp["status"], $xml);
+    
+    // ÀsŠÔiƒ^ƒCƒ€ƒAƒEƒgj‚ğÄİ’è‚·‚é
+    @set_time_limit(ENV_NUM_TIMEOUT);
+    
+    // ƒƒOƒAƒEƒg‚·‚é
+    $method = "GET";
+    $uris = $uris_old;
+    $query = "";
+    $cookie = mufgcard_updatecookie($head, $cookie);
+    list($head, $body) = mufgcard_http11($method, $uris["scheme"], $uris["host"], $uris["path"], $query, $cookie);
+    
+    // ƒƒOƒAƒEƒg‚·‚éiNEWS+PLUSj
+    $method = $method_mun;
+    $uris = $uris_mun;
+    $query = $query_mun;
+    $cookie = $cookie_mun;
+    list($head, $body) = mun_http11($method, $uris, $query, $cookie);
 }
 return $resp;
 
 // HTTP/1.1iNEWS+PLUSj
 function mun_http11($method, $uris, $query = "", $cookie = "") {
-	$ret = "INVALID HOST";
-	if(preg_match("/\.cr\.mufg\.jp$/", $uris["host"]) > 0) $ret = http11(strtoupper($method), $uris["scheme"], $uris["host"], 0, $uris["path"], $query, "", $cookie);
-	return explode("\r\n\r\n", $ret, 2);
+    $ret = "INVALID HOST";
+    if(preg_match("/\.cr\.mufg\.jp$/", $uris["host"]) > 0) $ret = http11(strtoupper($method), $uris["scheme"], $uris["host"], 0, $uris["path"], $query, "", $cookie);
+    return explode("\r\n\r\n", $ret, 2);
 }
 
 function mun_update_cookie($head, $cookie) {
-	return update_cookie(array("PHPSESSID", "session-srv", "m_cardBrand"), parse_header($head, "set-cookie"), $cookie);
+    return update_cookie(array("PHPSESSID", "session-srv", "m_cardBrand"), parse_header($head, "set-cookie"), $cookie);
 }
 
 // HTTP/1.1
 function mufgcard_http11($method, $protocol, $host, $page = "/", $query = "", $cookie = "") {
-	$ret = "INVALID HOST";
-	if(preg_match("/\.mufgcard\.com$/", $host) > 0) $ret = http11(strtoupper($method), $protocol, $host, 0, $page, $query, "", $cookie);
-	return explode("\r\n\r\n", $ret, 2);
+    $ret = "INVALID HOST";
+    if(preg_match("/\.mufgcard\.com$/", $host) > 0) $ret = http11(strtoupper($method), $protocol, $host, 0, $page, $query, "", $cookie);
+    return explode("\r\n\r\n", $ret, 2);
 }
 
 function mufgcard_updatecookie($head, $cookie) {
-	$ret = "";
-	$cookies = array();
-	
-	$ckvs = explode(";", $cookie);
-	foreach($ckvs as $ckv) {
-		list($ck, $cv) = explode("=", $ckv, 2);
-		$ck = trim($ck);
-		$cv = trim($cv);
-		if($ck != "" && $cv != "") $cookies[$ck] = $ck . "=" . $cv;
-	}
-	
-	$cks = array("AS0[1-9]");
-	foreach($cks as $ck) {
-		$c = preg_match_all("/[Ss][Ee][Tt]-[Cc][Oo][Oo][Kk][Ii][Ee][\s\t]*:[\s\t]*(" . $ck . ")=([^;\r\n]*)/", $head, $matches);
-		for($i = 0; $i < $c; $i++) $cookies[$matches[1][$i]] = $matches[1][$i] . "=" . $matches[2][$i];
-	}
-	$ret = implode("; ", $cookies);
-	return $ret;
+    $ret = "";
+    $cookies = array();
+    
+    $ckvs = explode(";", $cookie);
+    foreach($ckvs as $ckv) {
+        list($ck, $cv) = explode("=", $ckv, 2);
+        $ck = trim($ck);
+        $cv = trim($cv);
+        if($ck != "" && $cv != "") $cookies[$ck] = $ck . "=" . $cv;
+    }
+    
+    $cks = array("AS0[1-9]");
+    foreach($cks as $ck) {
+        $c = preg_match_all("/[Ss][Ee][Tt]-[Cc][Oo][Oo][Kk][Ii][Ee][\s\t]*:[\s\t]*(" . $ck . ")=([^;\r\n]*)/", $head, $matches);
+        for($i = 0; $i < $c; $i++) $cookies[$matches[1][$i]] = $matches[1][$i] . "=" . $matches[2][$i];
+    }
+    $ret = implode("; ", $cookies);
+    return $ret;
 }
 
 function mufgcard_parsedom($str) {
-	// –¾×•\“Ç‚İ‚İ—pDOMƒcƒŠ[ì¬
-	$doc = new DOMDocument();
-	// ˆø‚«—‚Æ‚µŒæ“¾
-	$month = (preg_match("/" .preg_quote("‚¨x•¥“ú") . ".*?" . preg_quote("”N") . "([0-9]+)" . preg_quote("Œ") . "/s", $str, $matches) > 0 ? $matches[1] : "00");	
-	// <meta c charset=Shift_JIS">‚Ì‘O‚Ì<title>‚ªC•¶š‰»‚¯‚ÌŒ´ˆö‚Æ‚È‚é‚½‚ßCíœ
-	$str = preg_replace('/<title>.*<\/title>/', '', $str);
-	// &nbsp;
-	$str = str_replace("&nbsp;", "", $str);
-	// •¶šƒGƒ“ƒR[ƒh•ÏŠ·
-	$str = mb_convert_encoding($str, 'UTF-8', 'SJIS');
-	$str = str_replace('Shift_JIS','UTF-8',$str);
-	// HTML‚©‚çDOMƒcƒŠ[ì¬
-	$doc->loadHTML($str);
-	$xpath = new DOMXPath($doc);
-	// –¾×•\‚Ìƒe[ƒuƒ‹‚ğw’è
-	$tables = $xpath->query("//table[@class='mod-table font-x-small sp-font-normal transform']");
-	// ¿‹‚ª‚È‚¢ê‡
-	if($tables->length == 0) { 
-		return array(array(), "", "");
-	}
-	$rows = $tables->item(0)->getElementsByTagName('tr');
-	
-	$ret = "";
-	$cds = array();
-	$nrow = $rows->length;
-	for($i=3; $i<$nrow; $i++) {
-		$cd = array();
-		$row = $rows->item($i);
-		$cols = $row->getElementsByTagName('dd');
-		// —˜—p–¾×‚Å‚È‚¢s‚ÍƒXƒLƒbƒv
-		if(empty($cols->item(0)->nodeValue)) continue;
-		
-		$cd["TRNTYPE"] = ENV_STR_OFX_TRNTYPE_CREDIT;
-		
-		// “ú•t‚ğæ“¾‚·‚é
-		$cd["DTPOSTED"] = parse_date(trim($cols->item(0)->nodeValue));
+    // –¾×•\“Ç‚İ‚İ—pDOMƒcƒŠ[ì¬
+    $doc = new DOMDocument();
+    // ˆø‚«—‚Æ‚µŒæ“¾
+    $month = (preg_match("/" .preg_quote("‚¨x•¥“ú") . ".*?" . preg_quote("”N") . "([0-9]+)" . preg_quote("Œ") . "/s", $str, $matches) > 0 ? $matches[1] : "00");  
+    // <meta c charset=Shift_JIS">‚Ì‘O‚Ì<title>‚ªC•¶š‰»‚¯‚ÌŒ´ˆö‚Æ‚È‚é‚½‚ßCíœ
+    $str = preg_replace('/<title>.*<\/title>/', '', $str);
+    // &nbsp;
+    $str = str_replace("&nbsp;", "", $str);
+    // •¶šƒGƒ“ƒR[ƒh•ÏŠ·
+    $str = mb_convert_encoding($str, 'UTF-8', 'SJIS');
+    $str = str_replace('Shift_JIS','UTF-8',$str);
+    // HTML‚©‚çDOMƒcƒŠ[ì¬
+    $doc->loadHTML($str);
+    $xpath = new DOMXPath($doc);
+    // –¾×•\‚Ìƒe[ƒuƒ‹‚ğw’è
+    $tables = $xpath->query("//table[@class='mod-table font-x-small sp-font-normal transform']");
+    // ¿‹‚ª‚È‚¢ê‡
+    if($tables->length == 0) { 
+        return array(array(), "", "");
+    }
+    $rows = $tables->item(0)->getElementsByTagName('tr');
+    
+    $ret = "";
+    $cds = array();
+    $nrow = $rows->length;
+    for($i=3; $i<$nrow; $i++) {
+        $cd = array();
+        $row = $rows->item($i);
+        $cols = $row->getElementsByTagName('dd');
+        // —˜—p–¾×‚Å‚È‚¢s‚ÍƒXƒLƒbƒv
+        if(empty($cols->item(0)->nodeValue)) continue;
+        
+        $cd["TRNTYPE"] = ENV_STR_OFX_TRNTYPE_CREDIT;
+        
+        // “ú•t‚ğæ“¾‚·‚é
+        $cd["DTPOSTED"] = parse_date(trim($cols->item(0)->nodeValue));
         // ƒgƒ‰ƒ“ƒUƒNƒVƒ‡ƒ“”Ô†i‘O”¼j‚ğ¶¬‚·‚é
-		$cd["FITID"] = sprintf("%02d0", $month);
-		// “E—v‚ğæ“¾‚·‚é
-		$cd["NAME"] = $cols->item(1)->nodeValue;
-		// ‹àŠz‚ğæ“¾‚·‚é
-		$cd["TRNAMT"] = (-1)*(double)parse_amount(trim($cols->item(4)->nodeValue));
-		
-		array_push($cds, $cd);
-		$cd_date = $cd["DTPOSTED"];
-	}
-	return $cds;
+        $cd["FITID"] = sprintf("%02d0", $month);
+        // “E—v‚ğæ“¾‚·‚é
+        $cd["NAME"] = $cols->item(1)->nodeValue;
+        // ‹àŠz‚ğæ“¾‚·‚é
+        $cd["TRNAMT"] = (-1)*(double)parse_amount(trim($cols->item(4)->nodeValue));
+        
+        array_push($cds, $cd);
+        $cd_date = $cd["DTPOSTED"];
+    }
+    return $cds;
 }
 ?>
