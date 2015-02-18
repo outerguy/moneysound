@@ -191,7 +191,7 @@ if(strpos($body, "システムメンテナンスのため") !== false) {
 		// 実行時間（タイムアウト）を再設定する
 		@set_time_limit(ENV_NUM_TIMEOUT);
 		
-		// 残高・入出金明細画面を取得する
+		// 残高・明細画面を取得する
 		$forms = parse_tag($body, "form");
 		$c = parse_tag_search($forms, "name", "accnt_ryu_web");
 		if($c == -1) $c = parse_tag_search($forms, "name", "accnt_ryu");
@@ -281,11 +281,22 @@ if(strpos($body, "システムメンテナンスのため") !== false) {
 			if(strpos($head, "Content-Type: text/html") === false) {
 				$str = convert_ofx($body);
 				
-				// BRANCHIDを補正する
+				// BRANCHIDの数値の書式を補正する
 				$str = str_replace("<BRANCHID>0" . $account["branchid"] . "</BRANCHID>", "<BRANCHID>" . $account["branchid"] . "</BRANCHID>", $str);
 				
-				// ACCTIDを補正する
+				// ACCTIDの数値の書式を補正する
 				$str = str_replace("<ACCTID>0" . $account["acctid"] . "</ACCTID>", "<ACCTID>" . $account["acctid"] . "</ACCTID>", $str);
+				
+				// FITIDの数値の書式を補正する
+				$dtposteds = parse_tag($str, "DTPOSTED");
+				$fitids = parse_tag($str, "FITID");
+				$dtpostedbuf = "";
+				$cd_num = 0;
+				if(count($dtposteds) == count($fitids)) for($j = 0; $j < count($fitids); $j++) {
+					if($dtposteds[$j]["innerHTML"] == $dtpostedbuf) $cd_num++; else $cd_num = 0;
+					$str = str_replace($fitids[$j]["match"], "<FITID>" . substr($dtposteds[$j]["innerHTML"], 0, 8) . sprintf("%04d", (integer)$account["id"]) . "000" . sprintf("%05d", $cd_num) . "</FITID>", $str);
+					$dtpostedbuf = $dtposteds[$j]["innerHTML"];
+				}
 				
 				// 口座名称を出力する
 				if($account["acctname"] != "") $str = str_replace("</STMTRS>", "<MKTGINFO>" . mb_convert_string($account["acctname"]) . "</MKTGINFO>\r\n</STMTRS>", $str);
@@ -369,13 +380,13 @@ if(strpos($body, "システムメンテナンスのため") !== false) {
 	
 	// ログアウトする
 	$as = parse_tag($body, "a");
-	foreach($as as $a) if(parse_tag_search(parse_tag($a["innerHTML"], "img"), "alt", "ログアウト") != -1) {
+	$c = parse_tag_search($as, "innerHTML", "ログアウト"); // ログアウト
+	if($c != -1) {
 		$method = "GET";
-		$uris = parse_uri($a["href"], $uris);
+		$uris = parse_uri($as[$c]["href"], $uris);
 		$query = "";
 		$cookie = smbc_update_cookie($head, $cookie);
 		list($head, $body) = smbc_http11($method, $uris, $query, $cookie);
-		break;
 	}
 	
 	// リダイレクトする
@@ -397,6 +408,30 @@ if(strpos($body, "システムメンテナンスのため") !== false) {
 	if($c != -1) {
 		$method = "GET";
 		$uris = parse_uri($as[$c]["href"], $uris);
+		$query = "";
+		$cookie = smbc_update_cookie($head, $cookie);
+		list($head, $body) = smbc_http11($method, $uris, $query, $cookie);
+	}
+	
+	// リダイレクトする
+	$retry = 0;
+	while($retry++ < ENV_NUM_HTTP11_RETRY) {
+		$locations = parse_header($head, "location");
+		if(count($locations) > 0) {
+			$method = "GET";
+			$uris = parse_uri($locations[0], $uris);
+			$query = "";
+			$cookie = smbc_update_cookie($head, $cookie);
+			list($head, $body) = smbc_http11($method, $uris, $query, $cookie);
+		}
+	}
+	
+	// ログアウトする
+	$inputs = parse_tag($body, "input");
+	$c = parse_tag_search($inputs, "value", "はい");
+	if($c != -1) {
+		$method = "GET";
+		if(preg_match("/location[\s\t]*=[\s\t]*\'(.*?)\'/i", $inputs[$c]["onclick"], $matches) > 0) $uris = parse_uri($matches[1], $uris);
 		$query = "";
 		$cookie = smbc_update_cookie($head, $cookie);
 		list($head, $body) = smbc_http11($method, $uris, $query, $cookie);
