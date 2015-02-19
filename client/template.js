@@ -105,14 +105,6 @@ function fnc_initialize() {
 		tag_p.appendChild(dom_create_text("ご利用のブラウザーでは実行できません。"));
 		
 		tag_table.parentNode.replaceChild(tag_p, tag_table);
-		
-		dom_get_id("btn_logon").disabled = true;
-		dom_get_id("btn_logoff").disabled = true;
-		dom_get_id("btn_register").disabled = true;
-		dom_get_id("btn_erase").disabled = true;
-		dom_get_id("btn_debug").disabled = true;
-		dom_get_id("btn_option").disabled = true;
-		dom_get_id("btn_version").disabled = true;
 	} else {
 		logons = local_current();
 		lists = dom_get_storage(logons["localid"], logons["localpass"]);
@@ -129,12 +121,13 @@ function fnc_initialize() {
 			dom_get_id("btn_register").disabled = false;
 			dom_get_id("btn_erase").disabled = false;
 			dom_get_id("btn_debug").disabled = true;
-			dom_get_id("btn_get_stop").disabled = true;
-			dom_get_id("btn_add").disabled = true;
 			dom_get_id("btn_option").disabled = true;
+			dom_get_id("btn_version").disabled = false;
 			
 			dom_get_id("btn_get_all").disabled = true;
+			dom_get_id("btn_get_stop").disabled = true;
 			dom_get_id("btn_ofx_all").disabled = true;
+			dom_get_id("btn_add").disabled = true;
 			
 			lists = "";
 			break;
@@ -146,12 +139,13 @@ function fnc_initialize() {
 			dom_get_id("btn_register").disabled = true;
 			dom_get_id("btn_erase").disabled = true;
 			dom_get_id("btn_debug").disabled = false;
-			dom_get_id("btn_get_stop").disabled = true;
-			dom_get_id("btn_add").disabled = false;
 			dom_get_id("btn_option").disabled = false;
+			dom_get_id("btn_version").disabled = false;
 			
 			dom_get_id("btn_get_all").disabled = true;
+			dom_get_id("btn_get_stop").disabled = true;
 			dom_get_id("btn_ofx_all").disabled = true;
+			dom_get_id("btn_add").disabled = false;
 			
 			ret = true;
 			break;
