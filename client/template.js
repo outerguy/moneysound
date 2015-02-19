@@ -834,6 +834,8 @@ function fnc_update(rowid, additional) {
 					query = decodeURIComponent(querys.join("\t"));
 					
 					logoninfo_update(query, auth);
+				} else {
+					fnc_initialize();
 				}
 				
 				if(get_all != -1) fnc_update_all(auths[0]);
