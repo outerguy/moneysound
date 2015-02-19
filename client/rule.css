@@ -1,13 +1,23 @@
 body {
+	position: static;
+	border: 0px;
+	padding: 0px;
+	margin: 0px;
 	width: 100%;
 	overflow-x: hidden;
 	overflow-y: scroll;
 	font-size: 85%;
 }
-form#root p {
+nav p, footer p {
 	text-align: center;
 }
-div#overlay {
+h2 {
+	display: none;
+}
+nav, header, section, footer {
+	display: block;
+}
+aside {
 	position: fixed;
 	top: 0px;
 	left: 0px;
@@ -27,11 +37,8 @@ form#modal p {
 	padding: 0px;
 	margin: 0px;
 }
-h2#modalhead, div#modalbody, div#modalfoot {
+h3#modalhead, div#modalbody, div#modalfoot {
 	cursor: default;
-}
-p#link {
-	text-align: center;
 }
 div#modalbody {
 	max-width: 640px;

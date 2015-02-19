@@ -13,8 +13,6 @@ hr {
 	border-left: 0px;
 }
 h1 {
-	border: solid #ACA899;
-	border-width: 0px 0px 1px 0px;
 	padding: 10px;
 	margin: 0px;
 	font-size: 95%;
@@ -24,20 +22,21 @@ h1 {
 	line-height: 100%;
 	background: #FFFFFF;
 }
-form#root {
+header {
+	border: solid #ACA899;
+	border-width: 0px 0px 1px 0px;
+}
+nav {
 	border: solid #FFFFFF;
 	border-width: 1px 0px 0px 0px;
-	padding: 20px 0px 0px 0px;
+	padding: 0px 0px 0px 0px;
 	margin: 0px;
 }
-p#menu {
-	margin: 0px 0px 20px 0px;
-}
-p#link a {
+footer p a {
 	font-size: 85%;
 	margin: 0px 0.2em 0px 0.2em;
 }
-div#overlay {
+aside {
 	color: inherit;
 	background: #000000;
 	background: rgba(0, 0, 0, 0.5);
@@ -52,7 +51,7 @@ form#modal {
 	background: #0055EE;
 	background: #0055EE linear-gradient(to bottom, #3399FF, #0055EE 4px, #0055EE 16px, #0077FF 24px, #0044CC 28px);
 }
-h2#modalhead {
+h3#modalhead {
 	padding: 7px 5px 7px 5px;
 	margin: 0px;
 	color: #FFFFFF;

@@ -2,7 +2,7 @@
 	font-family: "Meiryo UI", "メイリオ", "Meiryo", sans-serif;
 }
 body {
-	margin: 0px 0px 50px 0px;
+	margin: 0px 0px 40px 0px;
 	font-size: 95%;
 	color: #000000;
 	background: #1D1D1D;
@@ -10,7 +10,7 @@ body {
 hr {
 	display: none;
 }
-h1 {
+header h1 {
 	padding: 30px;
 	margin: 0px;
 	color: #FFFFFF;
@@ -20,30 +20,34 @@ h1 {
 	line-height: 100%;
 	text-align: left;
 }
-p#menu {
-	margin: 0px 0px 10px 0px;
-}
-p#link a {
+footer p a {
 	margin: 0px 0.2em 0px 0.2em;
 }
-p#link a:link, p#link a:visited {
+footer p a:link, footer p a:visited {
 	color: #FFFFFF;
 	background: transparent;
 }
-p#link a:hover, p#link a:active {
+footer p a:hover, footer p a:active {
 	color: #CC3333;
 	background: transparent;
 }
-div#overlay {
+aside {
 	color: inherit;
 	background: #CCCCCC;
 	background: rgba(0, 0, 0, 0.5);
 }
-form#root {
+nav, section {
 	color: inherit;
 	background: #1D1D1D;
 	background: #1D1D1D linear-gradient(to right, #92009B 20%, #1D1D1D 20%, #1D1D1D 21%, #008F00 21%, #008F00 31%, #1D1D1D 31%, #1D1D1D 32%, #0099AB 32%, #0099AB 72%, #1D1D1D 72%, #1D1D1D 73%, #FFDA46 73%, #FFDA46 93%, #1D1D1D 93%);
-	padding: 10px 0px 30px 0px;
+}
+nav {
+	padding: 10px 0px 0px 0px;
+	margin: 0px 0px -20px 0px;
+}
+section {
+	padding: 20px 0px 30px 0px;
+	margin: 0px;
 }
 form#modal {
 	border: solid 1px #6699CC;
@@ -52,7 +56,7 @@ form#modal {
 	color: inherit;
 	background: #66AAFF;
 }
-h2#modalhead {
+h3#modalhead {
 	padding: 5px;
 	margin: 0px;
 	color: #000000;

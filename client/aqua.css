@@ -2,22 +2,18 @@
 	font-family: "ヒラギノ角ゴ ProN W3", "Hiragino Kaku Gothic ProN", "Meiryo UI", "メイリオ", "Meiryo", sans-serif;
 }
 body {
-	margin: 20px 0px 20px 0px;
 	font-size: 80%;
 	color: #222222;
 	background: #1A294A;
 	background: #1A294A linear-gradient(to right, #1A294A, #2C6E94, #1A294A);
 }
-hr {
+header, hr {
 	display: none;
 }
-h1#title {
-	display: none;
+nav {
+	margin: 20px 0px 20px 0px;
 }
-p#menu {
-	margin: 0px 0px 15px 0px;
-}
-p#link a:link, p#link a:visited, p#link a:hover {
+footer p a:link, footer p a:visited, footer p a:hover {
 	border: solid 1px #939393;
 	border-radius: 4px;
 	padding: 3px 12px 3px 12px;
@@ -32,12 +28,12 @@ p#link a:link, p#link a:visited, p#link a:hover {
 	font-weight: normal;
 	line-height: 175%;
 }
-p#link a:active {
+footer p a:active {
 	border: solid 1px #5B60B0;
 	background: #A4D3FF;
 	background: #A4D3FF linear-gradient(to bottom, #E4FAFF 5%, #D5ECFF 5%, #A4D3FF 50%, #88C7FA 50%, #D5F9FF 100%);
 }
-div#overlay {
+aside {
 	color: inherit;
 	background: #CCCCCC;
 	background: rgba(0, 0, 0, 0.5);
@@ -50,7 +46,7 @@ form#modal {
 	background: #CCCCCC;
 	background: #CCCCCC linear-gradient(to bottom, #F1F1F1, #BBBBBB 24px);
 }
-h2#modalhead {
+h3#modalhead {
 	padding: 6px;
 	margin: 0px;
 	color: #000000;
@@ -90,7 +86,7 @@ tbody {
 	color: inherit;
 	background: #FFFFFF;
 }
-table#account tbody:nth-child(odd), table#detail tbody tr:nth-child(odd) {
+table tbody:nth-child(odd), table#detail tbody tr:nth-child(odd) {
 	color: inherit;
 	background: #F2F5FA;
 }

@@ -10,7 +10,7 @@ body {
 hr {
 	display: none;
 }
-h1 {
+header h1 {
 	color: #663300;
 	background: transparent;
 	font-size: 180%;
@@ -18,13 +18,13 @@ h1 {
 	text-shadow: 0px -2px 2px #FFFF99;
 	line-height: 150%;
 }
-p#menu {
+nav {
 	margin: 0px 0px 20px 0px;
 }
-p#link a {
+footer p a {
 	margin: 0px 0.25em 0px 0.25em;
 }
-div#overlay {
+aside {
 	color: inherit;
 	background: #000000;
 	background: rgba(0, 0, 0, 0.5);
@@ -38,7 +38,7 @@ form#modal {
 	background: #DDAA77;
 	background: #DDAA77 linear-gradient(to bottom, #FFFFCC, #996633 15px, #CC9966 25px, #FFFFCC 30px);
 }
-h2#modalhead {
+h3#modalhead {
 	border: solid #996633;
 	border-width: 0px 0px 2px 0px;
 	padding: 8px 10px 5px 10px;

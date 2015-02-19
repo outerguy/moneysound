@@ -1,6 +1,6 @@
 /*
 MoneySound
-main.js: 画面を制御する
+template.js: 画面を制御する
 Copyright (C) 2014-2015 OFFICE OUTERGUY. All rights reserved.
 mailto:contact@beatrek.com
 Dual-licensed under the Apache License 2.0 and Beatrek Origin License.
@@ -35,14 +35,14 @@ themes["aqua.css"] = "Aqua";
 themes["precious.css"] = "プレシャス";
 
 (function() {
-	self.window.onload = fnc_load;
+	self.document.body.onload = fnc_load;
 	self.document.onkeydown = function(e) {
 		var ret = true;
 		if(typeof e == "undefined") e = event;
 		if(e != null) switch(e.keyCode) {
 		case 27: // esc
 			if(xhr != null && xhr.readyState != 4) {
-				dom_get_id("root").reset();
+				dom_get_id("btn_get_stop").click();
 				ret = false;
 			}
 			break;
@@ -58,7 +58,7 @@ themes["precious.css"] = "プレシャス";
 
 // 事前処理機能
 function fnc_load() {
-	var tag_root = dom_get_id("root");
+	var tag_nav = dom_get_tag("nav")[0];
 	var tag_as = dom_get_tag("a");
 	var tag_p;
 	var i;
@@ -67,12 +67,11 @@ function fnc_load() {
 	if(debug != false) {
 		tag_p = dom_create_tag("p", { "class": "ac", "style": "padding: 0.5em; font-weight: bold; color: #FFFFFF; background: #FF0000;" });
 		tag_p.appendChild(dom_create_text("【警告】開発者向け（デバッグ）機能が有効のため、認証情報を含む詳細な記録が残ります。開発者以外の方は、操作しないでください。または、開発者へご相談ください。"));
-		tag_root.parentNode.insertBefore(tag_p, tag_root);
+		tag_nav.parentNode.insertBefore(tag_p, tag_nav);
 		dom_get_id("btn_debug").style.display = "inline";
 	}
 	
 	// ボタンと機能を関連付ける
-	tag_root.onreset = fnc_cancel;
 	with(dom_get_id("btn_logon")) onclick = onkeypress = fnc_logon;
 	with(dom_get_id("btn_logoff")) onclick = onkeypress = fnc_logoff;
 	with(dom_get_id("btn_register")) onclick = onkeypress = fnc_register;
@@ -81,6 +80,7 @@ function fnc_load() {
 	with(dom_get_id("btn_option")) onclick = onkeypress = fnc_option;
 	with(dom_get_id("btn_version")) onclick = onkeypress = fnc_version;
 	with(dom_get_id("btn_get_all")) onclick = onkeypress = fnc_update_all;
+	with(dom_get_id("btn_get_stop")) onclick = onkeypress = fnc_cancel;
 	with(dom_get_id("btn_ofx_all")) onclick = onkeypress = fnc_ofx_all;
 	with(dom_get_id("btn_add")) onclick = onkeypress = fnc_create;
 	
@@ -95,13 +95,13 @@ function fnc_load() {
 // 初期化機能
 function fnc_initialize() {
 	var ret = false;
-	var tag_table = dom_get_id("account");
+	var tag_table = dom_get_tag("table")[0];
 	var tag_p;
 	var logons, lists;
 	var i;
 	
 	if(chkenv_run() == false) {
-		tag_p = dom_create_tag("p", { "class": "ac" });
+		tag_p = dom_create_tag("p");
 		tag_p.appendChild(dom_create_text("ご利用のブラウザーでは実行できません。"));
 		
 		tag_table.parentNode.replaceChild(tag_p, tag_table);
@@ -112,7 +112,7 @@ function fnc_initialize() {
 		dom_get_id("btn_erase").disabled = true;
 		dom_get_id("btn_debug").disabled = true;
 		dom_get_id("btn_option").disabled = true;
-		dom_get_id("btn_version").disabled = false;
+		dom_get_id("btn_version").disabled = true;
 	} else {
 		logons = local_current();
 		lists = dom_get_storage(logons["localid"], logons["localpass"]);
@@ -122,7 +122,7 @@ function fnc_initialize() {
 			// ログオン情報を削除する
 			for(i in logons) dom_del_storage(i);
 			
-			if(dom_get_id("logon")) dom_get_id("logon").firstChild.nodeValue = "ログオンしてください";
+			if(dom_get_tag("caption")[0]) dom_get_tag("caption")[0].firstChild.nodeValue = "ログオンしてください";
 			
 			dom_get_id("btn_logon").disabled = false;
 			dom_get_id("btn_logoff").disabled = true;
@@ -139,7 +139,7 @@ function fnc_initialize() {
 			lists = "";
 			break;
 		default:
-			dom_get_id("logon").firstChild.nodeValue = logons["localid"];
+			dom_get_tag("caption")[0].firstChild.nodeValue = logons["localid"];
 			
 			dom_get_id("btn_logon").disabled = true;
 			dom_get_id("btn_logoff").disabled = false;
@@ -470,7 +470,8 @@ function fnc_option_change() {
 // バージョン情報機能
 function fnc_version() {
 	var body = document.createDocumentFragment();
-	var title = dom_get_id("title").firstChild.nodeValue;
+	var title = dom_get_tag("title")[0].firstChild.nodeValue;
+	
 	var tag_p, tag_a, tag_img, tag_hr;
 	
 	if(dom_get_id("modal") == null) {
@@ -786,7 +787,7 @@ function fnc_update(rowid, additional) {
 				}
 				
 				// 変更・削除・更新・明細・OFXボタンの押下を許可する
-				inputs = dom_get_id("account").getElementsByTagName("input");
+				inputs = dom_get_tag("table")[0].getElementsByTagName("input");
 				for(i = 0; i < inputs.length; i++) {
 					switch(inputs[i].value) {
 					case "変更":
@@ -816,7 +817,7 @@ function fnc_update(rowid, additional) {
 				// 中止ボタンの押下を禁止する
 				dom_get_id("btn_get_stop").disabled = true;
 				
-				dom_get_id("main").className = "";
+				dom_get_tag("html")[0].className = "";
 				dom_get_id(auths[0]).className = "";
 				
 				// 口座一覧の項目を更新する
@@ -849,7 +850,7 @@ function fnc_update(rowid, additional) {
 	var inputs;
 	
 	// 変更・削除・更新・明細・OFXボタンの押下を禁止する
-	inputs = dom_get_id("account").getElementsByTagName("input");
+	inputs = dom_get_tag("table")[0].getElementsByTagName("input");
 	for(i = 0; i < inputs.length; i++) {
 		switch(inputs[i].value) {
 		case "変更":
@@ -879,7 +880,7 @@ function fnc_update(rowid, additional) {
 	// 中止ボタンの押下を許可する
 	dom_get_id("btn_get_stop").disabled = false;
 	
-	dom_get_id("main").className = "pending";
+	dom_get_tag("html")[0].className = "pending";
 	dom_get_id(auths[0]).className = "pending";
 	
 	return xhr;
@@ -1240,7 +1241,7 @@ function fnc_ofx(rowid) {
 	var settings = auth_parse(auth);
 	var ofx = null;
 	var tag_a;
-	var filename, url, db;
+	var filename, url, tag_section;
 	
 	if(chkenv_ofx() == false) {
 		modal_showonly("警告", "ご利用のブラウザーは、OFXのダウンロードに対応していません。", false);
@@ -1252,12 +1253,12 @@ function fnc_ofx(rowid) {
 			self.window.navigator.msSaveOrOpenBlob(ofx, filename);
 		} else {
 			url = self.window.URL || self.window.webkitURL;
-			db = dom_get_tag("body")[0];
+			tag_section = dom_get_tag("section")[0];
 			tag_a = dom_create_tag("a", { "href": url.createObjectURL(ofx), "id": "download", "type": "application/x-ofx; charset=UTF-8", "download": filename });
 			tag_a.appendChild(dom_create_text("ダウンロード"));
-			db.appendChild(tag_a);
+			tag_section.appendChild(tag_a);
 			dom_get_id("download").click();
-			db.removeChild(tag_a);
+			tag_section.removeChild(tag_a);
 		}
 		ofx = null;
 	}
@@ -1273,7 +1274,7 @@ function fnc_ofx_all() {
 	var logons, auths, timestamp, settings, filename, str, ofx;
 	var tag_ofx, tag_signonmsgsrsv1, tag_sonrs, tag_status, tag_code, tag_severity, tag_dtserver, tag_language, tag_fi, tag_org, tag_bankmsgsrsv1, tag_creditcardmsgsrsv1, tag_invstmtmsgsrsv1, tag_seclistmsgsrsv1, tag_stmttrnrss, tag_seclist, tag_ccstmttrnrss, tag_invstmttrnrss, tag_seclists, tag_seclisttrnrs, tag_trnuid;
 	var tag_a;
-	var url, db;
+	var url, tag_section;
 	var i, j, k;
 	
 	if(chkenv_ofx_all() == false) {
@@ -1413,12 +1414,12 @@ function fnc_ofx_all() {
 				self.window.navigator.msSaveOrOpenBlob(ofx, filename);
 			} else {
 				url = self.window.URL || self.window.webkitURL;
-				db = dom_get_tag("body")[0];
+				tag_section = dom_get_tag("section")[0];
 				tag_a = dom_create_tag("a", { "href": url.createObjectURL(ofx), "id": "download", "type": "application/x-ofx; charset=UTF-8", "download": filename });
 				tag_a.appendChild(dom_create_text("ダウンロード"));
-				db.appendChild(tag_a);
+				tag_section.appendChild(tag_a);
 				dom_get_id("download").click();
-				db.removeChild(tag_a);
+				tag_section.removeChild(tag_a);
 			}
 		}
 	}
@@ -1427,7 +1428,7 @@ function fnc_ofx_all() {
 // 口座一覧表示機能
 function fnc_listall(lists) {
 	var logons = local_current();
-	var tag_table = dom_get_id("account");
+	var tag_table = dom_get_tag("table")[0];
 	var tag_tbodys = tag_table.getElementsByTagName("tbody");
 	var f = false;
 	var i;
@@ -1808,18 +1809,18 @@ function fnc_listone(list) {
 
 // ダイアログを開く
 function modal_show(head, body, showcancel, focusto) {
-	var db = dom_get_tag("body")[0];
+	var tag_section = dom_get_tag("section")[0];
 	var dragging = false;
-	var tag_div, tag_h2, tag_form;
+	var tag_div, tag_h3, tag_form, tag_aside;
 	var x, y, z;
 	
 	if(dom_get_id("modal") == null) {
 		// モーダルウィンドウを生成する
 		tag_form = dom_create_tag("form", { "method": "post", "id": "modal", "onsubmit": "(" + arguments.callee.caller + ")(); return false;", "onreset": "modal_hide();" });
 		
-		tag_h2 = dom_create_tag("h2", { "id": "modalhead" });
-		tag_h2.appendChild(dom_create_text(head));
-		tag_form.appendChild(tag_h2);
+		tag_h3 = dom_create_tag("h3", { "id": "modalhead" });
+		tag_h3.appendChild(dom_create_text(head));
+		tag_form.appendChild(tag_h3);
 		
 		tag_div = dom_create_tag("div", { "id": "modalbody" });
 		tag_div.appendChild((typeof body == "string"? dom_create_text(body): body));
@@ -1830,9 +1831,9 @@ function modal_show(head, body, showcancel, focusto) {
 		if(showcancel == true) tag_div.appendChild(dom_create_tag("input", { "type": "reset", "value": "キャンセル", "id": "modalcancel", "class": "btn" }));
 		
 		tag_form.appendChild(tag_div);
-		db.appendChild(tag_form);
+		tag_section.appendChild(tag_form);
 		
-		tag_h2.onmousedown = function(e) {
+		tag_h3.onmousedown = function(e) {
 			if(typeof e == "undefined") e = self.window.event;
 			var target = e.target || e.srcElement;
 			dragging = true;
@@ -1864,7 +1865,7 @@ function modal_show(head, body, showcancel, focusto) {
 			};
 			onmousemove = function(e) {
 				if(typeof e == "undefined") e = self.window.event;
-				if(dragging == true) with(tag_h2.parentNode.style) {
+				if(dragging == true) with(tag_h3.parentNode.style) {
 					left = e.clientX - x + "px";
 					top = e.clientY - y + "px";
 					return false;
@@ -1880,7 +1881,7 @@ function modal_show(head, body, showcancel, focusto) {
 		
 		// 親ウィンドウのスクロールを禁止する
 		z = self.window.pageYOffset;
-		with(db) {
+		with(dom_get_tag("body")[0]) {
 			style.position = "fixed";
 			style.top = (z * -1).toString() + "px";
 		}
@@ -1897,8 +1898,8 @@ function modal_show(head, body, showcancel, focusto) {
 		}
 		
 		// オーバーレイを生成する
-		tag_div = dom_create_tag("div", { "id": "overlay" });
-		db.appendChild(tag_div);
+		tag_aside = dom_create_tag("aside");
+		tag_section.appendChild(tag_aside);
 		
 		modal_resize();
 	}
@@ -1922,8 +1923,8 @@ function modal_resize() {
 		winy = documentElement.clientHeight || body.clientHeight || body.scrollHeight;
 	}
 	
-	var overlay = dom_get_id("overlay");
-	if(overlay != null) with(overlay) {
+	var tag_aside = dom_get_tag("aside")[0];
+	if(tag_aside != null) with(tag_aside) {
 		style.width = winx;
 		style.height = winy;
 	}
@@ -1940,21 +1941,25 @@ function modal_resize() {
 // ダイアログを閉じる
 function modal_hide() {
 	var z;
-	if(dom_get_id("modal") != null) with(dom_get_tag("body")[0]) {
-		// モーダルウィンドウを削除する
-		removeChild(dom_get_id("modal"));
+	if(dom_get_id("modal") != null) {
+		with(dom_get_tag("section")[0]) {
+			// モーダルウィンドウを削除する
+			removeChild(dom_get_id("modal"));
+			
+			// オーバーレイを削除する
+			removeChild(dom_get_tag("aside")[0]);
+			
+			// ウィンドウサイズが変更された場合、何もしない
+			self.window.onresize = null;
+		}
 		
-		// オーバーレイを削除する
-		removeChild(dom_get_id("overlay"));
-		
-		// ウィンドウサイズが変更された場合、何もしない
-		self.window.onresize = null;
-		
-		// 親ウィンドウのスクロールを許可する
-		z = parseInt(style.top.replace("px", ""), 10) * -1;
-		style.position = "static";
-		style.top = "auto";
-		self.window.scrollTo(0, z);
+		with(dom_get_tag("body")[0]) {
+			// 親ウィンドウのスクロールを許可する
+			z = parseInt(style.top.replace("px", ""), 10) * -1;
+			style.position = "static";
+			style.top = "auto";
+			self.window.scrollTo(0, z);
+		}
 	}
 }
 
@@ -2198,8 +2203,8 @@ function auths_sort(auths) {
 
 function account_total_update() {
 	var total = 0;
-	var table = dom_get_id("account");
-	var tds = table.getElementsByTagName("td");
+	var tag_table = dom_get_tag("table")[0];
+	var tds = tag_table.getElementsByTagName("td");
 	var i;
 	
 	for(i = 0; i < tds.length; i++) if(tds[i].className == "balance" && tds[i].firstChild.nodeValue != "") total += parseInt(tds[i].firstChild.nodeValue.replace(/,/g, ""), 10);
