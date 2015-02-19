@@ -484,7 +484,6 @@ function http11($method, $protocol, $host, $port = 0, $page = "/", $query = "", 
 		fputs($fp, "Accept-Language: ja\r\n");
 		fputs($fp, "Cache-Control: no-cache\r\n");
 		fputs($fp, "Connection: close\r\n");
-		// fputs($fp, "Connection: Keep-Alive\r\n");
 		if($ua != "") fputs($fp, "User-Agent: " . $ua . "\r\n");
 		if($fr != "") fputs($fp, "From: " . $fr . "\r\n");
 		if($referer != "") fputs($fp, "Referer: " . $referer . "\r\n");
@@ -497,7 +496,6 @@ function http11($method, $protocol, $host, $port = 0, $page = "/", $query = "", 
 		} else {
 			fputs($fp, "\r\n");
 		}
-		// while(!feof($fp)) $ret .= fgets($fp, ENV_HTTP11_SIZE_BUF);
 		
 		// ChunkedÉwÉbÉ_Å[ÇèàóùÇ∑ÇÈ
 		while(!feof($fp)) {
