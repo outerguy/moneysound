@@ -87,6 +87,16 @@ if(strpos($body, "システムメンテナンス中") !== false) {
 	$resp["head"] = $head;
 	$resp["body"] = $body;
 	$resp["ofx"] = generate_ofx($resp["status"]);
+} else if(strpos($body, "IDまたはパスワードが無効となっております") !== false) {
+	// ログイン後の画面が通常と異なる場合
+	$resp["status"] = ENV_NUM_STATUS_CAUTION;
+	$resp["method"] = $method;
+	$resp["uri"] = $uris["scheme"] . "://" . $uris["host"] . $uris["path"];
+	$resp["query"] = $query;
+	$resp["cookie"] = $cookie;
+	$resp["head"] = $head;
+	$resp["body"] = $body;
+	$resp["ofx"] = generate_ofx($resp["status"]);
 } else if(strpos($body, "ログイン中") === false) {
 	// ログイン失敗の場合
 	$resp["status"] = ENV_NUM_STATUS_FAILURE;
