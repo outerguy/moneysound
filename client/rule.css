@@ -152,4 +152,9 @@ a {
 .none {
 	display: none;
 }
-
+/* Firefoxのボタンサイズを補正する */
+input[type="button"]::-moz-focus-inner, input[type="submit"]::-moz-focus-inner, input[type="reset"]::-moz-focus-inner {
+	margin: -1px;
+	padding: 0px;
+	border-width: 1px;
+}
