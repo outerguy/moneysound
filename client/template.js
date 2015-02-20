@@ -1603,10 +1603,10 @@ function fnc_listone(list) {
 			j = mktginfo.indexOf("　");
 			group = (j == -1? "預金": mktginfo.substring(j + 1));
 			
-			// 明細の最終行がクレジットカード支払請求の場合、残高より該当金額を差し引く
+			// 明細の最終行がクレジットカード支払請求、かつ支払日が未到来の場合、残高より該当金額を差し引く
 			stmttrns = creditcards[i].getElementsByTagName("STMTTRN");
 			stmttrn = stmttrns[stmttrns.length - 1];
-			if(stmttrn.getElementsByTagName("NAME")[0].firstChild.nodeValue == fiids[settings["fiid"]]["name"]) balamt -= parseInt(stmttrn.getElementsByTagName("TRNAMT")[0].firstChild.nodeValue, 10);
+			if(stmttrn.getElementsByTagName("NAME")[0].firstChild.nodeValue == fiids[settings["fiid"]]["name"] && stmttrn.getElementsByTagName("DTPOSTED")[0].firstChild.nodeValue.substring(0, 8) >= timestamp_get().substring(0, 8)) balamt -= parseInt(stmttrn.getElementsByTagName("TRNAMT")[0].firstChild.nodeValue, 10);
 			
 			tag_tr = dom_create_tag("tr");
 			
