@@ -11,6 +11,9 @@ body {
 nav p, footer p {
 	text-align: center;
 }
+h1, caption {
+	cursor: default;
+}
 h2 {
 	display: none;
 }
@@ -133,9 +136,17 @@ a {
 	font-size: 85%;
 	cursor: pointer;
 	line-height: 150%;
+	/* iOSのボタンサイズを補正する */
+	-webkit-appearance: none;
 }
 .btn:disabled {
 	cursor: default;
+}
+/* Firefoxのボタンサイズを補正する */
+.btn::-moz-focus-inner {
+	margin: -1px;
+	padding: 0px;
+	border-width: 1px;
 }
 .ipt {
 	width: 320px;
@@ -151,10 +162,4 @@ a {
 }
 .none {
 	display: none;
-}
-/* Firefoxのボタンサイズを補正する */
-input[type="button"]::-moz-focus-inner, input[type="submit"]::-moz-focus-inner, input[type="reset"]::-moz-focus-inner {
-	margin: -1px;
-	padding: 0px;
-	border-width: 1px;
 }
