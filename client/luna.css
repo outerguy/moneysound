@@ -126,6 +126,7 @@ caption {
 	line-height: 100%;
 	text-indent: 2px;
 	letter-spacing: 2px;
+	text-shadow: 1px 1px 1px #FFFFFF;
 }
 th, td {
 	border: solid #99BBEE;
