@@ -3,8 +3,7 @@
 }
 body {
 	color: #4C4C4C;
-	background: #270E17;
-	background: #270E17 linear-gradient(to right, #250D15, #290F18);
+	background: #200818;
 }
 hr {
 	border-top: solid 1px #D3D0CD;
@@ -53,19 +52,19 @@ h3#modalhead {
 	line-height: 120%;
 }
 div#modalbody {
-	padding: 6px;
+	padding: 12px;
 	font-size: 90%;
 	background: #F2F1F0;
 }
 div#modalfoot {
-	padding: 0px 6px 6px 6px;
+	padding: 0px 12px 12px 12px;
 	background: #F2F1F0;
 }
 table {
 	border: solid 1px #3C3B37;
 	margin: 0px auto 0px auto;
 	color: inherit;
-	background: #F2F1F0;
+	background: #FFFFFF;
 }
 thead, tfoot {
 	color: #666666;
