@@ -32,6 +32,7 @@ themes["modern.css"] = "Modern";
 themes["aero.css"] = "Aero";
 themes["luna.css"] = "Luna";
 themes["aqua.css"] = "Aqua";
+themes["light.css"] = "Light";
 themes["precious.css"] = "プレシャス";
 
 (function() {
