@@ -1,5 +1,5 @@
 * {
-	font-family: "Takao PÉSÉVÉbÉN", "TakaoPGothic", "IPA PÉSÉVÉbÉN", "IPAPGothic", "ÇlÇr ÇoÉSÉVÉbÉN", "MS PGothic", sans-serif;
+	font-family: "Takao P„Ç¥„Ç∑„ÉÉ„ÇØ", "TakaoPGothic", "IPA P„Ç¥„Ç∑„ÉÉ„ÇØ", "IPAPGothic", "Ôº≠Ôº≥ Ôº∞„Ç¥„Ç∑„ÉÉ„ÇØ", "MS PGothic", sans-serif;
 }
 body {
 	color: #4C4C4C;
@@ -58,6 +58,7 @@ div#modalbody {
 }
 div#modalfoot {
 	padding: 0px 12px 12px 12px;
+	color: inherit;
 	background: #F2F1F0;
 }
 table {
@@ -106,7 +107,7 @@ caption {
 th, td {
 	border: solid #3C3B37;
 	border-width: 1px 0px 1px 0px;
-	padding: 0px 3px 0px 3px;
+	padding: 1px 3px 1px 3px;
 }
 th {
 	font-weight: bold;
@@ -139,6 +140,7 @@ a:hover, a:active {
 	background: #DADADA;
 	background: #DADADA linear-gradient(to bottom, #F8F8F8 1px, #D7D7D7 75%, #E0E0E0);
 	font-size: 100%;
+	line-height: 110%;
 	text-decoration: none;
 }
 .btn:hover {
@@ -159,5 +161,5 @@ a:hover, a:active {
 	background: #EEEEEE linear-gradient(to bottom, #F8F8F8 1px, #E2E2E2 75%, #E6E6E6);
 }
 .btn + .btn {
-	margin: 0px 0px 0px 3px;
+	margin: 0px 0px 0px 4px;
 }
