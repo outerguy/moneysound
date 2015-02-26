@@ -3,7 +3,8 @@
 }
 body {
 	color: #4C4C4C;
-	background: #200818;
+	background: #481415;
+	background: #481415 linear-gradient(to right, #481415, #723D3E, #481415);
 }
 hr {
 	border-top: solid 1px #D3D0CD;
@@ -28,20 +29,20 @@ aside {
 	width: 100%;
 	height: 100%;
 	color: inherit;
-	background: #270E17;
-	background: rgba(39, 15, 23, 0.5);
+	background: #481415;
+	background: rgba(72, 20, 21, 0.5);
 }
 form#modal {
-	border: solid 1px #3C3B37;
+	border: 0px;
 	border-radius: 7px 7px 0px 0px;
 	padding: 0px;
 	color: inherit;
 	background: #4D4C47;
 	background: #4D4C47 linear-gradient(to bottom, #5D5B54 1px, #4D4C47 1px, #3C3B37 25px);
+	box-shadow: 0px 10px 20px #000000;
 }
 h3#modalhead {
-	border: 0px;
-	padding: 5px;
+	padding: 5px 5px 5px 12px;
 	margin: 0px;
 	color: #DFDBD2;
 	background: transparent;
@@ -53,7 +54,8 @@ h3#modalhead {
 }
 div#modalbody {
 	padding: 12px;
-	font-size: 90%;
+	font-size: 100%;
+	color: inherit;
 	background: #F2F1F0;
 }
 div#modalfoot {
@@ -62,7 +64,7 @@ div#modalfoot {
 	background: #F2F1F0;
 }
 table {
-	border: solid 1px #3C3B37;
+	border: solid 1px #CECBC8;
 	margin: 0px auto 0px auto;
 	color: inherit;
 	background: #FFFFFF;
@@ -85,27 +87,27 @@ tbody.error {
 	background: transparent;
 }
 thead th.fi, thead th.accttype, thead th.balance, thead th.timestamp, tbody td.fi, tbody td.accttype, tbody td.balance, tbody td.timestamp, tfoot th {
-	font-size: 95%;
+	font-size: 100%;
 }
 tbody.pending td a:link, tbody.pending td a:hover, tbody.pending td a:visited, tbody.pending td a:active {
 	color: #FFFFFF;
 	background: transparent;
 }
 caption {
-	border: solid 1px #3C3B37;
-	border-radius: 5px 5px 0px 0px;
-	padding: 5px;
+	padding: 4px 6px 4px 6px;
+	margin: 0px 0px 6px 0px;
 	color: #DFDBD2;
-	background: #444444;
-	background: #444444 linear-gradient(to bottom, #5D5B54 1px, #4D4C47 1px, #3C3B37);
+	background: #555555;
+	background: #555555 linear-gradient(to bottom, #626055, #403F3A);
 	text-shadow: 0px 0px 2px #000000;
 	text-align: left;
 	font-size: 105%;
 	font-weight: bold;
 	line-height: 110%;
+	box-shadow: 0px 3px 6px #000000;
 }
 th, td {
-	border: solid #3C3B37;
+	border: solid #CECBC8;
 	border-width: 1px 0px 1px 0px;
 	padding: 1px 3px 1px 3px;
 }
@@ -128,38 +130,39 @@ a:link, a:visited {
 	cursor: pointer;
 }
 a:hover, a:active {
-	color: #FF0000;
+	color: #FF4012;
 	background: transparent;
 }
 .btn {
-	border: solid 1px #999999;
-	border-radius: 3px;
-	padding: 3px 9px 3px 9px;
+	border: solid 1px #B7B7B7;
+	border-radius: 5px / 4px;
+	padding: 5px;
 	margin: 3px 0px 3px 0px;
 	color: #4C4C4C;
-	background: #DADADA;
-	background: #DADADA linear-gradient(to bottom, #F8F8F8 1px, #D7D7D7 75%, #E0E0E0);
+	background: #F2F1F0;
+	background: #F2F1F0 linear-gradient(to bottom, #FFFFFF, #ECECEA 95%, #EFEEED 100%);
 	font-size: 100%;
 	line-height: 110%;
 	text-decoration: none;
 }
 .btn:hover {
 	color: inerit;
-	background: #EEEEEE;
-	background: #EEEEEE linear-gradient(to bottom, #FFFFFF 1px, #DDDDDD 75%, #EEEEEE);
+	background: #FFFFFF;
+	background: #FFFFFF linear-gradient(to bottom, #FFFFFF 50%, #F1F1F1);
+	box-shadow: 0px 0px 2px 0px #B7B7B7;
 }
 .btn:active {
 	border: solid 1px #DD7C55;
 	color: inerit;
 	background: #DADADA;
-	background: #DADADA linear-gradient(to bottom, #E0E0E0, #B0B0B0 75%, #B7B7B7);
+	background: #DADADA linear-gradient(to bottom, #E9E8E6, #F3F3F2 5%, #DDDBD9);
 	box-shadow: 0px 0px 2px 0px #DD7C55;
 }
 .btn:disabled {
-	color: #ADA9A5;
-	background: #EEEEEE;
-	background: #EEEEEE linear-gradient(to bottom, #F8F8F8 1px, #E2E2E2 75%, #E6E6E6);
+	border: solid 1px #D2D2D2;
+	color: #95918C;
+	background: #EBEBEB;
 }
 .btn + .btn {
-	margin: 0px 0px 0px 4px;
+	margin: 0px 0px 0px 5px;
 }
