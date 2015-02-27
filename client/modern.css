@@ -73,6 +73,7 @@ div#modalbody {
 	border-width: 1px 1px 0px 1px;
 	padding: 10px;
 	margin: 0px 5px 0px 5px;
+	color: inherit;
 	background: #FFFFFF;
 	font-size: 90%;
 	line-height: 130%;
@@ -82,6 +83,7 @@ div#modalfoot {
 	border-width: 0px 1px 1px 1px;
 	padding: 0px 10px 10px 10px;
 	margin: 0px 5px 5px 5px;
+	color: inherit;
 	background: #FFFFFF;
 }
 table {
@@ -147,11 +149,13 @@ a:hover, a:active {
 }
 .btn:hover {
 	border: solid 1px #77AAEE;
+	color: inherit;
 	background: #F0F7FF;
 	background: #F0F7FF linear-gradient(to bottom, #F0F7FF, #DDEEFF);
 }
 .btn:active {
 	border: solid 1px #5599DD;
+	color: inherit;
 	background: #DDEEFF;
 	background: #DDEEFF linear-gradient(to bottom, #DDEEFF, #CCDDFF);
 }

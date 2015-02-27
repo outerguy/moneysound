@@ -17,12 +17,6 @@ footer p a {
 	margin: 0px 0.25em 0px 0.25em;
 }
 aside {
-	position: fixed;
-	top: 0px;
-	left: 0px;
-	z-index: 1000;
-	width: 100%;
-	height: 100%;
 	color: inherit;
 	background: #CCCCCC;
 	background: rgba(204, 204, 204, 0.5);
@@ -53,10 +47,12 @@ h3#modalhead {
 div#modalbody {
 	padding: 10px;
 	font-size: 90%;
+	color: inherit;
 	background: #FFFFFF;
 }
 div#modalfoot {
 	padding: 0px 10px 10px 10px;
+	color: inherit;
 	background: #FFFFFF;
 }
 table {
@@ -71,10 +67,12 @@ thead, tfoot {
 	text-shadow: 0px 0px 2px #CCCCCC;
 }
 thead {
+	color: inherit;
 	background: #EEEEEE;
 	background: #EEEEEE linear-gradient(to bottom, #EEEEEE, #FFFFFF);
 }
 tfoot {
+	color: inherit;
 	background: #EEEEEE;
 	background: #EEEEEE linear-gradient(to bottom, #FFFFFF, #EEEEEE);
 }

@@ -30,6 +30,7 @@ footer p a:link, footer p a:visited, footer p a:hover {
 }
 footer p a:active {
 	border: solid 1px #5B60B0;
+	color: inherit;
 	background: #A4D3FF;
 	background: #A4D3FF linear-gradient(to bottom, #E4FAFF 5%, #D5ECFF 5%, #A4D3FF 50%, #88C7FA 50%, #D5F9FF 100%);
 }
@@ -69,6 +70,7 @@ div#modalbody {
 div#modalfoot {
 	padding: 0px 10px 10px 10px;
 	margin: 0px 0px 0px 0px;
+	color: inherit;
 	background: #EDEDED;
 }
 table {

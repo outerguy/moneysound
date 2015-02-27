@@ -20,6 +20,7 @@ h1 {
 	text-indent: 2px;
 	letter-spacing: 2px;
 	line-height: 100%;
+	color: inherit;
 	background: #FFFFFF;
 }
 header {
@@ -69,6 +70,7 @@ div#modalbody {
 	border-width: 1px 0px 0px 0px;
 	padding: 7px;
 	margin: 0px 2px 0px 2px;
+	color: inherit;
 	background: #ECE9D8;
 	font-size: 95%;
 	line-height: 110%;
@@ -76,6 +78,7 @@ div#modalbody {
 div#modalfoot {
 	padding: 0px 7px 7px 7px;
 	margin: 0px 2px 2px 2px;
+	color: inherit;
 	background: #EEE7DD;
 }
 table {
@@ -116,11 +119,9 @@ caption {
 	border-width: 1px 1px 0px 1px;
 	border-radius: 8px 8px 0px 0px;
 	padding: 7px 10px 7px 10px;
-	
 	color: #000000;
 	background: #EEE7DD;
 	background: #EEE7DD linear-gradient(to bottom, #FFFFFF, #DDD7CC);
-	
 	font-size: 100%;
 	font-weight: normal;
 	line-height: 100%;

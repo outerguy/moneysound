@@ -55,6 +55,7 @@ h3#modalhead {
 }
 div#modalbody {
 	padding: 15px;
+	color: inherit;
 	background: #FFFFFF;
 	line-height: 175%;
 	font-size: 95%;
@@ -62,6 +63,7 @@ div#modalbody {
 }
 div#modalfoot {
 	padding: 0px 15px 15px 15px;
+	color: inherit;
 	background: #FFFFFF;
 }
 table {
