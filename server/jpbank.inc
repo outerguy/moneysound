@@ -166,11 +166,12 @@ if(strpos($body, "çáåæótì¸óÕÇP") !== false) {
 	}
 	
 	$sid = 1;
-	$sess = sess_encode(implode("\t", array((string)$sid, $method, $uris["scheme"] . "://" . $uris["host"] . $uris["path"], $query, $cookie, $pass, ENV_STR_SESSION_PADDING)));
+	$sess = sess_encode(implode("\t", array((string)$sid, $method, $uris["scheme"] . "://" . $uris["host"] . $uris["path"], $query, $pass, ENV_STR_SESSION_PADDING)));
 	$head = "";
 	$body = "";
 } else if($sid == 1) {
 	$sid = 0;
+	$uris = parse_uri($uri);
 	$query = str_replace("aikotoba=", "aikotoba=" . $auth, $query);
 	list($head, $body) = jpbank_http11($method, $uris, $query, $cookie);
 	
@@ -235,11 +236,12 @@ if(strpos($body, "çáåæótì¸óÕÇQ") !== false) {
 	}
 	
 	$sid = 2;
-	$sess = sess_encode(implode("\t", array((string)$sid, $method, $uris["scheme"] . "://" . $uris["host"] . $uris["path"], $query, $cookie, $pass, ENV_STR_SESSION_PADDING)));
+	$sess = sess_encode(implode("\t", array((string)$sid, $method, $uris["scheme"] . "://" . $uris["host"] . $uris["path"], $query, $pass, ENV_STR_SESSION_PADDING)));
 	$head = "";
 	$body = "";
 } else if($sid == 2) {
 	$sid = 0;
+	$uris = parse_uri($uri);
 	$query = str_replace("aikotoba=", "aikotoba=" . $auth, $query);
 	list($head, $body) = jpbank_http11($method, $uris, $query, $cookie);
 	
