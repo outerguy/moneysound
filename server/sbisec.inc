@@ -428,7 +428,7 @@ if(strpos($body, "ログイン後の全てのサービスを停止") !== false) {
 				}
 				break;
 			}
-		} else if(count($line) == 9) {
+		} else if(count($line) == 8 || count($line) == 9) { // 8列は投資信託（口数）
 			switch($line[0]) {
 			case "銘柄コード": // 株式セクション
 				$section = ENV_STR_OFX_STOCK;
