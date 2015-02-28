@@ -417,10 +417,17 @@ if(strpos($body, "ログイン後の全てのサービスを停止") !== false) {
 			case "銘柄": // 債券セクション
 				$section = ENV_STR_OFX_DEBT;
 				break;
+			case "ファンド名": // 投資信託セクション（口数預り）
+				$section = ENV_STR_OFX_FUND;
+				break;
 			default:
 				switch($section) {
 				case ENV_STR_OFX_DEBT: // 債券
 					array_push($investments, array(ENV_STR_OFX_DEBT, md5($line[0]), mb_convert_string($line[0]), mb_convert_uniquename($line[0]), (string)((integer)$line[4] / (double)$line[5] * 100), (string)((double)$line[5]), rtrim($line[7]), (string)((integer)rtrim($line[7]) - (integer)$line[4]), $line[1], parse_date($line[2]), $line[3]));
+					break;
+				case ENV_STR_OFX_FUND: // 投資信託（口数預り）
+					$i = array_search($line[0], $funds["name"]);
+					array_push($investments, array(ENV_STR_OFX_FUND, ($i !== false? $funds["code"][$i]: mb_convert_uniquename($line[0])), mb_convert_string($line[0]), mb_convert_uniquename($line[0]), $line[1], $line[4], $line[6], rtrim($line[7])));
 					break;
 				default:
 					// その他（処理対象外）
@@ -428,12 +435,12 @@ if(strpos($body, "ログイン後の全てのサービスを停止") !== false) {
 				}
 				break;
 			}
-		} else if(count($line) == 8 || count($line) == 9) { // 8列は投資信託（口数）
+		} else if(count($line) == 9) {
 			switch($line[0]) {
 			case "銘柄コード": // 株式セクション
 				$section = ENV_STR_OFX_STOCK;
 				break;
-			case "ファンド名": // 投資信託セクション
+			case "ファンド名": // 投資信託セクション（金額預り）
 				$section = ENV_STR_OFX_FUND;
 				break;
 			default:
@@ -441,7 +448,7 @@ if(strpos($body, "ログイン後の全てのサービスを停止") !== false) {
 				case ENV_STR_OFX_STOCK: // 株式
 					array_push($investments, array(ENV_STR_OFX_STOCK, $line[0], mb_convert_string($line[1]), mb_convert_uniquename($line[1]), $line[2], $line[5], $line[7], rtrim($line[8])));
 					break;
-				case ENV_STR_OFX_FUND: // 投資信託
+				case ENV_STR_OFX_FUND: // 投資信託（金額預り）
 					$i = array_search($line[0], $funds["name"]);
 					array_push($investments, array(ENV_STR_OFX_FUND, ($i !== false? $funds["code"][$i]: mb_convert_uniquename($line[0])), mb_convert_string($line[0]), mb_convert_uniquename($line[0]), $line[1], $line[4], $line[6], rtrim($line[7])));
 					break;
