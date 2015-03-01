@@ -36,20 +36,22 @@ themes["light.css"] = "Light";
 themes["precious.css"] = "プレシャス";
 
 (function() {
-	self.document.body.onload = fnc_load;
-	self.document.onkeydown = function(e) {
-		var ret = true;
-		if(typeof e == "undefined") e = event;
-		if(e != null) switch(e.keyCode) {
-		case 27: // esc
-			if(xhr != null && xhr.readyState != 4) {
-				dom_get_id("btn_get_stop").click();
-				ret = false;
+	with(self.document) {
+		body.onload = fnc_load;
+		onkeydown = function(e) {
+			var ret = true;
+			if(typeof e == "undefined") e = event;
+			if(e != null) switch(e.keyCode) {
+			case 27: // esc
+				if(xhr != null && xhr.readyState != 4) {
+					dom_get_id("btn_get_stop").click();
+					ret = false;
+				}
+				break;
 			}
-			break;
-		}
-		return ret;
-	};
+			return ret;
+		};
+	}
 })();
 
 
@@ -1976,7 +1978,7 @@ function dom_get_storage(key, pass) {
 				// 正しく復号できない場合
 				dec = "";
 			} else {
-				dec = dec.substring((pass + "\t").length)
+				dec = dec.substring((pass + "\t").length);
 			}
 		}
 	} else {
