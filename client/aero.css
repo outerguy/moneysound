@@ -9,6 +9,10 @@ body {
 hr, h1 {
 	display: none;
 }
+header.bg, nav.bg, section.bg, footer.bg {
+	filter: blur(1px);
+	-webkit-filter: blur(1px);
+}
 nav {
 	margin: 20px 0px 20px 0px;
 }

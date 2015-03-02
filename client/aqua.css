@@ -7,7 +7,14 @@ body {
 	background: #1A294A;
 	background: #1A294A linear-gradient(to right, #1A294A, #2C6E94, #1A294A);
 }
-header, hr {
+hr {
+	display: none;
+}
+header.bg, nav.bg, section.bg, footer.bg {
+	filter: blur(1px);
+	-webkit-filter: blur(1px);
+}
+header {
 	display: none;
 }
 nav {

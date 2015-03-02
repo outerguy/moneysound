@@ -17,7 +17,7 @@ h1, caption {
 h2 {
 	display: none;
 }
-nav, header, section, footer {
+header, nav, section, footer, article {
 	display: block;
 }
 aside {

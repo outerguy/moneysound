@@ -1806,7 +1806,9 @@ function fnc_listone(list) {
 
 // ダイアログを開く
 function modal_show(head, body, showcancel, focusto) {
-	var tag_section = dom_get_tag("section")[0];
+	var tags = new Array(dom_get_tag("header")[0], dom_get_tag("nav")[0], dom_get_tag("section")[0], dom_get_tag("footer")[0]);
+	var tag_body = dom_get_tag("body")[0];
+	var tag_article = dom_create_tag("article");
 	var dragging = false;
 	var tag_div, tag_h3, tag_form, tag_aside;
 	var x, y, z;
@@ -1828,7 +1830,8 @@ function modal_show(head, body, showcancel, focusto) {
 		if(showcancel == true) tag_div.appendChild(dom_create_tag("input", { "type": "reset", "value": "キャンセル", "id": "modalcancel", "class": "btn" }));
 		
 		tag_form.appendChild(tag_div);
-		tag_section.appendChild(tag_form);
+		tag_article.appendChild(tag_form);
+		tag_body.appendChild(tag_article);
 		
 		tag_h3.onmousedown = function(e) {
 			if(typeof e == "undefined") e = self.window.event;
@@ -1896,7 +1899,9 @@ function modal_show(head, body, showcancel, focusto) {
 		
 		// オーバーレイを生成する
 		tag_aside = dom_create_tag("aside");
-		tag_section.appendChild(tag_aside);
+		tag_article.appendChild(tag_aside);
+		
+		for(i in tags) tags[i].className = "bg";
 		
 		modal_resize();
 	}
@@ -1937,26 +1942,24 @@ function modal_resize() {
 
 // ダイアログを閉じる
 function modal_hide() {
+	var tags = new Array(dom_get_tag("header")[0], dom_get_tag("nav")[0], dom_get_tag("section")[0], dom_get_tag("footer")[0]);
 	var z;
 	if(dom_get_id("modal") != null) {
-		with(dom_get_tag("section")[0]) {
-			// モーダルウィンドウを削除する
-			removeChild(dom_get_id("modal"));
-			
-			// オーバーレイを削除する
-			removeChild(dom_get_tag("aside")[0]);
-			
-			// ウィンドウサイズが変更された場合、何もしない
-			self.window.onresize = null;
-		}
-		
 		with(dom_get_tag("body")[0]) {
+			// モーダルウィンドウ・オーバーレイを削除する
+			removeChild(dom_get_tag("article")[0]);
+			
 			// 親ウィンドウのスクロールを許可する
 			z = parseInt(style.top.replace("px", ""), 10) * -1;
 			style.position = "static";
 			style.top = "auto";
 			self.window.scrollTo(0, z);
 		}
+		
+		for(i in tags) tags[i].className = "";
+		
+		// ウィンドウサイズが変更された場合、何もしない
+		self.window.onresize = null;
 	}
 }
 

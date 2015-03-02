@@ -12,6 +12,10 @@ hr {
 	border-bottom: solid 1px #FAF9F9;
 	border-left: 0px;
 }
+header.bg, nav.bg, section.bg, footer.bg {
+	filter: blur(3px);
+	-webkit-filter: blur(3px);
+}
 header {
 	display: none;
 }
@@ -24,7 +28,7 @@ footer p a {
 aside {
 	color: inherit;
 	background: #481415;
-	background: rgba(72, 20, 21, 0.5);
+	background: rgba(72, 20, 21, 0.4);
 }
 form#modal {
 	border: 0px;
