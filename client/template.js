@@ -41,13 +41,9 @@ themes["precious.css"] = "プレシャス";
 		onkeydown = function(e) {
 			var ret = true;
 			if(typeof e == "undefined") e = event;
-			if(e != null) switch(e.keyCode) {
-			case 27: // esc
-				if(xhr != null && xhr.readyState != 4) {
-					dom_get_id("btn_get_stop").click();
-					ret = false;
-				}
-				break;
+			if(e != null && e.keyCode == 27 && xhr != null && xhr.readyState != 4) {
+				dom_get_id("btn_get_stop").click();
+				ret = false;
 			}
 			return ret;
 		};
@@ -396,7 +392,6 @@ function fnc_debug() {
 	
 	var body = document.createDocumentFragment();
 	var tag_p, tag_select, tag_option;
-	var fiid;
 	for(i = 0; i < auths.length; i++) {
 		tag_p = dom_create_tag("p");
 		tag_p.appendChild(dom_create_text(auths[i]));
@@ -785,18 +780,16 @@ function fnc_update(rowid, additional) {
 				
 				// 変更・削除・更新・明細・OFXボタンの押下を許可する
 				inputs = dom_get_tag("table")[0].getElementsByTagName("input");
-				for(i = 0; i < inputs.length; i++) {
-					switch(inputs[i].value) {
-					case "変更":
-					case "削除":
-					case "更新":
-					case "明細":
-					case "OFX":
-						inputs[i].disabled = false;
-						break;
-					default:
-						break;
-					}
+				for(i = 0; i < inputs.length; i++) switch(inputs[i].value) {
+				case "変更":
+				case "削除":
+				case "更新":
+				case "明細":
+				case "OFX":
+					inputs[i].disabled = false;
+					break;
+				default:
+					break;
 				}
 				
 				// ログオフボタンの押下を許可する
@@ -848,18 +841,16 @@ function fnc_update(rowid, additional) {
 	
 	// 変更・削除・更新・明細・OFXボタンの押下を禁止する
 	inputs = dom_get_tag("table")[0].getElementsByTagName("input");
-	for(i = 0; i < inputs.length; i++) {
-		switch(inputs[i].value) {
-		case "変更":
-		case "削除":
-		case "更新":
-		case "明細":
-		case "OFX":
-			inputs[i].disabled = true;
-			break;
-		default:
-			break;
-		}
+	for(i = 0; i < inputs.length; i++) switch(inputs[i].value) {
+	case "変更":
+	case "削除":
+	case "更新":
+	case "明細":
+	case "OFX":
+		inputs[i].disabled = true;
+		break;
+	default:
+		break;
 	}
 	
 	// ログオフボタンの押下を禁止する
@@ -887,13 +878,7 @@ function fnc_update(rowid, additional) {
 function fnc_update_all(auth) {
 	var logons = local_current();
 	var auths = dom_get_storage(logons["localid"], logons["localpass"]).split("\r\n");
-	var rowid;
-	
-	if(typeof auth != "string" || auth.indexOf("=") == -1) {
-		rowid = 0;
-	} else {
-		rowid = parseInt(auth.substring(0, auth.indexOf("=")), 10) + 1;
-	}
+	var rowid = (typeof auth != "string" || auth.indexOf("=") == -1? 0: parseInt(auth.substring(0, auth.indexOf("=")), 10) + 1);
 	
 	if(typeof auths[rowid] != "undefined") {
 		var settings = auth_parse(auths[rowid]);
@@ -952,11 +937,7 @@ function fnc_update_additional(auth) {
 		inputs = fiids[settings["fiid"]]["auth"].split(",");
 		
 		tag_p = dom_create_tag("p");
-		if(inputs[2] == "image") {
-			tag_p.appendChild(dom_create_tag("img", { "src": mfaphraselabel, "alt": "画像" }));
-		} else {
-			tag_p.appendChild(dom_create_text(mfaphraselabel));
-		}
+		tag_p.appendChild((inputs[2] == "image"? dom_create_tag("img", { "src": mfaphraselabel, "alt": "画像" }): dom_create_text(mfaphraselabel)));
 		body.appendChild(tag_p);
 		
 		if(inputs[1] != "hidden") {
@@ -1481,17 +1462,15 @@ function fnc_listone(list) {
 	
 	tag_tbody = dom_create_tag("tbody", { "id": settings["rowid"] });
 	
-	for(i in settings["keyvalues"]) {
-		switch(i) {
-		case "status":
-			status = settings["keyvalues"][i];
-			break;
-		case "timestamp":
-			with(settings["keyvalues"][i]) timestamp = parseInt(substring(4, 6), 10).toString() + "/" + parseInt(substring(6, 8), 10).toString() + " " + substring(8, 10) + ":" + substring(10, 12);
-			break;
-		default:
-			break;
-		}
+	for(i in settings["keyvalues"]) switch(i) {
+	case "status":
+		status = settings["keyvalues"][i];
+		break;
+	case "timestamp":
+		with(settings["keyvalues"][i]) timestamp = parseInt(substring(4, 6), 10).toString() + "/" + parseInt(substring(6, 8), 10).toString() + " " + substring(8, 10) + ":" + substring(10, 12);
+		break;
+	default:
+		break;
 	}
 	
 	switch(status) {
@@ -1856,6 +1835,8 @@ function modal_show(head, body, showcancel, focusto) {
 					tag_form.onreset();
 					ret = false;
 					break;
+				default:
+					break;
 				}
 				return ret;
 			};
@@ -1977,12 +1958,7 @@ function dom_get_storage(key, pass) {
 			// 暗号化データを復号する
 			dec = CryptoJS.AES.decrypt(enc, pass);
 			dec = (dec.toString().substring(0, (pass + "\t").length * 2) == CryptoJS.enc.Utf8.parse(pass + "\t")? dec.toString(CryptoJS.enc.Utf8): "");
-			if(dec == "") {
-				// 正しく復号できない場合
-				dec = "";
-			} else {
-				dec = dec.substring((pass + "\t").length);
-			}
+			dec = (dec == ""? "": dec.substring((pass + "\t").length));
 		}
 	} else {
 		// セッションストレージ
@@ -2146,23 +2122,21 @@ function auths_sort(auths) {
 	// authsをfiids[]の登録順でソートする
 	k = 0;
 	l = -1;
-	for(i in fiids) {
-		for(j = 0; j < auths.length; j++) {
-			settings = auth_parse(auths[j]);
-			if(settings["fiid"] == i) {
-				// fiidが一致した場合
-				if(settings["rownum"] != k) {
-					// ソート順が崩れた場合
-					if(l == -1) l = k;
-					rowid = (settings["rownum"] == -1? k.toString() + settings["rowid"]: settings["rowid"].replace(settings["rownum"].toString(), k.toString()));
-					// if(settings["rownum"] == -1) alert(k.toString() + settings["rowid"]);
-					auth = auths[j].replace(settings["rowid"], rowid);
-				} else {
-					auth = auths[j];
-				}
-				rets.push(auth);
-				k++;
+	for(i in fiids) for(j = 0; j < auths.length; j++) {
+		settings = auth_parse(auths[j]);
+		if(settings["fiid"] == i) {
+			// fiidが一致した場合
+			if(settings["rownum"] != k) {
+				// ソート順が崩れた場合
+				if(l == -1) l = k;
+				rowid = (settings["rownum"] == -1? k.toString() + settings["rowid"]: settings["rowid"].replace(settings["rownum"].toString(), k.toString()));
+				// if(settings["rownum"] == -1) alert(k.toString() + settings["rowid"]);
+				auth = auths[j].replace(settings["rowid"], rowid);
+			} else {
+				auth = auths[j];
 			}
+			rets.push(auth);
+			k++;
 		}
 	}
 	
@@ -2273,7 +2247,6 @@ function str_to_hankaku(str) {
 	var f = function(str) {
 		return String.fromCharCode(str.charCodeAt(0) - 0xFEE0);
 	};
-	
 	return str.replace(/[！-～]/g, f).replace(/　/g," ");
 }
 
