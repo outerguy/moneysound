@@ -88,21 +88,15 @@ if(strpos($body, "前回ログイン") === false) {
 	$resp["body"] = $body;
 	$resp["ofx"] = generate_ofx($resp["status"]);
 } else {
+	// ご利用明細照会（お支払方法の変更）画面を取得する
 	$as = parse_tag($body, "a");
-	foreach($as as $a) {
-		$imgs = parse_tag($a["innerHTML"], "img");
-		
-		// ログアウト画面を退避する
-		if(parse_tag_search($imgs, "alt", "ログアウト") != -1) $uris_old = parse_uri($a["href"], $uris);
-		
-		// ご利用明細照会（お支払方法変更）画面を取得する
-		if(parse_tag_search($imgs, "alt", "ご利用明細照会（お支払方法変更）") != -1) {
-			$method = "GET";
-			$uris = parse_uri($a["href"], $uris);
-			$query = "";
-			$cookie = viewcard_update_cookie($head, $cookie);
-			list($head, $body) = viewcard_http11($method, $uris, $query, $cookie);
-		}
+	$c = parse_tag_search($as, "alt", "ご利用明細照会（お支払方法の変更）");
+	if($c != -1) {
+		$method = "GET";
+		$uris = parse_uri($as[$c]["href"], $uris);
+		$query = "";
+		$cookie = viewcard_update_cookie($head, $cookie);
+		list($head, $body) = viewcard_http11($method, $uris, $query, $cookie);
 	}
 	
 	// リダイレクトする
@@ -120,39 +114,8 @@ if(strpos($body, "前回ログイン") === false) {
 	
 	$accounts = array();
 	
-	// ご利用明細照会画面を取得する
-	$as = parse_tag($body, "a");
-	foreach($as as $a) if(parse_tag_search(parse_tag($a["innerHTML"], "img"), "alt", "ご利用明細照会") != -1) {
-		$method = "GET";
-		$uris = parse_uri($a["href"], $uris);
-		$query = "";
-		$cookie = viewcard_update_cookie($head, $cookie);
-		list($head, $body) = viewcard_http11($method, $uris, $query, $cookie);
-		break;
-	}
-	
-	// リダイレクトする
-	$retry = 0;
-	while($retry++ < ENV_NUM_HTTP11_RETRY) {
-		$locations = parse_header($head, "location");
-		if(count($locations) > 0) {
-			$method = "GET";
-			$uris = parse_uri($locations[0], $uris);
-			$query = "";
-			$cookie = viewcard_update_cookie($head, $cookie);
-			list($head, $body) = viewcard_http11($method, $uris, $query, $cookie);
-		}
-	}
-	
-	// 最新の請求月を取得する
-	$selects = parse_tag($body, "select");
-	$c = parse_tag_search($selects, "name", "DdlClaimMonth");
-	if($c != -1) {
-		$options = parse_tag($selects[$c]["innerHTML"], "option");
-		if(count($options) > 0) $ym = $options[0]["value"];
-	}
-	
 	// カード数を取得する
+	$selects = parse_tag($body, "select");
 	$c = parse_tag_search($selects, "name", "DdlCardNO");
 	if($c != -1) {
 		$options = parse_tag($selects[$c]["innerHTML"], "option");
@@ -184,7 +147,7 @@ if(strpos($body, "前回ログイン") === false) {
 		// 実行時間（タイムアウト）を再設定する
 		@set_time_limit(ENV_NUM_TIMEOUT);
 		
-		// 照会画面を取得する
+		// 確定済みの最新明細画面を取得する
 		$forms = parse_tag($body, "form");
 		$c = parse_tag_search($forms, "name", "Frm002");
 		if($c != -1) {
@@ -192,9 +155,7 @@ if(strpos($body, "前回ログイン") === false) {
 			$queries = array();
 			foreach($inputs as $input) if($input["name"] != "") $queries[$input["name"]] = urlencode($input["name"]) . "=" . urlencode($input["value"]);
 			$queries["DdlCardNO"] = "DdlCardNO=" . $account["id"];
-			$queries["DdlClaimMonth"] = "DdlClaimMonth=" . $account["ym"];
-			$queries["BtnList.x"] = "BtnList.x=0";
-			$queries["BtnList.y"] = "BtnList.y=0";
+			$queries["__EVENTTARGET"] = "__EVENTTARGET=LnkClaimYm1"; // 確定済みの最新明細
 			
 			$method = $forms[$c]["method"];
 			$uris = parse_uri($forms[$c]["action"], $uris);
@@ -203,21 +164,23 @@ if(strpos($body, "前回ログイン") === false) {
 			list($head, $body) = viewcard_http11($method, $uris, $query, $cookie);
 		}
 		
-		// カードご利用明細画面を取得する
-		$as = parse_tag($body, "a");
-		foreach($as as $a) if(parse_tag_search(parse_tag($a["innerHTML"], "img"), "alt", "カードご利用明細はこちら") != -1) {
-			$method = "GET";
-			$uris = parse_uri($a["href"], $uris);
-			$query = "";
-			$cookie = viewcard_update_cookie($head, $cookie);
-			list($head, $body) = viewcard_http11($method, $uris, $query, $cookie);
-			break;
+		// リダイレクトする
+		$retry = 0;
+		while($retry++ < ENV_NUM_HTTP11_RETRY) {
+			$locations = parse_header($head, "location");
+			if(count($locations) > 0) {
+				$method = "GET";
+				$uris = parse_uri($locations[0], $uris);
+				$query = "";
+				$cookie = viewcard_update_cookie($head, $cookie);
+				list($head, $body) = viewcard_http11($method, $uris, $query, $cookie);
+			}
 		}
 		
 		// お支払日は4日であると仮定する
 		if(strpos($body, "今月分のご請求（カード年会費は除く）はありません。") !== false) {
 			$body = "";
-			$account["paydate"] = $account["ym"] . "04";
+			$account["paydate"] = substr(ENV_STR_DATE_TODAY, 0, 6) . "04";
 		}
 		
 		$creditcardmsgsrsv1 .= "<CCSTMTTRNRS>";
@@ -248,24 +211,28 @@ if(strpos($body, "前回ログイン") === false) {
 	@set_time_limit(ENV_NUM_TIMEOUT);
 	
 	// ログアウトする
-	$method = "GET";
-	$uris = $uris_old;
-	$query = "";
-	$cookie = viewcard_update_cookie($head, $cookie);
-	list($head, $body) = viewcard_http11($method, $uris, $query, $cookie);
+	$as = parse_tag($body, "a");
+	$c = parse_tag_search($as, "innerHTML", "ログアウト"); // ログアウト
+	if($c != -1) {
+		$method = "GET";
+		$uris = parse_uri($as[$c]["href"], $uris);
+		$query = "";
+		$cookie = viewcard_update_cookie($head, $cookie);
+		list($head, $body) = viewcard_http11($method, $uris, $query, $cookie);
+	}
 	
 	// リダイレクトする
 	$forms = parse_tag($body, "form");
-	if(count($forms) > 0) {
-		$form = $forms[0];
-		$inputs = parse_tag($form["innerHTML"], "input");
+		$c = parse_tag_search($forms, "name", "frmMain");
+		if($c != -1) {
+		$inputs = parse_tag($forms[$c]["innerHTML"], "input");
 		$queries = array();
 		foreach($inputs as $input) if($input["name"] != "") $queries[$input["name"]] = urlencode($input["name"]) . "=" . urlencode($input["value"]);
 		$queries["Logout.x"] = "Logout.x=0";
 		$queries["Logout.y"] = "Logout.y=0";
 		
-		$method = $form["method"];
-		$uris = parse_uri($form["action"], $uris);
+		$method = $forms[$c]["method"];
+		$uris = parse_uri($forms[$c]["action"], $uris);
 		$query = implode("&", $queries);
 		$cookie = viewcard_update_cookie($head, $cookie);
 		list($head, $body) = viewcard_http11($method, $uris, $query, $cookie);
@@ -304,7 +271,7 @@ function viewcard_http11($method, $uris, $query = "", $cookie = "") {
 }
 
 function viewcard_update_cookie($head, $cookie) {
-	return update_cookie(array("BIGipServerViewsnet_WAF02_80", "VIEWSNET_WEB", "ASP.NET_SessionId", "citrix_ns_id", "citrix_ns_id_.viewsnet.jp_%2F_wlf", "citrix_ns_id_.viewsnet.jp_%2F_wat"), parse_header($head, "set-cookie"), $cookie);
+	return update_cookie(array("BIGipServerPL-VNWEB-PC_WAF-TCP80", "VIEWSNET_WEB", "ASP.NET_SessionId", "citrix_ns_id", "citrix_ns_id_.viewsnet.jp_%2F_wat"), parse_header($head, "set-cookie"), $cookie);
 }
 
 function viewcard_parse_html($body, $account) {
@@ -315,57 +282,59 @@ function viewcard_parse_html($body, $account) {
 	$cd_date = "";
 	$cd_num = 0;
 	
-	$spans = parse_tag($body, "span");
+	$tables = parse_tag($body, "table");
 	
-	// お支払日を取得する
-	$c = parse_tag_search($spans, "id", "LblPayDte");
-	$cds_paydate = ($c != -1? parse_date($spans[$c]["innerHTML"]): $account["paydate"]);
+	// お支払日・お支払総額を取得する
+	$c = parse_tag_search($tables, "summary", "お支払総額。");
+	if($c != -1) {
+		// お支払日を取得する
+		$spans = parse_tag($tables[$c]["innerHTML"], "span");
+		$cds_paydate = (count($spans) == 1? parse_date(str_replace("お支払日：", "", $spans[0]["innerHTML"])): $account["paydate"]);
+		
+		// お支払総額を取得する
+		$tds = parse_tag($tables[$c]["innerHTML"], "td");
+		$cds_balamt = (count($tds) == 1? parse_amount(strip_tags($tds[0]["innerHTML"])): "0");
+		$ledge_balamt = (double)$cds_balamt;
+	}
 	
-	// 今回お支払金額を取得する
-	$c = parse_tag_search($spans, "id", "LblMemPayMon");
-	$cds_balamt = ($c != -1? parse_amount($spans[$c]["innerHTML"]): "0");
-	$ledge_balamt = (double)$cds_balamt;
-	
-	// 明細行を含むdivを取得する
-	$divs = parse_tag($body, "div");
-	if(count($divs) == 2) {
-		$otables = parse_tag($divs[1]["innerHTML"], "table");
-		if(count($otables) == 1) {
-			$tables = parse_tag($otables[0]["innerHTML"], "table");
-			if(count($tables) == 1) {
-				$trs = parse_tag($tables[0]["innerHTML"], "tr");
+	// 明細行を含むtableを取得する
+	$c = parse_tag_search($tables, "summary", "ご利用年月日。");
+	if($c != -1) {
+		$trs = parse_tag($tables[$c]["innerHTML"], "tr");
+		
+		// 明細行毎に処理する
+		for($i = 0; $i < count($trs); $i++) {
+			$tds = parse_tag($trs[$i]["innerHTML"], "td");
+			if(count($tds) == 12) {
+				// ご利用年月日を取得する
+				$cds[$i]["DTPOSTED"] = parse_date(trim(strip_tags(str_replace("<br/>", "/", $tds[0]["innerHTML"]))));
+				if($cds_s == "") $cds_s = $cds[$i]["DTPOSTED"];
+				$cds_e = $cds[$i]["DTPOSTED"];
 				
-				// 明細行毎に処理する
-				for($i = 0; $i < count($trs); $i++) {
-					$tds = parse_tag($trs[$i]["innerHTML"], "td");
-					if(count($tds) == 9) {
-						// ご利用年月日を取得する
-						$cds[$i]["DTPOSTED"] = parse_date(trim(strip_tags($tds[0]["innerHTML"])));
-						if($cds_s == "") $cds_s = $cds[$i]["DTPOSTED"];
-						$cds_e = $cds[$i]["DTPOSTED"];
-						
-						// ご利用箇所を取得する
-						$cds[$i]["NAME"] = mb_convert_string(trim($tds[2]["innerHTML"]));
-						
-						// 今回ご請求額を取得する
-						$cds[$i]["TRNAMT"] = (string)(-1 * parse_amount($tds[3]["innerHTML"]));
-						$ledge_balamt += (double)$cds[$i]["TRNAMT"];
-						
-						// 備考を取得する
-						$memo = trim(strip_tags($tds[8]["innerHTML"]));
-						$cds[$i]["MEMO"] = ($memo != ""? $memo: ENV_STR_OFX_MEMO);
-						
-						// PAYMENT固定とする
-						$cds[$i]["TRNTYPE"] = ENV_STR_OFX_TRNTYPE_PAYMENT;
-						
-						// 通番を生成する
-						if($cds[$i]["DTPOSTED"] == $cd_date) $cd_num++; else $cd_num = 0;
-						$cd_date = $cds[$i]["DTPOSTED"];
-						
-						// トランザクション番号を生成する
-						$cds[$i]["FITID"] = $cds[$i]["DTPOSTED"] . sprintf("%04d", $account["id"]) . substr($cds_paydate, 4, 2) . "0" . sprintf("%05d", $cd_num);
-					}
+				// ご利用箇所を取得する
+				$cds[$i]["NAME"] = mb_convert_string(trim($tds[2]["innerHTML"]));
+				
+				// 今回ご請求額を取得する
+				$spans = parse_tag($tds[8]["innerHTML"], "span");
+				$c = parse_tag_search($spans, "id", "RtUseInfoList__ctl1_LblTimMon");
+				if($c != -1) {
+					$cds[$i]["TRNAMT"] = (string)(-1 * parse_amount($spans[$c]["innerHTML"]));
+					$ledge_balamt += (double)$cds[$i]["TRNAMT"];
 				}
+				
+				// 備考を取得する
+				$memo = mb_convert_string(trim(strip_tags($tds[6]["innerHTML"])));
+				$cds[$i]["MEMO"] = ($memo != ""? $memo: ENV_STR_OFX_MEMO);
+				
+				// PAYMENT固定とする
+				$cds[$i]["TRNTYPE"] = ENV_STR_OFX_TRNTYPE_PAYMENT;
+				
+				// 通番を生成する
+				if($cds[$i]["DTPOSTED"] == $cd_date) $cd_num++; else $cd_num = 0;
+				$cd_date = $cds[$i]["DTPOSTED"];
+				
+				// トランザクション番号を生成する
+				$cds[$i]["FITID"] = $cds[$i]["DTPOSTED"] . sprintf("%04d", $account["id"]) . substr($cds_paydate, 4, 2) . "0" . sprintf("%05d", $cd_num);
 			}
 		}
 	}
