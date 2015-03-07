@@ -221,7 +221,10 @@ function surugavisa_parsedom($str) {
         $cd["NAME"] = preg_replace('/-/', mb_convert_encoding('Å[', 'UTF-8', 'sjis-win'), $cd["NAME"]);
         // ã‡äzÇéÊìæÇ∑ÇÈ
         $cd["TRNAMT"] = (-1)*(double)parse_amount(trim($cols2->item(1)->nodeValue));
-        
+        if (strpos($cols1->item(0)->nodeValue, mb_convert_encoding("éÊè¡", 'UTF-8', 'sjis-win')) !== false) {
+            $cd["NAME"] .= mb_convert_encoding("ÅiéÊè¡Åj", 'UTF-8', 'sjis-win');
+            $cd["TRNAMT"] *= -1;
+        }
         array_push($cds, $cd);
     }
     return $cds;
