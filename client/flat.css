@@ -1,0 +1,148 @@
+* {
+	font-family: "ヒラギノ角ゴ ProN W3", "Hiragino Kaku Gothic ProN", "IPAexゴシック", "IPA Pゴシック", "IPAPGothic", "Meiryo UI", "メイリオ", "Meiryo", sans-serif;
+}
+body {
+	font-size: 80%;
+	color: #404040;
+	background: #EFA09B;
+	background: #EFA09B linear-gradient(to right, #D8B99A, #EFA09B, #A87190);
+}
+hr {
+	display: none;
+}
+header.bg, nav.bg, section.bg, footer.bg {
+	filter: blur(10px);
+	-webkit-filter: blur(10px);
+}
+header {
+	display: none;
+}
+nav {
+	margin: 20px 0px 20px 0px;
+}
+footer p a {
+	margin: 0px 0.2em 0px 0.2em;
+}
+aside {
+	color: inherit;
+	background: #909090;
+	background: rgba(144, 144, 144, 0.2);
+}
+form#modal {
+	border: 0px;
+	border-radius: 3px 3px 0px 0px;
+	padding: 0px;
+	box-shadow: 0px 0px 1px 0px rgba(128, 128, 128, 0.5);
+	color: inherit;
+	background: #EAEAEA;
+	background: #EAEAEA linear-gradient(to bottom, #EAEAEA, #DDDDDD 24px);
+	font-size: 95%;
+}
+h3#modalhead {
+	padding: 6px;
+	margin: 0px;
+	color: #404040;
+	background: transparent;
+	font-weight: normal;
+	text-align: center;
+	line-height: 100%;
+	text-indent: 0px;
+	letter-spacing: 0px;
+}
+div#modalbody {
+	border: solid #D4D4D4;
+	border-width: 1px 0px 0px 0px;
+	padding: 10px;
+	margin: 0px 0px 0px 0px;
+	color: inherit;
+	background: #ECECEC;
+}
+div#modalfoot {
+	padding: 0px 10px 10px 10px;
+	margin: 0px 0px 0px 0px;
+	color: inherit;
+	background: #ECECEC;
+}
+table {
+	padding: 0px;
+	margin: 0px auto 0px auto;
+	font-size: 95%;
+}
+thead, tfoot {
+	color: #585858;
+	background: #F0F0F0;
+}
+tbody {
+	color: inherit;
+	background: #FBFBFB;
+	background: rgba(255, 255, 255, 0.9);
+}
+tbody.pending tr {
+	color: #FFFFFF;
+	background: #167CFC;
+}
+tbody.pending td a:link, tbody.pending td a:hover, tbody.pending td a:visited, tbody.pending td a:active {
+	color: #FFFFFF;
+	background: transparent;
+}
+tbody.ready tr {
+	color: #BCBCBC;
+	background: transparent;
+}
+tbody.error tr {
+	color: #FF0000;
+	background: transparent;
+}
+caption {
+	border: 0px;
+	border-radius: 3px 3px 0px 0px;
+	padding: 12px;
+	color: #404040;
+	background: #F0F0F0 linear-gradient(to bottom, #F4F3F4 1%, #F0F0F0 1%, #E8E7E5 99%);
+	font-size: 95%;
+	font-weight: normal;
+	text-align: center;
+}
+th {
+	font-weight: normal;
+}
+td.fi {
+	max-width: 128px;
+}
+td.accttype {
+	max-width: 384px;
+}
+a:link, a:visited, a:hover {
+	color: #404040;
+	background: transparent;
+	text-decoration: underline;
+}
+a:active {
+	color: #167CFC;
+	background: transparent;
+}
+.btn, .btn:hover {
+	border: 0px;
+	border-radius: 3px;
+	padding: 0px 12px 0px 12px;
+	margin: 0px;
+	box-shadow: 0px 1px 1px 0px #BCBCBC;
+	color: #585858;
+	background: #FFFFFF;
+	text-decoration: none;
+	font-size: 95%;
+	font-weight: normal;
+	line-height: 175%;
+}
+.btn:active {
+	color: #FFFFFF;
+	background: #A4D3FF;
+	background: #A4D3FF linear-gradient(to bottom, #4EADFF, #0092FF, #0075FF);
+}
+.btn:disabled {
+	color: #BABABA;
+	background: #D9D9D9;
+}
+.btn + .btn {
+	margin: 0px 0px 0px 5px;
+}

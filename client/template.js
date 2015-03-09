@@ -31,6 +31,7 @@ themes["standard.css"] = "標準（スマートフォン対応）";
 themes["modern.css"] = "Modern";
 themes["aero.css"] = "Aero";
 themes["luna.css"] = "Luna";
+themes["flat.css"] = "Flat";
 themes["aqua.css"] = "Aqua";
 themes["light.css"] = "Light";
 themes["precious.css"] = "プレシャス";
