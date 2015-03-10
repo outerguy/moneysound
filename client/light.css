@@ -5,6 +5,7 @@ body {
 	color: #4C4C4C;
 	background: #481415;
 	background: #481415 linear-gradient(to right, #481415 20%, #723D3E 40%, #723D3E 60%, #481415 80%);
+	background-attachment: fixed;
 }
 hr {
 	border-top: solid 1px #D3D0CD;
