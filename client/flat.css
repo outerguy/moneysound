@@ -3,7 +3,7 @@
 }
 body {
 	font-size: 80%;
-	color: #404040;
+	color: #000000;
 	background: #EFA09B;
 	background: #EFA09B linear-gradient(to right, #D8B99A, #EFA09B, #A87190);
 	background-attachment: fixed;
@@ -26,12 +26,12 @@ footer p a {
 }
 aside {
 	color: inherit;
-	background: #909090;
-	background: rgba(144, 144, 144, 0.4);
+	background: #7F7F7F;
+	background: rgba(0, 0, 0, 0.3);
 }
 form#modal {
 	border: 0px;
-	border-radius: 3px;
+	border-radius: 4px;
 	padding: 0px;
 	box-shadow: 0px 0px 1px 0px rgba(128, 128, 128, 0.5);
 	color: inherit;
@@ -60,7 +60,7 @@ div#modalbody {
 }
 div#modalfoot {
 	border: 0px;
-	border-radius: 0px 0px 3px 3px;
+	border-radius: 0px 0px 4px 4px;
 	padding: 0px 10px 10px 10px;
 	margin: 0px 0px 0px 0px;
 	color: inherit;
@@ -74,6 +74,7 @@ table {
 thead, tfoot {
 	color: #585858;
 	background: #F0F0F0;
+	text-shadow: 0px 0px 0px #404040;
 }
 tbody {
 	color: inherit;
@@ -116,7 +117,7 @@ td.accttype {
 	max-width: 384px;
 }
 a:link, a:visited, a:hover {
-	color: #404040;
+	color: #000000;
 	background: transparent;
 	text-decoration: underline;
 }
@@ -125,27 +126,32 @@ a:active {
 	background: transparent;
 }
 .btn, .btn:hover {
-	border: 0px;
-	border-radius: 3px;
-	padding: 0px 12px 0px 12px;
+	border: solid 1px #C2C2C2;
+	border-radius: 4px;
+	padding: 0px 10px 0px 10px;
 	margin: 0px;
-	box-shadow: 0px 1px 1px 0px #BCBCBC;
-	color: #585858;
+	color: #404040;
 	background: #FFFFFF;
 	text-decoration: none;
-	font-size: 95%;
+	text-shadow: 0px 0px 0px #202020;
+	font-size: 100%;
 	font-weight: normal;
 	line-height: 175%;
 }
-.btn:active {
+.btn:active, .btn:focus {
+	border: solid 1px #3383FB;
 	color: #FFFFFF;
 	background: #A4D3FF;
 	background: #A4D3FF linear-gradient(to bottom, #4EADFF, #0092FF, #0075FF);
 }
 .btn:disabled {
-	color: #BABABA;
-	background: #D9D9D9;
+	border: solid 1px #D7D7D7;
+	color: #B8B8B8;
+	background: #F5F5F5;
 }
 .btn + .btn {
-	margin: 0px 0px 0px 5px;
+	margin: 0px 0px 0px 4px;
+}
+input, select {
+	font-size: 100%;
 }
