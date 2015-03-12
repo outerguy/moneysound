@@ -143,6 +143,7 @@ a:active {
 	color: #FFFFFF;
 	background: #A4D3FF;
 	background: #A4D3FF linear-gradient(to bottom, #4EADFF, #0092FF, #0075FF);
+	text-shadow: 0px 0px 0px #FFFFFF;
 }
 .btn:disabled {
 	border: solid 1px #D7D7D7;
