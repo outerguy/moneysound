@@ -1786,14 +1786,19 @@ function fnc_listone(list) {
 
 // ダイアログを開く
 function modal_show(head, body, showcancel, focusto) {
-	var tags = new Array(dom_get_tag("header")[0], dom_get_tag("nav")[0], dom_get_tag("section")[0], dom_get_tag("footer")[0]);
+	var tags = [dom_get_tag("header")[0], dom_get_tag("nav")[0], dom_get_tag("section")[0], dom_get_tag("footer")[0]];
+	var tabs = [dom_get_tag("a"), dom_get_tag("input")];
 	var tag_body = dom_get_tag("body")[0];
 	var tag_article = dom_create_tag("article");
 	var dragging = false;
 	var tag_div, tag_h3, tag_form, tag_aside;
-	var x, y, z;
+	var lists;
+	var i, j, x, y, z;
 	
 	if(dom_get_id("modal") == null) {
+		// フォーカスを禁止する
+		for(i in tabs) for(j in tabs[i]) tabs[i][j].tabIndex = -1;
+		
 		// モーダルウィンドウを生成する
 		tag_form = dom_create_tag("form", { "method": "post", "id": "modal", "onsubmit": "(" + arguments.callee.caller + ")(); return false;", "onreset": "modal_hide();" });
 		
@@ -1863,9 +1868,9 @@ function modal_show(head, body, showcancel, focusto) {
 		
 		// 親ウィンドウのスクロールを禁止する
 		z = self.window.pageYOffset;
-		with(dom_get_tag("body")[0]) {
-			style.position = "fixed";
-			style.top = (z * -1).toString() + "px";
+		with(dom_get_tag("body")[0].style) {
+			position = "fixed";
+			top = (z * -1).toString() + "px";
 		}
 		
 		if(typeof focusto == "string") with(dom_get_id(focusto)) {
@@ -1908,9 +1913,9 @@ function modal_resize() {
 	}
 	
 	var tag_aside = dom_get_tag("aside")[0];
-	if(tag_aside != null) with(tag_aside) {
-		style.width = winx;
-		style.height = winy;
+	if(tag_aside != null) with(tag_aside.style) {
+		width = winx;
+		height = winy;
 	}
 	
 	var modal = dom_get_id("modal");
@@ -1924,8 +1929,11 @@ function modal_resize() {
 
 // ダイアログを閉じる
 function modal_hide() {
-	var tags = new Array(dom_get_tag("header")[0], dom_get_tag("nav")[0], dom_get_tag("section")[0], dom_get_tag("footer")[0]);
-	var z;
+	var tags = [dom_get_tag("header")[0], dom_get_tag("nav")[0], dom_get_tag("section")[0], dom_get_tag("footer")[0]];
+	var tabs = [dom_get_tag("a"), dom_get_tag("input")];
+	var lists;
+	var i, j, z;
+	
 	if(dom_get_id("modal") != null) {
 		with(dom_get_tag("body")[0]) {
 			// モーダルウィンドウ・オーバーレイを削除する
@@ -1937,6 +1945,9 @@ function modal_hide() {
 			style.top = "auto";
 			self.window.scrollTo(0, z);
 		}
+		
+		// フォーカスを許可する
+		for(i in tabs) for(j in tabs[i]) tabs[i][j].tabIndex = 0;
 		
 		for(i in tags) tags[i].className = "";
 		
