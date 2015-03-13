@@ -33,7 +33,7 @@ form#modal {
 	border: 0px;
 	border-radius: 4px;
 	padding: 0px;
-	box-shadow: 0px 0px 1px 0px rgba(128, 128, 128, 0.5);
+	box-shadow: 0px 25px 50px 0px rgba(0, 0, 0, 0.4);
 	color: inherit;
 	background: #EAEAEA;
 	background: #EAEAEA linear-gradient(to bottom, #EAEAEA, #DDDDDD 24px);
@@ -80,6 +80,11 @@ tbody {
 	color: inherit;
 	background: #FBFBFB;
 	background: rgba(255, 255, 255, 0.9);
+}
+table tbody:nth-child(odd), table#detail tbody tr:nth-child(odd) {
+	color: inherit;
+	background: #F5F5F5;
+	background: rgba(245, 245, 245, 0.9);
 }
 tbody.pending tr {
 	color: #FFFFFF;
