@@ -254,7 +254,7 @@ function parse_amount($str) {
 
 // 日付をパースする
 function parse_date($str) {
-	list($dy, $dm, $dd, $dummy) = explode("/", str_replace(array("年", "月", "日", "-"), array("/", "/", "", "/"), trim($str)), 4);
+	list($dy, $dm, $dd, $dummy) = explode("/", str_replace(array("年", "月", "日", "-", ".", "T", " "), array("/", "/", "/", "/", "/", "/", "/"), trim($str)), 4);
 	$dy = (integer)$dy;
 	if($dy < 1988) $dy += 1988;
 	$dm = (integer)$dm;
