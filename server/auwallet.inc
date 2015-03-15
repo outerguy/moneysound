@@ -23,7 +23,7 @@ $body = "";
 
 if($sesscookie != "") list($cookie, $dummy) = explode("\t", sess_decode($sesscookie));
 if($accesskey != "") {
-	list($ssid, $method, $uri, $query, $pass, $dummy) = explode("\t", sess_decode($accesskey), 6);
+	list($ssid, $method, $uri, $query, $user, $pass, $dummy) = explode("\t", sess_decode($accesskey), 7);
 	$sid = (integer)$ssid;
 }
 
@@ -125,7 +125,7 @@ if(strpos($body, "2段階認証") !== false) {
 	
 	// セッションを退避する
 	$sid = 1;
-	$sess = sess_encode(implode("\t", array((string)$sid, $method, $uris["scheme"] . "://" . $uris["host"] . $uris["path"], $query, $cookie, $pass, ENV_STR_SESSION_PADDING)));
+	$sess = sess_encode(implode("\t", array((string)$sid, $method, $uris["scheme"] . "://" . $uris["host"] . $uris["path"], $query, $user, $pass, ENV_STR_SESSION_PADDING)));
 	$head = "";
 	$body = "";
 } else if($sid == 1) {
@@ -156,7 +156,7 @@ if($sid > 0) {
 	$resp["sess"] = $sess;
 	$resp["sid"] = $sid;
 	$resp["sesscookie"] = sess_encode(implode("\t", array($cookie, ENV_STR_SESSION_PADDING)));
-	$resp["accesskey"] = sess_encode(implode("\t", array((string)$sid, $method, $uris["scheme"] . "://" . $uris["host"] . $uris["path"], $query, $pass, ENV_STR_SESSION_PADDING)));
+	$resp["accesskey"] = sess_encode(implode("\t", array((string)$sid, $method, $uris["scheme"] . "://" . $uris["host"] . $uris["path"], $query, $user, $pass, ENV_STR_SESSION_PADDING)));
 	
 	$mfachallengetrnrs = "";
 	$mfachallengetrnrs .= "<MFACHALLENGETRNRS>";
@@ -419,7 +419,7 @@ function auwallet_http11($method, $uris, $query = "", $cookie = "") {
 }
 
 function auwallet_update_cookie($head, $cookie) {
-	return update_cookie(array("JSESSIONID", "BIGipServerCM-US-PC-VWC", "DVOTKT", "BIGipServerCM-US-PC-TF", "BIGipServerCM-US-PC-NTF", "DVCK", "DTKT", "VTKT", "ACST"), parse_header($head, "set-cookie"), $cookie);
+	return update_cookie(array("JSESSIONID", "BIGipServerCM-US-PC-VWC", "DVOTKT", "BIGipServerCM-US-PC-TF", "BIGipServerCM-US-PC-NTF", "DVCK", "DTKT", "VTKT", "ACST", "CCATRCT", "CCADAST"), parse_header($head, "set-cookie"), $cookie);
 }
 
 function auwallet_get_token($name, $cookie) {
