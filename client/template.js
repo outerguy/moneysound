@@ -713,7 +713,7 @@ function fnc_delete(rowid) {
 		body.appendChild(tag_p);
 		
 		// ダイアログを開く
-		modal_show("削除", body, true);
+		modal_show("削除", body, true, "modalcancel");
 		return false;
 	} else {
 		if(typeof auth != "string") auth = dom_get_id("auth").value;

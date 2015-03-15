@@ -35,8 +35,7 @@ form#modal {
 	padding: 0px;
 	box-shadow: 0px 25px 50px 0px rgba(0, 0, 0, 0.4);
 	color: inherit;
-	background: #EAEAEA;
-	background: #EAEAEA linear-gradient(to bottom, #EAEAEA, #DDDDDD 24px);
+	background: #DADADA linear-gradient(to bottom, #F4F4F4 1px, #E5E5E5 1px, #CFCFCF 28px);
 	font-size: 95%;
 }
 h3#modalhead {
@@ -47,11 +46,9 @@ h3#modalhead {
 	font-weight: normal;
 	text-align: center;
 	line-height: 100%;
-	text-indent: 0px;
-	letter-spacing: 0px;
 }
 div#modalbody {
-	border: solid #D4D4D4;
+	border: solid #B0B0B0;
 	border-width: 1px 0px 0px 0px;
 	padding: 10px;
 	margin: 0px 0px 0px 0px;
@@ -74,17 +71,13 @@ table {
 thead, tfoot {
 	color: #585858;
 	background: #F0F0F0;
+	background: rgba(245, 245, 245, 0.8);
 	text-shadow: 0px 0px 0px #404040;
 }
 tbody {
 	color: inherit;
-	background: #FBFBFB;
-	background: rgba(255, 255, 255, 0.9);
-}
-table tbody:nth-child(odd), table#detail tbody tr:nth-child(odd) {
-	color: inherit;
-	background: #F5F5F5;
-	background: rgba(245, 245, 245, 0.9);
+	background: #FFFFFF;
+	background: rgba(255, 255, 255, 0.8);
 }
 tbody.pending tr {
 	color: #FFFFFF;
@@ -103,11 +96,12 @@ tbody.error tr {
 	background: transparent;
 }
 caption {
-	border: 0px;
+	border: solid #DBDBDB;
+	border-width: 0px 0px 1px 0px;
 	border-radius: 4px 4px 0px 0px;
-	padding: 12px;
+	padding: 10px;
 	color: #404040;
-	background: #F0F0F0 linear-gradient(to bottom, #F4F3F4 1%, #F0F0F0 1%, #E8E7E5 99%);
+	background: #F6F6F6 linear-gradient(to bottom, #FBFBFB 1px, #F6F6F6 1px);
 	font-size: 95%;
 	font-weight: normal;
 	text-align: center;
