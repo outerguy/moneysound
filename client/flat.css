@@ -24,6 +24,7 @@ nav {
 nav p {
 	padding: 0px 0px 0px 10px;
 	margin: 0px;
+	height: 22px;
 	color: inherit;
 	background: #FBFCFB;
 	box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.4);
@@ -175,8 +176,7 @@ nav .btn, nav .btn:hover, nav .btn:active, nav .btn:focus, nav .btn:disabled {
 	cursor: default;
 }
 nav .btn:disabled {
-	color: #B8B8B8;
-	background: transparent;
+	display: none;
 }
 nav .btn:active {
 	color: #FFFFFF;
