@@ -175,7 +175,8 @@ nav .btn, nav .btn:hover, nav .btn:active, nav .btn:focus, nav .btn:disabled {
 	cursor: default;
 }
 nav .btn:disabled {
-	display: none;
+	color: #B8B8B8;
+	background: transparent;
 }
 nav .btn:active {
 	color: #FFFFFF;
