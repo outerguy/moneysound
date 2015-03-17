@@ -216,32 +216,34 @@ if($sid > 0) {
 		break;
 	}
 	
-	$creditcardmsgsrsv1 = "";
-	$creditcardmsgsrsv1 .= "<CREDITCARDMSGSRSV1>";
-	$creditcardmsgsrsv1 .= "\r\n";
-	
-	$creditcardmsgsrsv1 .= "<CCSTMTTRNRS>";
-	$creditcardmsgsrsv1 .= "\r\n";
-	$creditcardmsgsrsv1 .= "<TRNUID>0</TRNUID>";
-	$creditcardmsgsrsv1 .= "\r\n";
-	$creditcardmsgsrsv1 .= "<STATUS><CODE>0</CODE><SEVERITY>INFO</SEVERITY></STATUS>";
-	$creditcardmsgsrsv1 .= "\r\n";
-	$creditcardmsgsrsv1 .= "<CCSTMTRS>";
-	$creditcardmsgsrsv1 .= "\r\n";
-	$creditcardmsgsrsv1 .= "<CURDEF>" . ENV_STR_OFX_CURRENCY_JPY . "</CURDEF>";
-	$creditcardmsgsrsv1 .= "\r\n";
-	$creditcardmsgsrsv1 .= "<CCACCTFROM>";
-	$creditcardmsgsrsv1 .= "<ACCTID>" . $account["acctid"] . "</ACCTID>";
-	$creditcardmsgsrsv1 .= "</CCACCTFROM>";
-	$creditcardmsgsrsv1 .= "\r\n";
-	$creditcardmsgsrsv1 .= saisoncard_parse_csv($body, $account);
-	$creditcardmsgsrsv1 .= "</CCSTMTRS>";
-	$creditcardmsgsrsv1 .= "\r\n";
-	$creditcardmsgsrsv1 .= "</CCSTMTTRNRS>";
-	$creditcardmsgsrsv1 .= "\r\n";
-	
-	$creditcardmsgsrsv1 .= "</CREDITCARDMSGSRSV1>";
-	$creditcardmsgsrsv1 .= "\r\n";
+	if(strpos($head, "Content-Type: text/html") === false) {
+		$creditcardmsgsrsv1 = "";
+		$creditcardmsgsrsv1 .= "<CREDITCARDMSGSRSV1>";
+		$creditcardmsgsrsv1 .= "\r\n";
+		
+		$creditcardmsgsrsv1 .= "<CCSTMTTRNRS>";
+		$creditcardmsgsrsv1 .= "\r\n";
+		$creditcardmsgsrsv1 .= "<TRNUID>0</TRNUID>";
+		$creditcardmsgsrsv1 .= "\r\n";
+		$creditcardmsgsrsv1 .= "<STATUS><CODE>0</CODE><SEVERITY>INFO</SEVERITY></STATUS>";
+		$creditcardmsgsrsv1 .= "\r\n";
+		$creditcardmsgsrsv1 .= "<CCSTMTRS>";
+		$creditcardmsgsrsv1 .= "\r\n";
+		$creditcardmsgsrsv1 .= "<CURDEF>" . ENV_STR_OFX_CURRENCY_JPY . "</CURDEF>";
+		$creditcardmsgsrsv1 .= "\r\n";
+		$creditcardmsgsrsv1 .= "<CCACCTFROM>";
+		$creditcardmsgsrsv1 .= "<ACCTID>" . $account["acctid"] . "</ACCTID>";
+		$creditcardmsgsrsv1 .= "</CCACCTFROM>";
+		$creditcardmsgsrsv1 .= "\r\n";
+		$creditcardmsgsrsv1 .= saisoncard_parse_csv($body, $account);
+		$creditcardmsgsrsv1 .= "</CCSTMTRS>";
+		$creditcardmsgsrsv1 .= "\r\n";
+		$creditcardmsgsrsv1 .= "</CCSTMTTRNRS>";
+		$creditcardmsgsrsv1 .= "\r\n";
+		
+		$creditcardmsgsrsv1 .= "</CREDITCARDMSGSRSV1>";
+		$creditcardmsgsrsv1 .= "\r\n";
+	}
 	
 	$body = $body_old;
 	
@@ -303,7 +305,7 @@ function saisoncard_parse_csv($str, $account) {
 				$cds_paydate = parse_date($line[1]);
 				break;
 			case "ç°âÒÇ≤êøãÅäz":
-				$cds_balamt = (string)(double)$line[1];
+				$cds_balamt = (string)(double)parse_amount($line[1]);
 				$ledge_balamt = (double)$cds_balamt;
 				break;
 			case "ÉJÅ[ÉhñºèÃ":

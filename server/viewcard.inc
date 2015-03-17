@@ -1,6 +1,6 @@
 <?php
 /*
-viewcard.inc: ビューカードのHTMLよりOFXファイルを生成する
+viewcard.inc: ビューカードのCSVよりOFXファイルを生成する
 Copyright (C) 2012-2015 OFFICE OUTERGUY. All rights reserved.
 mailto:contact@beatrek.com
 Licensed under the GNU AGPLv3.
@@ -183,25 +183,54 @@ if(strpos($body, "前回ログイン") === false) {
 			$account["paydate"] = substr(ENV_STR_DATE_TODAY, 0, 6) . "04";
 		}
 		
-		$creditcardmsgsrsv1 .= "<CCSTMTTRNRS>";
-		$creditcardmsgsrsv1 .= "\r\n";
-		$creditcardmsgsrsv1 .= "<TRNUID>0</TRNUID>";
-		$creditcardmsgsrsv1 .= "\r\n";
-		$creditcardmsgsrsv1 .= "<STATUS><CODE>0</CODE><SEVERITY>INFO</SEVERITY></STATUS>";
-		$creditcardmsgsrsv1 .= "\r\n";
-		$creditcardmsgsrsv1 .= "<CCSTMTRS>";
-		$creditcardmsgsrsv1 .= "\r\n";
-		$creditcardmsgsrsv1 .= "<CURDEF>" . ENV_STR_OFX_CURRENCY_JPY . "</CURDEF>";
-		$creditcardmsgsrsv1 .= "\r\n";
-		$creditcardmsgsrsv1 .= "<CCACCTFROM>";
-		$creditcardmsgsrsv1 .= "<ACCTID>" . $account["acctid"] . "</ACCTID>";
-		$creditcardmsgsrsv1 .= "</CCACCTFROM>";
-		$creditcardmsgsrsv1 .= "\r\n";
-		$creditcardmsgsrsv1 .= viewcard_parse_html($body, $account);
-		$creditcardmsgsrsv1 .= "</CCSTMTRS>";
-		$creditcardmsgsrsv1 .= "\r\n";
-		$creditcardmsgsrsv1 .= "</CCSTMTTRNRS>";
-		$creditcardmsgsrsv1 .= "\r\n";
+		$body_old = $body;
+		
+		// 明細CSVをダウンロードする
+		$forms = parse_tag($body, "form");
+		$c = parse_tag_search($forms, "name", "Form1");
+		if($c != -1) {
+			$inputs = parse_tag($forms[$c]["innerHTML"], "input");
+			$queries = array();
+			foreach($inputs as $input) if($input["name"] != "") $queries[$input["name"]] = urlencode($input["name"]) . "=" . urlencode($input["value"]);
+			$queries["DdlCardNO"] = "DdlCardNO=" . $account["id"];
+			$queries["BtnCsvDownloadTop.x"] = "BtnCsvDownloadTop.x=1";
+			$queries["BtnCsvDownloadTop.y"] = "BtnCsvDownloadTop.y=1";
+			if(isset($queries["BtnCsvDownloadTop"]) == true) unset($queries["BtnCsvDownloadTop"]);
+			if(isset($queries["BtnCsvDownloadBottom"]) == true) unset($queries["BtnCsvDownloadBottom"]);
+			if(isset($queries["BtnPdfDownloadTop"]) == true) unset($queries["BtnPdfDownloadTop"]);
+			if(isset($queries["BtnPdfDownloadBottom"]) == true) unset($queries["BtnPdfDownloadBottom"]);
+			if(isset($queries["BtnList"]) == true) unset($queries["BtnList"]);
+			
+			$method = $forms[$c]["method"];
+			$uris = parse_uri($forms[$c]["action"], $uris);
+			$query = implode("&", $queries);
+			$cookie = viewcard_update_cookie($head, $cookie);
+			list($head, $body) = viewcard_http11($method, $uris, $query, $cookie);
+			
+			if(strpos($head, "Content-Type: text/html") === false) {
+				$creditcardmsgsrsv1 .= "<CCSTMTTRNRS>";
+				$creditcardmsgsrsv1 .= "\r\n";
+				$creditcardmsgsrsv1 .= "<TRNUID>0</TRNUID>";
+				$creditcardmsgsrsv1 .= "\r\n";
+				$creditcardmsgsrsv1 .= "<STATUS><CODE>0</CODE><SEVERITY>INFO</SEVERITY></STATUS>";
+				$creditcardmsgsrsv1 .= "\r\n";
+				$creditcardmsgsrsv1 .= "<CCSTMTRS>";
+				$creditcardmsgsrsv1 .= "\r\n";
+				$creditcardmsgsrsv1 .= "<CURDEF>" . ENV_STR_OFX_CURRENCY_JPY . "</CURDEF>";
+				$creditcardmsgsrsv1 .= "\r\n";
+				$creditcardmsgsrsv1 .= "<CCACCTFROM>";
+				$creditcardmsgsrsv1 .= "<ACCTID>" . $account["acctid"] . "</ACCTID>";
+				$creditcardmsgsrsv1 .= "</CCACCTFROM>";
+				$creditcardmsgsrsv1 .= "\r\n";
+				$creditcardmsgsrsv1 .= viewcard_parse_csv($body, $account);
+				$creditcardmsgsrsv1 .= "</CCSTMTRS>";
+				$creditcardmsgsrsv1 .= "\r\n";
+				$creditcardmsgsrsv1 .= "</CCSTMTTRNRS>";
+				$creditcardmsgsrsv1 .= "\r\n";
+			}
+		}
+		
+		$body = $body_old;
 	}
 	
 	$creditcardmsgsrsv1 .= "</CREDITCARDMSGSRSV1>";
@@ -274,68 +303,67 @@ function viewcard_update_cookie($head, $cookie) {
 	return update_cookie(array("BIGipServerPL-VNWEB-PC_WAF-TCP80", "VIEWSNET_WEB", "ASP.NET_SessionId", "citrix_ns_id", "citrix_ns_id_.viewsnet.jp_%2F_wat"), parse_header($head, "set-cookie"), $cookie);
 }
 
-function viewcard_parse_html($body, $account) {
+function viewcard_parse_csv($str, $account) {
 	$ret = "";
+	$lines = parse_csv($str);
 	$cds = array();
+	$cds_balamt = "0";
+	$cds_paydate = $account["paydate"];
 	$cds_s = "";
 	$cds_e = "";
 	$cd_date = "";
 	$cd_num = 0;
+	$ledge_balamt = 0;
 	
-	$tables = parse_tag($body, "table");
-	
-	// お支払日・お支払総額を取得する
-	$c = parse_tag_search($tables, "summary", "お支払総額。");
-	if($c != -1) {
-		// お支払日を取得する
-		$spans = parse_tag($tables[$c]["innerHTML"], "span");
-		$cds_paydate = (count($spans) == 1? parse_date(str_replace("お支払日：", "", $spans[0]["innerHTML"])): $account["paydate"]);
+	foreach($lines as $line) {
+		$cd = array();
 		
-		// お支払総額を取得する
-		$tds = parse_tag($tables[$c]["innerHTML"], "td");
-		$cds_balamt = (count($tds) == 1? parse_amount(strip_tags($tds[0]["innerHTML"])): "0");
-		$ledge_balamt = (double)$cds_balamt;
-	}
-	
-	// 明細行を含むtableを取得する
-	$c = parse_tag_search($tables, "summary", "ご利用年月日。");
-	if($c != -1) {
-		$trs = parse_tag($tables[$c]["innerHTML"], "tr");
-		
-		// 明細行毎に処理する
-		for($i = 0; $i < count($trs); $i++) {
-			$tds = parse_tag($trs[$i]["innerHTML"], "td");
-			if(count($tds) == 12) {
-				// ご利用年月日を取得する
-				$cds[$i]["DTPOSTED"] = parse_date(trim(strip_tags(str_replace("<br/>", "/", $tds[0]["innerHTML"]))));
-				if($cds_s == "") $cds_s = $cds[$i]["DTPOSTED"];
-				$cds_e = $cds[$i]["DTPOSTED"];
-				
-				// ご利用箇所を取得する
-				$cds[$i]["NAME"] = mb_convert_string(trim($tds[2]["innerHTML"]));
-				
-				// 今回ご請求額を取得する
-				$spans = parse_tag($tds[8]["innerHTML"], "span");
-				$c = parse_tag_search($spans, "id", "RtUseInfoList__ctl1_LblTimMon");
-				if($c != -1) {
-					$cds[$i]["TRNAMT"] = (string)(-1 * parse_amount($spans[$c]["innerHTML"]));
-					$ledge_balamt += (double)$cds[$i]["TRNAMT"];
-				}
-				
-				// 備考を取得する
-				$memo = mb_convert_string(trim(strip_tags($tds[6]["innerHTML"])));
-				$cds[$i]["MEMO"] = ($memo != ""? $memo: ENV_STR_OFX_MEMO);
-				
-				// PAYMENT固定とする
-				$cds[$i]["TRNTYPE"] = ENV_STR_OFX_TRNTYPE_PAYMENT;
-				
-				// 通番を生成する
-				if($cds[$i]["DTPOSTED"] == $cd_date) $cd_num++; else $cd_num = 0;
-				$cd_date = $cds[$i]["DTPOSTED"];
-				
-				// トランザクション番号を生成する
-				$cds[$i]["FITID"] = $cds[$i]["DTPOSTED"] . sprintf("%04d", $account["id"]) . substr($cds_paydate, 4, 2) . "0" . sprintf("%05d", $cd_num);
+		if(count($line) == 2) {
+			switch($line[0]) {
+			case "お支払日":
+				$cds_paydate = parse_date($line[1]);
+				break;
+			case "今回お支払金額":
+				$cds_balamt = (string)(double)parse_amount($line[1]);
+				$ledge_balamt = (double)$cds_balamt;
+				break;
+			case "会員番号":
+			case "対象カード":
+			default:
+				break;
 			}
+		} else if(count($line) == 11 && $line[0] != "ご利用年月日") {
+			
+			// 日付を取得する
+			$cd["DTPOSTED"] = parse_date($line[0]);
+			if($line[1] == "ショッピングリボ弁済金") {
+				$cd["DTPOSTED"] = $cds_paydate;
+				$cd["TRNTYPE"] = ENV_STR_OFX_TRNTYPE_INT;
+			} else {
+				// PAYMENT固定とする
+				$cd["TRNTYPE"] = ENV_STR_OFX_TRNTYPE_PAYMENT;
+			}
+			if($cds_s == "") $cds_s = $cd["DTPOSTED"];
+			$cds_e = $cd["DTPOSTED"];
+			
+			// 通番を生成する
+			if($cd["DTPOSTED"] == $cd_date) $cd_num++; else $cd_num = 0;
+			
+			// トランザクション番号を生成する
+			$cd["FITID"] = $cd["DTPOSTED"] . sprintf("%04d", $account["id"]) . substr($account["paydate"], 4, 2) . "0" . sprintf("%05d", $cd_num);
+			
+			// 摘要を取得する
+			$cd["NAME"] = mb_convert_string($line[1]);
+			
+			// 金額を取得する
+			$cd["TRNAMT"] = (string)(-1 * (double)parse_amount($line[7]));
+			$ledge_balamt += (double)$cd["TRNAMT"];
+			
+			// 残高を取得する
+			$cd["MEMO"] = ($line[5] != ""? mb_convert_string($line[5]): ENV_STR_OFX_MEMO);
+			
+			array_push($cds, $cd);
+			$cd_date = $cd["DTPOSTED"];
 		}
 	}
 	
@@ -344,12 +372,13 @@ function viewcard_parse_html($body, $account) {
 	if($cds_s > $cds_e) $cds_e = $cds_s;
 	
 	// クレジットカード支払請求を明細に追加する
+	$i = count($cds);
 	$cds[$i]["DTPOSTED"] = $cds_paydate;
 	$cds[$i]["NAME"] = mb_convert_string($account["name"]);
 	$cds[$i]["MEMO"] = ENV_STR_OFX_MEMO;
 	$cds[$i]["TRNAMT"] = $cds_balamt;
 	$cds[$i]["TRNTYPE"] = ENV_STR_OFX_TRNTYPE_DIRECTDEBIT;
-	$cds[$i]["FITID"] = $cds[$i]["DTPOSTED"] . sprintf("%04d", $account["id"]) . substr($cds_paydate, 4, 2) . "100000";
+	$cds[$i]["FITID"] = $cds[$i]["DTPOSTED"] . sprintf("%04d", $account["id"]) . substr($account["paydate"], 4, 2) . "100000";
 	
 	// BANKTRANLIST
 	$ret .= "<BANKTRANLIST>";
