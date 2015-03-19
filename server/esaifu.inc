@@ -86,7 +86,6 @@ if($sid == 0) {
 	
 	// ƒZƒbƒVƒ‡ƒ“‚ð‘Þ”ð‚·‚é
 	$sid = 1;
-	$sess = sess_encode(implode("\t", array((string)$sid, $method, $uris["scheme"] . "://" . $uris["host"] . $uris["path"], $query, $user, ENV_STR_SESSION_PADDING)));
 	$head = "";
 	$body = "";
 } else if($sid == 1) {
@@ -133,7 +132,6 @@ if($sid > 0) {
 	$resp["status"] = ENV_NUM_STATUS_ADDITION;
 	$resp["aid"] = "image_key";
 	$resp["addition"] = $imgsrc;
-	$resp["sess"] = $sess;
 	$resp["sid"] = $sid;
 	$resp["sesscookie"] = sess_encode(implode("\t", array($cookie, ENV_STR_SESSION_PADDING)));
 	$resp["accesskey"] = sess_encode(implode("\t", array((string)$sid, $method, $uris["scheme"] . "://" . $uris["host"] . $uris["path"], $query, $user, ENV_STR_SESSION_PADDING)));

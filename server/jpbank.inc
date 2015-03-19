@@ -166,7 +166,6 @@ if(strpos($body, "‡Œ¾—t“ü—Í‚P") !== false) {
 	}
 	
 	$sid = 1;
-	$sess = sess_encode(implode("\t", array((string)$sid, $method, $uris["scheme"] . "://" . $uris["host"] . $uris["path"], $query, $pass, ENV_STR_SESSION_PADDING)));
 	$head = "";
 	$body = "";
 } else if($sid == 1) {
@@ -236,7 +235,6 @@ if(strpos($body, "‡Œ¾—t“ü—Í‚Q") !== false) {
 	}
 	
 	$sid = 2;
-	$sess = sess_encode(implode("\t", array((string)$sid, $method, $uris["scheme"] . "://" . $uris["host"] . $uris["path"], $query, $pass, ENV_STR_SESSION_PADDING)));
 	$head = "";
 	$body = "";
 } else if($sid == 2) {
@@ -305,7 +303,6 @@ if($sid > 0) {
 	$resp["status"] = ENV_NUM_STATUS_ADDITION;
 	$resp["aid"] = "aikotoba";
 	$resp["addition"] = $shitsumon;
-	$resp["sess"] = $sess;
 	$resp["sid"] = $sid;
 	$resp["sesscookie"] = sess_encode(implode("\t", array($cookie, ENV_STR_SESSION_PADDING)));
 	$resp["accesskey"] = sess_encode(implode("\t", array((string)$sid, $method, $uris["scheme"] . "://" . $uris["host"] . $uris["path"], $query, $pass, ENV_STR_SESSION_PADDING)));

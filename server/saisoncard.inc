@@ -93,7 +93,6 @@ if(strpos($body, "秘密の質問によるご本人様確認") !== false) {
 	
 	// セッションを退避する
 	$sid = 1;
-	$sess = sess_encode(implode("\t", array((string)$sid, $method, $uris["scheme"] . "://" . $uris["host"] . $uris["path"], $query, $cookie, $pass, ENV_STR_SESSION_PADDING)));
 	$head = "";
 	$body = "";
 } else if($sid == 1) {
@@ -109,7 +108,6 @@ if($sid > 0) {
 	$resp["status"] = ENV_NUM_STATUS_ADDITION;
 	$resp["aid"] = "secretAnswer";
 	$resp["addition"] = $shitsumon;
-	$resp["sess"] = $sess;
 	$resp["sid"] = $sid;
 	$resp["sesscookie"] = sess_encode(implode("\t", array($cookie, ENV_STR_SESSION_PADDING)));
 	$resp["accesskey"] = sess_encode(implode("\t", array((string)$sid, $method, $uris["scheme"] . "://" . $uris["host"] . $uris["path"], $query, $pass, ENV_STR_SESSION_PADDING)));
