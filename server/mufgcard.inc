@@ -200,7 +200,10 @@ if(strpos($body, "Œ»ÝƒT[ƒrƒX’âŽ~’†") !== false || strpos($body, "ƒVƒXƒeƒ€ƒƒ“ƒ
     // –¾×‚ðƒp[ƒX
     $cds = array();
     foreach($bodies as $body){
-        $cds = array_merge($cds, mufgcard_parsedom($body));
+        $cds_tmp = mufgcard_parsedom($body);
+        if ($cds_tmp != false) {
+            $cds = array_merge($cds, $cds_tmp);
+        }
     }
     usort($cds, function($a, $b) {
         return $a['DTPOSTED'] > $b['DTPOSTED'];
@@ -310,7 +313,7 @@ function mufgcard_parsedom($str) {
     $tables = $xpath->query("//table[@class='mod-table font-x-small sp-font-normal transform']");
     // ¿‹‚ª‚È‚¢ê‡
     if($tables->length == 0) { 
-        return array(array(), "", "");
+        return false;
     }
     $rows = $tables->item(0)->getElementsByTagName('tr');
     
