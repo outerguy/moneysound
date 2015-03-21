@@ -14,6 +14,7 @@ $resp = array();
 
 define("ENV_STR_ASSET_REINVESTMENT", "Ä“Š‘");
 define("ENV_STR_ASSET_CONTRIBUTION", "‹’o");
+define("ENV_STR_ASSET_SELL", "‘Y”„‹p");
 
 // ÀsŠÔiƒ^ƒCƒ€ƒAƒEƒgj‚ğÄİ’è‚·‚é
 @set_time_limit(ENV_NUM_TIMEOUT);
@@ -135,6 +136,10 @@ if(strpos($body, "ƒVƒXƒeƒ€ƒƒ“ƒeƒiƒ“ƒX’†") !== false || strpos($body, "ƒVƒXƒeƒ€ƒ
 	case "s1040-t2-e1":
 		$bufs["SECNAME"] = mb_convert_string(trim(strip_tags($td["innerHTML"]))); // ¤•i–¼
 		break;
+	case "s1040-t2-o2":
+	case "s1040-t2-e2":
+		$bufs["TYPE"] = mb_convert_string(trim(strip_tags($td["innerHTML"]))); // ¤•i•ª—Ş
+		break;
 	case "s1040-t2-o3":
 	case "s1040-t2-e3":
 		$bufs["UNITS"] = parse_amount($td["innerHTML"]); // ”—Ê
@@ -155,12 +160,17 @@ if(strpos($body, "ƒVƒXƒeƒ€ƒƒ“ƒeƒiƒ“ƒX’†") !== false || strpos($body, "ƒVƒXƒeƒ€ƒ
 	case "s1040-t2-e9":
 		$bufs["DTPRICEASOF"] = ($td["innerHTML"] == "&nbsp;"? ENV_STR_DATE_TODAY: parse_date($td["innerHTML"])); // Šî€“ú
 		
-		$bufs["UNIQUEIDTYPE"] = $settings["code"];
-		$bufs["HELDINACCT"] = ENV_STR_OFX_TRNTYPE_CASH; // Œ»‹à
-		$bufs["POSTYPE"] = "LONG";
-		$bufs["CATEGORY"] = ENV_STR_OFX_FUND; // “Š‘M‘õ
-		$bufs["UNITPRICE"] = ($bufs["UNITPRICE"] == "0"? 0: (string)round((double)$bufs["UNITPRICE"] / round((double)$bufs["UNITS"] * (double)$bufs["UNITPRICE"] / (double)$bufs["MKTVAL"]), 4));
-		array_push($securities, $bufs);
+		if($bufs["TYPE"] == mb_convert_string("Œ»‹à")) {
+			$marginbalance = (string)((double)$marginbalance + (double)$bufs["MKTVAL"]);
+			$availcash = $marginbalance;
+		} else {
+			$bufs["UNIQUEIDTYPE"] = $settings["code"];
+			$bufs["HELDINACCT"] = ENV_STR_OFX_TRNTYPE_CASH; // Œ»‹à
+			$bufs["POSTYPE"] = "LONG";
+			$bufs["CATEGORY"] = ENV_STR_OFX_FUND; // “Š‘M‘õ
+			$bufs["UNITPRICE"] = ($bufs["UNITPRICE"] == "0"? 0: (string)round((double)$bufs["UNITPRICE"] / round((double)$bufs["UNITS"] * (double)$bufs["UNITPRICE"] / (double)$bufs["MKTVAL"]), 4));
+			array_push($securities, $bufs);
+		}
 		$bufs = array();
 		break;
 	default:
@@ -197,7 +207,7 @@ if(strpos($body, "ƒVƒXƒeƒ€ƒƒ“ƒeƒiƒ“ƒX’†") !== false || strpos($body, "ƒVƒXƒeƒ€ƒ
 		$queries["lst_ddiv_mm_refBegin"] = "lst_ddiv_mm_refBegin=" . substr(ENV_STR_DATE_PASTDAY, 4, 2);
 		$queries["lst_ddiv_yyyy_refEnd"] = "lst_ddiv_yyyy_refEnd=" . substr(ENV_STR_DATE_TODAY, 0, 4);
 		$queries["lst_ddiv_mm_refEnd"] = "lst_ddiv_mm_refEnd=" . substr(ENV_STR_DATE_TODAY, 4, 2);
-		$queries["chk_transType"] = "chk_transType=01&chk_transType=04"; // ‹’oAû‰v•ª”zE–ŠúŒp‘±
+		$queries["chk_transType"] = "chk_transType=01&chk_transType=04&chk_transType=06"; // ‹’oAû‰v•ª”zE–ŠúŒp‘±A‘Y”„‹p
 		
 		$method = $form["method"];
 		$uris = parse_uri($form["action"], $uris);
@@ -363,6 +373,48 @@ if(strpos($body, "ƒVƒXƒeƒ€ƒƒ“ƒeƒiƒ“ƒX’†") !== false || strpos($body, "ƒVƒXƒeƒ€ƒ
 			$bufs = array();
 			break;
 		
+		// ‘Y”„‹pi“Š‘j
+		case "s1080-t2-o1":
+		case "s1080-t2-e1":
+			$bufs["SECNAME"] = mb_convert_string(trim(strip_tags($td["innerHTML"]))); // ¤•i–¼
+			break;
+		case "s1080-t2-o8":
+		case "s1080-t2-e8":
+			$bufs["DTTRADE"] = parse_date($td["innerHTML"]); // –ñ’è“ú
+			break;
+		case "s1080-t2-o3":
+		case "s1080-t2-e3":
+			$memo = trim(strip_tags($td["innerHTML"])); // ”õl
+			$bufs["MEMO"] = mb_convert_string(ENV_STR_ASSET_SELL); // ‘Y”„‹p
+			break;
+		case "s1080-t2-o6":
+		case "s1080-t2-e6":
+			$bufs["TOTAL"] = (string)((double)parse_amount($td["innerHTML"])); // ”„‹p‹àŠz
+			break;
+		case "s1080-t2-o5":
+		case "s1080-t2-e5":
+			$bufs["UNITPRICE"] = parse_amount($td["innerHTML"]); // ”„‹p’P‰¿
+			break;
+		case "s1080-t2-o4":
+		case "s1080-t2-e4":
+			$bufs["UNITS"] = (string)(-1 * (double)parse_amount($td["innerHTML"])); // ”„‹p”—Ê
+			break;
+			
+		case "s1080-t2-o7":
+		case "s1080-t2-e7":
+			if(trim(strip_tags($td["innerHTML"])) == "–ñ’èÏ") {
+				$bufs["CATEGORY"] = ENV_STR_OFX_FUND; // “Š‘M‘õ
+				$bufs["SUBACCTSEC"] = ENV_STR_OFX_CASH; // Œ»‹à
+				$bufs["SUBACCTFUND"] = ENV_STR_OFX_CASH; // Œ»‹à
+				$bufs["UNIQUEIDTYPE"] = $settings["code"];
+				$bufs["BUYTYPE"] = ENV_STR_OFX_SELL; // ”„•t
+				$bufs["UNITPRICE"] = (string)round((double)$bufs["UNITPRICE"] / round((double)$bufs["UNITS"] * (double)$bufs["UNITPRICE"] / (double)$bufs["TOTAL"] * -1), 4);
+				array_push($exchanges, $bufs);
+				array_push($securities, $bufs);
+			}
+			$bufs = array();
+			break;
+		
 		default:
 			break;
 		}
@@ -461,7 +513,7 @@ if(strpos($body, "ƒVƒXƒeƒ€ƒƒ“ƒeƒiƒ“ƒX’†") !== false || strpos($body, "ƒVƒXƒeƒ€ƒ
 		$invtranlist .= "<SUBACCTSEC>" . $exchange["SUBACCTSEC"] . "</SUBACCTSEC>";
 		$invtranlist .= "<SUBACCTFUND>" . $exchange["SUBACCTFUND"] . "</SUBACCTFUND>";
 		$invtranlist .= "</INV" . $exchange["BUYTYPE"] . ">";
-		$invtranlist .= "<BUYTYPE>" . $exchange["BUYTYPE"] . "</BUYTYPE>";
+		$invtranlist .= "<" . $exchange["BUYTYPE"] . "TYPE>" . $exchange["BUYTYPE"] . "</" . $exchange["BUYTYPE"] . "TYPE>";
 		$invtranlist .= "</" . $exchange["BUYTYPE"] . $exchange["CATEGORY"] . ">";
 		$invtranlist .= "\r\n";
 		
@@ -500,6 +552,15 @@ if(strpos($body, "ƒVƒXƒeƒ€ƒƒ“ƒeƒiƒ“ƒX’†") !== false || strpos($body, "ƒVƒXƒeƒ€ƒ
 		$uniqueid = array_search($security["SECNAME"], $investments);
 		if($uniqueid === false) $uniqueid = mb_convert_uniqueid($security["SECNAME"]);
 		
+		// SECLIST
+		$seclist .= "<" . $security["CATEGORY"] . "INFO><SECINFO>";
+		$seclist .= "<SECID><UNIQUEID>" . $uniqueid . "</UNIQUEID><UNIQUEIDTYPE>" . $security["UNIQUEIDTYPE"] . "</UNIQUEIDTYPE></SECID>";
+		$seclist .= "<SECNAME>" . $security["SECNAME"] . "</SECNAME>";
+		$seclist .= "</SECINFO></" . $security["CATEGORY"] . "INFO>";
+		$seclist .= "\r\n";
+		
+		if($security["MEMO"] == mb_convert_string(ENV_STR_ASSET_SELL)) continue;
+		
 		$invposlist .= "<POS" . $security["CATEGORY"] . "><INVPOS>";
 		$invposlist .= "<SECID><UNIQUEID>" . $uniqueid . "</UNIQUEID><UNIQUEIDTYPE>" . $security["UNIQUEIDTYPE"] . "</UNIQUEIDTYPE></SECID>";
 		$invposlist .= "<HELDINACCT>" . $security["HELDINACCT"] . "</HELDINACCT>";
@@ -511,13 +572,6 @@ if(strpos($body, "ƒVƒXƒeƒ€ƒƒ“ƒeƒiƒ“ƒX’†") !== false || strpos($body, "ƒVƒXƒeƒ€ƒ
 		$invposlist .= "<MEMO>" . $security["MEMO"] . "</MEMO>";
 		$invposlist .= "</INVPOS></POS" . $security["CATEGORY"] . ">";
 		$invposlist .= "\r\n";
-		
-		// SECLIST
-		$seclist .= "<" . $security["CATEGORY"] . "INFO><SECINFO>";
-		$seclist .= "<SECID><UNIQUEID>" . $uniqueid . "</UNIQUEID><UNIQUEIDTYPE>" . $security["UNIQUEIDTYPE"] . "</UNIQUEIDTYPE></SECID>";
-		$seclist .= "<SECNAME>" . $security["SECNAME"] . "</SECNAME>";
-		$seclist .= "</SECINFO></" . $security["CATEGORY"] . "INFO>";
-		$seclist .= "\r\n";
 	}
 	
 	$invstmtmsgsrsv1 = "";
@@ -551,8 +605,8 @@ if(strpos($body, "ƒVƒXƒeƒ€ƒƒ“ƒeƒiƒ“ƒX’†") !== false || strpos($body, "ƒVƒXƒeƒ€ƒ
 	$invstmtmsgsrsv1 .= "</INVPOSLIST>";
 	$invstmtmsgsrsv1 .= "\r\n";
 	$invstmtmsgsrsv1 .= "<INVBAL>";
-	$invstmtmsgsrsv1 .= "<AVAILCASH>0</AVAILCASH>";
-	$invstmtmsgsrsv1 .= "<MARGINBALANCE>0</MARGINBALANCE>";
+	$invstmtmsgsrsv1 .= "<AVAILCASH>" . $availcash . "</AVAILCASH>";
+	$invstmtmsgsrsv1 .= "<MARGINBALANCE>" . $marginbalance . "</MARGINBALANCE>";
 	$invstmtmsgsrsv1 .= "<SHORTBALANCE>0</SHORTBALANCE>";
 	$invstmtmsgsrsv1 .= "</INVBAL>";
 	$invstmtmsgsrsv1 .= "\r\n";
