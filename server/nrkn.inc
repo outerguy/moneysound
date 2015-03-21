@@ -153,13 +153,13 @@ if(strpos($body, "ƒVƒXƒeƒ€ƒƒ“ƒeƒiƒ“ƒX’†") !== false || strpos($body, "ƒVƒXƒeƒ€ƒ
 		break;
 	case "s1040-t2-o9":
 	case "s1040-t2-e9":
-		$bufs["DTPRICEASOF"] = parse_date($td["innerHTML"]); // Šî€“ú
+		$bufs["DTPRICEASOF"] = ($td["innerHTML"] == "&nbsp;"? ENV_STR_DATE_TODAY: parse_date($td["innerHTML"])); // Šî€“ú
 		
 		$bufs["UNIQUEIDTYPE"] = $settings["code"];
 		$bufs["HELDINACCT"] = ENV_STR_OFX_TRNTYPE_CASH; // Œ»‹à
 		$bufs["POSTYPE"] = "LONG";
 		$bufs["CATEGORY"] = ENV_STR_OFX_FUND; // “Š‘M‘õ
-		$bufs["UNITPRICE"] = (string)round((double)$bufs["UNITPRICE"] / round((double)$bufs["UNITS"] * (double)$bufs["UNITPRICE"] / (double)$bufs["MKTVAL"]), 4);
+		$bufs["UNITPRICE"] = ($bufs["UNITPRICE"] == "0"? 0: (string)round((double)$bufs["UNITPRICE"] / round((double)$bufs["UNITS"] * (double)$bufs["UNITPRICE"] / (double)$bufs["MKTVAL"]), 4));
 		array_push($securities, $bufs);
 		$bufs = array();
 		break;
