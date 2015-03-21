@@ -200,6 +200,9 @@ if($sid > 0) {
 } else {
 	$account = array();
 	
+	// 実行時間（タイムアウト）を再設定する
+	@set_time_limit(ENV_NUM_TIMEOUT);
+	
 	$account["acctname"] = $settings["name"] . ENV_CHR_CONCATENATOR . $user;
 	$account["acctid"] = $user;
 	
@@ -256,6 +259,9 @@ if($sid > 0) {
 	$csv = "";
 	$body_old = $body;
 	
+	// 実行時間（タイムアウト）を再設定する
+	@set_time_limit(ENV_NUM_TIMEOUT);
+	
 	// 今月のCSVファイルを取得する
 	$forms = parse_tag($body, "form");
 	$c = parse_tag_search($forms, "name", "download_form");
@@ -294,6 +300,9 @@ if($sid > 0) {
 	}
 	
 	$body_old = $body;
+	
+	// 実行時間（タイムアウト）を再設定する
+	@set_time_limit(ENV_NUM_TIMEOUT);
 	
 	// 前月のCSVファイルを取得する
 	$forms = parse_tag($body, "form");
