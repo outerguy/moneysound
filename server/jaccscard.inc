@@ -66,7 +66,7 @@ if(strpos($body, "メンテナンスを行っております") !== false) {
     $resp["head"] = $head;
     $resp["body"] = $body;
     $resp["ofx"] = generate_ofx($resp["status"]);
-} else if(strpos($body, "JALG00012_00M") === false) {
+} else if(strpos($body, "前回ログイン") === false) {
     // ログイン失敗の場合
     $resp["status"] = ENV_NUM_STATUS_FAILURE;
     $resp["method"] = $method;
@@ -77,6 +77,9 @@ if(strpos($body, "メンテナンスを行っております") !== false) {
     $resp["body"] = $body;
     $resp["ofx"] = generate_ofx($resp["status"]);
 } else {
+    // 実行時間（タイムアウト）を再設定する
+    @set_time_limit(ENV_NUM_TIMEOUT);
+    
     // メニューから「ご利用代金明細」を選択
     $queries = jaccscard_getqueries($body);
     $queries['_TRANID'] .= 'JAMY00001_02M';
@@ -103,8 +106,12 @@ if(strpos($body, "メンテナンスを行っております") !== false) {
         $bodies[] = $body;
     }
     
+    /*
     // 他の確定月を取得
     foreach($months as $month) {
+        // 実行時間（タイムアウト）を再設定する
+        @set_time_limit(ENV_NUM_TIMEOUT);
+        
         $queries = jaccscard_getqueries($body);
         $queries['_TRANID'] .= 'JAST00016_07M';
         $queries['_SUBINDEX'] .= $month[1];
@@ -122,9 +129,13 @@ if(strpos($body, "メンテナンスを行っております") !== false) {
             $bodies[] = $body;
         }
     }
+    */
     
     // 未確定月を取得
     if(ENV_BOOL_PENDING_DETAIL) {
+        // 実行時間（タイムアウト）を再設定する
+        @set_time_limit(ENV_NUM_TIMEOUT);
+        
         $queries = jaccscard_getqueries($body);
         $queries['_TRANID'] .= 'JAST00016_19M';
         $query = implode("&", $queries);
@@ -141,6 +152,9 @@ if(strpos($body, "メンテナンスを行っております") !== false) {
             $bodies[] = $body;
         }
     }
+    
+    // 実行時間（タイムアウト）を再設定する
+    @set_time_limit(ENV_NUM_TIMEOUT);
     
     // ログアウト
     $queries = jaccscard_getqueries($body);
@@ -185,11 +199,6 @@ if(strpos($body, "メンテナンスを行っております") !== false) {
     
     $resp["status"] = ENV_NUM_STATUS_SUCCESS;
     $resp["ofx"] = generate_ofx($resp["status"], $xml);
-    //}
-    
-    // 実行時間（タイムアウト）を再設定する
-    @set_time_limit(ENV_NUM_TIMEOUT);
-    
 }
 return $resp;
 
