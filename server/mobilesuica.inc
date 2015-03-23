@@ -9,35 +9,90 @@ Licensed under the GNU AGPLv3.
 // ログイン情報を取得する
 $user = $ofxforms["MailAddress"];
 $pass = $ofxforms["Password"];
+$auth = urlencode(mb_convert_encoding(urldecode($ofxforms["WebCaptcha1__editor"]), "Shift_JIS", "UTF-8"));
+$sesscookie = $ofxforms["sesscookie"];
+$accesskey = $ofxforms["accesskey"];
+
+if($sesscookie != "") list($cookie, $dummy) = explode("\t", sess_decode($sesscookie));
+if($accesskey != "") {
+	list($ssid, $method, $uri, $query, $user, $pass, $dummy) = explode("\t", sess_decode($accesskey), 7);
+	$sid = (integer)$ssid;
+}
 
 // 実行時間（タイムアウト）を再設定する
 @set_time_limit(ENV_NUM_TIMEOUT);
 
-// ホーム画面（ログイン画面）を取得する
-$method = "GET";
-$uris = parse_uri($settings["home"]);
-$query = "";
-$cookie = "";
-list($head, $body) = mobilesuica_http11($method, $uris, $query, $cookie);
-
-// ログインする
-$forms = parse_tag($body, "form");
-$c = parse_tag_search($forms, "name", "form1");
-if($c != -1) {
-	$inputs = parse_tag($forms[$c]["innerHTML"], "input");
-	$queries = array();
-	foreach($inputs as $input) if($input["name"] != "") $queries[$input["name"]] = urlencode($input["name"]) . "=" . urlencode($input["value"]);
-	$queries["MailAddress"] = "MailAddress=" . $user;
-	$queries["Password"] = "Password=" . $pass;
+if($sid == 0) {
+	// ホーム画面（ログイン画面）を取得する
+	$method = "GET";
+	$uris = parse_uri($settings["home"]);
+	$query = "";
+	$cookie = "";
+	list($head, $body) = mobilesuica_http11($method, $uris, $query, $cookie);
 	
-	$method = $forms[$c]["method"];
-	$uris = parse_uri($forms[$c]["action"], $uris);
-	$query = implode("&", $queries);
-	$cookie = mobilesuica_update_cookie($head, $cookie);
+	// 画像認証の画像を取得する
+	$imgs = parse_tag($body, "img");
+	$c = parse_tag_search($imgs, "class", "igc_TrendyCaptchaImage");
+	if($c != -1) {
+		$imguris = parse_uri($imgs[$c]["src"], $uris);
+		$cookie = mobilesuica_update_cookie($head, $cookie);
+		list($imghead, $imgbody) = mobilesuica_http11($method, $imguris, $query, $cookie, $uris["scheme"] . "://" . $uris["host"] . $uris["path"] . $query);
+		$imgsrc = "data:image/gif;base64," . base64_encode($imgbody);
+	}
+	
+	// ログインする
+	$forms = parse_tag($body, "form");
+	$c = parse_tag_search($forms, "id", "form1");
+	if($c != -1) {
+		$inputs = parse_tag($forms[$c]["innerHTML"], "input");
+		$queries = array();
+		foreach($inputs as $input) if($input["name"] != "") $queries[$input["name"]] = urlencode($input["name"]) . "=" . urlencode($input["value"]);
+		$queries["MailAddress"] = "MailAddress=" . $user;
+		$queries["Password"] = "Password=" . $pass;
+		$queries["WebCaptcha1_clientState"] = "WebCaptcha1_clientState=%5B%5B%5B%5Bnull%2Cnull%5D%5D%2C%5B%5D%2C%5B%5D%5D%2C%5B%7B%7D%2C%5B%5D%5D%2Cnull%5D";
+		$queries["WebCaptcha1__editor_clientState"] = "WebCaptcha1__editor_clientState=%7C0%7C01%7C%7C%5B%5B%5B%5B%5D%5D%2C%5B%5D%2C%5B%5D%5D%2C%5B%7B%7D%2C%5B%5D%5D%2C%22CAPTCHA%22%5D";
+		$queries["WebCaptcha1__editor"] = "WebCaptcha1__editor=";
+		
+		$method = $forms[$c]["method"];
+		$uris = parse_uri($forms[$c]["action"], $uris);
+		$query = implode("&", $queries);
+		$cookie = mobilesuica_update_cookie($head, $cookie);
+	}
+	
+	// セッションを退避する
+	$sid = 1;
+	$head = "";
+	$body = "";
+} else if($sid == 1) {
+	// セッションを復元する
+	$sid = 0;
+	$uris = parse_uri($uri);
+	$query = str_replace("WebCaptcha1__editor=", "WebCaptcha1__editor=" . $auth, $query);
+	$query = str_replace("CAPTCHA", sprintf("%02d", strlen($auth)) . $auth, $query);
 	list($head, $body) = mobilesuica_http11($method, $uris, $query, $cookie);
 }
 
-if(strpos($body, "SF(電子マネー)利用履歴") === false) {
+if($sid > 0) {
+	// セッションを引き継ぐ
+	$resp["status"] = ENV_NUM_STATUS_ADDITION;
+	$resp["aid"] = "WebCaptcha1__editor";
+	$resp["addition"] = $imgsrc;
+	$resp["sid"] = $sid;
+	$resp["sesscookie"] = sess_encode(implode("\t", array($cookie, ENV_STR_SESSION_PADDING)));
+	$resp["accesskey"] = sess_encode(implode("\t", array((string)$sid, $method, $uris["scheme"] . "://" . $uris["host"] . $uris["path"], $query, $user, $pass, ENV_STR_SESSION_PADDING)));
+	
+	$mfachallengetrnrs = "";
+	$mfachallengetrnrs .= "<MFACHALLENGETRNRS>";
+	$mfachallengetrnrs .= "<MFACHALLENGERS>";
+	$mfachallengetrnrs .= "<MFACHALLENGE>";
+	$mfachallengetrnrs .= "<MFAPHRASEID>" . $resp["aid"] . "</MFAPHRASEID>";
+	$mfachallengetrnrs .= "<MFAPHRASELABEL>" . mb_convert_string($resp["addition"]) . "</MFAPHRASELABEL>";
+	$mfachallengetrnrs .= "</MFACHALLENGE>";
+	$mfachallengetrnrs .= "</MFACHALLENGERS>";
+	$mfachallengetrnrs .= "</MFACHALLENGETRNRS>";
+	
+	$resp["ofx"] = generate_ofx($resp["status"], $mfachallengetrnrs, $resp["sesscookie"], $resp["accesskey"]);
+} else if(strpos($body, "SF(電子マネー)利用履歴") === false) {
 	// ログイン失敗の場合
 	$resp["status"] = ENV_NUM_STATUS_FAILURE;
 	$resp["method"] = $method;
@@ -160,9 +215,9 @@ if(strpos($body, "SF(電子マネー)利用履歴") === false) {
 return $resp;
 
 // HTTP/1.1
-function mobilesuica_http11($method, $uris, $query = "", $cookie = "") {
+function mobilesuica_http11($method, $uris, $query = "", $cookie = "", $referer = "") {
 	$ret = "INVALID HOST";
-	if(preg_match("/\.mobilesuica\.com$/", $uris["host"]) > 0) $ret = http11(strtoupper($method), $uris["scheme"], $uris["host"], 0, $uris["path"], $query, "", $cookie, true, ENV_PRODUCT_UA . " MSIE 7.0"); // ログイン時にUser-Agentをチェックされる
+	if(preg_match("/\.mobilesuica\.com$/", $uris["host"]) > 0) $ret = http11(strtoupper($method), $uris["scheme"], $uris["host"], 0, $uris["path"], $query, "", $cookie, true, ENV_PRODUCT_UA . " MSIE 7.0", "", $referer); // ログイン時にUser-Agentをチェックされる
 	return explode("\r\n\r\n", $ret, 2);
 }
 
