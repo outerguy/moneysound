@@ -187,7 +187,7 @@ if($sid > 0) {
 	$resp["head"] = $head;
 	$resp["body"] = $body;
 	$resp["ofx"] = generate_ofx($resp["status"]);
-} else if(strpos($body, "カード利用明細") === false) {
+} else if(strpos($body, "メニュー一覧") === false) {
 	// ログイン失敗の場合
 	$resp["status"] = ENV_NUM_STATUS_FAILURE;
 	$resp["method"] = $method;
@@ -243,9 +243,9 @@ if($sid > 0) {
 		if(count($tds) > 2) $account["acctid"] = trim(strip_tags($tds[2]["innerHTML"]));
 	}
 	
-	// カード利用明細画面を取得する
+	// 利用明細照会画面を取得する
 	$as = parse_tag($body, "a");
-	foreach($as as $a) if(trim(strip_tags($a["innerHTML"])) == "カード利用明細") {
+	foreach($as as $a) if(trim(strip_tags($a["innerHTML"])) == "利用明細照会") {
 		$method = "GET";
 		$uris = parse_uri($a["href"], $uris);
 		$query = "";
