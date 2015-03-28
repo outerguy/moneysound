@@ -1,6 +1,6 @@
 <?php
 /*
-auwallet.inc: au WALLETのCSVよりOFXファイルを生成する
+auwallet.inc: au WALLETのCSV/HTMLよりOFXファイルを生成する
 Copyright (C) 2014-2015 OFFICE OUTERGUY. All rights reserved.
 mailto:contact@beatrek.com
 Licensed under the GNU AGPLv3.
@@ -325,13 +325,94 @@ if($sid > 0) {
 	
 	$body = $body_old;
 	
+	// 実行時間（タイムアウト）を再設定する
+	@set_time_limit(ENV_NUM_TIMEOUT);
+	
+	// チャージ履歴画面を取得する
+	$as = parse_tag($body, "a");
+	$c = parse_tag_search($as, "innerHTML", "チャージ履歴はこちら");
+	if($c != -1) {
+		$method = "GET";
+		$uris = parse_uri($as[$c]["href"], $uris);
+		$query = "";
+		$cookie = auwallet_update_cookie($head, $cookie);
+		list($head, $body) = auwallet_http11($method, $uris, $query, $cookie);
+	}
+	
+	// 今月のチャージ履歴を取得する
+	$divs = parse_tag($body, "div", true);
+	foreach($divs as $div) if($div["class"] == "accordion") {
+		$memo = "";
+		$amount = "";
+		$date = "";
+		$summary = "";
+		
+		$tds = parse_tag($div["innerHTML"], "td");
+		if(count($tds) >= 4) {
+			$memo = $tds[2]["innerHTML"];
+			$amount = parse_amount($tds[3]["innerHTML"]);
+		}
+		
+		$dds = parse_tag($div["innerHTML"], "dd");
+		if(count($dds) >= 2) {
+			$date = $dds[0]["innerHTML"];
+			$summary = $dds[1]["innerHTML"];
+		}
+		
+		if($date != "" && $summary != "" && $amount != "" && $memo != "") $csv .= implode(",", array("0", $date, "", $summary, $amount, "", $memo, "", "", "")) . "\r\n";
+	}
+	
+	// 前月の画面を取得する
+	$forms = parse_tag($body, "form");
+	$c = parse_tag_search($forms, "name", "history_form");
+	if($c != -1) {
+		$inputs = parse_tag($forms[$c]["innerHTML"], "input");
+		$queries = array();
+		foreach($inputs as $input) if($input["name"] != "") $queries[$input["name"]] = urlencode($input["name"]) . "=" . urlencode($input["value"]);
+		$queries["menuFormDto.viewDate"] = "menuFormDto.viewDate=" . substr(ENV_STR_DATE_PASTDAY, 0, 6);
+		$forms[$c]["action"] = "charge_history.html";
+		
+		$method = $forms[$c]["method"];
+		$uris = parse_uri($forms[$c]["action"], $uris);
+		$query = implode("&", $queries);
+		$cookie = auwallet_update_cookie($head, $cookie);
+		list($head, $body) = auwallet_http11($method, $uris, $query, $cookie);
+	}
+	
+	// 前月のチャージ履歴を取得する
+	$divs = parse_tag($body, "div", true);
+	foreach($divs as $div) if($div["class"] == "accordion") {
+		$memo = "";
+		$amount = "";
+		$date = "";
+		$summary = "";
+		
+		$tds = parse_tag($div["innerHTML"], "td");
+		if(count($tds) >= 4) {
+			$memo = $tds[2]["innerHTML"];
+			$amount = parse_amount($tds[3]["innerHTML"]);
+		}
+		
+		$dds = parse_tag($div["innerHTML"], "dd");
+		if(count($dds) >= 2) {
+			$date = $dds[0]["innerHTML"];
+			$summary = $dds[1]["innerHTML"];
+		}
+		
+		if($date != "" && $summary != "" && $amount != "" && $memo != "") $csv .= implode(",", array("0", $date, "", $summary, $amount, "", $memo, "", "", "")) . "\r\n";
+	}
+	
+	// 実行時間（タイムアウト）を再設定する
+	@set_time_limit(ENV_NUM_TIMEOUT);
+	
 	$details = array();
 	$j = 0;
 	$lines = array_reverse(parse_csv($csv));
 	foreach($lines as $line) {
 		$c = count($line);
 		if($c >= 9 && $line[0] != "" && $line[1] != "利用日時") {
-			$details[$j]["date"] = parse_date($line[1]);
+			// $details[$j]["date"] = parse_date($line[1]);
+			$details[$j]["date"] = $line[1];
 			$details[$j]["summary"] = $line[3];
 			$details[$j]["amount"] = parse_amount($line[4]);
 			$details[$j]["memo"] = ($line[6] != ""? $line[6]: ENV_STR_OFX_MEMO);
@@ -344,6 +425,7 @@ if($sid > 0) {
 			$j++;
 		}
 	}
+	asort($details);
 	$account["details"] = $details;
 	
 	// 実行時間（タイムアウト）を再設定する
@@ -451,6 +533,7 @@ function auwallet_parse_details($account) {
 	$cd_num = 0;
 	$dtstart = ENV_STR_DATE_PASTDAY;
 	foreach($account["details"] as $line) {
+		$line["date"] = parse_date($line["date"]);
 		if($dtstart > $line["date"]) $dtstart = $line["date"];
 		
 		$cd = array();
