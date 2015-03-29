@@ -15,7 +15,7 @@ $accesskey = $ofxforms["accesskey"];
 
 if($sesscookie != "") list($cookie, $dummy) = explode("\t", sess_decode($sesscookie));
 if($accesskey != "") {
-	list($ssid, $method, $uri, $query, $user, $pass, $dummy) = explode("\t", sess_decode($accesskey), 7);
+	list($ssid, $method, $uri, $query, $user, $dummy) = explode("\t", sess_decode($accesskey), 6);
 	$sid = (integer)$ssid;
 }
 
@@ -79,7 +79,7 @@ if($sid > 0) {
 	$resp["addition"] = $imgsrc;
 	$resp["sid"] = $sid;
 	$resp["sesscookie"] = sess_encode(implode("\t", array($cookie, ENV_STR_SESSION_PADDING)));
-	$resp["accesskey"] = sess_encode(implode("\t", array((string)$sid, $method, $uris["scheme"] . "://" . $uris["host"] . $uris["path"], $query, $user, $pass, ENV_STR_SESSION_PADDING)));
+	$resp["accesskey"] = sess_encode(implode("\t", array((string)$sid, $method, $uris["scheme"] . "://" . $uris["host"] . $uris["path"], $query, $user, ENV_STR_SESSION_PADDING)));
 	
 	$mfachallengetrnrs = "";
 	$mfachallengetrnrs .= "<MFACHALLENGETRNRS>";
