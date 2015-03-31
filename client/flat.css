@@ -8,6 +8,9 @@ body {
 	background: #EFA09B linear-gradient(to right, #D8B99A, #EFA09B, #A87190);
 	background-attachment: fixed;
 }
+body > p {
+	margin: 60px 0px -40px 0px;
+}
 hr {
 	display: none;
 }

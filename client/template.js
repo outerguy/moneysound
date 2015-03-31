@@ -389,15 +389,15 @@ function fnc_erase() {
 // デバッグ情報機能
 function fnc_debug() {
 	var logons = local_current();
-	var auths = dom_get_storage(logons["localid"], logons["localpass"]).split("\r\n");
+	var auth = dom_get_storage(logons["localid"], logons["localpass"]);
 	
 	var body = document.createDocumentFragment();
-	var tag_p, tag_select, tag_option;
-	for(i = 0; i < auths.length; i++) {
-		tag_p = dom_create_tag("p");
-		tag_p.appendChild(dom_create_text(auths[i]));
-		body.appendChild(tag_p);
-	}
+	var tag_div, tag_pre;
+	tag_div = dom_create_tag("div", { "id": "details" });
+	tag_pre = dom_create_tag("pre");
+	tag_pre.appendChild(dom_create_text(auth.replace(/\t/g, " ")));
+	tag_div.appendChild(tag_pre);
+	body.appendChild(tag_div);
 	
 	// ダイアログを開く
 	modal_showonly("デバッグ情報", body, false);

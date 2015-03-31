@@ -120,6 +120,9 @@ td.status {
 td.timestamp {
 	text-align: center;
 }
+pre {
+	word-wrap: break-word;
+}
 .control {
 	text-align: left;
 }
