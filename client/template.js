@@ -68,7 +68,7 @@ function fnc_load() {
 		tag_p = dom_create_tag("p", { "class": "ac", "style": "padding: 0.5em; font-weight: bold; color: #FFFFFF; background: #FF0000;" });
 		tag_p.appendChild(dom_create_text("【警告】開発者向け（デバッグ）機能が有効のため、認証情報を含む詳細な記録が残ります。開発者以外の方は、操作しないでください。または、開発者へご相談ください。"));
 		tag_nav.parentNode.insertBefore(tag_p, tag_nav);
-		dom_get_id("btn_debug").style.display = "inline";
+		dom_get_id("btn_debug").className = "btn";
 	}
 	
 	// ボタンと機能を関連付ける
@@ -763,11 +763,12 @@ function fnc_update(rowid, additional) {
 	query = querys.join("&");
 	querys[0] = m + "=" + fiid;
 	if(typeof additional != "undefined") querys.pop();
+	if(token != "") querys.pop();
 	
 	xhr = new XMLHttpRequest();
 	with(xhr) {
 		onreadystatechange = function() {
-			var logons, ofx, inputs, token, query;
+			var logons, ofx, inputs, query;
 			var i;
 			
 			if(xhr != null && xhr.readyState == 4) {
@@ -796,14 +797,17 @@ function fnc_update(rowid, additional) {
 				// ログオフボタンの押下を許可する
 				dom_get_id("btn_logoff").disabled = false;
 				
+				// デバッグ情報ボタンの押下を許可する
+				dom_get_id("btn_debug").disabled = false;
+				
+				// 設定ボタンの押下を許可する
+				dom_get_id("btn_option").disabled = false;
+				
 				// バージョン情報ボタンの押下を許可する
 				dom_get_id("btn_version").disabled = false;
 				
 				// 追加ボタンの押下を許可する
 				dom_get_id("btn_add").disabled = false;
-				
-				// 設定ボタンの押下を許可する
-				dom_get_id("btn_option").disabled = false;
 				
 				// 中止ボタンの押下を禁止する
 				dom_get_id("btn_get_stop").disabled = true;
@@ -816,7 +820,7 @@ function fnc_update(rowid, additional) {
 					querys.push("status=" + xhr.status.toString());
 					querys.push("timestamp=" + timestamp_get());
 					
-					token = xhr.getResponseHeader("X-Token");
+					if(xhr.getResponseHeader("X-Token") != null && xhr.getResponseHeader("X-Token") != "") token = xhr.getResponseHeader("X-Token");
 					if(token != null && token != "") {
 						i = token.indexOf(",");
 						if(i != -1) token = token.substring(0, i);
@@ -857,14 +861,17 @@ function fnc_update(rowid, additional) {
 	// ログオフボタンの押下を禁止する
 	dom_get_id("btn_logoff").disabled = true;
 	
+	// デバッグ情報ボタンの押下を禁止する
+	dom_get_id("btn_debug").disabled = true;
+	
+	// 設定ボタンの押下を許可する
+	dom_get_id("btn_option").disabled = true;
+	
 	// バージョン情報ボタンの押下を禁止する
 	dom_get_id("btn_version").disabled = true;
 	
 	// 追加ボタンの押下を禁止する
 	dom_get_id("btn_add").disabled = true;
-	
-	// 設定ボタンの押下を許可する
-	dom_get_id("btn_option").disabled = true;
 	
 	// 中止ボタンの押下を許可する
 	dom_get_id("btn_get_stop").disabled = false;
