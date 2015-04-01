@@ -493,6 +493,11 @@ if(strpos($body, "ƒVƒXƒeƒ€ƒƒ“ƒeƒiƒ“ƒX’†") !== false || strpos($body, "ƒVƒXƒeƒ€ƒ
 	$cd_date = "";
 	$cd_num = 0;
 	
+	$usort_exchanges = function($a, $b) {
+		strcmp($a["DTTRADE"], $b["DTTRADE"]);
+	};
+	usort($exchanges, $usort_exchanges);
+	
 	foreach($exchanges as $exchange) {
 		$uniqueid = array_search($exchange["SECNAME"], $investments);
 		if($uniqueid === false) $uniqueid = mb_convert_uniqueid($exchange["SECNAME"]);
