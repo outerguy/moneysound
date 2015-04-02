@@ -164,6 +164,9 @@ a:hover, a:active {
 	color: #838383;
 	background: #EFEFEF;
 }
+.btn:focus {
+	border: solid 1px #5599DD;
+}
 .btn + .btn {
 	margin: 0px 0px 0px 5px;
 }
