@@ -654,7 +654,7 @@ function jpbank_parse_details($account) {
 			$cd["TRNTYPE"] = ENV_STR_OFX_TRNTYPE_ATM;
 		} else if(mb_strpos($line["summary"], "料　金") === 0) {
 			$cd["TRNTYPE"] = ENV_STR_OFX_TRNTYPE_FEE;
-		} else if(mb_strpos($line["summary"], "受取利子") === 0) {
+		} else if(mb_strpos($line["summary"], "受取利子") === 0 || mb_strpos($line["summary"], "利子") === 0) {
 			$cd["TRNTYPE"] = ENV_STR_OFX_TRNTYPE_INT;
 		} else if(mb_strpos($line["summary"], "税金") === 0) {
 			$cd["TRNTYPE"] = ENV_STR_OFX_TRNTYPE_INT;

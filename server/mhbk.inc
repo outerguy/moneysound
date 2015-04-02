@@ -523,7 +523,7 @@ if($sid > 0) {
 			$str = str_replace("<ACCTID>00" . $account["acctid"] . "</ACCTID>", "<ACCTID>" . $account["acctid"] . "</ACCTID>", $str);
 			
 			// MEMO‚ğNAME‚É•â³‚·‚é
-			$str = str_replace(array("<MEMO>", "</MEMO>"), array("<NAME>", "</NAME>"), $str);
+			$str = str_replace(array("<MEMO>", "</MEMO>"), array("<NAME>", "</NAME>\r\n<MEMO>" . ENV_STR_OFX_MEMO . "</MEMO>"), $str);
 			
 			// TRNAMT‚Ì”’l‚Ì‘®‚ğ•â³‚·‚é
 			$trnamts = parse_tag($str, "TRNAMT");
