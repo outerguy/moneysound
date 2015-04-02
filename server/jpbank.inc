@@ -453,8 +453,6 @@ if($sid > 0) {
 			$tds = parse_tag($tr["innerHTML"], "td");
 			if(count($tds) == 5) {
 				for($i = 0; $i < count($tds); $i++) $tds[$i]["innerHTML"] = str_replace("&nbsp;", "", trim(strip_tags($tds[$i]["innerHTML"])));
-				// 受取利子の明細を無視する
-				if($tds[3]["innerHTML"] == "受取利子") continue;
 				$details[$n]["date"] = parse_date($tds[0]["innerHTML"]);
 				$details[$n]["deposit"] = parse_amount($tds[1]["innerHTML"]);
 				$details[$n]["withdrawals"] = parse_amount($tds[2]["innerHTML"]);
@@ -656,7 +654,7 @@ function jpbank_parse_details($account) {
 			$cd["TRNTYPE"] = ENV_STR_OFX_TRNTYPE_ATM;
 		} else if(mb_strpos($line["summary"], "料　金") === 0) {
 			$cd["TRNTYPE"] = ENV_STR_OFX_TRNTYPE_FEE;
-		} else if(mb_strpos($line["summary"], "利子") === 0) {
+		} else if(mb_strpos($line["summary"], "受取利子") === 0) {
 			$cd["TRNTYPE"] = ENV_STR_OFX_TRNTYPE_INT;
 		} else if(mb_strpos($line["summary"], "税金") === 0) {
 			$cd["TRNTYPE"] = ENV_STR_OFX_TRNTYPE_INT;
