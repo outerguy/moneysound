@@ -82,6 +82,7 @@ function fnc_load() {
 	with(dom_get_id("btn_get_all")) onclick = onkeypress = fnc_update_all;
 	with(dom_get_id("btn_get_stop")) onclick = onkeypress = fnc_cancel;
 	with(dom_get_id("btn_ofx_all")) onclick = onkeypress = fnc_ofx_all;
+	with(dom_get_id("btn_csv")) onclick = onkeypress = fnc_csv;
 	with(dom_get_id("btn_add")) onclick = onkeypress = fnc_create;
 	
 	// リンク先を設定する
@@ -127,6 +128,7 @@ function fnc_initialize() {
 			dom_get_id("btn_get_all").disabled = true;
 			dom_get_id("btn_get_stop").disabled = true;
 			dom_get_id("btn_ofx_all").disabled = true;
+			dom_get_id("btn_csv").disabled = true;
 			dom_get_id("btn_add").disabled = true;
 			
 			lists = "";
@@ -145,6 +147,7 @@ function fnc_initialize() {
 			dom_get_id("btn_get_all").disabled = true;
 			dom_get_id("btn_get_stop").disabled = true;
 			dom_get_id("btn_ofx_all").disabled = true;
+			dom_get_id("btn_csv").disabled = true;
 			dom_get_id("btn_add").disabled = false;
 			
 			ret = true;
@@ -497,7 +500,7 @@ function fnc_version() {
 		body.appendChild(tag_p);
 		
 		tag_p = dom_create_tag("p", { "class": "label" });
-		tag_p.appendChild(dom_create_text("暗号化ライブラリー"));
+		tag_p.appendChild(dom_create_text("使用しているライブラリー"));
 		body.appendChild(tag_p);
 		
 		tag_p = dom_create_tag("p");
@@ -505,6 +508,13 @@ function fnc_version() {
 		tag_a.appendChild(dom_create_text("CryptoJS v3.1.2"));
 		tag_p.appendChild(tag_a);
 		tag_p.appendChild(dom_create_text("(c) 2009-2013 by Jeff Mott. All rights reserved."));
+		body.appendChild(tag_p);
+		
+		tag_p = dom_create_tag("p");
+		tag_a = dom_create_tag("a", { "href": "https://github.com/polygonplanet/encoding.js", "target": "_blank", "style": "margin-right: 0.5em;" });
+		tag_a.appendChild(dom_create_text("Encoding.js version 1.0.21"));
+		tag_p.appendChild(tag_a);
+		tag_p.appendChild(dom_create_text("Copyright (c) 2013-2015 polygon planet"));
 		body.appendChild(tag_p);
 		
 		if(chkenv_xmlhttprequest() == false || chkenv_webstorage() == false || chkenv_domparser() == false || chkenv_xmlserializer() == false || chkenv_blob() == false || chkenv_createobjecturl() == false) {
@@ -540,6 +550,11 @@ function fnc_version() {
 			if(chkenv_createobjecturl() == false) {
 				tag_p = dom_create_tag("p");
 				tag_p.appendChild(dom_create_text("createObjectURL"));
+				body.appendChild(tag_p);
+			}
+			if(chkenv_arraybuffer() == false) {
+				tag_p = dom_create_tag("p");
+				tag_p.appendChild(dom_create_text("ArrayBuffer"));
 				body.appendChild(tag_p);
 			}
 		}
@@ -806,6 +821,9 @@ function fnc_update(rowid, additional) {
 				// バージョン情報ボタンの押下を許可する
 				dom_get_id("btn_version").disabled = false;
 				
+				// CSVボタンの押下を許可する
+				dom_get_id("btn_csv").disabled = false;
+				
 				// 追加ボタンの押下を許可する
 				dom_get_id("btn_add").disabled = false;
 				
@@ -869,6 +887,9 @@ function fnc_update(rowid, additional) {
 	
 	// バージョン情報ボタンの押下を禁止する
 	dom_get_id("btn_version").disabled = true;
+	
+	// CSVボタンの押下を禁止する
+	dom_get_id("btn_csv").disabled = true;
 	
 	// 追加ボタンの押下を禁止する
 	dom_get_id("btn_add").disabled = true;
@@ -1411,6 +1432,173 @@ function fnc_ofx_all() {
 	}
 }
 
+// CSVダウンロード機能
+function fnc_csv() {
+	var parser = null;
+	var current = null;
+	var f = false;
+	var logons, auths, timestamp, settings, filename, str, csv, total;
+	var tag_stmttrnrss, tag_ccstmttrnrss, tag_invstmttrnrss, tag_stmttrns, tag_secinfos, tag_invposs;
+	var mktginfo, balamt, availcash, dtasof, bankid, branchid, brokerid, acctid, dtposted, name, trnamt, memo, secname, uniqueid, dtpriceasof, mktval;
+	var buf, buf_sjis, buf_view, buf_blob;
+	var tag_a;
+	var url, tag_section;
+	var i, j, k;
+	var title = dom_get_tag("title")[0].firstChild.nodeValue;
+	var buf = "";
+	
+	if(chkenv_csv() == false) {
+		modal_showonly("警告", "ご利用のブラウザーは、CSVのダウンロードに対応していません。", false);
+	} else {
+		parser = new DOMParser();
+		logons = local_current();
+		auths = dom_get_storage(logons["localid"], logons["localpass"]).split("\r\n");
+		timestamp = timestamp_get();
+		total = dom_get_id("total").firstChild.nodeValue.replace(/,/g, "");
+		buf += "\"金融機関\",\"日付\",\"摘要\",\"金額\",\"メモ\"\r\n";
+		buf += "\"" + title + " Version " + ver + "\"," + timestamp.substr(0, 4) + "-" + timestamp.substr(4, 2) + "-" + timestamp.substr(6, 2) + "," + "\"残高合計\"," + total + ",\"" + logons["localid"] + "\"\r\n";
+		buf += "\r\n";
+		
+		for(i = 0; i < auths.length; i++) {
+			settings = auth_parse(auths[i]);
+			
+			str = dom_get_storage(logons["localid"] + ":" + settings["rowid"], logons["localpass"]);
+			if(str != null && str != "") {
+				try {
+					current = parser.parseFromString(str, "text/xml");
+				} catch(e) {
+					// 何もしない
+					void(0);
+				}
+				
+				// 銀行
+				tag_stmttrnrss = (current != null? current.getElementsByTagName("STMTTRNRS"): new Array());
+				for(j = 0; j < tag_stmttrnrss.length; j++) {
+					with(tag_stmttrnrss[j]) {
+						mktginfo = getElementsByTagName("MKTGINFO")[0].firstChild.nodeValue;
+						balamt = getElementsByTagName("BALAMT")[0].firstChild.nodeValue;
+						dtasof = getElementsByTagName("DTASOF")[0].firstChild.nodeValue;
+						bankid = getElementsByTagName("BANKID")[0].firstChild.nodeValue;
+						branchid = getElementsByTagName("BRANCHID")[0].firstChild.nodeValue;
+						acctid = getElementsByTagName("ACCTID")[0].firstChild.nodeValue;
+						tag_stmttrns = getElementsByTagName("STMTTRN");
+					}
+					buf += "\"" + mktginfo + "\"," + dtasof.substr(0, 4) + "-" + dtasof.substr(4, 2) + "-" + dtasof.substr(6, 2) + ",\"残高\"," + balamt + ",\"" + bankid + " " + branchid + " " + acctid + "\"\r\n";
+					for(k = 0; k < tag_stmttrns.length; k++) {
+						with(tag_stmttrns[k]) {
+							dtposted = getElementsByTagName("DTPOSTED")[0].firstChild.nodeValue;
+							name = getElementsByTagName("NAME")[0].firstChild.nodeValue;
+							trnamt = getElementsByTagName("TRNAMT")[0].firstChild.nodeValue;
+							memo = getElementsByTagName("MEMO")[0].firstChild.nodeValue;
+						}
+						buf += "," + dtposted.substr(0, 4) + "-" + dtposted.substr(4, 2) + "-" + dtposted.substr(6, 2) + ",\"" + name + "\"," + trnamt + ",\"" + memo + "\"\r\n";
+					}
+					if(tag_stmttrnrss.length > 1 && j < tag_stmttrnrss.length - 1) buf += "\r\n";
+					f = true;
+				}
+				
+				// クレジットカード
+				tag_ccstmttrnrss = (current != null? current.getElementsByTagName("CCSTMTTRNRS"): new Array());
+				for(j = 0; j < tag_ccstmttrnrss.length; j++) {
+					with(tag_ccstmttrnrss[j]) {
+						mktginfo = getElementsByTagName("MKTGINFO")[0].firstChild.nodeValue;
+						balamt = getElementsByTagName("BALAMT")[0].firstChild.nodeValue;
+						dtasof = getElementsByTagName("DTASOF")[0].firstChild.nodeValue;
+						acctid = getElementsByTagName("ACCTID")[0].firstChild.nodeValue;
+						tag_stmttrns = getElementsByTagName("STMTTRN");
+					}
+					buf += "\"" + mktginfo + "\"," + dtasof.substr(0, 4) + "-" + dtasof.substr(4, 2) + "-" + dtasof.substr(6, 2) + ",\"残高\"," + balamt + ",\"" + acctid + "\"\r\n";
+					for(k = 0; k < tag_stmttrns.length; k++) {
+						with(tag_stmttrns[k]) {
+							dtposted = getElementsByTagName("DTPOSTED")[0].firstChild.nodeValue;
+							name = getElementsByTagName("NAME")[0].firstChild.nodeValue;
+							trnamt = getElementsByTagName("TRNAMT")[0].firstChild.nodeValue;
+							memo = getElementsByTagName("MEMO")[0].firstChild.nodeValue;
+						}
+						buf += "," + dtposted.substr(0, 4) + "-" + dtposted.substr(4, 2) + "-" + dtposted.substr(6, 2) + ",\"" + name + "\"," + trnamt + ",\"" + memo + "\"\r\n";
+					}
+					if(tag_ccstmttrnrss.length > 1 && j < tag_ccstmttrnrss.length - 1) buf += "\r\n";
+					f = true;
+				}
+				
+				// 証券
+				tag_invstmttrnrss = (current != null? current.getElementsByTagName("INVSTMTTRNRS"): new Array());
+				for(j = 0; j < tag_invstmttrnrss.length; j++) {
+					with(tag_invstmttrnrss[j]) {
+						mktginfo = getElementsByTagName("MKTGINFO")[0].firstChild.nodeValue;
+						availcash = getElementsByTagName("AVAILCASH")[0].firstChild.nodeValue;
+						dtasof = getElementsByTagName("DTASOF")[0].firstChild.nodeValue;
+						brokerid = getElementsByTagName("BROKERID")[0].firstChild.nodeValue;
+						acctid = getElementsByTagName("ACCTID")[0].firstChild.nodeValue;
+						tag_stmttrns = getElementsByTagName("STMTTRN");
+					}
+					buf += "\"" + mktginfo + "\"," + dtasof.substr(0, 4) + "-" + dtasof.substr(4, 2) + "-" + dtasof.substr(6, 2) + ",\"残高\"," + availcash + ",\"" + brokerid + " " + acctid + "\"\r\n";
+					for(k = 0; k < tag_stmttrns.length; k++) {
+						with(tag_stmttrns[k]) {
+							dtposted = getElementsByTagName("DTPOSTED")[0].firstChild.nodeValue;
+							name = getElementsByTagName("NAME")[0].firstChild.nodeValue;
+							trnamt = getElementsByTagName("TRNAMT")[0].firstChild.nodeValue;
+							memo = getElementsByTagName("MEMO")[0].firstChild.nodeValue;
+						}
+						buf += "," + dtposted.substr(0, 4) + "-" + dtposted.substr(4, 2) + "-" + dtposted.substr(6, 2) + ",\"" + name + "\"," + trnamt + ",\"" + memo + "\"\r\n";
+					}
+					if(tag_invstmttrnrss.length > 1 && j < tag_invstmttrnrss.length - 1) buf += "\r\n";
+					f = true;
+				}
+				
+				// 証券
+				seclists = new Array();
+				tag_secinfos = (current != null? current.getElementsByTagName("SECINFO"): new Array());
+				for(j = 0; j < tag_secinfos.length; j++) {
+					with(tag_secinfos[j]) {
+						secname = getElementsByTagName("SECNAME")[0].firstChild.nodeValue;
+						uniqueid = getElementsByTagName("UNIQUEID")[0].firstChild.nodeValue;
+					}
+					seclists[uniqueid] = secname;
+				}
+				
+				tag_invposs = (current != null? current.getElementsByTagName("INVPOS"): new Array());
+				for(j = 0; j < tag_invposs.length; j++) {
+					with(tag_invposs[j]) {
+						uniqueid = getElementsByTagName("UNIQUEID")[0].firstChild.nodeValue;
+						dtpriceasof = getElementsByTagName("DTPRICEASOF")[0].firstChild.nodeValue;
+						mktval = getElementsByTagName("MKTVAL")[0].firstChild.nodeValue;
+						buf += "," + dtpriceasof.substr(0, 4) + "-" + dtpriceasof.substr(4, 2) + "-" + dtpriceasof.substr(6, 2) + ",\"" + seclists[uniqueid] + "\"," + mktval + ",\"" + uniqueid + "\"\r\n";
+					}
+					f = true;
+				}
+				
+				buf += "\r\n";
+			}
+		}
+		
+		buf_sjis = Encoding.convert(Encoding.stringToCode(buf), "SJIS", "UNICODE");
+		j = buf_sjis.length;
+		buf_blob = new ArrayBuffer(j);
+		buf_view = new Uint8Array(buf_blob);
+		for(i = 0; i < j; i++) buf_view[i] = buf_sjis[i];
+		
+		csv = new Blob([buf_blob]);
+		filename = "MoneySound_" + timestamp + ".csv";
+		
+		if(f == false) {
+			modal_showonly("警告", "ダウンロード可能なCSVがありません。", false);
+		} else {
+			if(self.window.navigator.msSaveOrOpenBlob) {
+				self.window.navigator.msSaveOrOpenBlob(csv, filename);
+			} else {
+				url = self.window.URL || self.window.webkitURL;
+				tag_section = dom_get_tag("section")[0];
+				tag_a = dom_create_tag("a", { "href": url.createObjectURL(csv), "id": "download", "type": "text/csv; charset=Shift_JIS", "download": filename });
+				tag_a.appendChild(dom_create_text("ダウンロード"));
+				tag_section.appendChild(tag_a);
+				dom_get_id("download").click();
+				tag_section.removeChild(tag_a);
+			}
+		}
+	}
+}
+
 // 口座一覧表示機能
 function fnc_listall(lists) {
 	var logons = local_current();
@@ -1430,6 +1618,7 @@ function fnc_listall(lists) {
 	if(f == true) {
 		dom_get_id("btn_get_all").disabled = false;
 		dom_get_id("btn_ofx_all").disabled = false;
+		dom_get_id("btn_csv").disabled = false;
 	}
 	
 	// 口座一覧を更新する
@@ -2269,6 +2458,18 @@ function str_to_hankaku(str) {
 	return str.replace(/[！-～]/g, f).replace(/　/g," ");
 }
 
+function str_to_array(str) {
+	var i;
+	var n = str.length;
+	var ret = new Uint8Array(n);
+	for(i = 0; i < n; i++) ret[i] = str.charCodeAt(i);
+	return ret;
+}
+
+function str_convert_encoding(str) {
+	return Encoding.codeToString(Encoding.convert(str_to_array(str), "SJIS", "UTF8"));
+}
+
 function timestamp_get() {
 	var dt = new Date();
 	var y, m, d, h, i, s;
@@ -2324,6 +2525,10 @@ function chkenv_blob() {
 	return (typeof Blob == "function" && Blob? true: false);
 }
 
+function chkenv_arraybuffer() {
+	return (typeof ArrayBuffer == "function" && ArrayBuffer && typeof Uint8Array == "function" && Uint8Array? true: false);
+}
+
 function chkenv_createobjecturl() {
 	return ((self.window.URL || self.window.webkitURL) && ((self.window.URL || self.window.webkitURL).createObjectURL || self.window.navigator.msSaveOrOpenBlob)? true: false);
 }
@@ -2338,6 +2543,10 @@ function chkenv_ofx() {
 
 function chkenv_ofx_all() {
 	return chkenv_parser() && chkenv_blob() && chkenv_createobjecturl();
+}
+
+function chkenv_csv() {
+	return chkenv_arraybuffer() && chkenv_parser() && chkenv_blob() && chkenv_createobjecturl();
 }
 
 function dom_get_tag(name) {

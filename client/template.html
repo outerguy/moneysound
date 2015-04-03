@@ -25,12 +25,13 @@
 <h2>口座情報一覧</h2>
 <table>
 <caption>マネーサウンド</caption>
-<thead><tr><th class="fi">金融機関</th><th class="accttype">口座種目</th><th class="balance">残高</th><th class="timestamp">更新日時</th><th class="al"><input type="button" value="更新" disabled="disabled" id="btn_get_all" class="btn" /><input type="button" value="中止" disabled="disabled" id="btn_get_stop" class="btn" /><input type="button" value="OFX" disabled="disabled" id="btn_ofx_all" class="btn" /><input type="button" value="追加" disabled="disabled" id="btn_add" class="btn" /></th></tr></thead>
+<thead><tr><th class="fi">金融機関</th><th class="accttype">口座種目</th><th class="balance">残高</th><th class="timestamp">更新日時</th><th class="al"><input type="button" value="更新" disabled="disabled" id="btn_get_all" class="btn" /><input type="button" value="中止" disabled="disabled" id="btn_get_stop" class="btn" /><input type="button" value="OFX" disabled="disabled" id="btn_ofx_all" class="btn" /><input type="button" value="CSV" disabled="disabled" id="btn_csv" class="btn" /><input type="button" value="追加" disabled="disabled" id="btn_add" class="btn" /></th></tr></thead>
 <tfoot><tr><th></th><th class="al">合計</th><th id="total" class="ar">0</th><th colspan="2"></th></tr></tfoot>
 <tbody class="none"><tr><td colspan="5">口座情報一覧</td></tr></tbody>
 </table>
 <script src="./client.php"></script>
 <script src="./cryptojs.js"></script>
+<script src="./encoding.js"></script>
 <noscript>
 <p class="ac">ブラウザーのJavaScriptが無効になっているため、実行できません。</p>
 </noscript>
