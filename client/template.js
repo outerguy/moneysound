@@ -1,11 +1,12 @@
 /*
 MoneySound
-template.js: 画面を制御する
+template.js: 画面・機能を制御する
 Copyright (C) 2014-2015 OFFICE OUTERGUY. All rights reserved.
 mailto:contact@beatrek.com
 Dual-licensed under the Apache License 2.0 and Beatrek Origin License.
 */
 
+// グローバル変数・定数を定義する
 var ver = "<!--[version]-->";
 var get_all = -1;
 var xhr;
@@ -38,7 +39,10 @@ themes["precious.css"] = "プレシャス";
 
 (function() {
 	with(self.document) {
+		// 起動時に事前処理機能を呼び出す
 		body.onload = fnc_load;
+		
+		// Escキーに中止ボタンを割り当てる
 		onkeydown = function(e) {
 			var ret = true;
 			if(typeof e == "undefined") e = event;
@@ -88,6 +92,7 @@ function fnc_load() {
 	// リンク先を設定する
 	for(i = 0; i < tag_as.length; i++) tag_as[i].target = "link";
 	
+	// 初期化機能を呼び出す
 	fnc_initialize();
 	
 	return true;
@@ -117,18 +122,40 @@ function fnc_initialize() {
 			
 			if(dom_get_tag("caption")[0]) dom_get_tag("caption")[0].firstChild.nodeValue = "ログオンしてください";
 			
+			// ログオンボタンの押下を許可する
 			dom_get_id("btn_logon").disabled = false;
+			
+			// ログオフボタンの押下を禁止する
 			dom_get_id("btn_logoff").disabled = true;
+			
+			// 登録ボタンの押下を許可する
 			dom_get_id("btn_register").disabled = false;
+			
+			// 抹消ボタンの押下を許可する
 			dom_get_id("btn_erase").disabled = false;
+			
+			// デバッグ情報ボタンの押下を禁止する
 			dom_get_id("btn_debug").disabled = true;
+			
+			// 設定ボタンの押下を禁止する
 			dom_get_id("btn_option").disabled = true;
+			
+			// バージョン情報ボタンの押下を許可する
 			dom_get_id("btn_version").disabled = false;
 			
+			// すべて更新ボタンの押下を許可する
 			dom_get_id("btn_get_all").disabled = true;
+			
+			// 中止ボタンの押下を禁止する
 			dom_get_id("btn_get_stop").disabled = true;
+			
+			// OFX（結合）ボタンの押下を禁止する
 			dom_get_id("btn_ofx_all").disabled = true;
+			
+			// CSVボタンの押下を禁止する
 			dom_get_id("btn_csv").disabled = true;
+			
+			// 追加ボタンの押下を禁止する
 			dom_get_id("btn_add").disabled = true;
 			
 			lists = "";
@@ -136,18 +163,40 @@ function fnc_initialize() {
 		default:
 			dom_get_tag("caption")[0].firstChild.nodeValue = logons["localid"];
 			
+			// ログオンボタンの押下を禁止する
 			dom_get_id("btn_logon").disabled = true;
+			
+			// ログオフボタンの押下を許可する
 			dom_get_id("btn_logoff").disabled = false;
+			
+			// 登録ボタンの押下を禁止する
 			dom_get_id("btn_register").disabled = true;
+			
+			// 抹消ボタンの押下を禁止する
 			dom_get_id("btn_erase").disabled = true;
+			
+			// デバッグ情報ボタンの押下を許可する
 			dom_get_id("btn_debug").disabled = false;
+			
+			// 設定ボタンの押下を許可する
 			dom_get_id("btn_option").disabled = false;
+			
+			// バージョン情報ボタンの押下を許可する
 			dom_get_id("btn_version").disabled = false;
 			
+			// すべて更新ボタンの押下を禁止する
 			dom_get_id("btn_get_all").disabled = true;
+			
+			// 中止ボタンの押下を禁止する
 			dom_get_id("btn_get_stop").disabled = true;
+			
+			// OFX（結合）ボタンの押下を禁止する
 			dom_get_id("btn_ofx_all").disabled = true;
+			
+			// CSVボタンの押下を禁止する
 			dom_get_id("btn_csv").disabled = true;
+			
+			// 追加ボタンの押下を許可する
 			dom_get_id("btn_add").disabled = false;
 			
 			ret = true;
@@ -236,6 +285,7 @@ function fnc_logon() {
 				dom_set_storage(auths[1].split("=", 2)[0], auths[1].split("=", 2)[1]);
 				dom_set_storage(auths[2].split("=", 2)[0], auths[2].split("=", 2)[1]);
 				
+				// 初期化機能を呼び出す
 				fnc_initialize();
 				
 				break;
@@ -253,6 +303,7 @@ function fnc_logoff() {
 	// ログオン情報を削除する
 	for(i in logons) dom_del_storage(i);
 	
+	// 初期化機能を呼び出す
 	fnc_initialize();
 	
 	return false;
@@ -435,7 +486,7 @@ function fnc_option() {
 		// ダイアログを開く
 		modal_show("設定", body, true, "theme");
 		
-		// 分類リストの先頭を選択する
+		// 画面のテーマリストの先頭を選択する
 		tag_select.focus();
 	} else {
 		// コールバックの場合
@@ -444,6 +495,7 @@ function fnc_option() {
 		// ダイアログを閉じる
 		modal_hide();
 		
+		// 画面のテーマを設定する
 		dom_set_storage(logons["localid"] + ":theme", css, logons["localpass"]);
 		fnc_option_change();
 	}
@@ -456,6 +508,7 @@ function fnc_option_change() {
 	var css = dom_get_storage(logons["localid"] + ":theme", logons["localpass"]);
 	var i;
 	
+	// 画面のテーマよりCSSファイルを選択する
 	if(css == null || css == "") for(i in themes) {
 		css = i;
 		break;
@@ -471,6 +524,7 @@ function fnc_version() {
 	var tag_p, tag_a, tag_img, tag_hr;
 	
 	if(dom_get_id("modal") == null) {
+		// 表示項目を設定する
 		tag_p = dom_create_tag("p");
 		tag_img = dom_create_tag("img", { "src": "./client/wsofx.gif", "width": "88", "height": "31", "alt": "We Support OFX", "style": "float: right; clear: right;" });
 		tag_p.appendChild(tag_img);
@@ -517,7 +571,7 @@ function fnc_version() {
 		tag_p.appendChild(dom_create_text("Copyright (c) 2013-2015 polygon planet"));
 		body.appendChild(tag_p);
 		
-		if(chkenv_xmlhttprequest() == false || chkenv_webstorage() == false || chkenv_domparser() == false || chkenv_xmlserializer() == false || chkenv_blob() == false || chkenv_createobjecturl() == false) {
+		if(chkenv_xmlhttprequest() == false || chkenv_webstorage() == false || chkenv_domparser() == false || chkenv_xmlserializer() == false || chkenv_blob() == false || chkenv_createobjecturl() == false || chkenv_arraybuffer() == false) {
 			tag_p = dom_create_tag("p", { "class": "label" });
 			tag_p.appendChild(dom_create_text("ご利用のブラウザーが対応していない機能"));
 			body.appendChild(tag_p);
@@ -762,17 +816,20 @@ function fnc_update(rowid, additional) {
 				k = "fiid";
 			}
 			
+			// 認証情報を展開する
 			if(i == 0 || fiids[fiid]["form"].indexOf(k) != -1) querys.push(k + "=" + encodeURIComponent(l));
 			if(k == "status") status = l;
 			if(k == "token") token = l;
 		}
 	}
 	
+	// 追加認証の場合、追加認証機能を呼び出す
 	if(status == "202" && typeof additional == "undefined") {
 		fnc_update_additional(auth);
 		return false;
 	}
 	
+	// 認証情報を結合・分離する
 	if(token != "") querys.push("X-Token=" + token);
 	if(typeof additional != "undefined") querys.push(additional);
 	query = querys.join("&");
@@ -852,6 +909,7 @@ function fnc_update(rowid, additional) {
 					fnc_initialize();
 				}
 				
+				// すべて更新機能を実行中の場合
 				if(get_all != -1) fnc_update_all(auths[0]);
 			}
 		};
@@ -950,6 +1008,7 @@ function fnc_update_additional(auth) {
 			break;
 		}
 		
+		// 追加認証情報を取得する
 		sesscookie = (ofx != null? ofx.getElementsByTagName("SESSCOOKIE")[0].firstChild.nodeValue: "");
 		accesskey = (ofx != null? ofx.getElementsByTagName("ACCESSKEY")[0].firstChild.nodeValue: "");
 		mfaphraseid = (ofx != null? ofx.getElementsByTagName("MFAPHRASEID")[0].firstChild.nodeValue: "");
@@ -997,6 +1056,8 @@ function fnc_update_additional(auth) {
 		
 		modal_hide();
 		settings = auth_parse(auth);
+		
+		// 更新機能を呼び出す
 		fnc_update(settings["rowid"], query);
 	}
 	return false;
@@ -1253,9 +1314,11 @@ function fnc_ofx(rowid) {
 	if(chkenv_ofx() == false) {
 		modal_showonly("警告", "ご利用のブラウザーは、OFXのダウンロードに対応していません。", false);
 	} else {
+		// ダウンロード用データを生成する
 		ofx = new Blob([dom_get_storage(logons["localid"] + ":" + settings["rowid"], logons["localpass"])]);
 		filename = settings["fiid"] + (settings["keyvalues"]["timestamp"] != ""? "_" + settings["keyvalues"]["timestamp"]: "") + ".ofx";
 		
+		// データをダウンロードする
 		if(self.window.navigator.msSaveOrOpenBlob) {
 			self.window.navigator.msSaveOrOpenBlob(ofx, filename);
 		} else {
@@ -1294,6 +1357,7 @@ function fnc_ofx_all() {
 		auths = dom_get_storage(logons["localid"], logons["localpass"]).split("\r\n");
 		timestamp = timestamp_get();
 		
+		// 結合先を初期化する
 		tag_ofx = merge.firstChild;
 		
 		tag_signonmsgsrsv1 = merge.createElement("SIGNONMSGSRSV1");
@@ -1337,6 +1401,7 @@ function fnc_ofx_all() {
 		tag_seclisttrnrs = merge.createElement("SECLISTTRNRS");
 		tag_seclist = merge.createElement("SECLIST");
 		
+		// 結合先にデータを結合する
 		for(i = 0; i < auths.length; i++) {
 			settings = auth_parse(auths[i]);
 			
@@ -1349,7 +1414,7 @@ function fnc_ofx_all() {
 					void(0);
 				}
 				
-				// 銀行
+				// 銀行・前払式帳票
 				tag_stmttrnrss = (current != null? current.getElementsByTagName("STMTTRNRS"): new Array());
 				for(j = 0; j < tag_stmttrnrss.length; j++) {
 					tag_bankmsgsrsv1.appendChild(tag_stmttrnrss[j].cloneNode(true));
@@ -1411,9 +1476,11 @@ function fnc_ofx_all() {
 		
 		str = ofxhead + serializer.serializeToString(merge);
 		
+		// ダウンロード用データを生成する
 		ofx = new Blob([str]);
 		filename = "MoneySound_" + timestamp + ".ofx";
 		
+		// データをダウンロードする
 		if(f == false) {
 			modal_showonly("警告", "ダウンロード可能なOFXがありません。", false);
 		} else {
@@ -1455,8 +1522,10 @@ function fnc_csv() {
 		auths = dom_get_storage(logons["localid"], logons["localpass"]).split("\r\n");
 		timestamp = timestamp_get();
 		total = dom_get_id("total").firstChild.nodeValue.replace(/,/g, "");
+		
+		// データを生成する
 		buf += "\"金融機関\",\"日付\",\"摘要\",\"金額\",\"メモ\"\r\n";
-		buf += "\"" + title + " Version " + ver + "\"," + timestamp.substr(0, 4) + "-" + timestamp.substr(4, 2) + "-" + timestamp.substr(6, 2) + "," + "\"残高合計\"," + total + ",\"" + logons["localid"] + "\"\r\n";
+		buf += "\"" + title + " Version " + ver + "\"," + timestamp.substring(0, 4) + "-" + timestamp.substring(4, 6) + "-" + timestamp.substring(6, 8) + "," + "\"残高合計\"," + total + ",\"" + logons["localid"] + "\"\r\n";
 		buf += "\r\n";
 		
 		for(i = 0; i < auths.length; i++) {
@@ -1471,7 +1540,7 @@ function fnc_csv() {
 					void(0);
 				}
 				
-				// 銀行
+				// 銀行・前払式帳票
 				tag_stmttrnrss = (current != null? current.getElementsByTagName("STMTTRNRS"): new Array());
 				for(j = 0; j < tag_stmttrnrss.length; j++) {
 					with(tag_stmttrnrss[j]) {
@@ -1483,7 +1552,7 @@ function fnc_csv() {
 						acctid = getElementsByTagName("ACCTID")[0].firstChild.nodeValue;
 						tag_stmttrns = getElementsByTagName("STMTTRN");
 					}
-					buf += "\"" + mktginfo + "\"," + dtasof.substr(0, 4) + "-" + dtasof.substr(4, 2) + "-" + dtasof.substr(6, 2) + ",\"残高\"," + balamt + ",\"" + bankid + " " + branchid + " " + acctid + "\"\r\n";
+					buf += "\"" + mktginfo + "\"," + dtasof.substring(0, 4) + "-" + dtasof.substring(4, 6) + "-" + dtasof.substring(6, 8) + ",\"残高\"," + balamt + ",\"" + bankid + " " + branchid + " " + acctid + "\"\r\n";
 					for(k = 0; k < tag_stmttrns.length; k++) {
 						with(tag_stmttrns[k]) {
 							dtposted = getElementsByTagName("DTPOSTED")[0].firstChild.nodeValue;
@@ -1491,7 +1560,7 @@ function fnc_csv() {
 							trnamt = getElementsByTagName("TRNAMT")[0].firstChild.nodeValue;
 							memo = getElementsByTagName("MEMO")[0].firstChild.nodeValue;
 						}
-						buf += "," + dtposted.substr(0, 4) + "-" + dtposted.substr(4, 2) + "-" + dtposted.substr(6, 2) + ",\"" + name + "\"," + trnamt + ",\"" + memo + "\"\r\n";
+						buf += "," + dtposted.substring(0, 4) + "-" + dtposted.substring(4, 6) + "-" + dtposted.substring(6, 8) + ",\"" + name + "\"," + trnamt + ",\"" + memo + "\"\r\n";
 					}
 					if(tag_stmttrnrss.length > 1 && j < tag_stmttrnrss.length - 1) buf += "\r\n";
 					f = true;
@@ -1507,7 +1576,7 @@ function fnc_csv() {
 						acctid = getElementsByTagName("ACCTID")[0].firstChild.nodeValue;
 						tag_stmttrns = getElementsByTagName("STMTTRN");
 					}
-					buf += "\"" + mktginfo + "\"," + dtasof.substr(0, 4) + "-" + dtasof.substr(4, 2) + "-" + dtasof.substr(6, 2) + ",\"残高\"," + balamt + ",\"" + acctid + "\"\r\n";
+					buf += "\"" + mktginfo + "\"," + dtasof.substring(0, 4) + "-" + dtasof.substring(4, 6) + "-" + dtasof.substring(6, 8) + ",\"残高\"," + balamt + ",\"" + acctid + "\"\r\n";
 					for(k = 0; k < tag_stmttrns.length; k++) {
 						with(tag_stmttrns[k]) {
 							dtposted = getElementsByTagName("DTPOSTED")[0].firstChild.nodeValue;
@@ -1515,7 +1584,7 @@ function fnc_csv() {
 							trnamt = getElementsByTagName("TRNAMT")[0].firstChild.nodeValue;
 							memo = getElementsByTagName("MEMO")[0].firstChild.nodeValue;
 						}
-						buf += "," + dtposted.substr(0, 4) + "-" + dtposted.substr(4, 2) + "-" + dtposted.substr(6, 2) + ",\"" + name + "\"," + trnamt + ",\"" + memo + "\"\r\n";
+						buf += "," + dtposted.substring(0, 4) + "-" + dtposted.substring(4, 6) + "-" + dtposted.substring(6, 8) + ",\"" + name + "\"," + trnamt + ",\"" + memo + "\"\r\n";
 					}
 					if(tag_ccstmttrnrss.length > 1 && j < tag_ccstmttrnrss.length - 1) buf += "\r\n";
 					f = true;
@@ -1532,7 +1601,7 @@ function fnc_csv() {
 						acctid = getElementsByTagName("ACCTID")[0].firstChild.nodeValue;
 						tag_stmttrns = getElementsByTagName("STMTTRN");
 					}
-					buf += "\"" + mktginfo + "\"," + dtasof.substr(0, 4) + "-" + dtasof.substr(4, 2) + "-" + dtasof.substr(6, 2) + ",\"残高\"," + availcash + ",\"" + brokerid + " " + acctid + "\"\r\n";
+					buf += "\"" + mktginfo + "\"," + dtasof.substring(0, 4) + "-" + dtasof.substring(4, 6) + "-" + dtasof.substring(6, 8) + ",\"残高\"," + availcash + ",\"" + brokerid + " " + acctid + "\"\r\n";
 					for(k = 0; k < tag_stmttrns.length; k++) {
 						with(tag_stmttrns[k]) {
 							dtposted = getElementsByTagName("DTPOSTED")[0].firstChild.nodeValue;
@@ -1540,7 +1609,7 @@ function fnc_csv() {
 							trnamt = getElementsByTagName("TRNAMT")[0].firstChild.nodeValue;
 							memo = getElementsByTagName("MEMO")[0].firstChild.nodeValue;
 						}
-						buf += "," + dtposted.substr(0, 4) + "-" + dtposted.substr(4, 2) + "-" + dtposted.substr(6, 2) + ",\"" + name + "\"," + trnamt + ",\"" + memo + "\"\r\n";
+						buf += "," + dtposted.substring(0, 4) + "-" + dtposted.substring(4, 6) + "-" + dtposted.substring(6, 8) + ",\"" + name + "\"," + trnamt + ",\"" + memo + "\"\r\n";
 					}
 					if(tag_invstmttrnrss.length > 1 && j < tag_invstmttrnrss.length - 1) buf += "\r\n";
 					f = true;
@@ -1563,7 +1632,7 @@ function fnc_csv() {
 						uniqueid = getElementsByTagName("UNIQUEID")[0].firstChild.nodeValue;
 						dtpriceasof = getElementsByTagName("DTPRICEASOF")[0].firstChild.nodeValue;
 						mktval = getElementsByTagName("MKTVAL")[0].firstChild.nodeValue;
-						buf += "," + dtpriceasof.substr(0, 4) + "-" + dtpriceasof.substr(4, 2) + "-" + dtpriceasof.substr(6, 2) + ",\"" + seclists[uniqueid] + "\"," + mktval + ",\"" + uniqueid + "\"\r\n";
+						buf += "," + dtpriceasof.substring(0, 4) + "-" + dtpriceasof.substring(4, 6) + "-" + dtpriceasof.substring(6, 8) + ",\"" + seclists[uniqueid] + "\"," + mktval + ",\"" + uniqueid + "\"\r\n";
 					}
 					f = true;
 				}
@@ -1572,15 +1641,18 @@ function fnc_csv() {
 			}
 		}
 		
+		// CSVの文字エンコーディングをShift_JISへと変換する
 		buf_sjis = Encoding.convert(Encoding.stringToCode(buf), "SJIS", "UNICODE");
 		j = buf_sjis.length;
 		buf_blob = new ArrayBuffer(j);
 		buf_view = new Uint8Array(buf_blob);
 		for(i = 0; i < j; i++) buf_view[i] = buf_sjis[i];
 		
+		// ダウンロード用データを生成する
 		csv = new Blob([buf_blob]);
 		filename = "MoneySound_" + timestamp + ".csv";
 		
+		// データをダウンロードする
 		if(f == false) {
 			modal_showonly("警告", "ダウンロード可能なCSVがありません。", false);
 		} else {
@@ -1607,17 +1679,25 @@ function fnc_listall(lists) {
 	var f = false;
 	var i;
 	
+	// 一覧からすべての行を取り除く
 	for(i = tag_tbodys.length - 1; i >= 0; i--) tag_table.removeChild(tag_tbodys[i]);
 	
+	// 行を追加する
 	for(i = 0; i < lists.length; i++) {
 		if(lists[i].length == 0) continue;
 		tag_table.appendChild(fnc_listone(lists[i]));
 		f = true;
 	}
 	
+	// 行を追加した場合
 	if(f == true) {
+		// すべて更新ボタンの押下を許可する
 		dom_get_id("btn_get_all").disabled = false;
+		
+		// OFX（結合）ボタンの押下を許可する
 		dom_get_id("btn_ofx_all").disabled = false;
+		
+		// CSVボタンの押下を許可する
 		dom_get_id("btn_csv").disabled = false;
 	}
 	
@@ -1659,6 +1739,7 @@ function fnc_listone(list) {
 	
 	tag_tbody = dom_create_tag("tbody", { "id": settings["rowid"] });
 	
+	// 認証情報よりデータを抽出する
 	for(i in settings["keyvalues"]) switch(i) {
 	case "status":
 		status = settings["keyvalues"][i];
@@ -1670,47 +1751,9 @@ function fnc_listone(list) {
 		break;
 	}
 	
-	switch(status) {
-	case "":
-		group = "未更新: 更新ボタンを押下してください";
-		tag_tbody.className = "ready";
-		break;
-	case "200":
-		// 何もしない
-		void(0);
-		break;
-	case "202":
-		group = "追加認証あり: 更新ボタンを押下してください";
-		tag_tbody.className = "error";
-		break;
-	case "403":
-		group = "認証失敗: 認証情報が正しいか否かを確認してください";
-		caption = "金融機関のサイトにログインできませんでした。認証情報が正しいか否か、および追加認証の入力内容が正しいか否かを確認した後、再試行してください。";
-		tag_tbody.className = "error";
-		break;
-	case "500":
-		group = "OFX破損: サーバーの状態を確認してください";
-		caption = "サーバーより取得したOFXが破損していました。再試行しても同じエラーが発生する場合、サーバーの管理者にお問い合わせください。";
-		tag_tbody.className = "error";
-		break;
-	case "503":
-		group = "メンテナンス中: 金融機関のサイトで日程を確認してください";
-		caption = "金融機関のサイトがメンテナンス中でした。メンテナンスが終了した後、再試行してください。";
-		tag_tbody.className = "error";
-		break;
-	case "511":
-		group = "重要通知あり: 金融機関のサイトで画面を確認してください";
-		caption = "金融機関のサイトに「重要なお知らせ」等の画面が表示されました。金融機関のサイトに直接ログインし、内容を確認した後、再試行してください。";
-		tag_tbody.className = "error";
-		break;
-	default:
-		group = "エラー（" + status + "）: サーバーの状態を確認してください";
-		caption = "サーバーでエラーが発生しました。再試行しても同じエラーが発生する場合、サーバーの管理者にお問い合わせください。";
-		tag_tbody.className = "error";
-		break;
-	}
+	// OFXよりデータを抽出する
 	try {
-		// 銀行
+		// 銀行・前払式帳票
 		banks = (ofx != null? ofx.getElementsByTagName("STMTTRNRS"): new Array());
 		for(i = 0; i < banks.length; i++) {
 			with(banks[i]) {
@@ -1906,20 +1949,57 @@ function fnc_listone(list) {
 		broken = true;
 	}
 	
-	if(broken == true) {
-		status = "500";
-		group = "OFX破損: サーバーの状態を確認してください";
-		caption = "サーバーより取得したOFXが破損していました。再試行しても同じエラーが発生する場合、サーバーの管理者にお問い合わせください。";
-		tag_tbody.className = "error";
-	}
+	// OFX破損の場合
+	if(broken == true) status = "500";
 	
 	// statusが200、かつデータなしの場合
 	if(status == 200 && banks.length == 0 && creditcards.length == 0 && investments.length == 0) {
 		status = "204";
-		group = "データなし: 金融機関のサイトで状況を確認してください";
-		caption = "サーバーより取得したデータが空でした。金融機関のサイトに直接ログインし、状況を確認した後、再試行してください。";
-		tag_tbody.className = "error";
 		broken = true;
+	}
+	
+	switch(status) {
+	case "":
+		group = "未更新: 更新ボタンを押下してください";
+		tag_tbody.className = "ready";
+		break;
+	case "200":
+		// 何もしない
+		void(0);
+		break;
+	case "202":
+		group = "追加認証あり: 更新ボタンを押下してください";
+		tag_tbody.className = "error";
+		break;
+	case "204":
+		group = "データなし: 金融機関のサイトで状況を確認してください";
+		tag_tbody.className = "error";
+		break;
+	case "403":
+		group = "認証失敗: 認証情報が正しいか否かを確認してください";
+		caption = "金融機関のサイトにログインできませんでした。認証情報が正しいか否か、および追加認証の入力内容が正しいか否かを確認した後、再試行してください。";
+		tag_tbody.className = "error";
+		break;
+	case "500":
+		group = "OFX破損: サーバーの状態を確認してください";
+		caption = "サーバーより取得したOFXが破損していました。再試行しても同じエラーが発生する場合、サーバーの管理者にお問い合わせください。";
+		tag_tbody.className = "error";
+		break;
+	case "503":
+		group = "メンテナンス中: 金融機関のサイトで日程を確認してください";
+		caption = "金融機関のサイトがメンテナンス中でした。メンテナンスが終了した後、再試行してください。";
+		tag_tbody.className = "error";
+		break;
+	case "511":
+		group = "重要通知あり: 金融機関のサイトで画面を確認してください";
+		caption = "金融機関のサイトに「重要なお知らせ」等の画面が表示されました。金融機関のサイトに直接ログインし、内容を確認した後、再試行してください。";
+		tag_tbody.className = "error";
+		break;
+	default:
+		group = "エラー（" + status + "）: サーバーの状態を確認してください";
+		caption = "サーバーでエラーが発生しました。再試行しても同じエラーが発生する場合、サーバーの管理者にお問い合わせください。";
+		tag_tbody.className = "error";
+		break;
 	}
 	
 	// OFX破損、またはデータなしの場合
@@ -1980,7 +2060,7 @@ function fnc_listone(list) {
 // 処理
 // =========================================================================
 
-// ダイアログを開く
+// モーダルウィンドウを開く
 function modal_show(head, body, showcancel, focusto) {
 	var tags = [dom_get_tag("header")[0], dom_get_tag("nav")[0], dom_get_tag("section")[0], dom_get_tag("footer")[0]];
 	var tabs = [dom_get_tag("a"), dom_get_tag("input")];
@@ -1992,7 +2072,7 @@ function modal_show(head, body, showcancel, focusto) {
 	var i, j, x, y, z;
 	
 	if(dom_get_id("modal") == null) {
-		// フォーカスを禁止する
+		// オーバーレイの背景のフォーカスを禁止する
 		for(i in tabs) for(j in tabs[i]) tabs[i][j].tabIndex = -1;
 		
 		// モーダルウィンドウを生成する
@@ -2014,6 +2094,7 @@ function modal_show(head, body, showcancel, focusto) {
 		tag_article.appendChild(tag_form);
 		tag_body.appendChild(tag_article);
 		
+		// ダイアログのタイトル部分のドラッグ＆ドロップを許可する
 		tag_h3.onmousedown = function(e) {
 			if(typeof e == "undefined") e = self.window.event;
 			var target = e.target || e.srcElement;
@@ -2024,16 +2105,18 @@ function modal_show(head, body, showcancel, focusto) {
 			}
 			return false;
 		};
+		
 		with(self.document) {
+			// EnterキーにOKボタンを、Escキーにキャンセルボタンを割り当てる
 			onkeydown = function(e) {
 				var ret = true;
 				if(typeof e == "undefined") e = event;
 				if(e != null && tag_form != null) switch(e.keyCode) {
-				case 13: // enter
+				case 13:
 					if(dom_get_id("modalok").disabled == false) tag_form.onsubmit();
 					ret = false;
 					break;
-				case 27: // esc
+				case 27:
 					tag_form.onreset();
 					ret = false;
 					break;
@@ -2042,10 +2125,14 @@ function modal_show(head, body, showcancel, focusto) {
 				}
 				return ret;
 			};
+			
+			// ダイアログのタイトル部分のドロップを制御する
 			onmouseup = function() {
 				dragging = false;
 				return false;
 			};
+			
+			// ダイアログのタイトル部分のドラッグを制御する
 			onmousemove = function(e) {
 				if(typeof e == "undefined") e = self.window.event;
 				if(dragging == true) with(tag_h3.parentNode.style) {
@@ -2056,7 +2143,7 @@ function modal_show(head, body, showcancel, focusto) {
 			};
 		}
 		
-		// ウィンドウサイズが変更された場合、オーバーレイを再表示する
+		// ウィンドウサイズが変更された場合、画面サイズの変更を制御する
 		self.window.onresize = function() {
 			modal_resize();
 			return false;
@@ -2069,6 +2156,7 @@ function modal_show(head, body, showcancel, focusto) {
 			top = (z * -1).toString() + "px";
 		}
 		
+		// デフォルトのフォーカスが指定されている場合、設定する
 		if(typeof focusto == "string") with(dom_get_id(focusto)) {
 			focus();
 			if(tagName == "input") select();
@@ -2084,12 +2172,15 @@ function modal_show(head, body, showcancel, focusto) {
 		tag_aside = dom_create_tag("aside");
 		tag_article.appendChild(tag_aside);
 		
+		// オーバーレイの背景を処理する
 		for(i in tags) tags[i].className = "bg";
 		
+		// 画面サイズの変更を制御する
 		modal_resize();
 	}
 }
 
+// モーダルウィンドウを開く（呼び出し元機能に戻らない）
 function modal_showonly(head, body, showcancel, focusto) {
 	if(dom_get_id("modal") == null) {
 		// ダイアログを開く
@@ -2100,6 +2191,7 @@ function modal_showonly(head, body, showcancel, focusto) {
 	}
 }
 
+// モーダルウィンドウ表示時の画面サイズの変更を制御する
 function modal_resize() {
 	var winx, winy;
 	
@@ -2108,12 +2200,14 @@ function modal_resize() {
 		winy = documentElement.clientHeight || body.clientHeight || body.scrollHeight;
 	}
 	
+	// オーバーレイのサイズを変更する
 	var tag_aside = dom_get_tag("aside")[0];
 	if(tag_aside != null) with(tag_aside.style) {
 		width = winx;
 		height = winy;
 	}
 	
+	// モーダルウィンドウを中央に表示する
 	var modal = dom_get_id("modal");
 	if(modal != null) with(modal) {
 		style.left = parseInt((winx - clientWidth) / 2, 10).toString() + "px";
@@ -2123,7 +2217,7 @@ function modal_resize() {
 	return false;
 }
 
-// ダイアログを閉じる
+// モーダルウィンドウを閉じる
 function modal_hide() {
 	var tags = [dom_get_tag("header")[0], dom_get_tag("nav")[0], dom_get_tag("section")[0], dom_get_tag("footer")[0]];
 	var tabs = [dom_get_tag("a"), dom_get_tag("input")];
@@ -2142,9 +2236,10 @@ function modal_hide() {
 			self.window.scrollTo(0, z);
 		}
 		
-		// フォーカスを許可する
+		// オーバーレイの背景のフォーカスを許可する
 		for(i in tabs) for(j in tabs[i]) tabs[i][j].tabIndex = 0;
 		
+		// オーバーレイの背景を処理する
 		for(i in tags) tags[i].className = "";
 		
 		// ウィンドウサイズが変更された場合、何もしない
@@ -2157,7 +2252,7 @@ function dom_get_storage(key, pass) {
 	var enc, dec;
 	
 	if(typeof pass == "string") {
-		// ローカルストレージ：復号する
+		// ローカルストレージの場合、データを復号する
 		enc = self.window.localStorage.getItem(key);
 		if(enc == null) {
 			// 暗号化データが存在しない場合
@@ -2169,7 +2264,7 @@ function dom_get_storage(key, pass) {
 			dec = (dec == ""? "": dec.substring((pass + "\t").length));
 		}
 	} else {
-		// セッションストレージ
+		// セッションストレージの場合、データをそのまま取得する
 		dec = self.window.sessionStorage.getItem(key);
 	}
 	return dec;
@@ -2178,10 +2273,10 @@ function dom_get_storage(key, pass) {
 // データを設定する
 function dom_set_storage(key, value, pass) {
 	if(typeof pass == "string") {
-		// ローカルストレージ：暗号化する
+		// ローカルストレージの場合、データを暗号化する
 		self.window.localStorage.setItem(key, CryptoJS.AES.encrypt(((pass + "\t") + (value != ""? value: "\r\n")).toString(CryptoJS.enc.Utf8), pass));
 	} else {
-		// セッションストレージ
+		// セッションストレージの場合、データをそのまま設定する
 		self.window.sessionStorage.setItem(key, value);
 	}
 	return;
@@ -2192,18 +2287,22 @@ function dom_del_storage(key, pass) {
 	var i;
 	
 	if(typeof pass == "string") {
-		// ローカルストレージ
+		// ローカルストレージの場合
 		with(self.window) if(pass == "*") {
+			// passが「*」の場合、すべてのデータを削除する
 			for(i = localStorage.length - 1; i >= 0; i--) if(localStorage.key(i).indexOf(key) == 0) localStorage.removeItem(localStorage.key(i));
 		} else {
+			// それ以外の場合、該当するデータを削除する
 			localStorage.removeItem(key);
 		}
 	} else {
+		// セッションストレージの場合、データをそのまま削除する
 		self.window.sessionStorage.removeItem(key);
 	}
 	return;
 }
 
+// 認証情報を取得する
 function fnc_getauth(rowid) {
 	var logons = local_current();
 	var auths = dom_get_storage(logons["localid"], logons["localpass"]).split("\r\n");
@@ -2223,6 +2322,7 @@ function fnc_getauth(rowid) {
 	return auth;
 }
 
+// 認証情報をパースする
 function auth_parse(auth) {
 	var rets = new Array();
 	var rownum = -1;
@@ -2259,6 +2359,7 @@ function auth_parse(auth) {
 	return rets;
 }
 
+// ログオン情報を追加する
 function logoninfo_add(auth) {
 	var logons = local_current();
 	var lists = new Array();
@@ -2277,6 +2378,7 @@ function logoninfo_add(auth) {
 	fnc_listall(lists);
 }
 
+// ログオン情報を更新する
 function logoninfo_update(to, from) {
 	var logons = local_current();
 	var lists = new Array();
@@ -2296,6 +2398,7 @@ function logoninfo_update(to, from) {
 	fnc_listall(lists);
 }
 
+// ログオン情報を削除する
 function logoninfo_delete(auth) {
 	var logons = local_current();
 	var lists = new Array();
@@ -2319,6 +2422,7 @@ function logoninfo_delete(auth) {
 	fnc_listall(lists);
 }
 
+// 認証情報をソートする
 function auths_sort(auths) {
 	var logons = local_current();
 	
@@ -2338,7 +2442,6 @@ function auths_sort(auths) {
 				// ソート順が崩れた場合
 				if(l == -1) l = k;
 				rowid = (settings["rownum"] == -1? k.toString() + settings["rowid"]: settings["rowid"].replace(settings["rownum"].toString(), k.toString()));
-				// if(settings["rownum"] == -1) alert(k.toString() + settings["rowid"]);
 				auth = auths[j].replace(settings["rowid"], rowid);
 			} else {
 				auth = auths[j];
@@ -2383,6 +2486,7 @@ function auths_sort(auths) {
 	return rets;
 }
 
+// 合計の金額を更新する
 function account_total_update() {
 	var total = 0;
 	var tag_table = dom_get_tag("table")[0];
@@ -2425,7 +2529,7 @@ function form_empty_check() {
 		}
 		if(dom_get_id("confirm") != null && dom_get_id("confirm").checked == false) dis = true;
 		
-		// 未入力項目がある場合はOKボタンをdisabledに設定する
+		// OKボタンの押下を制御する（未入力項目がある場合、OKボタンの押下を禁止する）
 		dom_get_id("modalok").disabled = dis;
 	} else {
 		// それ以外の場合
@@ -2439,7 +2543,7 @@ function form_empty_check() {
 		}
 		if(dom_get_id("confirm") != null && dom_get_id("confirm").checked == false) dis = true;
 		
-		// 未入力項目がある場合はOKボタンをdisabledに設定する
+		// OKボタンの押下を制御する（未入力項目がある場合、OKボタンの押下を禁止する）
 		dom_get_id("modalok").disabled = dis;
 	}
 	
@@ -2451,6 +2555,7 @@ function form_empty_check() {
 // 関数
 // =========================================================================
 
+// 全角英数字と全角記号の一部を半角文字に変換する
 function str_to_hankaku(str) {
 	var f = function(str) {
 		return String.fromCharCode(str.charCodeAt(0) - 0xFEE0);
@@ -2458,18 +2563,7 @@ function str_to_hankaku(str) {
 	return str.replace(/[！-～]/g, f).replace(/　/g," ");
 }
 
-function str_to_array(str) {
-	var i;
-	var n = str.length;
-	var ret = new Uint8Array(n);
-	for(i = 0; i < n; i++) ret[i] = str.charCodeAt(i);
-	return ret;
-}
-
-function str_convert_encoding(str) {
-	return Encoding.codeToString(Encoding.convert(str_to_array(str), "SJIS", "UTF8"));
-}
-
+// 現在時刻をYYYYMMDDHHIISS形式で取得する
 function timestamp_get() {
 	var dt = new Date();
 	var y, m, d, h, i, s;
@@ -2490,6 +2584,7 @@ function timestamp_get() {
 	return y + m + d + h + i + s;
 }
 
+// 金額を3桁カンマ区切り文字に変換する
 function to_amount(src) {
 	var dst = src.toString().replace(",", "");
 	
@@ -2502,53 +2597,67 @@ function to_amount(src) {
 	return dst;
 }
 
+// JavaScriptの実装状況をチェックする（Ajax）
 function chkenv_xmlhttprequest() {
 	return (typeof XMLHttpRequest != "undefined" && XMLHttpRequest? true: false);
 }
 
+// JavaScriptの実装状況をチェックする（WebStorage）
 function chkenv_webstorage() {
 	return (self.window.localStorage && self.window.sessionStorage? true: false);
 }
-function chkenv_domparser() {
-	return (typeof DOMParser != "undefined" && DOMParser && typeof (new DOMParser).parseFromString == "function"? true: false);
-}
 
-function chkenv_xmlserializer() {
-	return (typeof XMLSerializer != "undefined" && XMLSerializer && typeof (new XMLSerializer).serializeToString == "function"? true: false);
-}
-
-function chkenv_parser() {
-	return chkenv_domparser() && chkenv_xmlserializer();
-}
-
+// JavaScriptの実装状況をチェックする（Blob）
 function chkenv_blob() {
 	return (typeof Blob == "function" && Blob? true: false);
 }
 
+// JavaScriptの実装状況をチェックする（OFX解析）
+function chkenv_domparser() {
+	return (typeof DOMParser != "undefined" && DOMParser && typeof (new DOMParser).parseFromString == "function"? true: false);
+}
+
+// JavaScriptの実装状況をチェックする（OFX/CSV生成）
+function chkenv_xmlserializer() {
+	return (typeof XMLSerializer != "undefined" && XMLSerializer && typeof (new XMLSerializer).serializeToString == "function"? true: false);
+}
+
+// JavaScriptの実装状況をチェックする（OFX処理）
+function chkenv_parser() {
+	return chkenv_domparser() && chkenv_xmlserializer();
+}
+
+// JavaScriptの実装状況をチェックする（CSV処理）
 function chkenv_arraybuffer() {
 	return (typeof ArrayBuffer == "function" && ArrayBuffer && typeof Uint8Array == "function" && Uint8Array? true: false);
 }
 
+// JavaScriptの実装状況をチェックする（ファイルダウンロード）
 function chkenv_createobjecturl() {
 	return ((self.window.URL || self.window.webkitURL) && ((self.window.URL || self.window.webkitURL).createObjectURL || self.window.navigator.msSaveOrOpenBlob)? true: false);
 }
 
+// JavaScriptの実装状況をチェックする（実行）
 function chkenv_run() {
 	return chkenv_xmlhttprequest() && chkenv_webstorage() && chkenv_parser();
 }
 
+// JavaScriptの実装状況をチェックする（OFXダウンロード機能）
 function chkenv_ofx() {
 	return chkenv_blob() && chkenv_createobjecturl();
 }
 
+// JavaScriptの実装状況をチェックする（OFX結合ダウンロード機能）
 function chkenv_ofx_all() {
 	return chkenv_parser() && chkenv_blob() && chkenv_createobjecturl();
 }
 
+// JavaScriptの実装状況をチェックする（CSVダウンロード機能）
 function chkenv_csv() {
-	return chkenv_arraybuffer() && chkenv_parser() && chkenv_blob() && chkenv_createobjecturl();
+	return chkenv_parser() && chkenv_blob() && chkenv_createobjecturl() && chkenv_arraybuffer();
 }
 
+// DOMよりタグに合致するエレメントを取得する
 function dom_get_tag(name) {
 	var obj = null;
 	
@@ -2561,6 +2670,33 @@ function dom_get_tag(name) {
 	return obj;
 }
 
+// DOMよりIDに合致するエレメントを取得する
+function dom_get_id(name) {
+	var obj = null;
+	
+	with(self.document) if(typeof getElementById != "undefined") try {
+		if(typeof name == "string") obj = getElementById(name);
+	} catch(e) {
+		void(e);
+	}
+	
+	return obj;
+}
+
+// DOMのテキストを生成する
+function dom_create_text(text) {
+	var obj = null;
+	
+	with(self.document) if(typeof createTextNode != "undefined") try {
+		if(typeof text == "string") obj = createTextNode(dom_convert_escape(text));
+	} catch(e) {
+		void(e);
+	}
+	
+	return obj;
+}
+
+// DOMのタグを生成する
 function dom_create_tag(name, attrs) {
 	var obj = null;
 	var i;
@@ -2580,6 +2716,7 @@ function dom_create_tag(name, attrs) {
 	return obj;
 }
 
+// DOMの特定文字をエスケープする
 function dom_convert_escape(str) {
 	var ret = "";
 	var d, e, f;
@@ -2601,32 +2738,8 @@ function dom_convert_escape(str) {
 		};
 		e = "";
 		for(d in hcs) e += "|" + d;
-		ret = str.replace(new RegExp(hcs["amp"] + "(" + e.substr(1) + ");", "g"), f);
+		ret = str.replace(new RegExp(hcs["amp"] + "(" + e.substring(1) + ");", "g"), f);
 	}
 	
 	return ret;
-}
-
-function dom_get_id(name) {
-	var obj = null;
-	
-	with(self.document) if(typeof getElementById != "undefined") try {
-		if(typeof name == "string") obj = getElementById(name);
-	} catch(e) {
-		void(e);
-	}
-	
-	return obj;
-}
-
-function dom_create_text(text) {
-	var obj = null;
-	
-	with(self.document) if(typeof createTextNode != "undefined") try {
-		if(typeof text == "string") obj = createTextNode(dom_convert_escape(text));
-	} catch(e) {
-		void(e);
-	}
-	
-	return obj;
 }
