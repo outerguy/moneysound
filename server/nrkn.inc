@@ -15,6 +15,7 @@ $resp = array();
 define("ENV_STR_ASSET_REINVESTMENT", "Ä“Š‘");
 define("ENV_STR_ASSET_CONTRIBUTION", "‹’o");
 define("ENV_STR_ASSET_SELL", "‘Y”„‹p");
+define("ENV_STR_ASSET_PAYMENT", "x•¥");
 
 // ÀsŠÔiƒ^ƒCƒ€ƒAƒEƒgj‚ğÄİ’è‚·‚é
 @set_time_limit(ENV_NUM_TIMEOUT);
@@ -207,7 +208,7 @@ if(strpos($body, "ƒVƒXƒeƒ€ƒƒ“ƒeƒiƒ“ƒX’†") !== false || strpos($body, "ƒVƒXƒeƒ€ƒ
 		$queries["lst_ddiv_mm_refBegin"] = "lst_ddiv_mm_refBegin=" . substr(ENV_STR_DATE_PASTDAY, 4, 2);
 		$queries["lst_ddiv_yyyy_refEnd"] = "lst_ddiv_yyyy_refEnd=" . substr(ENV_STR_DATE_TODAY, 0, 4);
 		$queries["lst_ddiv_mm_refEnd"] = "lst_ddiv_mm_refEnd=" . substr(ENV_STR_DATE_TODAY, 4, 2);
-		$queries["chk_transType"] = "chk_transType=01&chk_transType=04&chk_transType=06"; // ‹’oAû‰v•ª”zE–ŠúŒp‘±A‘Y”„‹p
+		$queries["chk_transType"] = "chk_transType=01&chk_transType=04&chk_transType=06&chk_transType=07"; // ‹’oAû‰v•ª”zE–ŠúŒp‘±A‘Y”„‹pAx•¥
 		
 		$method = $form["method"];
 		$uris = parse_uri($form["action"], $uris);
@@ -415,6 +416,28 @@ if(strpos($body, "ƒVƒXƒeƒ€ƒƒ“ƒeƒiƒ“ƒX’†") !== false || strpos($body, "ƒVƒXƒeƒ€ƒ
 			$bufs = array();
 			break;
 		
+		// x•¥iŒ»‹àj
+		case "s1820-t2-d2":
+			$bufs["NAME"] = mb_convert_string($td["innerHTML"]); // æˆø–—R
+			break;
+		case "s1820-t3-d2":
+			if($bufs["NAME"] != "") {
+				$bufs["TRNAMT"] = "-" . parse_amount($td["innerHTML"]); // x•¥Šz
+				
+				$bufs["MEMO"] = mb_convert_string(ENV_STR_ASSET_PAYMENT);
+				$bufs["TRNTYPE"] = ENV_STR_OFX_TRNTYPE_OTHER;
+				$bufs["SUBACCTFUND"] = ENV_STR_OFX_CASH; // Œ»‹à
+			}
+			break;
+		case "s1820-t4-d2":
+			$cd_date = parse_date(trim($td["innerHTML"])); // x•¥—\’è“ú
+			if($bufs["NAME"] != "") {
+				$bufs["DTPOSTED"] = $cd_date;
+				array_push($banks, $bufs);
+				$bufs = array();
+			}
+			break;
+			
 		default:
 			break;
 		}
