@@ -206,9 +206,11 @@ function nanaco_get_details($body) {
 			$memo = trim(strip_tags($tds[9]["innerHTML"]));
 			
 			// nanacoƒ`ƒƒ[ƒWŠzEx•¥Šz‚ğæ“¾‚·‚é
-			$amount = parse_amount(trim(strip_tags($tds[2]["innerHTML"])));
-			if($amount == 0) $amount = parse_amount("-" . trim(strip_tags($tds[3]["innerHTML"])));
-			if($amount != 0) {
+			$am = explode("<br>", $tds[2]["innerHTML"]);
+			$amount = (string)((integer)parse_amount(trim(strip_tags($am[0]))) + (integer)parse_amount(trim(strip_tags(str_replace(array("(", ")"), array("", ""), $am[1])))));
+			if($amount == "0") $amount = (string)(-1 * (integer)parse_amount(trim(strip_tags($tds[3]["innerHTML"]))));
+			
+			if($amount != "0") {
 				$rets[$i]["date"] = parse_date(trim(strip_tags($dt[0])));
 				$rets[$i]["summary"] = $name;
 				$rets[$i]["memo"] = $memo;
