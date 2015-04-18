@@ -301,7 +301,6 @@ if(strpos($body, "ƒVƒXƒeƒ€ƒƒ“ƒeƒiƒ“ƒX’†") !== false || strpos($body, "ƒVƒXƒeƒ€ƒ
 			if(trim(strip_tags($td["innerHTML"])) == "–ñ’èÏ") {
 				$bufs["CATEGORY"] = ENV_STR_OFX_FUND; // ‚·‚×‚Ä‚ğ“Š‘M‘õ‚ÆŒ©‚È‚·
 				$bufs["SUBACCTSEC"] = ENV_STR_OFX_CASH; // Œ»‹à
-				$bufs["SUBACCTSEC"] = ENV_STR_OFX_CASH; // Œ»‹à
 				$bufs["SUBACCTFUND"] = ENV_STR_OFX_CASH; // Œ»‹à
 				$bufs["BUYTYPE"] = ENV_STR_OFX_BUY; // ”ƒ•t
 				if((double)$bufs["UNITS"] != 0 && (double)$bufs["MKTVAL"] != 0) {
