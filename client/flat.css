@@ -1,195 +1,197 @@
-* {
-	font-family: "ヒラギノ角ゴ ProN W3", "Hiragino Kaku Gothic ProN", "IPAexゴシック", "IPA Pゴシック", "IPAPGothic", "Meiryo UI", "メイリオ", "Meiryo", sans-serif;
-}
-body {
-	font-size: 80%;
-	color: #000000;
-	background: #EFA09B;
-	background: #EFA09B linear-gradient(to right, #D8B99A, #EFA09B, #A87190);
-	background-attachment: fixed;
-}
-body > p {
-	margin: 60px 0px -40px 0px;
-}
-hr {
-	display: none;
-}
-header.bg, nav.bg, section.bg, footer.bg {
-	filter: blur(8px);
-	-webkit-filter: blur(8px);
-}
-header {
-	display: none;
-}
-nav {
-	margin: 0px 0px 60px 0px;
-}
-nav p {
-	position: fixed;
-	top: 0px;
-	left: 0px;
-	padding: 0px 0px 0px 10px;
-	margin: 0px;
-	width: 100%;
-	height: 22px;
-	color: inherit;
-	background: #FBFCFB;
-	box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.4);
-	text-align: left;
-}
-footer p a {
-	margin: 0px 0.2em 0px 0.2em;
-}
-aside {
-	color: inherit;
-	background: #7F7F7F;
-	background: rgba(0, 0, 0, 0.3);
-}
-form#modal {
-	border: 0px;
-	border-radius: 4px;
-	padding: 0px;
-	box-shadow: 0px 25px 50px 0px rgba(0, 0, 0, 0.4);
-	color: inherit;
-	background: #DADADA linear-gradient(to bottom, #F4F4F4 1px, #E5E5E5 1px, #CFCFCF 28px);
-	font-size: 95%;
-}
-h3#modalhead {
-	padding: 6px;
-	margin: 0px;
-	color: #404040;
-	background: transparent;
-	font-weight: normal;
-	text-align: center;
-	line-height: 100%;
-}
-div#modalbody {
-	border: solid #B0B0B0;
-	border-width: 1px 0px 0px 0px;
-	padding: 10px;
-	margin: 0px 0px 0px 0px;
-	color: inherit;
-	background: #ECECEC;
-}
-div#modalfoot {
-	border: 0px;
-	border-radius: 0px 0px 4px 4px;
-	padding: 0px 10px 10px 10px;
-	margin: 0px 0px 0px 0px;
-	color: inherit;
-	background: #ECECEC;
-}
-table {
-	padding: 0px;
-	margin: 0px auto 0px auto;
-	font-size: 95%;
-}
-thead, tfoot {
-	color: #585858;
-	background: #F0F0F0;
-	background: rgba(245, 245, 245, 0.8);
-	text-shadow: 0px 0px 0px #404040;
-}
-tbody {
-	color: inherit;
-	background: #FFFFFF;
-	background: rgba(255, 255, 255, 0.8);
-}
-tbody.pending tr {
-	color: #FFFFFF;
-	background: #167CFC;
-}
-tbody.pending td a:link, tbody.pending td a:hover, tbody.pending td a:visited, tbody.pending td a:active {
-	color: #FFFFFF;
-	background: transparent;
-}
-tbody.ready tr {
-	color: #BCBCBC;
-	background: transparent;
-}
-tbody.error tr {
-	color: #FF0000;
-	background: transparent;
-}
-caption {
-	border: solid #DBDBDB;
-	border-width: 0px 0px 1px 0px;
-	border-radius: 4px 4px 0px 0px;
-	padding: 10px;
-	color: #404040;
-	background: #F6F6F6 linear-gradient(to bottom, #FBFBFB 1px, #F6F6F6 1px);
-	font-size: 95%;
-	font-weight: normal;
-	text-align: center;
-}
-th {
-	font-weight: normal;
-}
-td.fi {
-	max-width: 128px;
-}
-td.accttype {
-	max-width: 384px;
-}
-a:link, a:visited, a:hover {
-	color: #000000;
-	background: transparent;
-	text-decoration: underline;
-}
-a:active {
-	color: #167CFC;
-	background: transparent;
-}
-.btn, .btn:hover {
-	border: solid 1px #C2C2C2;
-	border-radius: 4px;
-	padding: 0px 10px 0px 10px;
-	margin: 0px;
-	color: #404040;
-	background: #FFFFFF;
-	text-decoration: none;
-	text-shadow: 0px 0px 0px #202020;
-	font-size: 100%;
-	font-weight: normal;
-	line-height: 175%;
-}
-.btn:active, .btn:focus {
-	border: solid 1px #3383FB;
-	color: #FFFFFF;
-	background: #A4D3FF;
-	background: #A4D3FF linear-gradient(to bottom, #4EADFF, #0092FF, #0075FF);
-	text-shadow: 0px 0px 0px #FFFFFF;
-}
-.btn:disabled {
-	border: solid 1px #D7D7D7;
-	color: #B8B8B8;
-	background: #F5F5F5;
-}
-.btn + .btn {
-	margin: 0px 0px 0px 4px;
-}
-input, select {
-	font-size: 100%;
-}
-nav .btn, nav .btn:hover, nav .btn:active, nav .btn:focus, nav .btn:disabled {
-	border: 0px;
-	border-radius: 0px;
-	margin 0px;
-	color: #474747;
-	background: transparent;
-	text-shadow: 0px 0px 0px #272727;
-	font-size: 110%;
-	line-height: 22px;
-	cursor: default;
-}
-nav .btn:disabled {
-	display: none;
-}
-nav .btn:active {
-	color: #FFFFFF;
-	background: #0662D9;
-	text-shadow: 0px 0px 0px #FFFFFF;
-}
-nav .btn+.btn {
-	margin: 0px;
+@media screen {
+	* {
+		font-family: "ヒラギノ角ゴ ProN W3", "Hiragino Kaku Gothic ProN", "IPAexゴシック", "IPA Pゴシック", "IPAPGothic", "Meiryo UI", "メイリオ", "Meiryo", sans-serif;
+	}
+	body {
+		font-size: 80%;
+		color: #000000;
+		background: #EFA09B;
+		background: #EFA09B linear-gradient(to right, #D8B99A, #EFA09B, #A87190);
+		background-attachment: fixed;
+	}
+	body > p {
+		margin: 60px 0px -40px 0px;
+	}
+	hr {
+		display: none;
+	}
+	header.bg, nav.bg, section.bg, footer.bg {
+		filter: blur(8px);
+		-webkit-filter: blur(8px);
+	}
+	header {
+		display: none;
+	}
+	nav {
+		margin: 0px 0px 60px 0px;
+	}
+	nav p {
+		position: fixed;
+		top: 0px;
+		left: 0px;
+		padding: 0px 0px 0px 10px;
+		margin: 0px;
+		width: 100%;
+		height: 22px;
+		color: inherit;
+		background: #FBFCFB;
+		box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.4);
+		text-align: left;
+	}
+	footer p a {
+		margin: 0px 0.2em 0px 0.2em;
+	}
+	aside {
+		color: inherit;
+		background: #7F7F7F;
+		background: rgba(0, 0, 0, 0.3);
+	}
+	form#modal {
+		border: 0px;
+		border-radius: 4px;
+		padding: 0px;
+		box-shadow: 0px 25px 50px 0px rgba(0, 0, 0, 0.4);
+		color: inherit;
+		background: #DADADA linear-gradient(to bottom, #F4F4F4 1px, #E5E5E5 1px, #CFCFCF 28px);
+		font-size: 95%;
+	}
+	h3#modalhead {
+		padding: 6px;
+		margin: 0px;
+		color: #404040;
+		background: transparent;
+		font-weight: normal;
+		text-align: center;
+		line-height: 100%;
+	}
+	div#modalbody {
+		border: solid #B0B0B0;
+		border-width: 1px 0px 0px 0px;
+		padding: 10px;
+		margin: 0px 0px 0px 0px;
+		color: inherit;
+		background: #ECECEC;
+	}
+	div#modalfoot {
+		border: 0px;
+		border-radius: 0px 0px 4px 4px;
+		padding: 0px 10px 10px 10px;
+		margin: 0px 0px 0px 0px;
+		color: inherit;
+		background: #ECECEC;
+	}
+	table {
+		padding: 0px;
+		margin: 0px auto 0px auto;
+		font-size: 95%;
+	}
+	thead, tfoot {
+		color: #585858;
+		background: #F0F0F0;
+		background: rgba(245, 245, 245, 0.8);
+		text-shadow: 0px 0px 0px #404040;
+	}
+	tbody {
+		color: inherit;
+		background: #FFFFFF;
+		background: rgba(255, 255, 255, 0.8);
+	}
+	tbody.pending tr {
+		color: #FFFFFF;
+		background: #167CFC;
+	}
+	tbody.pending td a:link, tbody.pending td a:hover, tbody.pending td a:visited, tbody.pending td a:active {
+		color: #FFFFFF;
+		background: transparent;
+	}
+	tbody.ready tr {
+		color: #BCBCBC;
+		background: transparent;
+	}
+	tbody.error tr {
+		color: #FF0000;
+		background: transparent;
+	}
+	caption {
+		border: solid #DBDBDB;
+		border-width: 0px 0px 1px 0px;
+		border-radius: 4px 4px 0px 0px;
+		padding: 10px;
+		color: #404040;
+		background: #F6F6F6 linear-gradient(to bottom, #FBFBFB 1px, #F6F6F6 1px);
+		font-size: 95%;
+		font-weight: normal;
+		text-align: center;
+	}
+	th {
+		font-weight: normal;
+	}
+	td.fi {
+		max-width: 128px;
+	}
+	td.accttype {
+		max-width: 384px;
+	}
+	a:link, a:visited, a:hover {
+		color: #000000;
+		background: transparent;
+		text-decoration: underline;
+	}
+	a:active {
+		color: #167CFC;
+		background: transparent;
+	}
+	.btn, .btn:hover {
+		border: solid 1px #C2C2C2;
+		border-radius: 4px;
+		padding: 0px 10px 0px 10px;
+		margin: 0px;
+		color: #404040;
+		background: #FFFFFF;
+		text-decoration: none;
+		text-shadow: 0px 0px 0px #202020;
+		font-size: 100%;
+		font-weight: normal;
+		line-height: 175%;
+	}
+	.btn:active, .btn:focus {
+		border: solid 1px #3383FB;
+		color: #FFFFFF;
+		background: #A4D3FF;
+		background: #A4D3FF linear-gradient(to bottom, #4EADFF, #0092FF, #0075FF);
+		text-shadow: 0px 0px 0px #FFFFFF;
+	}
+	.btn:disabled {
+		border: solid 1px #D7D7D7;
+		color: #B8B8B8;
+		background: #F5F5F5;
+	}
+	.btn + .btn {
+		margin: 0px 0px 0px 4px;
+	}
+	input, select {
+		font-size: 100%;
+	}
+	nav .btn, nav .btn:hover, nav .btn:active, nav .btn:focus, nav .btn:disabled {
+		border: 0px;
+		border-radius: 0px;
+		margin 0px;
+		color: #474747;
+		background: transparent;
+		text-shadow: 0px 0px 0px #272727;
+		font-size: 110%;
+		line-height: 22px;
+		cursor: default;
+	}
+	nav .btn:disabled {
+		display: none;
+	}
+	nav .btn:active {
+		color: #FFFFFF;
+		background: #0662D9;
+		text-shadow: 0px 0px 0px #FFFFFF;
+	}
+	nav .btn+.btn {
+		margin: 0px;
+	}
 }

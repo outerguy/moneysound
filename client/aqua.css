@@ -1,182 +1,184 @@
-* {
-	font-family: "ヒラギノ角ゴ ProN W3", "Hiragino Kaku Gothic ProN", "IPAexゴシック", "IPA Pゴシック", "IPAPGothic", "Meiryo UI", "メイリオ", "Meiryo", sans-serif;
-}
-body {
-	font-size: 80%;
-	color: #222222;
-	background: #1A294A;
-	background: #1A294A linear-gradient(to right, #1A294A, #2C6E94, #1A294A);
-	background-attachment: fixed;
-}
-hr {
-	display: none;
-}
-header.bg, nav.bg, section.bg, footer.bg {
-	filter: blur(1px);
-	-webkit-filter: blur(1px);
-}
-header {
-	display: none;
-}
-nav {
-	margin: 20px 0px 20px 0px;
-}
-footer p a:link, footer p a:visited, footer p a:hover {
-	border: solid 1px #939393;
-	border-radius: 4px;
-	padding: 3px 12px 3px 12px;
-	margin: 0px;
-	box-shadow: 0px 0px 1px 0px #CECECE;
-	color: #222222;
-	background: #ECECEC;
-	background: #ECECEC linear-gradient(to bottom, #FFFFFF 25%, #F5F5F5 50%, #ECECEC 50%, #ECECEC 75%, #F3F3F3 100%);
-	text-decoration: none;
-	text-shadow: 0px 0px 1px #222222;
-	font-size: 90%;
-	font-weight: normal;
-	line-height: 175%;
-}
-footer p a:active {
-	border: solid 1px #5B60B0;
-	color: inherit;
-	background: #A4D3FF;
-	background: #A4D3FF linear-gradient(to bottom, #E4FAFF 5%, #D5ECFF 5%, #A4D3FF 50%, #88C7FA 50%, #D5F9FF 100%);
-}
-aside {
-	color: inherit;
-	background: #CCCCCC;
-	background: rgba(0, 0, 0, 0.5);
-}
-form#modal {
-	border: solid 1px #000000;
-	padding: 0px;
-	box-shadow: 0px 0px 15px 0px rgba(0, 0, 0, 0.5);
-	color: inherit;
-	background: #CCCCCC;
-	background: #CCCCCC linear-gradient(to bottom, #F1F1F1, #BBBBBB 24px);
-}
-h3#modalhead {
-	padding: 6px;
-	margin: 0px;
-	color: #000000;
-	background: transparent;
-	font-weight: normal;
-	text-shadow: 0px 0px 1px #222222, 1px 1px 1px #FFFFFF;
-	text-align: center;
-	font-size: 100%;
-	line-height: 100%;
-	text-indent: 0px;
-	letter-spacing: 0px;
-}
-div#modalbody {
-	border: solid #696969;
-	border-width: 1px 0px 0px 0px;
-	padding: 10px;
-	margin: 0px 0px 0px 0px;
-	background: #EDEDED;
-}
-div#modalfoot {
-	padding: 0px 10px 10px 10px;
-	margin: 0px 0px 0px 0px;
-	color: inherit;
-	background: #EDEDED;
-}
-table {
-	border: solid 1px #CECECE;
-	padding: 0px;
-	margin: 0px auto 0px auto;
-}
-thead, tfoot {
-	color: #000000;
-	background: #ECECEC;
-	background: #ECECEC linear-gradient(to bottom, #FFFFFF 25%, #F5F5F5 50%, #ECECEC 50%, #ECECEC 75%, #F3F3F3 100%);
-	text-shadow: 0px 0px 1px #222222;
-}
-tbody {
-	color: inherit;
-	background: #FFFFFF;
-}
-table tbody:nth-child(odd), table#detail tbody tr:nth-child(odd) {
-	color: inherit;
-	background: #F2F5FA;
-}
-tbody.pending tr {
-	color: #FFFFFF;
-	background: #2B6DDE;
-}
-tbody.pending td a:link, tbody.pending td a:hover, tbody.pending td a:visited, tbody.pending td a:active {
-	color: #FFFFFF;
-	background: transparent;
-}
-tbody.ready tr {
-	color: #888888;
-	background: transparent;
-}
-tbody.error tr {
-	color: #FF0000;
-	background: transparent;
-}
-caption {
-	border: solid #CECECE;
-	border-width: 1px 1px 0px 1px;
-	padding: 12px;
-	color: #000000;
-	background: #DDDDDD linear-gradient(to bottom, #F8F8F8 1%, #EFEFEF 1%, #CCCCCC 99%);
-	font-size: 85%;
-	font-weight: bold;
-	text-align: left;
-	text-shadow: 0px 0px 1px #222222, 1px 1px 1px #FFFFFF;
-}
-thead, tfoot {
-	border: solid #CECECE;
-	border-width: 1px 0px 1px 0px;
-}
-th {
-	font-weight: normal;
-}
-td.fi {
-	max-width: 128px;
-}
-td.accttype {
-	max-width: 384px;
-}
-a:link, a:visited, a:hover {
-	color: #222222;
-	background: transparent;
-	text-decoration: underline;
-}
-a:active {
-	color: #2B6DDE;
-	background: transparent;
-}
-.btn, .btn:hover {
-	border: solid 1px #939393;
-	border-radius: 4px;
-	padding: 0px 12px 0px 12px;
-	margin: 0px;
-	box-shadow: 0px 0px 1px 0px #CECECE;
-	color: #222222;
-	background: #ECECEC;
-	background: #ECECEC linear-gradient(to bottom, #FFFFFF 25%, #F5F5F5 50%, #ECECEC 50%, #ECECEC 75%, #F3F3F3 100%);
-	text-decoration: none;
-	text-shadow: 0px 0px 1px #222222;
-	font-size: 90%;
-	font-weight: normal;
-	line-height: 175%;
-}
-.btn:active {
-	border: solid 1px #5B60B0;
-	background: #A4D3FF;
-	background: #A4D3FF linear-gradient(to bottom, #E4FAFF 5%, #D5ECFF 5%, #A4D3FF 50%, #88C7FA 50%, #D5F9FF 100%);
-}
-.btn:disabled {
-	border: solid 1px #AAAAAA;
-	color: #888888;
-	background: #EEEEEE;
-}
-.btn + .btn {
-	margin: 0px 0px 0px 5px;
-}
-input, select {
-	font-size: 95%;
+@media screen {
+	* {
+		font-family: "ヒラギノ角ゴ ProN W3", "Hiragino Kaku Gothic ProN", "IPAexゴシック", "IPA Pゴシック", "IPAPGothic", "Meiryo UI", "メイリオ", "Meiryo", sans-serif;
+	}
+	body {
+		font-size: 80%;
+		color: #222222;
+		background: #1A294A;
+		background: #1A294A linear-gradient(to right, #1A294A, #2C6E94, #1A294A);
+		background-attachment: fixed;
+	}
+	hr {
+		display: none;
+	}
+	header.bg, nav.bg, section.bg, footer.bg {
+		filter: blur(1px);
+		-webkit-filter: blur(1px);
+	}
+	header {
+		display: none;
+	}
+	nav {
+		margin: 20px 0px 20px 0px;
+	}
+	footer p a:link, footer p a:visited, footer p a:hover {
+		border: solid 1px #939393;
+		border-radius: 4px;
+		padding: 3px 12px 3px 12px;
+		margin: 0px;
+		box-shadow: 0px 0px 1px 0px #CECECE;
+		color: #222222;
+		background: #ECECEC;
+		background: #ECECEC linear-gradient(to bottom, #FFFFFF 25%, #F5F5F5 50%, #ECECEC 50%, #ECECEC 75%, #F3F3F3 100%);
+		text-decoration: none;
+		text-shadow: 0px 0px 1px #222222;
+		font-size: 90%;
+		font-weight: normal;
+		line-height: 175%;
+	}
+	footer p a:active {
+		border: solid 1px #5B60B0;
+		color: inherit;
+		background: #A4D3FF;
+		background: #A4D3FF linear-gradient(to bottom, #E4FAFF 5%, #D5ECFF 5%, #A4D3FF 50%, #88C7FA 50%, #D5F9FF 100%);
+	}
+	aside {
+		color: inherit;
+		background: #CCCCCC;
+		background: rgba(0, 0, 0, 0.5);
+	}
+	form#modal {
+		border: solid 1px #000000;
+		padding: 0px;
+		box-shadow: 0px 0px 15px 0px rgba(0, 0, 0, 0.5);
+		color: inherit;
+		background: #CCCCCC;
+		background: #CCCCCC linear-gradient(to bottom, #F1F1F1, #BBBBBB 24px);
+	}
+	h3#modalhead {
+		padding: 6px;
+		margin: 0px;
+		color: #000000;
+		background: transparent;
+		font-weight: normal;
+		text-shadow: 0px 0px 1px #222222, 1px 1px 1px #FFFFFF;
+		text-align: center;
+		font-size: 100%;
+		line-height: 100%;
+		text-indent: 0px;
+		letter-spacing: 0px;
+	}
+	div#modalbody {
+		border: solid #696969;
+		border-width: 1px 0px 0px 0px;
+		padding: 10px;
+		margin: 0px 0px 0px 0px;
+		background: #EDEDED;
+	}
+	div#modalfoot {
+		padding: 0px 10px 10px 10px;
+		margin: 0px 0px 0px 0px;
+		color: inherit;
+		background: #EDEDED;
+	}
+	table {
+		border: solid 1px #CECECE;
+		padding: 0px;
+		margin: 0px auto 0px auto;
+	}
+	thead, tfoot {
+		color: #000000;
+		background: #ECECEC;
+		background: #ECECEC linear-gradient(to bottom, #FFFFFF 25%, #F5F5F5 50%, #ECECEC 50%, #ECECEC 75%, #F3F3F3 100%);
+		text-shadow: 0px 0px 1px #222222;
+	}
+	tbody {
+		color: inherit;
+		background: #FFFFFF;
+	}
+	table tbody:nth-child(odd), table#detail tbody tr:nth-child(odd) {
+		color: inherit;
+		background: #F2F5FA;
+	}
+	tbody.pending tr {
+		color: #FFFFFF;
+		background: #2B6DDE;
+	}
+	tbody.pending td a:link, tbody.pending td a:hover, tbody.pending td a:visited, tbody.pending td a:active {
+		color: #FFFFFF;
+		background: transparent;
+	}
+	tbody.ready tr {
+		color: #888888;
+		background: transparent;
+	}
+	tbody.error tr {
+		color: #FF0000;
+		background: transparent;
+	}
+	caption {
+		border: solid #CECECE;
+		border-width: 1px 1px 0px 1px;
+		padding: 12px;
+		color: #000000;
+		background: #DDDDDD linear-gradient(to bottom, #F8F8F8 1%, #EFEFEF 1%, #CCCCCC 99%);
+		font-size: 85%;
+		font-weight: bold;
+		text-align: left;
+		text-shadow: 0px 0px 1px #222222, 1px 1px 1px #FFFFFF;
+	}
+	thead, tfoot {
+		border: solid #CECECE;
+		border-width: 1px 0px 1px 0px;
+	}
+	th {
+		font-weight: normal;
+	}
+	td.fi {
+		max-width: 128px;
+	}
+	td.accttype {
+		max-width: 384px;
+	}
+	a:link, a:visited, a:hover {
+		color: #222222;
+		background: transparent;
+		text-decoration: underline;
+	}
+	a:active {
+		color: #2B6DDE;
+		background: transparent;
+	}
+	.btn, .btn:hover {
+		border: solid 1px #939393;
+		border-radius: 4px;
+		padding: 0px 12px 0px 12px;
+		margin: 0px;
+		box-shadow: 0px 0px 1px 0px #CECECE;
+		color: #222222;
+		background: #ECECEC;
+		background: #ECECEC linear-gradient(to bottom, #FFFFFF 25%, #F5F5F5 50%, #ECECEC 50%, #ECECEC 75%, #F3F3F3 100%);
+		text-decoration: none;
+		text-shadow: 0px 0px 1px #222222;
+		font-size: 90%;
+		font-weight: normal;
+		line-height: 175%;
+	}
+	.btn:active {
+		border: solid 1px #5B60B0;
+		background: #A4D3FF;
+		background: #A4D3FF linear-gradient(to bottom, #E4FAFF 5%, #D5ECFF 5%, #A4D3FF 50%, #88C7FA 50%, #D5F9FF 100%);
+	}
+	.btn:disabled {
+		border: solid 1px #AAAAAA;
+		color: #888888;
+		background: #EEEEEE;
+	}
+	.btn + .btn {
+		margin: 0px 0px 0px 5px;
+	}
+	input, select {
+		font-size: 95%;
+	}
 }

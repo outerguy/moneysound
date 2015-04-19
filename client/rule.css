@@ -166,3 +166,64 @@ a {
 .none {
 	display: none;
 }
+@media print {
+	* {
+		font-family: sans-serif;
+	}
+	body {
+		color: #000000;
+		background: #FFFFFF;
+	}
+	nav, footer {
+		display: none;
+	}
+	header {
+		display: block;
+	}
+	h1 {
+		padding: 0px;
+		margin: 0px;
+		font-size: 150%;
+		text-align: left;
+		letter-spacing: 0px;
+	}
+	table {
+		width: 100%;
+		border: solid #000000;
+		border-width: 4px 0px 0px 0px;
+	}
+	thead tr, tfoot tr {
+		border: solid #000000;
+		border-width: 1px 0px 1px 0px;
+	}
+	thead tr th, tfoot tr th {
+		padding: 0.5em 0.25em 0.5em 0.25em;
+		font-weight: normal;
+	}
+	tbody:nth-child(odd) {
+		color: inherit;
+		background: #FFFFFF;
+	}
+	tbody:nth-child(even) {
+		color: inherit;
+		background: #CCEEFF;
+	}
+	th.control, td.control {
+		display: none;
+	}
+	td.fi, td.accttype, td.balance, td.timestamp {
+		max-width: inherit;
+	}
+	caption {
+		border: 0px;
+		padding: 0px 0px 1em 0px;
+		margin: 0px;
+		font-size: 100%;
+		text-align: left;
+	}
+	a {
+		color: #000000;
+		background: transparent;
+		text-decoration: none
+	}
+}
