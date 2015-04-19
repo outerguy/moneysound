@@ -197,7 +197,7 @@ if(strpos($body, "合言葉確認２") !== false) {
 		if(isset($queries["chkConfItemChk"]) == true) {
 			if(ENV_BOOL_ADD_RISKBASE == true) {
 				// 次回ログイン時に合言葉を入力しない
-				$queries["chkConfItemChk"] = "chkConfItemChk=";
+				unset($queries["chkConfItemChk"]);
 			} else {
 				// 次回ログイン時に合言葉を入力する
 				$queries["chkConfItemChk"] = "chkConfItemChk=on";
