@@ -158,6 +158,8 @@ if(strpos($body, "Œ»İƒT[ƒrƒX’â~’†") !== false || strpos($body, "ƒƒ“ƒeƒiƒ“ƒX
 	$resp["body"] = $body;
 	$resp["ofx"] = generate_ofx($resp["status"]);
 } else {
+	$resp["status"] = ENV_NUM_STATUS_SUCCESS;
+	
 	$as = parse_tag($body, "a");
 	foreach($as as $a) {
 		$imgs = parse_tag($a["innerHTML"], "img");
@@ -222,7 +224,7 @@ if(strpos($body, "Œ»İƒT[ƒrƒX’â~’†") !== false || strpos($body, "ƒƒ“ƒeƒiƒ“ƒX
 	}
 	
 	// ƒVƒXƒeƒ€ƒƒ“ƒeƒiƒ“ƒX‰æ–Ê‚Ìê‡
-	if(strpos($body, "‚¨‹q—l‚Ì‚²¿‹Šz‚ğŠm’è") !== false || strpos($body, "‚½‚¾‚¢‚ÜƒT[ƒo[ƒƒ“ƒeƒiƒ“ƒX’†") !== false) {
+	if(strpos($body, "‚¨‹q—l‚Ì‚²¿‹Šz‚ğŠm’è") !== false || strpos($body, "‚½‚¾‚¢‚ÜƒT[ƒo[ƒƒ“ƒeƒiƒ“ƒX’†") !== false || strpos($body, "ƒy[ƒW‚ğ•\¦‚·‚é‚±‚Æ‚ª‚Å‚«‚Ü‚¹‚ñ") !== false) {
 		$resp["status"] = ENV_NUM_STATUS_MAINTENANCE;
 		$resp["method"] = $method;
 		$resp["uri"] = $uris["scheme"] . "://" . $uris["host"] . $uris["path"];
@@ -374,7 +376,6 @@ if(strpos($body, "Œ»İƒT[ƒrƒX’â~’†") !== false || strpos($body, "ƒƒ“ƒeƒiƒ“ƒX
 		}
 		
 		// OFXƒtƒ@ƒCƒ‹‚ğo—Í‚·‚é
-		$resp["status"] = ENV_NUM_STATUS_SUCCESS;
 		if(strpos($creditcardmsgsrsv1, "<BANKTRANLIST>") === false) {
 			// –¾×‚ª‘¶İ‚µ‚È‚¢ê‡
 			$resp["ofx"] = generate_ofx($resp["status"]);
