@@ -7,7 +7,8 @@ Dual-licensed under the Apache License 2.0 and Beatrek Origin License.
 */
 
 // グローバル変数・定数を定義する
-var ver = "<!--[version]-->";
+var ver_cl = "<!--[family]-->";
+var ver_sv = "<!--[purse]-->";
 var get_all = -1;
 var xhr;
 
@@ -554,7 +555,7 @@ function fnc_version() {
 		tag_a = dom_create_tag("a", { "href": "https://github.com/outerguy/moneysound/", "target": "_blank", "style": "margin-right: 0.5em;" });
 		tag_a.appendChild(dom_create_text(title));
 		tag_p.appendChild(tag_a);
-		tag_p.appendChild(dom_create_text("Version " + ver));
+		tag_p.appendChild(dom_create_text("Version " + ver_cl + "." + ver_sv));
 		body.appendChild(tag_p);
 		
 		tag_hr = dom_create_tag("hr");

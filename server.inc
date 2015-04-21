@@ -12,11 +12,8 @@ mailto:hiromu2000@hotmail.com
 Licensed under the GNU AGPLv3.
 */
 
-define("ENV_PRODUCT_CODENAME", "PURSE");
-define("ENV_PRODUCT_VERSION", "1.0");
 define("ENV_PRODUCT_FAMILY", "MoneySound");
 define("ENV_PRODUCT_COMMENT", "+https://github.com/outerguy/moneysound/");
-define("ENV_PRODUCT_ID", ENV_PRODUCT_CODENAME . "/" . ENV_PRODUCT_VERSION);
 define("ENV_PRODUCT_UA", "Mozilla/5.0 (compatible; " . ENV_PRODUCT_ID . (defined("ENV_PRODUCT_FAMILY") == true && ENV_PRODUCT_FAMILY != ""? "; " . ENV_PRODUCT_FAMILY: "") . (defined("ENV_PRODUCT_COMMENT") == true && ENV_PRODUCT_COMMENT != ""? "; " . ENV_PRODUCT_COMMENT: "") . ")");
 
 define("ENV_BOOL_PENDING_DETAIL", true); // （クレジットカードの）未確定明細を出力するか否か

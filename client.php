@@ -27,7 +27,7 @@ foreach($fis as $mk => $mv) {
 $filist = trim(json_encode($filists, JSON_UNESCAPED_UNICODE + JSON_UNESCAPED_SLASHES));
 
 // 埋め込み文字列を置換する
-$js = str_replace(array("<!--[version]-->", "<!--[ofxhead]-->", "\"<!--[filist]-->\"", "\"<!--[debug]-->\""), array(ENV_PRODUCT_FAMILY_VERSION, $ofxhead, $filist, (ENV_BOOL_DEBUG == true? "true": "false")), file_get_contents(ENV_FILE_DIR_CLIENT . ENV_FILE_TEMPLATE_JS));
+$js = str_replace(array("<!--[family]-->", "<!--[purse]-->", "<!--[ofxhead]-->", "\"<!--[filist]-->\"", "\"<!--[debug]-->\""), array(ENV_PRODUCT_FAMILY_VERSION, ENV_PRODUCT_VERSION, $ofxhead, $filist, (ENV_BOOL_DEBUG == true? "true": "false")), file_get_contents(ENV_FILE_DIR_CLIENT . ENV_FILE_TEMPLATE_JS));
 
 // レスポンスを返す
 header("HTTP/1.0 200 OK");

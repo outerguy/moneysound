@@ -7,6 +7,10 @@ mailto:contact@beatrek.com
 Dual-licensed under the GNU All-Permissive License and Beatrek Origin License.
 */
 
+define("ENV_PRODUCT_CODENAME", "PURSE");
+define("ENV_PRODUCT_VERSION", "1.0");
+define("ENV_PRODUCT_ID", ENV_PRODUCT_CODENAME . "/" . ENV_PRODUCT_VERSION);
+
 define("ENV_FILE_DIR_COMMON", "./common/");
 
 define("ENV_FILE_INI_FI", "fi.ini");
