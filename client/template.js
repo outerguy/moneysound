@@ -82,6 +82,7 @@ function fnc_load() {
 	with(dom_get_id("btn_erase")) onclick = onkeypress = fnc_erase;
 	with(dom_get_id("btn_debug")) onclick = onkeypress = fnc_debug;
 	with(dom_get_id("btn_option")) onclick = onkeypress = fnc_option;
+	with(dom_get_id("btn_print")) onclick = onkeypress = fnc_print;
 	with(dom_get_id("btn_version")) onclick = onkeypress = fnc_version;
 	with(dom_get_id("btn_get_all")) onclick = onkeypress = fnc_update_all;
 	with(dom_get_id("btn_get_stop")) onclick = onkeypress = fnc_cancel;
@@ -137,6 +138,9 @@ function fnc_initialize() {
 			// デバッグ情報ボタンの押下を禁止する
 			dom_get_id("btn_debug").disabled = true;
 			
+			// 印刷ボタンの押下を禁止する
+			dom_get_id("btn_print").disabled = true;
+			
 			// 設定ボタンの押下を禁止する
 			dom_get_id("btn_option").disabled = true;
 			
@@ -177,6 +181,9 @@ function fnc_initialize() {
 			
 			// デバッグ情報ボタンの押下を許可する
 			dom_get_id("btn_debug").disabled = false;
+			
+			// 印刷ボタンの押下を許可する
+			dom_get_id("btn_print").disabled = false;
 			
 			// 設定ボタンの押下を許可する
 			dom_get_id("btn_option").disabled = false;
@@ -455,6 +462,14 @@ function fnc_debug() {
 	
 	// ダイアログを開く
 	modal_showonly("デバッグ情報", body, false);
+	return false;
+}
+
+// 印刷機能
+function fnc_print() {
+	// ブラウザーの印刷ダイアログを呼び出す
+	self.window.print();
+	
 	return false;
 }
 
@@ -872,6 +887,9 @@ function fnc_update(rowid, additional) {
 				// デバッグ情報ボタンの押下を許可する
 				dom_get_id("btn_debug").disabled = false;
 				
+				// 印刷ボタンの押下を許可する
+				dom_get_id("btn_print").disabled = false;
+				
 				// 設定ボタンの押下を許可する
 				dom_get_id("btn_option").disabled = false;
 				
@@ -939,6 +957,9 @@ function fnc_update(rowid, additional) {
 	
 	// デバッグ情報ボタンの押下を禁止する
 	dom_get_id("btn_debug").disabled = true;
+	
+	// 印刷ボタンの押下を許可する
+	dom_get_id("btn_print").disabled = true;
 	
 	// 設定ボタンの押下を許可する
 	dom_get_id("btn_option").disabled = true;
