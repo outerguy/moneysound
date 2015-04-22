@@ -1408,7 +1408,7 @@ function fnc_ofx_all() {
 		tag_fi = merge.createElement("FI");
 		
 		tag_org = merge.createElement("ORG");
-		tag_org.appendChild(merge.createTextNode("MoneySound/" + ver));
+		tag_org.appendChild(merge.createTextNode("MoneySound/" + ver_cl + "." + ver_sv));
 		tag_fi.appendChild(tag_org);
 		tag_sonrs.appendChild(tag_fi);
 		
@@ -1547,7 +1547,7 @@ function fnc_csv() {
 		
 		// データを生成する
 		buf += "\"金融機関\",\"日付\",\"摘要\",\"金額\",\"メモ\"\r\n";
-		buf += "\"" + title + " Version " + ver + "\"," + timestamp.substring(0, 4) + "-" + timestamp.substring(4, 6) + "-" + timestamp.substring(6, 8) + "," + "\"残高合計\"," + total + ",\"" + logons["localid"] + "\"\r\n";
+		buf += "\"" + title + " Version " + ver_cl + "." + ver_sv + "\"," + timestamp.substring(0, 4) + "-" + timestamp.substring(4, 6) + "-" + timestamp.substring(6, 8) + "," + "\"残高合計\"," + total + ",\"" + logons["localid"] + "\"\r\n";
 		buf += "\r\n";
 		
 		for(i = 0; i < auths.length; i++) {
