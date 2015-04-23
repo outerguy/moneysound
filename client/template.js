@@ -582,7 +582,7 @@ function fnc_version() {
 		
 		tag_p = dom_create_tag("p");
 		tag_a = dom_create_tag("a", { "href": "https://github.com/polygonplanet/encoding.js", "target": "_blank", "style": "margin-right: 0.5em;" });
-		tag_a.appendChild(dom_create_text("Encoding.js version 1.0.21"));
+		tag_a.appendChild(dom_create_text("Encoding.js version 1.0.23"));
 		tag_p.appendChild(tag_a);
 		tag_p.appendChild(dom_create_text("Copyright (c) 2013-2015 polygon planet"));
 		body.appendChild(tag_p);
