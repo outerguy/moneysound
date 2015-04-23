@@ -38,6 +38,11 @@ themes["aqua.css"] = "Aqua";
 themes["light.css"] = "Light";
 themes["precious.css"] = "プレシャス";
 
+var csvencodings = new Array();
+csvencodings["SJIS"] = "Shift_JIS";
+csvencodings["UTFB"] = "UTF-8（BOMあり）";
+csvencodings["UTF8"] = "UTF-8（BOMなし）";
+
 (function() {
 	with(self.document) {
 		// 起動時に事前処理機能を呼び出す
@@ -482,6 +487,13 @@ function fnc_option() {
 	var css;
 	var i;
 	
+	// CSVの文字エンコーディングを取得する
+	var csvencoding = dom_get_storage(logons["localid"] + ":csvencoding", logons["localpass"]);
+	if(csvencoding == null) for(i in csvencodings) {
+		csvencoding = i;
+		break;
+	}
+	
 	if(dom_get_id("modal") == null) {
 		// 画面のテーマリストを生成する
 		tag_p = dom_create_tag("p", { "class": "label" });
@@ -499,17 +511,36 @@ function fnc_option() {
 		tag_p.appendChild(tag_select);
 		body.appendChild(tag_p);
 		
+		// CSVの文字エンコーディングリストを生成する
+		tag_p = dom_create_tag("p", { "class": "label" });
+		tag_p.appendChild(dom_create_text("CSVの文字エンコーディング"));
+		body.appendChild(tag_p);
+		
+		tag_p = dom_create_tag("p");
+		tag_select = dom_create_tag("select", { "name": "csvencoding", "id": "csvencoding", "class": "ipt" });
+		for(i in csvencodings) {
+			tag_option = dom_create_tag("option", { "value": i });
+			if(i == csvencoding) tag_option["selected"] = "selected";
+			tag_option.appendChild(dom_create_text(csvencodings[i]));
+			tag_select.appendChild(tag_option);
+		}
+		tag_p.appendChild(tag_select);
+		body.appendChild(tag_p);
+		
 		// ダイアログを開く
 		modal_show("設定", body, true, "theme");
-		
-		// 画面のテーマリストの先頭を選択する
-		tag_select.focus();
 	} else {
 		// コールバックの場合
 		css = dom_get_id("theme")[dom_get_id("theme").selectedIndex].value;
 		
+		// コールバックの場合
+		csvencoding = dom_get_id("csvencoding")[dom_get_id("csvencoding").selectedIndex].value;
+		
 		// ダイアログを閉じる
 		modal_hide();
+		
+		// CSVの文字エンコーディングを設定する
+		dom_set_storage(logons["localid"] + ":csvencoding", csvencoding, logons["localpass"]);
 		
 		// 画面のテーマを設定する
 		dom_set_storage(logons["localid"] + ":theme", css, logons["localpass"]);
@@ -799,7 +830,6 @@ function fnc_delete(rowid) {
 		
 		// ダイアログを開く
 		modal_show("削除", body, true, "modalcancel");
-		return false;
 	} else {
 		if(typeof auth != "string") auth = dom_get_id("auth").value;
 		
@@ -808,6 +838,7 @@ function fnc_delete(rowid) {
 		
 		logoninfo_delete(auth);
 	}
+	return false;
 }
 
 // 更新機能
@@ -1532,6 +1563,7 @@ function fnc_csv() {
 	var buf, buf_sjis, buf_view, buf_blob;
 	var tag_a;
 	var url, tag_section;
+	var csvencoding;
 	var i, j, k;
 	var title = dom_get_tag("title")[0].firstChild.nodeValue;
 	var buf = "";
@@ -1544,6 +1576,13 @@ function fnc_csv() {
 		auths = dom_get_storage(logons["localid"], logons["localpass"]).split("\r\n");
 		timestamp = timestamp_get();
 		total = dom_get_id("total").firstChild.nodeValue.replace(/,/g, "");
+		
+		// CSVの文字エンコーディングを取得する
+		csvencoding = dom_get_storage(logons["localid"] + ":csvencoding", logons["localpass"]);
+		if(csvencoding == null) for(i in csvencodings) {
+			csvencoding = i;
+			break;
+		}
 		
 		// データを生成する
 		buf += "\"金融機関\",\"日付\",\"摘要\",\"金額\",\"メモ\"\r\n";
@@ -1663,21 +1702,32 @@ function fnc_csv() {
 			}
 		}
 		
-		// CSVの文字エンコーディングをShift_JISへと変換する
-		buf_sjis = Encoding.convert(Encoding.stringToCode(buf), "SJIS", "UNICODE");
-		j = buf_sjis.length;
-		buf_blob = new ArrayBuffer(j);
-		buf_view = new Uint8Array(buf_blob);
-		for(i = 0; i < j; i++) buf_view[i] = buf_sjis[i];
-		
-		// ダウンロード用データを生成する
-		csv = new Blob([buf_blob]);
-		filename = "MoneySound_" + timestamp + ".csv";
-		
 		// データをダウンロードする
 		if(f == false) {
 			modal_showonly("警告", "ダウンロード可能なCSVがありません。", false);
 		} else {
+			// ダウンロード用データを生成する
+			switch(csvencoding) {
+			case "UTFB":
+				// BOMを追加する
+				csv = new Blob([new Uint8Array([0xEF, 0xBB, 0xBF]), buf]);
+				break;
+			case "UTF8":
+				csv = new Blob([buf]);
+				break;
+			case "SJIS":
+			default:
+				// CSVの文字エンコーディングをShift_JISへと変換する
+				buf_sjis = Encoding.convert(Encoding.stringToCode(buf), "SJIS", "UNICODE");
+				j = buf_sjis.length;
+				buf_blob = new ArrayBuffer(j);
+				buf_view = new Uint8Array(buf_blob);
+				for(i = 0; i < j; i++) buf_view[i] = buf_sjis[i];
+				csv = new Blob([buf_blob]);
+				break;
+			}
+			filename = "MoneySound_" + timestamp + ".csv";
+			
 			if(self.window.navigator.msSaveOrOpenBlob) {
 				self.window.navigator.msSaveOrOpenBlob(csv, filename);
 			} else {
