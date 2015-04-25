@@ -23,7 +23,7 @@ Beatrek Origin Licenseのデュアルライセンスに基づき提供いたし�
 ください。
 
 
-./common.*, ./common/*.*, ./index.php, ./php.ini, ./php_mac.ini, ./start_ms.bat:
+./common.*, ./common/*.*, ./index.php, ./php*.ini, ./start_php.bat:
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 上記ファイルは、GNU All-Permissive License、およびBeatrek Origin Licenseの
 デュアルライセンスに基づき提供いたします。
