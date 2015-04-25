@@ -14,6 +14,7 @@ var xhr;
 
 var debug = "<!--[debug]-->";
 var ofxhead = "<!--[ofxhead]-->";
+var pdftext = "<!--[pdftext]-->";
 var fiids = "<!--[filist]-->";
 var ficats = new Array();
 var filists = new Array();
@@ -37,6 +38,11 @@ themes["flat.css"] = "Flat";
 themes["aqua.css"] = "Aqua";
 themes["light.css"] = "Light";
 themes["precious.css"] = "プレシャス";
+
+var outputs = new Array();
+outputs["CSV"] = "CSVファイルのダウンロード";
+outputs["PDF"] = "PDFファイルのダウンロード";
+outputs["LPT"] = "口座一覧の印刷";
 
 var csvencodings = new Array();
 csvencodings["SJIS"] = "Shift_JIS";
@@ -88,13 +94,12 @@ function fnc_load() {
 	with(dom_get_id("btn_erase")) onclick = onkeypress = fnc_erase;
 	with(dom_get_id("btn_debug")) onclick = onkeypress = fnc_debug;
 	with(dom_get_id("btn_option")) onclick = onkeypress = fnc_option;
-	with(dom_get_id("btn_print")) onclick = onkeypress = fnc_print;
 	with(dom_get_id("btn_version")) onclick = onkeypress = fnc_version;
 	with(dom_get_id("btn_get_all")) onclick = onkeypress = fnc_update_all;
 	with(dom_get_id("btn_get_stop")) onclick = onkeypress = fnc_cancel;
 	with(dom_get_id("btn_ofx_all")) onclick = onkeypress = fnc_ofx_all;
-	with(dom_get_id("btn_csv")) onclick = onkeypress = fnc_csv;
 	with(dom_get_id("btn_add")) onclick = onkeypress = fnc_create;
+	with(dom_get_id("btn_output")) onclick = onkeypress = fnc_output;
 	
 	// リンク先を設定する
 	for(i = 0; i < tag_as.length; i++) tag_as[i].target = "link";
@@ -144,9 +149,6 @@ function fnc_initialize() {
 			// デバッグ情報ボタンの押下を禁止する
 			dom_get_id("btn_debug").disabled = true;
 			
-			// 印刷ボタンの押下を禁止する
-			dom_get_id("btn_print").disabled = true;
-			
 			// 設定ボタンの押下を禁止する
 			dom_get_id("btn_option").disabled = true;
 			
@@ -162,11 +164,11 @@ function fnc_initialize() {
 			// OFX（結合）ボタンの押下を禁止する
 			dom_get_id("btn_ofx_all").disabled = true;
 			
-			// CSVボタンの押下を禁止する
-			dom_get_id("btn_csv").disabled = true;
-			
 			// 追加ボタンの押下を禁止する
 			dom_get_id("btn_add").disabled = true;
+			
+			// 出力ボタンの押下を禁止する
+			dom_get_id("btn_output").disabled = true;
 			
 			lists = "";
 			break;
@@ -188,9 +190,6 @@ function fnc_initialize() {
 			// デバッグ情報ボタンの押下を許可する
 			dom_get_id("btn_debug").disabled = false;
 			
-			// 印刷ボタンの押下を許可する
-			dom_get_id("btn_print").disabled = false;
-			
 			// 設定ボタンの押下を許可する
 			dom_get_id("btn_option").disabled = false;
 			
@@ -206,11 +205,11 @@ function fnc_initialize() {
 			// OFX（結合）ボタンの押下を禁止する
 			dom_get_id("btn_ofx_all").disabled = true;
 			
-			// CSVボタンの押下を禁止する
-			dom_get_id("btn_csv").disabled = true;
-			
 			// 追加ボタンの押下を許可する
 			dom_get_id("btn_add").disabled = false;
+			
+			// 出力ボタンの押下を禁止する
+			dom_get_id("btn_output").disabled = true;
 			
 			ret = true;
 			break;
@@ -468,14 +467,6 @@ function fnc_debug() {
 	
 	// ダイアログを開く
 	modal_showonly("デバッグ情報", body, false);
-	return false;
-}
-
-// 印刷機能
-function fnc_print() {
-	// ブラウザーの印刷ダイアログを呼び出す
-	self.window.print();
-	
 	return false;
 }
 
@@ -919,23 +910,20 @@ function fnc_update(rowid, additional) {
 				// デバッグ情報ボタンの押下を許可する
 				dom_get_id("btn_debug").disabled = false;
 				
-				// 印刷ボタンの押下を許可する
-				dom_get_id("btn_print").disabled = false;
-				
 				// 設定ボタンの押下を許可する
 				dom_get_id("btn_option").disabled = false;
 				
 				// バージョン情報ボタンの押下を許可する
 				dom_get_id("btn_version").disabled = false;
 				
-				// CSVボタンの押下を許可する
-				dom_get_id("btn_csv").disabled = false;
+				// 中止ボタンの押下を禁止する
+				dom_get_id("btn_get_stop").disabled = true;
 				
 				// 追加ボタンの押下を許可する
 				dom_get_id("btn_add").disabled = false;
 				
-				// 中止ボタンの押下を禁止する
-				dom_get_id("btn_get_stop").disabled = true;
+				// 出力ボタンの押下を許可する
+				dom_get_id("btn_output").disabled = false;
 				
 				dom_get_tag("html")[0].className = "";
 				dom_get_id(auths[0]).className = "";
@@ -990,23 +978,20 @@ function fnc_update(rowid, additional) {
 	// デバッグ情報ボタンの押下を禁止する
 	dom_get_id("btn_debug").disabled = true;
 	
-	// 印刷ボタンの押下を許可する
-	dom_get_id("btn_print").disabled = true;
-	
 	// 設定ボタンの押下を許可する
 	dom_get_id("btn_option").disabled = true;
 	
 	// バージョン情報ボタンの押下を禁止する
 	dom_get_id("btn_version").disabled = true;
 	
-	// CSVボタンの押下を禁止する
-	dom_get_id("btn_csv").disabled = true;
+	// 中止ボタンの押下を許可する
+	dom_get_id("btn_get_stop").disabled = false;
 	
 	// 追加ボタンの押下を禁止する
 	dom_get_id("btn_add").disabled = true;
 	
-	// 中止ボタンの押下を許可する
-	dom_get_id("btn_get_stop").disabled = false;
+	// 出力ボタンの押下を禁止する
+	dom_get_id("btn_output").disabled = true;
 	
 	dom_get_tag("html")[0].className = "pending";
 	dom_get_id(auths[0]).className = "pending";
@@ -1552,6 +1537,58 @@ function fnc_ofx_all() {
 	}
 }
 
+// 出力機能
+function fnc_output() {
+	var body = document.createDocumentFragment();
+	var tag_p, tag_select, tag_option;
+	var output;
+	var i;
+	
+	if(dom_get_id("modal") == null) {
+		// 操作リストを生成する
+		tag_p = dom_create_tag("p", { "class": "label" });
+		tag_p.appendChild(dom_create_text("操作"));
+		body.appendChild(tag_p);
+		
+		tag_p = dom_create_tag("p");
+		tag_select = dom_create_tag("select", { "name": "ficat", "id": "format", "class": "ipt" });
+		for(i in outputs) {
+			tag_option = dom_create_tag("option", { "value": i });
+			tag_option.appendChild(dom_create_text(outputs[i]));
+			tag_select.appendChild(tag_option);
+		}
+		tag_p.appendChild(tag_select);
+		body.appendChild(tag_p);
+		
+		// ダイアログを開く
+		modal_show("出力", body, true, "format");
+	} else {
+		// コールバックの場合
+		output = dom_get_id("format").options[dom_get_id("format").selectedIndex].value;
+		
+		// ダイアログを閉じる
+		modal_hide();
+		
+		switch(output) {
+		case "CSV":
+			// CSVダウンロード機能を呼び出す
+			fnc_csv();
+			break;
+		case "PDF":
+			// PDFダウンロード機能を呼び出す
+			fnc_pdf();
+			break;
+		case "LPT":
+			// ブラウザーの印刷ダイアログを呼び出す
+			self.window.print();
+			break;
+		default:
+			break;
+		}
+	}
+	return false;
+}
+
 // CSVダウンロード機能
 function fnc_csv() {
 	var parser = null;
@@ -1743,6 +1780,133 @@ function fnc_csv() {
 	}
 }
 
+// PDFダウンロード機能
+function fnc_pdf() {
+	var logons = local_current();
+	var auth = dom_get_storage(logons["localid"], logons["localpass"]);
+	var timestamp = timestamp_get();
+	
+	if(chkenv_pdf() == false) {
+		modal_showonly("警告", "ご利用のブラウザーは、PDFのダウンロードに対応していません。", false);
+	} else {
+		var pdf = null;
+		var str = pdftext;
+		var pdflength = "<<\r\n/Length <!--[length]-->\r\n>>\r\n";
+		var pdfstream = "stream\r\n<!--[stream]-->endstream\r\n";
+		var pdfobj = "";
+		var pdfstr = "";
+		var tag_thead = dom_get_tag("thead")[0];
+		var tag_tfoot = dom_get_tag("tfoot")[0];
+		var tag_tbody = dom_get_tag("tbody");
+		var tag_tr;
+		var y = 714;
+		var row = 0;
+		var col, val;
+		var i, j;
+		
+		pdfstr += "BT\r\n";
+		
+		// タイトル部を生成する
+		pdfstr += "/F1 18 Tf\r\n";
+		pdfstr += "1 0 0 1 60 772 Tm\r\n<" + get_binary_sjis(dom_get_tag("h1")[0].firstChild.nodeValue) + "> Tj\r\n"; // マネーサウンド
+		pdfstr += "/F1 10.5 Tf\r\n";
+		pdfstr += "1 0 0 1 60 754 Tm\r\n<" + get_binary_sjis(logons["localid"]) + "> Tj\r\n"; // ローカルID
+		
+		// 表ヘッダー部を生成する
+		pdfobj += "q\r\n1.5 w\r\n1 0 0 1 57 742 cm\r\n0 0 0 rg\r\n0 0 m\r\n480 0 l\r\n480 2.5 l\r\n0 2.5 l\r\nf\r\nQ\r\n";
+		pdfobj += "q\r\n0.5 w\r\n1 0 0 1 57 714.5 cm\r\n0 0 0 rg\r\n0 0 m\r\n480 0 l\r\nS\r\nQ\r\n";
+		
+		tag_tr = tag_thead.getElementsByTagName("tr")[0];
+		pdfstr += "1 0 0 1 102.5 725 Tm\r\n<" + get_binary_sjis(tag_tr.childNodes[0].firstChild.nodeValue) + "> Tj\r\n"; // 金融機関（全角12文字以内）
+		pdfstr += "1 0 0 1 270 725 Tm\r\n<" + get_binary_sjis(tag_tr.childNodes[1].firstChild.nodeValue) + "> Tj\r\n"; // 口座種目（全角18文字以内）
+		pdfstr += "1 0 0 1 421 725 Tm\r\n<" + get_binary_sjis(tag_tr.childNodes[2].firstChild.nodeValue) + "> Tj\r\n"; // 残高（半角13文字以内）
+		pdfstr += "1 0 0 1 483.5 725 Tm\r\n<" + get_binary_sjis(tag_tr.childNodes[3].firstChild.nodeValue) + "> Tj\r\n"; // 更新日時（半角11文字以内）
+		
+		// 表ボディー部を生成する
+		for(i = 0; i < tag_tbody.length; i++) {
+			tag_tr = tag_tbody[i].getElementsByTagName("tr");
+			
+			// 行数が50を超える場合、生成を打ち切る
+			row += tag_tr.length;
+			if(row > 50) break;
+			
+			// 行を繰り下げる
+			y -= 12 * tag_tr.length;
+			
+			// 偶数行を着色する
+			if(i % 2 == 0) pdfobj += "q\r\n1 0 0 1 57 " + y.toString() + " cm\r\n0.8 0.933 1 rg\r\n0 0 m\r\n480 0 l\r\n480 " + (12 * tag_tr.length).toString() + " l\r\n0 " + (12 * tag_tr.length).toString() + " l\r\nf\r\nQ\r\n";
+			
+			// 金融機関を出力する
+			val = tag_tr[0].childNodes[0].firstChild.firstChild.nodeValue;
+			if(val.length > 12) val = val.substring(0, 11) + "…";
+			pdfstr += "1 0 0 1 60 " + (y + 2 + 12 * (tag_tr.length - 1)).toString() + " Tm\r\n<" + get_binary_sjis(val) + "> Tj\r\n";
+			
+			// 口座種目を出力する
+			for(j = tag_tr.length - 1; j >= 0; j--) {
+				val = tag_tr[tag_tr.length - j - 1].childNodes[(j == tag_tr.length - 1? 1: 0)].firstChild.nodeValue;
+				if(val.length > 18) val = val.substring(0, 17) + "…";
+				pdfstr += "1 0 0 1 197 " + (y + 2 + 12 * j).toString() + " Tm\r\n<" + get_binary_sjis(val) + "> Tj\r\n";
+			}
+			
+			col = tag_tr[0].childNodes[1].colSpan;
+			
+			if(col == 1) {
+				// 残高を出力する
+				for(j = tag_tr.length - 1; j >= 0; j--) {
+					val = tag_tr[tag_tr.length - j - 1].childNodes[(j == tag_tr.length - 1? 2: 1)].firstChild.nodeValue;
+					while(val.length < 13) val = " " + val;
+					pdfstr += "1 0 0 1 397 " + (y + 2 + 12 * j).toString() + " Tm\r\n<" + get_binary_sjis(val) + "> Tj\r\n";
+				}
+				
+				// 更新日時を出力する
+				val = tag_tr[0].childNodes[3].firstChild.nodeValue;
+				while(val.length < 11) val = " " + val;
+				pdfstr += "1 0 0 1 476 " + (y + 2 + 12 * (tag_tr.length - 1)).toString() + " Tm\r\n<" + get_binary_sjis(val) + "> Tj\r\n";
+			}
+		}
+		
+		// 表フッター部を生成する
+		pdfobj += "q\r\n0.5 w\r\n1 0 0 1 57 " + (y - 0.5).toString() + " cm\r\n0 0 0 rg\r\n0 0 m\r\n480 0 l\r\nS\r\nQ\r\n";
+		pdfobj += "q\r\n0.5 w\r\n1 0 0 1 57 " + (y - 28).toString() + " cm\r\n0 0 0 rg\r\n0 0 m\r\n480 0 l\r\nS\r\nQ\r\n";
+		
+		tag_tr = tag_tfoot.getElementsByTagName("tr")[0];
+		pdfstr += "1 0 0 1 197 " + (y - 18).toString() + " Tm\r\n<" + get_binary_sjis(tag_tr.childNodes[1].firstChild.nodeValue) + "> Tj\r\n"; // 合計
+		
+		// 残高合計を出力する
+		val = tag_tr.childNodes[2].firstChild.nodeValue;
+		while(val.length < 13) val = " " + val;
+		pdfstr += "1 0 0 1 397 " + (y - 18).toString() + " Tm\r\n<" + get_binary_sjis(val) + "> Tj\r\n";
+		
+		pdfstr += "ET\r\n";
+		
+		// 埋め込み文字列を置換する
+		pdflength = pdflength.replace("<!--[length]-->", (pdfobj.length + pdfstr.length).toString());
+		pdfstream = pdfstream.replace("<!--[stream]-->", pdfobj + pdfstr);
+		str = str.replace("<!--[datetime]-->", timestamp);
+		str = str.replace("<!--[content]-->", pdflength + pdfstream);
+		str = str.replace("<!--[xref]-->", str.indexOf("xref").toString());
+		
+		// ダウンロード用データを生成する
+		pdf = new Blob([str]);
+		filename = "MoneySound_" + timestamp + ".pdf";
+		
+		// データをダウンロードする
+		if(self.window.navigator.msSaveOrOpenBlob) {
+			self.window.navigator.msSaveOrOpenBlob(pdf, filename);
+		} else {
+			url = self.window.URL || self.window.webkitURL;
+			tag_section = dom_get_tag("section")[0];
+			tag_a = dom_create_tag("a", { "href": url.createObjectURL(pdf), "id": "download", "type": "application/pdf", "download": filename });
+			tag_a.appendChild(dom_create_text("ダウンロード"));
+			tag_section.appendChild(tag_a);
+			dom_get_id("download").click();
+			tag_section.removeChild(tag_a);
+		}
+		pdf = null;
+	}
+	return false;
+}
+
 // 口座一覧表示機能
 function fnc_listall(lists) {
 	var logons = local_current();
@@ -1769,8 +1933,8 @@ function fnc_listall(lists) {
 		// OFX（結合）ボタンの押下を許可する
 		dom_get_id("btn_ofx_all").disabled = false;
 		
-		// CSVボタンの押下を許可する
-		dom_get_id("btn_csv").disabled = false;
+		// 出力ボタンの押下を許可する
+		dom_get_id("btn_output").disabled = false;
 	}
 	
 	// 口座一覧を更新する
@@ -2669,6 +2833,19 @@ function to_amount(src) {
 	return dst;
 }
 
+// UTF-8文字列をShift_JISの16進数文字列に変換する
+function get_binary_sjis(buf) {
+	var buf_sjis = Encoding.convert(Encoding.stringToCode(buf), "SJIS", "UNICODE");
+	var ret = "";
+	var i;
+	for(i = 0; i < buf_sjis.length; i++) {
+		code = buf_sjis[i].toString(16);
+		if(code.length == 1) code = "0" + code;
+		ret += code;
+	}
+	return ret;
+}
+
 // JavaScriptの実装状況をチェックする（Ajax）
 function chkenv_xmlhttprequest() {
 	return (typeof XMLHttpRequest != "undefined" && XMLHttpRequest? true: false);
@@ -2727,6 +2904,11 @@ function chkenv_ofx_all() {
 // JavaScriptの実装状況をチェックする（CSVダウンロード機能）
 function chkenv_csv() {
 	return chkenv_parser() && chkenv_blob() && chkenv_createobjecturl() && chkenv_arraybuffer();
+}
+
+// JavaScriptの実装状況をチェックする（PDFダウンロード機能）
+function chkenv_pdf() {
+	return chkenv_blob() && chkenv_createobjecturl() && chkenv_arraybuffer();
 }
 
 // DOMよりタグに合致するエレメントを取得する

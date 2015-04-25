@@ -1,0 +1,114 @@
+%PDF-1.2
+
+1 0 obj
+<<
+/Type /Page
+/Parent 6 0 R
+/Resources 2 0 R
+/Contents 9 0 R
+>>
+endobj
+
+2 0 obj
+<<
+/ProcSet [ /PDF /Text ]
+/Font << /F1 3 0 R >>
+>>
+endobj
+
+3 0 obj % base font
+<<
+/Type /Font
+/Subtype /Type0
+/BaseFont /#82l#82r#83S#83V#83b#83N
+/DescendantFonts [ 4 0 R ]
+/Encoding /90ms-RKSJ-H
+>>
+endobj
+
+4 0 obj
+<<
+/Type /Font
+/Subtype /CIDFontType2
+/BaseFont /#82l#82r#83S#83V#83b#83N
+/WinCharSet 128
+/FontDescriptor 5 0 R
+/CIDSystemInfo
+<<
+/Registry (Adobe)
+/Ordering (Japan1)
+/Supplement 2
+>>
+/DW 1000
+/W [231 389 500 631 631 500]
+>>
+endobj
+
+5 0 obj
+<<
+/Type /FontDescriptor
+/FontName /#82l#82r#83S#83V#83b#83N
+/Flags 39
+/FontBBox [ -150 -147 1100 853 ]
+/MissingWidth 507
+/StemV 92
+/StemH 92
+/ItalicAngle 0
+/CapHeight 853
+/XHeight 597
+/Ascent 853
+/Descent -147
+/Leading 0
+/MaxWidth 1000
+/AvgWidth 507
+/Style << /Panose <0805020B0609000000000000> >>
+>>
+endobj
+
+6 0 obj % pages object
+<<
+/Type /Pages
+/Kids [ 1 0 R ]
+/Count 1
+/MediaBox [ 0 0 595 842 ]
+>>
+endobj
+
+7 0 obj
+<<
+/Type /Catalog
+/Pages 6 0 R
+>>
+endobj
+
+8 0 obj
+<<
+/CreationDate (D:<!--[datetime]-->+09'00')
+>>
+endobj
+
+9 0 obj
+<!--[content]-->
+endobj
+
+xref
+0 10
+0000000000 65535 f
+0000000012 00000 n
+0000000102 00000 n
+0000000177 00000 n
+0000000335 00000 n
+0000000594 00000 n
+0000000933 00000 n
+0000001043 00000 n
+0000001100 00000 n
+0000001168 00000 n
+trailer
+<<
+/Root 7 0 R
+/Info 8 0 R
+/Size 10
+>>
+startxref
+<!--[xref]-->
+%%EOF

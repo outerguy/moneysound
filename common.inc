@@ -15,6 +15,7 @@ define("ENV_FILE_DIR_COMMON", "./common/");
 
 define("ENV_FILE_INI_FI", "fi.ini");
 define("ENV_FILE_TEMPLATE_OFX", "ofx.xml");
+define("ENV_FILE_TEMPLATE_PDF", "pdf.dat");
 
 define("ENV_STR_OFX_BROKER_BANK", "BANK"); // 銀行
 define("ENV_STR_OFX_BROKER_CREDITCARD", "CREDITCARD"); // クレジットカード
