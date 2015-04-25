@@ -1377,7 +1377,7 @@ function fnc_ofx(rowid) {
 		} else {
 			url = self.window.URL || self.window.webkitURL;
 			tag_section = dom_get_tag("section")[0];
-			tag_a = dom_create_tag("a", { "href": url.createObjectURL(ofx), "id": "download", "type": "application/x-ofx; charset=UTF-8", "download": filename });
+			tag_a = dom_create_tag("a", { "href": url.createObjectURL(ofx), "id": "download", "type": "application/x-ofx", "download": filename });
 			tag_a.appendChild(dom_create_text("ダウンロード"));
 			tag_section.appendChild(tag_a);
 			dom_get_id("download").click();
@@ -1542,7 +1542,7 @@ function fnc_ofx_all() {
 			} else {
 				url = self.window.URL || self.window.webkitURL;
 				tag_section = dom_get_tag("section")[0];
-				tag_a = dom_create_tag("a", { "href": url.createObjectURL(ofx), "id": "download", "type": "application/x-ofx; charset=UTF-8", "download": filename });
+				tag_a = dom_create_tag("a", { "href": url.createObjectURL(ofx), "id": "download", "type": "application/x-ofx", "download": filename });
 				tag_a.appendChild(dom_create_text("ダウンロード"));
 				tag_section.appendChild(tag_a);
 				dom_get_id("download").click();
@@ -1733,7 +1733,7 @@ function fnc_csv() {
 			} else {
 				url = self.window.URL || self.window.webkitURL;
 				tag_section = dom_get_tag("section")[0];
-				tag_a = dom_create_tag("a", { "href": url.createObjectURL(csv), "id": "download", "type": "text/csv; charset=Shift_JIS", "download": filename });
+				tag_a = dom_create_tag("a", { "href": url.createObjectURL(csv), "id": "download", "type": "text/csv", "download": filename });
 				tag_a.appendChild(dom_create_text("ダウンロード"));
 				tag_section.appendChild(tag_a);
 				dom_get_id("download").click();
