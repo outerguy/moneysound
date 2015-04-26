@@ -40,6 +40,7 @@ themes["light.css"] = "Light";
 themes["precious.css"] = "プレシャス";
 
 var outputs = new Array();
+outputs["OFX"] = "OFXファイルの結合ダウンロード";
 outputs["CSV"] = "CSVファイルのダウンロード";
 outputs["PDF"] = "PDFファイルのダウンロード";
 outputs["LPT"] = "口座一覧の印刷";
@@ -48,6 +49,10 @@ var csvencodings = new Array();
 csvencodings["SJIS"] = "Shift_JIS";
 csvencodings["UTFB"] = "UTF-8（BOMあり）";
 csvencodings["UTF8"] = "UTF-8（BOMなし）";
+
+var ofxbuttons = new Array();
+ofxbuttons["T"] = "する";
+ofxbuttons["F"] = "しない（出力ボタンの操作に追加する）";
 
 (function() {
 	with(self.document) {
@@ -219,6 +224,17 @@ function fnc_initialize() {
 		
 		// 口座一覧を生成する
 		fnc_listall(lists.split("\r\n"));
+		
+		// OFXボタンの表示を取得する
+		var ofxbutton = dom_get_storage(logons["localid"] + ":ofxbutton", logons["localpass"]);
+		if(ofxbutton == null) for(i in ofxbuttons) {
+			ofxbutton = i;
+			break;
+		}
+		
+		// OFXボタンの表示を制御する
+		inputs = dom_get_tag("table")[0].getElementsByTagName("input");
+		for(i = 0; i < inputs.length; i++) if(inputs[i].value == "OFX") inputs[i].style.display = (ofxbutton == "F"? "none": "inline");
 	}
 	
 	return ret;
@@ -478,6 +494,13 @@ function fnc_option() {
 	var css;
 	var i;
 	
+	// OFXボタンの表示を取得する
+	var ofxbutton = dom_get_storage(logons["localid"] + ":ofxbutton", logons["localpass"]);
+	if(ofxbutton == null) for(i in ofxbuttons) {
+		ofxbutton = i;
+		break;
+	}
+	
 	// CSVの文字エンコーディングを取得する
 	var csvencoding = dom_get_storage(logons["localid"] + ":csvencoding", logons["localpass"]);
 	if(csvencoding == null) for(i in csvencodings) {
@@ -497,6 +520,22 @@ function fnc_option() {
 			tag_option = dom_create_tag("option", { "value": i });
 			if(dom_get_id("css_theme").href.indexOf(i) != -1) tag_option["selected"] = "selected";
 			tag_option.appendChild(dom_create_text(themes[i]));
+			tag_select.appendChild(tag_option);
+		}
+		tag_p.appendChild(tag_select);
+		body.appendChild(tag_p);
+		
+		// OFXボタンの表示リストを生成する
+		tag_p = dom_create_tag("p", { "class": "label" });
+		tag_p.appendChild(dom_create_text("OFXボタンの表示"));
+		body.appendChild(tag_p);
+		
+		tag_p = dom_create_tag("p");
+		tag_select = dom_create_tag("select", { "name": "ofxbutton", "id": "ofxbutton", "class": "ipt" });
+		for(i in ofxbuttons) {
+			tag_option = dom_create_tag("option", { "value": i });
+			if(i == ofxbutton) tag_option["selected"] = "selected";
+			tag_option.appendChild(dom_create_text(ofxbuttons[i]));
 			tag_select.appendChild(tag_option);
 		}
 		tag_p.appendChild(tag_select);
@@ -523,9 +562,8 @@ function fnc_option() {
 	} else {
 		// コールバックの場合
 		css = dom_get_id("theme")[dom_get_id("theme").selectedIndex].value;
-		
-		// コールバックの場合
 		csvencoding = dom_get_id("csvencoding")[dom_get_id("csvencoding").selectedIndex].value;
+		ofxbutton = dom_get_id("ofxbutton")[dom_get_id("ofxbutton").selectedIndex].value;
 		
 		// ダイアログを閉じる
 		modal_hide();
@@ -533,9 +571,14 @@ function fnc_option() {
 		// CSVの文字エンコーディングを設定する
 		dom_set_storage(logons["localid"] + ":csvencoding", csvencoding, logons["localpass"]);
 		
+		// OFXボタンの表示を設定する
+		dom_set_storage(logons["localid"] + ":ofxbutton", ofxbutton, logons["localpass"]);
+		
 		// 画面のテーマを設定する
 		dom_set_storage(logons["localid"] + ":theme", css, logons["localpass"]);
-		fnc_option_change();
+		
+		// 初期化機能を呼び出す
+		fnc_initialize();
 	}
 	return false;
 }
@@ -1539,6 +1582,7 @@ function fnc_ofx_all() {
 
 // 出力機能
 function fnc_output() {
+	var logons = local_current();
 	var body = document.createDocumentFragment();
 	var tag_p, tag_select, tag_option;
 	var output;
@@ -1550,9 +1594,18 @@ function fnc_output() {
 		tag_p.appendChild(dom_create_text("操作"));
 		body.appendChild(tag_p);
 		
+		// OFXボタンの表示を取得する
+		var ofxbutton = dom_get_storage(logons["localid"] + ":ofxbutton", logons["localpass"]);
+		if(ofxbutton == null) for(i in ofxbuttons) {
+			ofxbutton = i;
+			break;
+		}
+		
 		tag_p = dom_create_tag("p");
 		tag_select = dom_create_tag("select", { "name": "ficat", "id": "format", "class": "ipt" });
 		for(i in outputs) {
+			// OFXボタンが表示されている場合、OFX結合ダウンロード機能を取り除く
+			if(i == "OFX" && ofxbutton != "F") continue;
 			tag_option = dom_create_tag("option", { "value": i });
 			tag_option.appendChild(dom_create_text(outputs[i]));
 			tag_select.appendChild(tag_option);
@@ -1570,6 +1623,10 @@ function fnc_output() {
 		modal_hide();
 		
 		switch(output) {
+		case "OFX":
+			// OFX結合ダウンロード機能を呼び出す
+			fnc_ofx_all();
+			break;
 		case "CSV":
 			// CSVダウンロード機能を呼び出す
 			fnc_csv();
