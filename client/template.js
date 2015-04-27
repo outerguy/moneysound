@@ -603,6 +603,7 @@ function fnc_version() {
 	var title = dom_get_tag("title")[0].firstChild.nodeValue;
 	
 	var tag_p, tag_a, tag_img, tag_hr;
+	var unsupports = new Array();
 	
 	if(dom_get_id("modal") == null) {
 		// 表示項目を設定する
@@ -657,39 +658,16 @@ function fnc_version() {
 			tag_p.appendChild(dom_create_text("ご利用のブラウザーが対応していない機能"));
 			body.appendChild(tag_p);
 			
-			if(chkenv_xmlhttprequest() == false) {
+			if(chkenv_xmlhttprequest() == false) unsupports.push("XMLHttpRequest");
+			if(chkenv_webstorage() == false) unsupports.push("WebStorage");
+			if(chkenv_domparser() == false) unsupports.push("DOMParser");
+			if(chkenv_xmlserializer() == false) unsupports.push("XMLSerializer");
+			if(chkenv_blob() == false) unsupports.push("Blob");
+			if(chkenv_createobjecturl() == false) unsupports.push("createObjectURL");
+			if(chkenv_arraybuffer() == false) unsupports.push("ArrayBuffer");
+			if(unsupports.length > 0) {
 				tag_p = dom_create_tag("p");
-				tag_p.appendChild(dom_create_text("XMLHttpRequest"));
-				body.appendChild(tag_p);
-			}
-			if(chkenv_webstorage() == false) {
-				tag_p = dom_create_tag("p");
-				tag_p.appendChild(dom_create_text("WebStorage"));
-				body.appendChild(tag_p);
-			}
-			if(chkenv_domparser() == false) {
-				tag_p = dom_create_tag("p");
-				tag_p.appendChild(dom_create_text("DOMParser"));
-				body.appendChild(tag_p);
-			}
-			if(chkenv_xmlserializer() == false) {
-				tag_p = dom_create_tag("p");
-				tag_p.appendChild(dom_create_text("XMLSerializer"));
-				body.appendChild(tag_p);
-			}
-			if(chkenv_blob() == false) {
-				tag_p = dom_create_tag("p");
-				tag_p.appendChild(dom_create_text("Blob"));
-				body.appendChild(tag_p);
-			}
-			if(chkenv_createobjecturl() == false) {
-				tag_p = dom_create_tag("p");
-				tag_p.appendChild(dom_create_text("createObjectURL"));
-				body.appendChild(tag_p);
-			}
-			if(chkenv_arraybuffer() == false) {
-				tag_p = dom_create_tag("p");
-				tag_p.appendChild(dom_create_text("ArrayBuffer"));
+				tag_p.appendChild(dom_create_text(unsupports.join(" ")));
 				body.appendChild(tag_p);
 			}
 		}
