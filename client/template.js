@@ -501,7 +501,7 @@ function fnc_option() {
 		break;
 	}
 	
-	// CSVの文字エンコーディングを取得する
+	// CSVファイルの文字エンコーディングを取得する
 	var csvencoding = dom_get_storage(logons["localid"] + ":csvencoding", logons["localpass"]);
 	if(csvencoding == null) for(i in csvencodings) {
 		csvencoding = i;
@@ -541,9 +541,9 @@ function fnc_option() {
 		tag_p.appendChild(tag_select);
 		body.appendChild(tag_p);
 		
-		// CSVの文字エンコーディングリストを生成する
+		// CSVファイルの文字エンコーディングリストを生成する
 		tag_p = dom_create_tag("p", { "class": "label" });
-		tag_p.appendChild(dom_create_text("CSVの文字エンコーディング"));
+		tag_p.appendChild(dom_create_text("CSVファイルの文字エンコーディング"));
 		body.appendChild(tag_p);
 		
 		tag_p = dom_create_tag("p");
@@ -568,7 +568,7 @@ function fnc_option() {
 		// ダイアログを閉じる
 		modal_hide();
 		
-		// CSVの文字エンコーディングを設定する
+		// CSVファイルの文字エンコーディングを設定する
 		dom_set_storage(logons["localid"] + ":csvencoding", csvencoding, logons["localpass"]);
 		
 		// OFXボタンの表示を設定する
@@ -1371,7 +1371,7 @@ function fnc_ofx(rowid) {
 	var filename, url, tag_section;
 	
 	if(chkenv_ofx() == false) {
-		modal_showonly("警告", "ご利用のブラウザーは、OFXのダウンロードに対応していません。", false);
+		modal_showonly("警告", "ご利用のブラウザーは、OFXファイルのダウンロードに対応していません。", false);
 	} else {
 		// ダウンロード用データを生成する
 		ofx = new Blob([dom_get_storage(logons["localid"] + ":" + settings["rowid"], logons["localpass"])]);
@@ -1641,7 +1641,7 @@ function fnc_csv() {
 	var buf = "";
 	
 	if(chkenv_csv() == false) {
-		modal_showonly("警告", "ご利用のブラウザーは、CSVのダウンロードに対応していません。", false);
+		modal_showonly("警告", "ご利用のブラウザーは、CSVファイルのダウンロードに対応していません。", false);
 	} else {
 		parser = new DOMParser();
 		logons = local_current();
@@ -1649,7 +1649,7 @@ function fnc_csv() {
 		timestamp = timestamp_get();
 		total = dom_get_id("total").firstChild.nodeValue.replace(/,/g, "");
 		
-		// CSVの文字エンコーディングを取得する
+		// CSVファイルの文字エンコーディングを取得する
 		csvencoding = dom_get_storage(logons["localid"] + ":csvencoding", logons["localpass"]);
 		if(csvencoding == null) for(i in csvencodings) {
 			csvencoding = i;
@@ -1789,7 +1789,7 @@ function fnc_csv() {
 				break;
 			case "SJIS":
 			default:
-				// CSVの文字エンコーディングをShift_JISへと変換する
+				// CSVファイルの文字エンコーディングをShift_JISへと変換する
 				buf_sjis = Encoding.convert(Encoding.stringToCode(buf), "SJIS", "UNICODE");
 				j = buf_sjis.length;
 				buf_blob = new ArrayBuffer(j);
@@ -1822,7 +1822,7 @@ function fnc_pdf() {
 	var timestamp = timestamp_get();
 	
 	if(chkenv_pdf() == false) {
-		modal_showonly("警告", "ご利用のブラウザーは、PDFのダウンロードに対応していません。", false);
+		modal_showonly("警告", "ご利用のブラウザーは、PDFファイルのダウンロードに対応していません。", false);
 	} else {
 		var pdf = null;
 		var str = pdftext;
