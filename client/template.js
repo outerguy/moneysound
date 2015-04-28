@@ -1691,7 +1691,11 @@ function fnc_csv() {
 							dtposted = getElementsByTagName("DTPOSTED")[0].firstChild.nodeValue;
 							name = getElementsByTagName("NAME")[0].firstChild.nodeValue;
 							trnamt = getElementsByTagName("TRNAMT")[0].firstChild.nodeValue;
-							memo = getElementsByTagName("MEMO")[0].firstChild.nodeValue;
+							try {
+								memo = getElementsByTagName("MEMO")[0].firstChild.nodeValue;
+							} catch(e) {
+								memo = "";
+							}
 						}
 						buf += "," + dtposted.substring(0, 4) + "-" + dtposted.substring(4, 6) + "-" + dtposted.substring(6, 8) + ",\"" + name + "\"," + trnamt + ",\"" + memo + "\"\r\n";
 					}
@@ -1715,7 +1719,11 @@ function fnc_csv() {
 							dtposted = getElementsByTagName("DTPOSTED")[0].firstChild.nodeValue;
 							name = getElementsByTagName("NAME")[0].firstChild.nodeValue;
 							trnamt = getElementsByTagName("TRNAMT")[0].firstChild.nodeValue;
-							memo = getElementsByTagName("MEMO")[0].firstChild.nodeValue;
+							try {
+								memo = getElementsByTagName("MEMO")[0].firstChild.nodeValue;
+							} catch(e) {
+								memo = "";
+							}
 						}
 						buf += "," + dtposted.substring(0, 4) + "-" + dtposted.substring(4, 6) + "-" + dtposted.substring(6, 8) + ",\"" + name + "\"," + trnamt + ",\"" + memo + "\"\r\n";
 					}
@@ -1740,7 +1748,11 @@ function fnc_csv() {
 							dtposted = getElementsByTagName("DTPOSTED")[0].firstChild.nodeValue;
 							name = getElementsByTagName("NAME")[0].firstChild.nodeValue;
 							trnamt = getElementsByTagName("TRNAMT")[0].firstChild.nodeValue;
-							memo = getElementsByTagName("MEMO")[0].firstChild.nodeValue;
+							try {
+								memo = getElementsByTagName("MEMO")[0].firstChild.nodeValue;
+							} catch(e) {
+								memo = "";
+							}
 						}
 						buf += "," + dtposted.substring(0, 4) + "-" + dtposted.substring(4, 6) + "-" + dtposted.substring(6, 8) + ",\"" + name + "\"," + trnamt + ",\"" + memo + "\"\r\n";
 					}
