@@ -210,7 +210,7 @@ function fnc_initialize() {
 		dom_get_id("btn_ofx_all").style.display = (ofxbutton == "F"? "none": "inline");
 		
 		// 口座一覧を生成する
-		fnc_listall(lists.split("\r\n"));
+		fnc_list_all(lists.split("\r\n"));
 	}
 	
 	return;
@@ -1960,7 +1960,7 @@ function fnc_pdf() {
 }
 
 // 口座一覧表示機能
-function fnc_listall(lists) {
+function fnc_list_all(lists) {
 	var logons = local_current();
 	var tag_table = dom_get_tag("table")[0];
 	var tag_tbodys = tag_table.getElementsByTagName("tbody");
@@ -1973,7 +1973,7 @@ function fnc_listall(lists) {
 	// 行を追加する
 	for(i = 0; i < lists.length; i++) {
 		if(lists[i].length == 0) continue;
-		tag_table.appendChild(fnc_listone(lists[i]));
+		tag_table.appendChild(fnc_list_one(lists[i]));
 		f = true;
 	}
 	
@@ -1996,7 +1996,7 @@ function fnc_listall(lists) {
 }
 
 // 口座表示機能
-function fnc_listone(list) {
+function fnc_list_one(list) {
 	var logons = local_current();
 	var settings = auth_parse(list);
 	var str = dom_get_storage(logons["localid"] + ":" + settings["rowid"], logons["localpass"]);
@@ -2691,7 +2691,7 @@ function logoninfo_add(auth) {
 	// ログオン情報を記憶する
 	dom_set_storage(logons["localid"], lists.join("\r\n"), logons["localpass"]);
 	
-	fnc_listall(lists);
+	fnc_list_all(lists);
 	
 	return;
 }
@@ -2713,7 +2713,7 @@ function logoninfo_update(to, from) {
 	// ログオン情報を設定する
 	dom_set_storage(logons["localid"], lists.join("\r\n"), logons["localpass"]);
 	
-	fnc_listall(lists);
+	fnc_list_all(lists);
 	
 	return;
 }
@@ -2739,7 +2739,7 @@ function logoninfo_delete(auth) {
 	// ログオン情報を記憶する
 	dom_set_storage(logons["localid"], lists.join("\r\n"), logons["localpass"]);
 	
-	fnc_listall(lists);
+	fnc_list_all(lists);
 	
 	return;
 }
