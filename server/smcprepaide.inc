@@ -194,7 +194,7 @@ if($sid > 0) {
 		
 		// 口座名（ニックネーム）を取得する
 		$d = parse_tag_search($inputs, "name", "cardNickname");
-		if($d != -1) $accounts[$c - 1]["acctname"] = $settings["name"] . ENV_CHR_CONCATENATOR . $inputs[$d]["value"];
+		if($d != -1) $accounts[$c - 1]["acctname"] = $settings["name"] . mb_convert_string(ENV_CHR_CONCATENATOR . $inputs[$d]["value"]);
 		
 		// 支店番号を取得する
 		$accounts[$c - 1]["branchid"] = "0";
@@ -430,7 +430,7 @@ function smcprepaide_parse_details($account) {
 	
 	// 口座名称を出力する
 	if($account["acctname"] != "") {
-		$ret .= "<MKTGINFO>" . mb_convert_string($account["acctname"]) . "</MKTGINFO>";
+		$ret .= "<MKTGINFO>" . $account["acctname"] . "</MKTGINFO>";
 		$ret .= "\r\n";
 	}
 	

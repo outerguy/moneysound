@@ -631,7 +631,7 @@ if(strpos($body, "ただいまサービスをご利用になれません") !== false || strpos($bo
 	$invstmtmsgsrsv1 .= "<SHORTBALANCE>0</SHORTBALANCE>";
 	$invstmtmsgsrsv1 .= "</INVBAL>";
 	$invstmtmsgsrsv1 .= "\r\n";
-	$invstmtmsgsrsv1 .= "<MKTGINFO>" . mb_convert_string($settings["name"]) . "</MKTGINFO>";
+	$invstmtmsgsrsv1 .= "<MKTGINFO>" . $settings["name"] . "</MKTGINFO>";
 	$invstmtmsgsrsv1 .= "\r\n";
 	$invstmtmsgsrsv1 .= "</INVSTMTRS>";
 	$invstmtmsgsrsv1 .= "\r\n";

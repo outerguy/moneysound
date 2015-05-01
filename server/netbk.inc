@@ -164,7 +164,7 @@ if(strpos($body, "Œ»İ‚±‚Ìæˆø‚Í‚¨æˆµ‚¢‚Å‚«‚Ü‚¹‚ñ") !== false) {
 				$divs = parse_tag($tr["innerHTML"], "div");
 				if(count($divs) == 2 && trim(strip_tags($divs[0]["innerHTML"])) == "ŒûÀ”Ô†") {
 					$bufs = explode(" ", preg_replace("/\s{2,}/", " ", str_replace("&nbsp;", "", trim(strip_tags($divs[1]["innerHTML"])))));
-					for($i = 0; $i < count($accounts); $i++) $accounts[$i]["acctname"] = implode(ENV_CHR_CONCATENATOR, array($settings["name"], $bufs[1], $accounts[$i]["acctname"]));
+					for($i = 0; $i < count($accounts); $i++) $accounts[$i]["acctname"] = implode(mb_convert_string(ENV_CHR_CONCATENATOR), array($settings["name"], mb_convert_string($bufs[1]), mb_convert_string($accounts[$i]["acctname"])));
 				}
 			}
 		}
@@ -408,7 +408,7 @@ function netbk_parse_csv($str, $account) {
 	
 	// ŒûÀ–¼Ì‚ğo—Í‚·‚é
 	if($account["acctname"] != "") {
-		$ret .= "<MKTGINFO>" . mb_convert_string($account["acctname"]) . "</MKTGINFO>";
+		$ret .= "<MKTGINFO>" . $account["acctname"] . "</MKTGINFO>";
 		$ret .= "\r\n";
 	}
 	

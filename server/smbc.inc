@@ -170,7 +170,7 @@ if(strpos($body, "システムメンテナンスのため") !== false) {
 				$accounts[$c]["branchid"] = smbc_get_branchid($settings, $branch);
 				$accounts[$c]["acctid"] = trim(strip_tags($tds[3]["innerHTML"]));
 				$accounts[$c]["id"] = $matches[1];
-				$accounts[$c]["acctname"] = implode(ENV_CHR_CONCATENATOR, array($settings["name"], $branch, $accttype));
+				$accounts[$c]["acctname"] = implode(mb_convert_string(ENV_CHR_CONCATENATOR), array($settings["name"], mb_convert_string($branch), mb_convert_string($accttype)));
 				$c++;
 				break;
 			}
@@ -299,7 +299,7 @@ if(strpos($body, "システムメンテナンスのため") !== false) {
 				}
 				
 				// 口座名称を出力する
-				if($account["acctname"] != "") $str = str_replace("</STMTRS>", "<MKTGINFO>" . mb_convert_string($account["acctname"]) . "</MKTGINFO>\r\n</STMTRS>", $str);
+				if($account["acctname"] != "") $str = str_replace("</STMTRS>", "<MKTGINFO>" . $account["acctname"] . "</MKTGINFO>\r\n</STMTRS>", $str);
 			}
 			
 			$body = $body_old;
@@ -348,7 +348,7 @@ if(strpos($body, "システムメンテナンスのため") !== false) {
 			
 			// 口座名称を出力する
 			if($account["acctname"] != "") {
-				$bankmsgsrsv1 .= "<MKTGINFO>" . mb_convert_string($account["acctname"]) . "</MKTGINFO>";
+				$bankmsgsrsv1 .= "<MKTGINFO>" . $account["acctname"] . "</MKTGINFO>";
 				$bankmsgsrsv1 .= "\r\n";
 			}
 			

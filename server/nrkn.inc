@@ -637,7 +637,7 @@ if(strpos($body, "ƒVƒXƒeƒ€ƒƒ“ƒeƒiƒ“ƒX’†") !== false || strpos($body, "ƒVƒXƒeƒ€ƒ
 	$invstmtmsgsrsv1 .= "<SHORTBALANCE>0</SHORTBALANCE>";
 	$invstmtmsgsrsv1 .= "</INVBAL>";
 	$invstmtmsgsrsv1 .= "\r\n";
-	$invstmtmsgsrsv1 .= "<MKTGINFO>" . mb_convert_string($settings["name"]) . $acctname . "</MKTGINFO>";
+	$invstmtmsgsrsv1 .= "<MKTGINFO>" . $settings["name"] . $acctname . "</MKTGINFO>";
 	$invstmtmsgsrsv1 .= "\r\n";
 	$invstmtmsgsrsv1 .= "</INVSTMTRS>";
 	$invstmtmsgsrsv1 .= "\r\n";

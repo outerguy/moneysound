@@ -351,7 +351,7 @@ if($sid > 0) {
 		$branchid = str_replace(array("Z", "ˆê", "“ñ", "O", "l", "ŒÜ" ,"˜Z" ,"µ", "”ª", "‹ã", "“X"), array("0", "1", "2", "3", "4", "5", "6", "7", "8", "9", ""), $accs[0][8]);
 		$acctid = $accs[0][9];
 		$account["balance"] = parse_amount($accs[0][12]);
-		$account["acctname"] = implode(ENV_CHR_CONCATENATOR, array($settings["name"], $accs[0][8], $accs[0][7]));
+		$account["acctname"] = implode(mb_convert_string(ENV_CHR_CONCATENATOR), array($settings["name"], mb_convert_string($accs[0][8]), mb_convert_string($accs[0][7])));
 		
 		// Œ»İ‚æ‚è¼—ï‚Æ˜a—ï‚Ì·‚ğæ“¾‚·‚é
 		$delta = (preg_match("/[0-9]+/", $accs[0][17], $years) > 0? (integer)substr(ENV_STR_DATE_TODAY, 0, 4) - (integer)$years[0]: 0);
@@ -703,7 +703,7 @@ function jpbank_parse_details($account) {
 	
 	// ŒûÀ–¼Ì‚ğo—Í‚·‚é
 	if($account["acctname"] != "") {
-		$ret .= "<MKTGINFO>" . mb_convert_string($account["acctname"]) . "</MKTGINFO>";
+		$ret .= "<MKTGINFO>" . $account["acctname"] . "</MKTGINFO>";
 		$ret .= "\r\n";
 	}
 	

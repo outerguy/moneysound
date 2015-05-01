@@ -234,7 +234,7 @@ if($sid > 0) {
 					if($p !== false) {
 						$accounts[$i]["branchid"] = btmu_get_branchid($settings, substr($spans[$e]["innerHTML"], 0, $p));
 						$accounts[$i]["acctid"] = trim(strip_tags(substr($spans[$e]["innerHTML"], $p)));
-						$accounts[$i]["acctname"] = implode(ENV_CHR_CONCATENATOR, array($settings["name"], substr($spans[$e]["innerHTML"], 0, $p), $accttype));
+						$accounts[$i]["acctname"] = implode(mb_convert_string(ENV_CHR_CONCATENATOR), array($settings["name"], mb_convert_string(substr($spans[$e]["innerHTML"], 0, $p)), mb_convert_string($accttype)));
 					}
 				
 				}
@@ -575,7 +575,7 @@ function btmu_parse_details($account) {
 	
 	// å˚ç¿ñºèÃÇèoóÕÇ∑ÇÈ
 	if($account["acctname"] != "") {
-		$ret .= "<MKTGINFO>" . mb_convert_string($account["acctname"]) . "</MKTGINFO>";
+		$ret .= "<MKTGINFO>" . $account["acctname"] . "</MKTGINFO>";
 		$ret .= "\r\n";
 	}
 	

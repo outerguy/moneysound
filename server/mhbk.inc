@@ -354,7 +354,7 @@ if($sid > 0) {
 			$accounts[$c]["id"] = $option["value"];
 			$accounts[$c]["branchname"] = $branchname;
 			$accounts[$c]["acctid"] = $acctid;
-			$accounts[$c]["acctname"] = implode(ENV_CHR_CONCATENATOR, array($settings["name"], $branchname, $accttype));
+			$accounts[$c]["acctname"] = implode(mb_convert_string(ENV_CHR_CONCATENATOR), array($settings["name"], mb_convert_string($branchname), mb_convert_string($accttype)));
 			$c++;
 		}
 	}
@@ -544,7 +544,7 @@ if($sid > 0) {
 			}
 			
 			// 口座名称を出力する
-			if($account["acctname"] != "") $str = str_replace("</STMTRS>", "<MKTGINFO>" . mb_convert_string($account["acctname"]) . "</MKTGINFO>\r\n</STMTRS>", $str);
+			if($account["acctname"] != "") $str = str_replace("</STMTRS>", "<MKTGINFO>" . $account["acctname"] . "</MKTGINFO>\r\n</STMTRS>", $str);
 			
 			// OFXファイルが複数となる場合は連結する
 			if($ofx != "") {

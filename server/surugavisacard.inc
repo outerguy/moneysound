@@ -131,7 +131,7 @@ if(strpos($body, "只今メンテナンス中です") !== false) {
     $ofxdom->setLedgerBalance($cds_balamt, ENV_STR_DATE_TODAY . ENV_STR_OFX_TZ);
     
     //MKGTINFOを設定
-    $ofxdom->setMktginfo(mb_convert_string($settings["name"]));
+    $ofxdom->setMktginfo($settings["name"]);
     
     // XML DOMツリーを文字列に変換
     $xml = $ofxdom->getXML();

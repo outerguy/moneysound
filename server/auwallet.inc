@@ -203,7 +203,7 @@ if($sid > 0) {
 	// 実行時間（タイムアウト）を再設定する
 	@set_time_limit(ENV_NUM_TIMEOUT);
 	
-	$account["acctname"] = $settings["name"] . ENV_CHR_CONCATENATOR . $user;
+	$account["acctname"] = $settings["name"] . mb_convert_string(ENV_CHR_CONCATENATOR . $user);
 	$account["acctid"] = $user;
 	
 	// 支店番号を取得する
@@ -587,7 +587,7 @@ function auwallet_parse_details($account) {
 	
 	// 口座名称を出力する
 	if($account["acctname"] != "") {
-		$ret .= "<MKTGINFO>" . mb_convert_string($account["acctname"]) . "</MKTGINFO>";
+		$ret .= "<MKTGINFO>" . $account["acctname"] . "</MKTGINFO>";
 		$ret .= "\r\n";
 	}
 	

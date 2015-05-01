@@ -228,7 +228,7 @@ if(strpos($body, "Œ»ÝƒT[ƒrƒX’âŽ~’†") !== false || strpos($body, "ƒVƒXƒeƒ€ƒƒ“ƒ
     $ofxdom->setLedgerBalance($account["ledge_balamt"], ENV_STR_DATE_TODAY . ENV_STR_OFX_TZ);
     
     //MKGTINFO‚ðÝ’è
-    $ofxdom->setMktginfo(mb_convert_string($account["acctname"]));
+    $ofxdom->setMktginfo($account["acctname"]);
     
     // XML DOMƒcƒŠ[‚ð•¶Žš—ñ‚É•ÏŠ·
     $xml = $ofxdom->getXML();

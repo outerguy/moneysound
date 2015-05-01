@@ -133,7 +133,7 @@ if(strpos($body, "システムメンテナンス中") !== false) {
 	$fonts = parse_tag($body, "font");
 	$c = parse_tag_search($fonts, "color", "#006633");
 	if($c != -1) {
-		$account["acctname"] = implode(ENV_CHR_CONCATENATOR, array($settings["name"], trim(strip_tags($fonts[$c]["innerHTML"]))));
+		$account["acctname"] = implode(mb_convert_string(ENV_CHR_CONCATENATOR), array($settings["name"], mb_convert_string(trim(strip_tags($fonts[$c]["innerHTML"])))));
 		$account["name"] = $settings["name"];
 	}
 	
@@ -387,7 +387,7 @@ function smbccard_parse_csv($str, $account) {
 	// クレジットカード支払請求を明細に追加する
 	$i = count($cds);
 	$cds[$i]["DTPOSTED"] = $account["paydate"];
-	$cds[$i]["NAME"] = mb_convert_string($account["name"]);
+	$cds[$i]["NAME"] = $account["name"];
 	$cds[$i]["MEMO"] = ENV_STR_OFX_MEMO;
 	$cds[$i]["TRNAMT"] = $account["balamt"];
 	$cds[$i]["TRNTYPE"] = ENV_STR_OFX_TRNTYPE_DIRECTDEBIT;
@@ -422,7 +422,7 @@ function smbccard_parse_csv($str, $account) {
 	
 	// カード名称を出力する
 	if($account["acctname"] != "") {
-		$ret .= "<MKTGINFO>" . mb_convert_string($account["acctname"]) . "</MKTGINFO>";
+		$ret .= "<MKTGINFO>" . $account["acctname"] . "</MKTGINFO>";
 		$ret .= "\r\n";
 	}
 	

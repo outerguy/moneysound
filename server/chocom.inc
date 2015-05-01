@@ -352,7 +352,7 @@ function chocom_parse_details($account) {
 	
 	// ŒûÀ–¼Ì‚ğo—Í‚·‚é
 	if($account["acctname"] != "") {
-		$ret .= "<MKTGINFO>" . mb_convert_string($account["acctname"]) . "</MKTGINFO>";
+		$ret .= "<MKTGINFO>" . $account["acctname"] . "</MKTGINFO>";
 		$ret .= "\r\n";
 	}
 	
