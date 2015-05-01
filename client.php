@@ -1,7 +1,7 @@
 <?php
 /*
 MoneySound
-client.php: JavaScript‚ğ¶¬‚·‚é
+client.php: JavaScriptã‚’ç”Ÿæˆã™ã‚‹
 Copyright (C) 2012-2015 OFFICE OUTERGUY. All rights reserved.
 mailto:contact@beatrek.com
 Dual-licensed under the Apache License 2.0 and Beatrek Origin License.
@@ -10,11 +10,11 @@ Dual-licensed under the Apache License 2.0 and Beatrek Origin License.
 require_once("./common.inc");
 require_once("./client.inc");
 
-// OFXƒwƒbƒ_‚ğ•¶š—ñŒ`®‚É•ÏŠ·‚µ‚Ä–„‚ß‚Ş
+// OFXãƒ˜ãƒƒãƒ€ã‚’æ–‡å­—åˆ—å½¢å¼ã«å¤‰æ›ã—ã¦åŸ‹ã‚è¾¼ã‚€
 $ofxhead = addcslashes(trim(preg_replace("/<OFX>[\w\W]*<\/OFX>[\r\n]+?/", "", file_get_contents(ENV_FILE_DIR_COMMON . ENV_FILE_TEMPLATE_OFX))), "\"\r\n") . "\\r\\n";
 $pdftext = str_replace("\r\n", "\\r\\n", file_get_contents(ENV_FILE_DIR_COMMON . ENV_FILE_TEMPLATE_PDF));
 
-// INIƒtƒ@ƒCƒ‹‚É’è‹`‚³‚ê‚Ä‚¢‚é‹à—Z‹@ŠÖ‚ğJSONŒ`®‚É•ÏŠ·‚µ‚Ä–„‚ß‚Ş
+// INIãƒ•ã‚¡ã‚¤ãƒ«ã«å®šç¾©ã•ã‚Œã¦ã„ã‚‹é‡‘èæ©Ÿé–¢ã‚’JSONå½¢å¼ã«å¤‰æ›ã—ã¦åŸ‹ã‚è¾¼ã‚€
 $fis = get_fi_settings();
 
 $filists = array();
@@ -27,10 +27,10 @@ foreach($fis as $mk => $mv) {
 }
 $filist = trim(json_encode($filists, JSON_UNESCAPED_UNICODE + JSON_UNESCAPED_SLASHES));
 
-// –„‚ß‚İ•¶š—ñ‚ğ’uŠ·‚·‚é
+// åŸ‹ã‚è¾¼ã¿æ–‡å­—åˆ—ã‚’ç½®æ›ã™ã‚‹
 $js = str_replace(array("<!--[family]-->", "<!--[purse]-->", "<!--[ofxhead]-->", "<!--[pdftext]-->", "\"<!--[filist]-->\"", "\"<!--[debug]-->\""), array(ENV_PRODUCT_FAMILY_VERSION, ENV_PRODUCT_VERSION, $ofxhead, $pdftext, $filist, (ENV_BOOL_DEBUG == true? "true": "false")), file_get_contents(ENV_FILE_DIR_CLIENT . ENV_FILE_TEMPLATE_JS));
 
-// ƒŒƒXƒ|ƒ“ƒX‚ğ•Ô‚·
+// ãƒ¬ã‚¹ãƒãƒ³ã‚¹ã‚’è¿”ã™
 header("HTTP/1.0 200 OK");
 header("Cache-Control: no-cache");
 header("Pragma: no-cache");
