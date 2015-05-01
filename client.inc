@@ -1,7 +1,7 @@
 <?php
 /*
 MoneySound
-client.inc: ’è”E‹¤’ÊŠÖ”‚ð’è‹`‚·‚é
+client.inc: å®šæ•°ãƒ»å…±é€šé–¢æ•°ã‚’å®šç¾©ã™ã‚‹
 Copyright (C) 2012-2015 OFFICE OUTERGUY. All rights reserved.
 mailto:contact@beatrek.com
 Dual-licensed under the Apache License 2.0 and Beatrek Origin License.

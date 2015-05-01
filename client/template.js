@@ -24,9 +24,9 @@ var outputs = { "OFX": "OFXファイルの結合ダウンロード", "CSV": "CSV
 var ofxbuttons = { "T": "する", "F": "しない（出力ボタンの操作に追加する）" };
 var csvencodings = { "SJIS": "Shift_JIS", "UTFB": "UTF-8（BOMあり）", "UTF8": "UTF-8（BOMなし）" };
 
-fiids["logon"] = { "type": "LOCAL", "name": "ログオン", "form": "localid,localpass", "localid": "ローカルID,text", "localpass": "ローカルパスワード,password" };
-fiids["register"] = { "type": "LOCAL", "name": "登録", "form": "localid,localpass", "localid": "ローカルID,text", "localpass": "ローカルパスワード,password" };
-fiids["erase"] = { "type": "LOCAL", "name": "抹消", "form": "localid", "localid": "ローカルID,text" };
+fiids["logon"] = { "type": "LOCAL", "name": "ログオン", "form": "localid|localpass", "localid": "ローカルID|text", "localpass": "ローカルパスワード|password" };
+fiids["register"] = { "type": "LOCAL", "name": "登録", "form": "localid|localpass", "localid": "ローカルID|text", "localpass": "ローカルパスワード|password" };
+fiids["erase"] = { "type": "LOCAL", "name": "抹消", "form": "localid", "localid": "ローカルID|text" };
 
 var filists = new Array();
 for(fi in ficats) filists[fi] = new Array();
@@ -237,9 +237,9 @@ function fnc_logon() {
 		}
 		
 		// 入力項目を設定する
-		inputs = fiids[fiid]["form"].split(",");
+		inputs = fiids[fiid]["form"].split("|");
 		for(i = 0; i < inputs.length; i++) {
-			lists = fiids[fiid][inputs[i]].split(",", 2);
+			lists = fiids[fiid][inputs[i]].split("|", 2);
 			
 			tag_p = dom_create_tag("p", { "class": "label" });
 			tag_p.appendChild(dom_create_text(lists[0]));
@@ -268,7 +268,7 @@ function fnc_logon() {
 		} else {
 			// ログオン情報を生成する
 			fiid = dom_get_id("fiid").value;
-			inputs = fiids[fiid]["form"].split(",");
+			inputs = fiids[fiid]["form"].split("|");
 			auths.push("=" + fiid);
 			for(i = 0; i < inputs.length; i++) auths.push(dom_get_id(inputs[i]).id + "=" + dom_get_id(inputs[i]).value);
 			modal_hide();
@@ -278,11 +278,11 @@ function fnc_logon() {
 			switch(dec) {
 			case null:
 				// 暗号化データが存在しない場合、エラー画面を表示する
-				modal_show("エラー", "正しい" + fiids[fiid][auths[1].split("=", 2)[0]].split(",", 2)[0] + "を入力してください。", false);
+				modal_show("エラー", "正しい" + fiids[fiid][auths[1].split("=", 2)[0]].split("|", 2)[0] + "を入力してください。", false);
 				break;
 			case "":
 				// 正しく復号できない場合、エラー画面を表示する
-				modal_show("エラー", "正しい" + fiids[fiid][auths[2].split("=", 2)[0]].split(",", 2)[0] + "を入力してください。", false);
+				modal_show("エラー", "正しい" + fiids[fiid][auths[2].split("=", 2)[0]].split("|", 2)[0] + "を入力してください。", false);
 				break;
 			default:
 				// ログオン情報を設定する
@@ -325,9 +325,9 @@ function fnc_register() {
 	
 	if(dom_get_id("modal") == null) {
 		// 入力項目を設定する
-		inputs = fiids[fiid]["form"].split(",");
+		inputs = fiids[fiid]["form"].split("|");
 		for(i = 0; i < inputs.length; i++) {
-			lists = fiids[fiid][inputs[i]].split(",", 2);
+			lists = fiids[fiid][inputs[i]].split("|", 2);
 			
 			tag_p = dom_create_tag("p", { "class": "label" });
 			tag_p.appendChild(dom_create_text(lists[0]));
@@ -356,7 +356,7 @@ function fnc_register() {
 		} else {
 			// ログオン情報を生成する
 			fiid = dom_get_id("fiid").value;
-			inputs = fiids[fiid]["form"].split(",");
+			inputs = fiids[fiid]["form"].split("|");
 			auths.push("=" + fiid);
 			for(i = 0; i < inputs.length; i++) auths.push(dom_get_id(inputs[i]).id + "=" + dom_get_id(inputs[i]).value);
 			modal_hide();
@@ -388,8 +388,8 @@ function fnc_erase() {
 	
 	if(dom_get_id("modal") == null) {
 		// 入力項目を設定する
-		input = fiids[fiid]["form"].split(",")[0];
-		lists = fiids[fiid][input].split(",", 2);
+		input = fiids[fiid]["form"].split("|")[0];
+		lists = fiids[fiid][input].split("|", 2);
 		
 		tag_p = dom_create_tag("p", { "class": "label" });
 		tag_p.appendChild(dom_create_text(lists[0]));
@@ -428,7 +428,7 @@ function fnc_erase() {
 		} else {
 			// ログオン情報を生成する
 			fiid = dom_get_id("fiid").value;
-			input = fiids[fiid]["form"].split(",")[0];
+			input = fiids[fiid]["form"].split("|")[0];
 			key = dom_get_id(input).value;
 			modal_hide();
 			switch(dom_get_storage(key, "")) {
@@ -760,9 +760,9 @@ function fnc_modify(rowid) {
 		
 		fiid = rowid.split("=")[1];
 		// 入力項目を設定する
-		inputs = fiids[fiid]["form"].split(",");
+		inputs = fiids[fiid]["form"].split("|");
 		for(i = 0; i < inputs.length; i++) {
-			lists = fiids[fiid][inputs[i]].split(",", 2);
+			lists = fiids[fiid][inputs[i]].split("|", 2);
 			
 			tag_p = dom_create_tag("p", { "class": "label" });
 			tag_p.appendChild(dom_create_text(lists[0]));
@@ -787,7 +787,7 @@ function fnc_modify(rowid) {
 		// 認証情報を生成する
 		fiid = dom_get_id("fiid").value;
 		auth = (dom_get_id("auth") != null? dom_get_id("auth").value: null);
-		inputs = fiids[fiid]["form"].split(",");
+		inputs = fiids[fiid]["form"].split("|");
 		auths.push("=" + fiid);
 		for(i = 0; i < inputs.length; i++) auths.push(dom_get_id(inputs[i]).id + "=" + dom_get_id(inputs[i]).value);
 		modal_hide();
@@ -1063,13 +1063,13 @@ function fnc_update_additional(auth) {
 		
 		// 追加認証情報を生成する
 		tag_p = dom_create_tag("p");
-		tag_p.appendChild(dom_create_tag("input", { "type": "hidden", "name": "auth", "id": "auth", "value": auth }));
+		tag_p.appendChild(dom_create_tag("input", { "type": "hidden", "name": "additional", "id": "auth", "value": auth }));
 		tag_p.appendChild(dom_create_tag("input", { "type": "hidden", "name": "additional", "id": "additional", "value": mfaphraseid }));
 		tag_p.appendChild(dom_create_tag("input", { "type": "hidden", "name": "sesscookie", "id": "sesscookie", "value": sesscookie }));
 		tag_p.appendChild(dom_create_tag("input", { "type": "hidden", "name": "accesskey", "id": "accesskey", "value": accesskey }));
 		body.appendChild(tag_p);
 		
-		inputs = fiids[settings["fiid"]]["auth"].split(",");
+		inputs = fiids[settings["fiid"]]["additional"].split("|");
 		
 		tag_p = dom_create_tag("p");
 		tag_p.appendChild((inputs[2] == "image"? dom_create_tag("img", { "src": mfaphraselabel, "alt": "画像" }): dom_create_text(mfaphraselabel)));
@@ -2293,6 +2293,9 @@ function fnc_list_one(list) {
 		break;
 	}
 	
+	// 未定義の金融機関の場合、表示をスキップする
+	if(fiids[settings["fiid"]] == undefined) broken = false;
+	
 	// OFX破損、またはデータなしの場合
 	if(broken == true || (banks.length == 0 && creditcards.length == 0 && investments.length == 0)) {
 		tag_tr = dom_create_tag("tr");
@@ -2823,7 +2826,7 @@ function account_total_update() {
 // 現在のログオン情報を取得する
 function local_current() {
 	var fiid = "logon";
-	var inputs = fiids[fiid]["form"].split(",");
+	var inputs = fiids[fiid]["form"].split("|");
 	var rets = new Array();
 	var i;
 	
@@ -2843,7 +2846,7 @@ function form_empty_check() {
 		fiid = dom_get_id("fiid").value;
 		
 		// 入力項目を取得する
-		inputs = fiids[fiid]["form"].split(",");
+		inputs = fiids[fiid]["form"].split("|");
 		for(i = 0; i < inputs.length; i++) if(dom_get_id(inputs[i]).type != "hidden" && dom_get_id(inputs[i]).value == "") {
 			// 未入力の場合
 			f = true;

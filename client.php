@@ -14,18 +14,9 @@ require_once("./client.inc");
 $ofxhead = addcslashes(trim(preg_replace("/<OFX>[\w\W]*<\/OFX>[\r\n]+?/", "", file_get_contents(ENV_FILE_DIR_COMMON . ENV_FILE_TEMPLATE_OFX))), "\"\r\n") . "\\r\\n";
 $pdftext = str_replace("\r\n", "\\r\\n", file_get_contents(ENV_FILE_DIR_COMMON . ENV_FILE_TEMPLATE_PDF));
 
-// INIファイルに定義されている金融機関をJSON形式に変換して埋め込む
+// XMLファイルに定義されている金融機関をJSON形式に変換して埋め込む
 $fis = get_fi_settings();
-
-$filists = array();
-$i = 0;
-foreach($fis as $mk => $mv) {
-	foreach($mv as $k => $v) {
-		$filists[$mk][$k] = mb_convert_encoding($v, "UTF-8", "Shift_JIS");
-	}
-	$i++;
-}
-$filist = trim(json_encode($filists, JSON_UNESCAPED_UNICODE + JSON_UNESCAPED_SLASHES));
+$filist = trim(json_encode($fis, JSON_UNESCAPED_UNICODE + JSON_UNESCAPED_SLASHES));
 
 // 埋め込み文字列を置換する
 $js = str_replace(array("<!--[family]-->", "<!--[purse]-->", "<!--[ofxhead]-->", "<!--[pdftext]-->", "\"<!--[filist]-->\"", "\"<!--[debug]-->\""), array(ENV_PRODUCT_FAMILY_VERSION, ENV_PRODUCT_VERSION, $ofxhead, $pdftext, $filist, (ENV_BOOL_DEBUG == true? "true": "false")), file_get_contents(ENV_FILE_DIR_CLIENT . ENV_FILE_TEMPLATE_JS));

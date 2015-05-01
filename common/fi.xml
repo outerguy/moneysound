@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<filist>
+
+<fi id="mhbk" code="0001">
+<type>BANK</type>
+<code>0001</code>
+<name>みずほ銀行</name>
+<home>http://www.mizuhobank.co.jp/</home>
+<form>
+<input id="txbCustNo" type="text">お客さま番号</input>
+<input id="PASSWD_LoginPwdInput" type="password">ログインパスワード</input>
+</form>
+<additional input="text" type="text">合言葉（全角文字）</additional>
+</fi>
+
+<fi id="btmu" code="0005">
+<type>BANK</type>
+<name>三菱東京UFJ銀行</name>
+<home>http://www.bk.mufg.jp/</home>
+<form>
+<input id="KEIYAKU_NO" type="text">ご契約番号</input>
+<input id="PASSWORD" type="password">IBログインパスワード</input>
+</form>
+<additional input="text" type="text">ワンタイムパスワード</additional>
+<itemlist>
+<item id="getbranchid">http://sasp.mapion.co.jp/b/bk_mufg/attr/?q=</item>
+</itemlist>
+</fi>
+
+<fi id="smbc" code="0009">
+<type>BANK</type>
+<name>三井住友銀行</name>
+<home>http://www.smbc.co.jp/</home>
+<form>
+<input id="USRID" type="text">契約者番号</input>
+<input id="PASSWORD" type="password">第一暗証</input>
+</form>
+<itemlist>
+<item id="getbranchid">http://www.e-map.ne.jp/pc/zdcemaphttp.cgi?enc=EUC&amp;zdccnt=7&amp;target=http%3A%2F%2Fwww.e-map.ne.jp%2Fpc%2Fsearch.htm%3Fcid%3Dsmbcbank%26type%3DShopW%26col%3DFREE_SRCH%26keyword%3D</item>
+</itemlist>
+</fi>
+
+<fi id="netbk" code="0038">
+<type>BANK</type>
+<name>住信SBIネット銀行</name>
+<home>http://www.netbk.co.jp/</home>
+<form>
+<input id="userName" type="text">ユーザーネーム</input>
+<input id="loginPwdSet" type="password">WEBログインパスワード</input>
+</form>
+</fi>
+
+<fi id="jpbank" code="9900">
+<type>BANK</type>
+<name>ゆうちょ銀行</name>
+<home>http://www.jp-bank.japanpost.jp/</home>
+<form>
+<input id="okyakusamaBangou" type="text">お客様番号</input>
+<input id="loginPassword" type="password">ログインパスワード</input>
+</form>
+<additional input="text" type="text">合言葉（全角文字）</additional>
+</fi>
+
+<fi id="mufgcard">
+<type>CREDITCARD</type>
+<name>MUFGカード</name>
+<home>http://www.cr.mufg.jp/</home>
+<form>
+<input id="webId" type="text">ID</input>
+<input id="webPassword" type="password">パスワード</input>
+<input id="webBirthDay" type="text">生年月（西暦）</input>
+</form>
+<itemlist>
+<item id="brand">0011</item>
+</itemlist>
+</fi>
+
+<fi id="dccard">
+<type>CREDITCARD</type>
+<name>DCカード</name>
+<home>http://www.cr.mufg.jp/</home>
+<form>
+<input id="webId" type="text">ID</input>
+<input id="webPassword" type="password">パスワード</input>
+<input id="webBirthDay" type="text">生年月（西暦）</input>
+</form>
+<itemlist>
+<item id="brand">0012</item>
+</itemlist>
+</fi>
+
+<fi id="smbccard">
+<type>CREDITCARD</type>
+<name>三井住友カード</name>
+<home>http://www.smbc-card.com/</home>
+<form>
+<input id="userid" type="text">ID</input>
+<input id="password" type="password">パスワード</input>
+</form>
+</fi>
+
+<fi id="saisoncard">
+<type>CREDITCARD</type>
+<name>セゾンカード</name>
+<home>http://www.saisoncard.co.jp/</home>
+<form>
+<input id="inputId" type="text">NetアンサーID</input>
+<input id="inputPassword" type="password">パスワード</input>
+</form>
+<additional input="text" type="text">秘密の答え</additional>
+</fi>
+
+<fi id="jaccscard">
+<type>CREDITCARD</type>
+<name>ジャックスカード</name>
+<home>http://www.jaccs.co.jp/</home>
+<form>
+<input id="IUSERID" type="text">ユーザID</input>
+<input id="IPASSWORD" type="password">パスワード</input>
+</form>
+</fi>
+
+<fi id="viewcard">
+<type>CREDITCARD</type>
+<name>ビューカード</name>
+<home>http://www.jreast.co.jp/card/</home>
+<form>
+<input id="id" type="text">サービスID</input>
+<input id="pass" type="password">パスワード</input>
+</form>
+</fi>
+
+<fi id="surugavisacard">
+<type>CREDITCARD</type>
+<name>SURUGA Visaデビット/クレジット</name>
+<home>http://card.surugabank.co.jp/</home>
+<form>
+<input id="loginID" type="text">カード番号</input>
+<input id="telPin" type="password">電話用パスワード</input>
+<input id="webPin" type="password">インターネット用パスワード</input>
+</form>
+</fi>
+
+<fi id="sbisec" code="0988">
+<type>INVSTMT</type>
+<name>SBI証券</name>
+<home>http://www.sbisec.co.jp/</home>
+<form>
+<input id="user_id" type="text">ユーザーネーム</input>
+<input id="user_password" type="password">パスワード</input>
+</form>
+</fi>
+
+<fi id="kabucom" code="KABUCOM">
+<type>INVSTMT</type>
+<name>カブドットコム証券</name>
+<home>http://kabu.com/</home>
+<form>
+<input id="SsLogonUser" type="text">口座番号</input>
+<input id="SsLogonPassword" type="password">パスワード</input>
+</form>
+</fi>
+
+<fi id="nrkn" code="NRKN">
+<type>INVSTMT</type>
+<name>日本レコード・キーピング・ネットワーク</name>
+<home>http://top.nrkn.co.jp/</home>
+<form>
+<input id="userId" type="text">ユーザーID</input>
+<input id="password" type="password">暗証番号（パスワード）</input>
+</form>
+</fi>
+
+<fi id="mobilesuica" code="MSUICA">
+<type>PREPAID</type>
+<name>モバイルSuica</name>
+<home>https://www.mobilesuica.com/</home>
+<form>
+<input id="MailAddress" type="email">携帯電話メールアドレス</input>
+<input id="Password" type="password">Suicaパスワード</input>
+</form>
+<additional input="text" type="image">画像認証</additional>
+</fi>
+
+<fi id="nanaco" code="NANACO">
+<type>PREPAID</type>
+<name>nanaco</name>
+<home>http://www.nanaco-net.jp/</home>
+<form>
+<input id="XCID" type="text">nanaco番号</input>
+<input id="LOGIN_PWD" type="password">会員メニュー用パスワード</input>
+</form>
+</fi>
+
+<fi id="chocom" code="CHOCOM">
+<type>PREPAID</type>
+<name>ちょコム</name>
+<home>http://www.chocom.jp/</home>
+<form>
+<input id="MAILADDR" type="email">登録メールアドレス</input>
+<input id="TELEPHONE" type="tel">ログイン用電話番号</input>
+<input id="PASSWORD" type="password">パスワード</input>
+</form>
+</fi>
+
+<fi id="esaifu" code="ESAIFU">
+<type>PREPAID</type>
+<name>e-さいふ</name>
+<home>http://www.mun-prepaid.com/</home>
+<form>
+<input id="user_id" type="text">口座ID</input>
+<input id="password" type="password">口座パスワード</input>
+</form>
+<additional input="text" type="image">画像認証</additional>
+</fi>
+
+<fi id="smcprepaide" code="SMCPPE">
+<type>PREPAID</type>
+<name>三井住友VISAプリペイドe</name>
+<home>http://www.smbc-card.com/prepaid/brand/</home>
+<form>
+<input id="loginId" type="text">会員ID</input>
+<input id="loginPassword" type="password">パスワード</input>
+</form>
+<additional input="text" type="image">画像認証</additional>
+</fi>
+
+<fi id="auwallet" code="AUWALLET">
+<type>PREPAID</type>
+<name>au WALLET</name>
+<home>https://wallet.auone.jp/</home>
+<form>
+<input id="loginAliasId" type="text">au ID</input>
+<input id="loginAuonePwd" type="password">パスワード</input>
+</form>
+<additional input="hidden" type="text">続行</additional>
+</fi>
+
+</filist>

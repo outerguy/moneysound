@@ -1,7 +1,7 @@
 <?php
 /*
 MoneySound
-common.inc: ’è”E‹¤’ÊŠÖ”‚ğ’è‹`‚·‚é
+common.inc: å®šæ•°ãƒ»å…±é€šé–¢æ•°ã‚’å®šç¾©ã™ã‚‹
 Copyright (C) 2012-2015 OFFICE OUTERGUY. All rights reserved.
 mailto:contact@beatrek.com
 Dual-licensed under the GNU All-Permissive License and Beatrek Origin License.
@@ -14,44 +14,47 @@ define("ENV_PRODUCT_ID", ENV_PRODUCT_CODENAME . "/" . ENV_PRODUCT_VERSION);
 define("ENV_FILE_DIR_COMMON", "./common/");
 
 define("ENV_FILE_INI_FI", "fi.ini");
+define("ENV_FILE_XML_FI", "fi.xml");
 define("ENV_FILE_TEMPLATE_OFX", "ofx.xml");
 define("ENV_FILE_TEMPLATE_PDF", "pdf.dat");
 
-define("ENV_STR_OFX_BROKER_BANK", "BANK"); // ‹âs
-define("ENV_STR_OFX_BROKER_CREDITCARD", "CREDITCARD"); // ƒNƒŒƒWƒbƒgƒJ[ƒh
-define("ENV_STR_OFX_BROKER_INVESTMENT", "INVSTMT"); // ØŒ”
-define("ENV_STR_OFX_BROKER_PREPAID", "PREPAID"); // ‘O•¥®’ •[
+define("ENV_STR_OFX_BROKER_BANK", "BANK"); // éŠ€è¡Œ
+define("ENV_STR_OFX_BROKER_CREDITCARD", "CREDITCARD"); // ã‚¯ãƒ¬ã‚¸ãƒƒãƒˆã‚«ãƒ¼ãƒ‰
+define("ENV_STR_OFX_BROKER_INVESTMENT", "INVSTMT"); // è¨¼åˆ¸
+define("ENV_STR_OFX_BROKER_PREPAID", "PREPAID"); // å‰æ‰•å¼å¸³ç¥¨
 
-define("ENV_BOOL_DEBUG", false); // ŠJ”­ÒŒü‚¯iƒfƒoƒbƒOj‹@”\‚ğ—LŒø‚Æ‚·‚é‚©”Û‚©
+define("ENV_BOOL_DEBUG", false); // é–‹ç™ºè€…å‘ã‘ï¼ˆãƒ‡ãƒãƒƒã‚°ï¼‰æ©Ÿèƒ½ã‚’æœ‰åŠ¹ã¨ã™ã‚‹ã‹å¦ã‹
 
-// INIƒtƒ@ƒCƒ‹‚É’è‹`‚³‚ê‚Ä‚¢‚é‹à—Z‹@ŠÖ‚Ìî•ñ‚ğğŒ‚É‰‚¶‚Äæ‚èo‚·
+// XMLãƒ•ã‚¡ã‚¤ãƒ«ã«å®šç¾©ã•ã‚Œã¦ã„ã‚‹é‡‘èæ©Ÿé–¢ã®æƒ…å ±ã‚’æ¡ä»¶ã«å¿œã˜ã¦å–ã‚Šå‡ºã™
 function get_fi_settings($fiid = "") {
 	$ret = array();
-	$ini = parse_ini_file(ENV_FILE_DIR_COMMON . ENV_FILE_INI_FI, true);
-	$ks = array_keys($ini);
-	$tag = "";
-	foreach($ks as $k) {
-		$ini[$k]["fiid"] = $k;
-		switch($ini[$k]["type"]) {
-		case ENV_STR_OFX_BROKER_BANK:
-		case ENV_STR_OFX_BROKER_PREPAID:
-			break;
-		case ENV_STR_OFX_BROKER_CREDITCARD:
-			$tag = "CC";
-			break;
-		case ENV_STR_OFX_BROKER_INVESTMENT:
-			$tag = "INV";
-			break;
-		default:
-			$ini[$k]["type"] = ENV_STR_OFX_BROKER_BANK;
-			break;
+	$xml = simplexml_load_file(ENV_FILE_DIR_COMMON . ENV_FILE_XML_FI);
+	$settings = array();
+	foreach($xml->fi as $fi) {
+		$id = (string)$fi["id"];
+		$settings[$id]["fiid"] = (string)$id;
+		$settings[$id]["type"] = (string)$fi->type;
+		$settings[$id]["name"] = (string)$fi->name;
+		$settings[$id]["home"] = (string)$fi->home;
+		if(isset($fi["code"]) == true) $settings[$id]["code"] = (string)$fi["code"];
+		if(isset($fi->additional) == true) $settings[$id]["additional"] = implode("|", array((string)$fi->additional, (string)$fi->additional["input"], (string)$fi->additional["type"]));
+		
+		$inputs = array();
+		foreach($fi->form->input as $input) {
+			array_push($inputs, (string)$input["id"]);
+			$settings[$id][(string)$input["id"]] = (string)$input . "|" . (string)$input["type"];
 		}
-		$ini[$k]["tag"] = $tag;
+		$settings[$id]["form"] = implode("|", $inputs);
+		
+		if(isset($fi->itemlist) == true) foreach($fi->itemlist->item as $item) {
+			$settings[$id][(string)$item["id"]] = (string)$item;
+		}
 	}
+	
 	if($fiid != "") {
-		if($ini[$fiid]) $ret = $ini[$fiid];
+		if(isset($settings[$fiid]) == true) $ret = $settings[$fiid];
 	} else {
-		$ret = $ini;
+		$ret = $settings;
 	}
 	return $ret;
 }
