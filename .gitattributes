@@ -20,3 +20,5 @@
 *.ini	eol=crlf
 *.xml	eol=crlf
 *.dat	eol=crlf
+
+*.inc linguist-language=PHP
