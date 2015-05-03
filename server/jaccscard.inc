@@ -1,22 +1,22 @@
 <?php
 /*
-jaccscard.inc: ƒWƒƒƒbƒNƒXƒJ[ƒh‚ÌHTML‚æ‚èOFXƒtƒ@ƒCƒ‹‚ğ¶¬‚·‚é
+jaccscard.inc: ã‚¸ãƒ£ãƒƒã‚¯ã‚¹ã‚«ãƒ¼ãƒ‰ã®HTMLã‚ˆã‚ŠOFXãƒ•ã‚¡ã‚¤ãƒ«ã‚’ç”Ÿæˆã™ã‚‹
 Copyright (C) 2012-2015 Hiromu2000. All Rights Reserved.
 mailto:hiromu2000@hotmail.com
 Licensed under the GNU AGPLv3.
 */
 
-// ƒƒOƒCƒ“î•ñ‚ğæ“¾‚·‚é
+// ãƒ­ã‚°ã‚¤ãƒ³æƒ…å ±ã‚’å–å¾—ã™ã‚‹
 $user = $ofxforms["IUSERID"];
 $pass = $ofxforms["IPASSWORD"];
 
 $resp = array();
 $ofx = "";
 
-// ÀsŠÔiƒ^ƒCƒ€ƒAƒEƒgj‚ğÄİ’è‚·‚é
+// å®Ÿè¡Œæ™‚é–“ï¼ˆã‚¿ã‚¤ãƒ ã‚¢ã‚¦ãƒˆï¼‰ã‚’å†è¨­å®šã™ã‚‹
 @set_time_limit(ENV_NUM_TIMEOUT);
 
-// ƒz[ƒ€‰æ–Ê‚ğæ“¾‚·‚é
+// ãƒ›ãƒ¼ãƒ ç”»é¢ã‚’å–å¾—ã™ã‚‹
 $urls = parse_url($settings["home"]);
 $method = "GET";
 $protocol = ($urls["scheme"] != ""? $urls["scheme"]: "");
@@ -26,7 +26,7 @@ $query = "";
 $cookie = "";
 list($head, $body) = jaccscard_http11($method, $protocol, $host, $page, $query, $cookie);
 
-// ƒƒOƒCƒ“‰æ–Ê‚ğæ“¾‚·‚é
+// ãƒ­ã‚°ã‚¤ãƒ³ç”»é¢ã‚’å–å¾—ã™ã‚‹
 $page = '/icmclub/icm_login.html';
 list($head, $body) = jaccscard_http11($method, $protocol, $host, $page, $query, $cookie);
 
@@ -35,7 +35,7 @@ $page = '/Service';
 $query = '_TRANID=JALG00001_00M';
 list($head, $body) = jaccscard_http11($method, $protocol, $host, $page, $query, $cookie);
 
-// ƒƒOƒCƒ“‚·‚é
+// ãƒ­ã‚°ã‚¤ãƒ³ã™ã‚‹
 $forms = parse_tag($body, "form");
 $c = parse_tag_search($forms, "name", "MainForm");
 if($c != -1) {
@@ -56,8 +56,8 @@ if($c != -1) {
     list($head, $body) = jaccscard_http11($method, $protocol, $host, $page, $query, $cookie);
 }
 
-if(strpos($body, "ƒƒ“ƒeƒiƒ“ƒX‚ğs‚Á‚Ä‚¨‚è‚Ü‚·") !== false) {
-    // ƒVƒXƒeƒ€ƒƒ“ƒeƒiƒ“ƒX‰æ–Ê‚Ìê‡
+if(strpos($body, "ãƒ¡ãƒ³ãƒ†ãƒŠãƒ³ã‚¹ã‚’è¡Œã£ã¦ãŠã‚Šã¾ã™") !== false) {
+    // ã‚·ã‚¹ãƒ†ãƒ ãƒ¡ãƒ³ãƒ†ãƒŠãƒ³ã‚¹ç”»é¢ã®å ´åˆ
     $resp["status"] = ENV_NUM_STATUS_MAINTENANCE;
     $resp["method"] = $method;
     $resp["uri"] = $uris["scheme"] . "://" . $uris["host"] . $uris["path"];
@@ -66,8 +66,8 @@ if(strpos($body, "ƒƒ“ƒeƒiƒ“ƒX‚ğs‚Á‚Ä‚¨‚è‚Ü‚·") !== false) {
     $resp["head"] = $head;
     $resp["body"] = $body;
     $resp["ofx"] = generate_ofx($resp["status"]);
-} else if(strpos($body, "‘O‰ñƒƒOƒCƒ“") === false) {
-    // ƒƒOƒCƒ“¸”s‚Ìê‡
+} else if(strpos($body, "å‰å›ãƒ­ã‚°ã‚¤ãƒ³") === false) {
+    // ãƒ­ã‚°ã‚¤ãƒ³å¤±æ•—ã®å ´åˆ
     $resp["status"] = ENV_NUM_STATUS_FAILURE;
     $resp["method"] = $method;
     $resp["uri"] = $uris["scheme"] . "://" . $uris["host"] . $uris["path"];
@@ -77,10 +77,10 @@ if(strpos($body, "ƒƒ“ƒeƒiƒ“ƒX‚ğs‚Á‚Ä‚¨‚è‚Ü‚·") !== false) {
     $resp["body"] = $body;
     $resp["ofx"] = generate_ofx($resp["status"]);
 } else {
-    // ÀsŠÔiƒ^ƒCƒ€ƒAƒEƒgj‚ğÄİ’è‚·‚é
+    // å®Ÿè¡Œæ™‚é–“ï¼ˆã‚¿ã‚¤ãƒ ã‚¢ã‚¦ãƒˆï¼‰ã‚’å†è¨­å®šã™ã‚‹
     @set_time_limit(ENV_NUM_TIMEOUT);
     
-    // ƒƒjƒ…[‚©‚çu‚²—˜—p‘ã‹à–¾×v‚ğ‘I‘ğ
+    // ãƒ¡ãƒ‹ãƒ¥ãƒ¼ã‹ã‚‰ã€Œã”åˆ©ç”¨ä»£é‡‘æ˜ç´°ã€ã‚’é¸æŠ
     $queries = jaccscard_getqueries($body);
     $queries['_TRANID'] .= 'JAMY00001_02M';
     $query = implode("&", $queries);
@@ -88,16 +88,16 @@ if(strpos($body, "ƒƒ“ƒeƒiƒ“ƒX‚ğs‚Á‚Ä‚¨‚è‚Ü‚·") !== false) {
     $cookie = jaccscard_updatecookie($head, $cookie);
     list($head, $body) = jaccscard_http11($method, $protocol, $host, $page, $query, $cookie);
     
-    // ƒJ[ƒh–¼ÌEƒJ[ƒh”Ô†‚ğæ“¾‚·‚é
+    // ã‚«ãƒ¼ãƒ‰åç§°ãƒ»ã‚«ãƒ¼ãƒ‰ç•ªå·ã‚’å–å¾—ã™ã‚‹
     preg_match_all("/<dd>(.*?)<\/dd>/s", $body, $matches);
     $account['acctname'] = $matches[1][0];
     preg_match("/([0-9]{4})/", $matches[1][1], $matches);
     $account['acctid'] = $matches[1];
     
-    // “–Œ‚ğæ“¾
+    // å½“æœˆã‚’å–å¾—
     $bodies[] = $body;
     preg_match_all("/'JAST00016_07M', '(20[0-9]{4})'/", $body, $months, PREG_SET_ORDER);
-    while(preg_match("/(JAST[0-9]{5}_[0-9]{2}[A-Z]).*?Ÿ‚Ö/", $body, $matches)) {
+    while(preg_match("/(JAST[0-9]{5}_[0-9]{2}[A-Z]).*?æ¬¡ã¸/", $body, $matches)) {
         $queries = jaccscard_getqueries($body);
         $queries['_TRANID'] .= $matches[1];
         $query = implode("&", $queries);
@@ -107,9 +107,9 @@ if(strpos($body, "ƒƒ“ƒeƒiƒ“ƒX‚ğs‚Á‚Ä‚¨‚è‚Ü‚·") !== false) {
     }
     
     /*
-    // ‘¼‚ÌŠm’èŒ‚ğæ“¾
+    // ä»–ã®ç¢ºå®šæœˆã‚’å–å¾—
     foreach($months as $month) {
-        // ÀsŠÔiƒ^ƒCƒ€ƒAƒEƒgj‚ğÄİ’è‚·‚é
+        // å®Ÿè¡Œæ™‚é–“ï¼ˆã‚¿ã‚¤ãƒ ã‚¢ã‚¦ãƒˆï¼‰ã‚’å†è¨­å®šã™ã‚‹
         @set_time_limit(ENV_NUM_TIMEOUT);
         
         $queries = jaccscard_getqueries($body);
@@ -120,7 +120,7 @@ if(strpos($body, "ƒƒ“ƒeƒiƒ“ƒX‚ğs‚Á‚Ä‚¨‚è‚Ü‚·") !== false) {
         list($head, $body) = jaccscard_http11($method, $protocol, $host, $page, $query, $cookie);
         $bodies[] = $body;
         
-        while(preg_match("/(JAST[0-9]{5}_[0-9]{2}[A-Z]).*?Ÿ‚Ö/", $body, $matches)) {
+        while(preg_match("/(JAST[0-9]{5}_[0-9]{2}[A-Z]).*?æ¬¡ã¸/", $body, $matches)) {
             $queries = jaccscard_getqueries($body);
             $queries['_TRANID'] .= $matches[1];
             $query = implode("&", $queries);
@@ -131,9 +131,9 @@ if(strpos($body, "ƒƒ“ƒeƒiƒ“ƒX‚ğs‚Á‚Ä‚¨‚è‚Ü‚·") !== false) {
     }
     */
     
-    // –¢Šm’èŒ‚ğæ“¾
+    // æœªç¢ºå®šæœˆã‚’å–å¾—
     if(ENV_BOOL_PENDING_DETAIL) {
-        // ÀsŠÔiƒ^ƒCƒ€ƒAƒEƒgj‚ğÄİ’è‚·‚é
+        // å®Ÿè¡Œæ™‚é–“ï¼ˆã‚¿ã‚¤ãƒ ã‚¢ã‚¦ãƒˆï¼‰ã‚’å†è¨­å®šã™ã‚‹
         @set_time_limit(ENV_NUM_TIMEOUT);
         
         $queries = jaccscard_getqueries($body);
@@ -143,7 +143,7 @@ if(strpos($body, "ƒƒ“ƒeƒiƒ“ƒX‚ğs‚Á‚Ä‚¨‚è‚Ü‚·") !== false) {
         list($head, $body) = jaccscard_http11($method, $protocol, $host, $page, $query, $cookie);
         $bodies[] = $body;
         
-        while(preg_match("/(JAST[0-9]{5}_[0-9]{2}[A-Z]).*?Ÿ‚Ö/", $body, $matches)) {
+        while(preg_match("/(JAST[0-9]{5}_[0-9]{2}[A-Z]).*?æ¬¡ã¸/", $body, $matches)) {
             $queries = jaccscard_getqueries($body);
             $queries['_TRANID'] .= $matches[1];
             $query = implode("&", $queries);
@@ -153,22 +153,22 @@ if(strpos($body, "ƒƒ“ƒeƒiƒ“ƒX‚ğs‚Á‚Ä‚¨‚è‚Ü‚·") !== false) {
         }
     }
     
-    // ÀsŠÔiƒ^ƒCƒ€ƒAƒEƒgj‚ğÄİ’è‚·‚é
+    // å®Ÿè¡Œæ™‚é–“ï¼ˆã‚¿ã‚¤ãƒ ã‚¢ã‚¦ãƒˆï¼‰ã‚’å†è¨­å®šã™ã‚‹
     @set_time_limit(ENV_NUM_TIMEOUT);
     
-    // ƒƒOƒAƒEƒg
+    // ãƒ­ã‚°ã‚¢ã‚¦ãƒˆ
     $queries = jaccscard_getqueries($body);
     $queries['_TRANID'] .= 'JALG00012_00M';
     $query = implode("&", $queries);
     $cookie = jaccscard_updatecookie($head, $cookie);
     list($head, $body) = jaccscard_http11($method, $protocol, $host, $page, $query, $cookie);
     
-    // DOMƒcƒŠ[‚ğ¶¬
+    // DOMãƒ„ãƒªãƒ¼ã‚’ç”Ÿæˆ
     $ofxdom = new ofxDOM($account['acctid']);
     foreach($bodies as $body) {
-        // –¾×‚ğƒp[ƒX
+        // æ˜ç´°ã‚’ãƒ‘ãƒ¼ã‚¹
         $cds = jaccscard_parsedom($body);
-        // –¾×‚ğƒZƒbƒg
+        // æ˜ç´°ã‚’ã‚»ãƒƒãƒˆ
         $ofxdom->setTrans($cds);
     }
     $cds_balamt = 0;
@@ -177,24 +177,24 @@ if(strpos($body, "ƒƒ“ƒeƒiƒ“ƒX‚ğs‚Á‚Ä‚¨‚è‚Ü‚·") !== false) {
     $items = $ofxdom->getTrans();
     foreach($items as $item) {
         $dtposted = $item->getElementsByTagName('DTPOSTED')->item(0)->nodeValue;
-        // DTSTART, DTEND‚ğæ“¾
+        // DTSTART, DTENDã‚’å–å¾—
         if($cds_s == "") $cds_s = $dtposted;
         $cds_e = $dtposted;
-        // c‚‚ğŒvZ
+        // æ®‹é«˜ã‚’è¨ˆç®—
         $cds_balamt += (double)$item->getElementsByTagName('TRNAMT')->item(0)->nodeValue;
     }
     
     // BANKTRANLIST
     $ofxdom->setBankTranList($cds_s, $cds_e);
     
-    // c‚‚ğˆ—
+    // æ®‹é«˜ã‚’å‡¦ç†
     $cds_balamt = (-1)*$cds_balamt;
     $ofxdom->setLedgerBalance($cds_balamt, ENV_STR_DATE_TODAY . ENV_STR_OFX_TZ);
     
-    //MKGTINFO‚ğİ’è
-    $ofxdom->setMktginfo(implode(mb_convert_string(ENV_CHR_CONCATENATOR), array($settings["name"], mb_convert_string($account["acctname"])))));
+    //MKGTINFOã‚’è¨­å®š
+    $ofxdom->setMktginfo(implode(ENV_CHR_CONCATENATOR, array($settings["name"], $account["acctname"])));
     
-    // XML DOMƒcƒŠ[‚ğ•¶š—ñ‚É•ÏŠ·
+    // XML DOMãƒ„ãƒªãƒ¼ã‚’æ–‡å­—åˆ—ã«å¤‰æ›
     $xml = $ofxdom->getXML();
     
     $resp["status"] = ENV_NUM_STATUS_SUCCESS;
@@ -249,23 +249,23 @@ function jaccscard_getqueries($body) {
 }
 
 function jaccscard_parsedom($str) {
-    // –¾×•\“Ç‚İ‚İ—pDOMƒcƒŠ[ì¬
+    // æ˜ç´°è¡¨èª­ã¿è¾¼ã¿ç”¨DOMãƒ„ãƒªãƒ¼ä½œæˆ
     $doc = new DOMDocument();
-    // <meta c charset=Shift_JIS">‚Ì‘O‚Ì<title>‚ªC•¶š‰»‚¯‚ÌŒ´ˆö‚Æ‚È‚é‚½‚ßCíœ
+    // <meta â€¦ charset=Shift_JIS">ã®å‰ã®<title>ãŒï¼Œæ–‡å­—åŒ–ã‘ã®åŸå› ã¨ãªã‚‹ãŸã‚ï¼Œå‰Šé™¤
     preg_match("/(<body.*<\/body>)/s", $str, $matches);
     $str = $matches[1];
-    // ƒwƒbƒ_•t‰Á
+    // ãƒ˜ãƒƒãƒ€ä»˜åŠ 
     $str = "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><\/head>" . $str . "<\/html>";
-    // •¶šƒGƒ“ƒR[ƒh•ÏŠ·
-    $str = mb_convert_encoding($str, 'UTF-8', 'sjis-win');
+    // æ–‡å­—ã‚¨ãƒ³ã‚³ãƒ¼ãƒ‰å¤‰æ›
+    // $str = mb_convert_encoding($str, 'UTF-8', 'sjis-win');
     // &nbsp;
     $str = str_replace("&nbsp;", "", $str);
-    // HTML‚©‚çDOMƒcƒŠ[ì¬
+    // HTMLã‹ã‚‰DOMãƒ„ãƒªãƒ¼ä½œæˆ
     @$doc->loadHTML($str);
     $xpath = new DOMXPath($doc);
-    // –¾×•\‚Ìƒe[ƒuƒ‹‚ğw’è
+    // æ˜ç´°è¡¨ã®ãƒ†ãƒ¼ãƒ–ãƒ«ã‚’æŒ‡å®š
     $rows = $xpath->query("//table[@id='olcreco_target']/tr[@data-pay-id]"); 
-    // Šm’èŒ‚©”Û‚© flag=false: Šm’èŒ, flag=true: –¢Šm’èŒ
+    // ç¢ºå®šæœˆã‹å¦ã‹ flag=false: ç¢ºå®šæœˆ, flag=true: æœªç¢ºå®šæœˆ
     $flag = preg_match('/ggtd web_meisai/', $str);
     
     $ret = "";
@@ -276,28 +276,29 @@ function jaccscard_parsedom($str) {
         $cd = array();
         $row = $rows->item($i);
         $cols = $row->getElementsByTagName('td');
-        // —˜—p–¾×‚Å‚È‚¢s‚ÍƒXƒLƒbƒv
+        // åˆ©ç”¨æ˜ç´°ã§ãªã„è¡Œã¯ã‚¹ã‚­ãƒƒãƒ—
         if(empty($cols->item(0)->nodeValue)) continue;
         
         $cd["TRNTYPE"] = ENV_STR_OFX_TRNTYPE_CREDIT;
         
-        // “ú•t‚ğæ“¾‚·‚é
+        // æ—¥ä»˜ã‚’å–å¾—ã™ã‚‹
         preg_match("/([0-9]{2})\/([0-9]{1,2})\/([0-9]{1,2})/", trim($cols->item(1)->nodeValue), $matches);
         $cd["DTPOSTED"] = sprintf("20%d%02d%02d", $matches[1], $matches[2], $matches[3]);
         
-        // ˆø‚«—‚Æ‚µŒ‚ğæ“¾
+        // å¼•ãè½ã¨ã—æœˆã‚’å–å¾—
         if($flag) {
             $month = substr($cols->item(5)->nodeValue,5);
         } else {
             $month = substr($cols->item(5)->nodeValue,3);
         }
-        // ƒgƒ‰ƒ“ƒUƒNƒVƒ‡ƒ“”Ô†i¿‹Œ‚Æƒf[ƒ^í•Êj‚ğ¶¬‚·‚é
+        // ãƒˆãƒ©ãƒ³ã‚¶ã‚¯ã‚·ãƒ§ãƒ³ç•ªå·ï¼ˆè«‹æ±‚æœˆã¨ãƒ‡ãƒ¼ã‚¿ç¨®åˆ¥ï¼‰ã‚’ç”Ÿæˆã™ã‚‹
         $cd["FITID"] = sprintf("%02d0", $month);
-        // “E—v‚ğæ“¾‚·‚é
+        // æ‘˜è¦ã‚’å–å¾—ã™ã‚‹
         $cd["NAME"] = $cols->item(2)->nodeValue;
         $cd["NAME"] = mb_convert_kana($cd["NAME"], "KV", "UTF-8");
-        $cd["NAME"] = preg_replace('/-/', mb_convert_encoding('[', 'UTF-8', 'sjis-win'), $cd["NAME"]);
-        // ‹àŠz‚ğæ“¾‚·‚é
+        // $cd["NAME"] = preg_replace('/-/', mb_convert_encoding('ãƒ¼', 'UTF-8', 'sjis-win'), $cd["NAME"]);
+        $cd["NAME"] = str_replace('-', 'ãƒ¼', $cd["NAME"]);
+        // é‡‘é¡ã‚’å–å¾—ã™ã‚‹
         if($flag) {
             $cd["TRNAMT"] = (-1)*(double)parse_amount(trim($cols->item(7)->nodeValue));
         } else {

@@ -1,12 +1,12 @@
 <?php
 /*
-surugavisacard.inc: ƒXƒ‹ƒK‹âs VISAƒfƒrƒbƒg/VISAƒNƒŒƒWƒbƒg‚ÌHTML‚æ‚èOFXƒtƒ@ƒCƒ‹‚ğ¶¬‚·‚é
+surugavisacard.inc: ã‚¹ãƒ«ã‚¬éŠ€è¡Œ VISAãƒ‡ãƒ“ãƒƒãƒˆ/VISAã‚¯ãƒ¬ã‚¸ãƒƒãƒˆã®HTMLã‚ˆã‚ŠOFXãƒ•ã‚¡ã‚¤ãƒ«ã‚’ç”Ÿæˆã™ã‚‹
 Copyright (C) 2012-2015 Hiromu2000. All Rights Reserved.
 mailto:hiromu2000@hotmail.com
 Licensed under the GNU AGPLv3.
 */
 
-// ƒƒOƒCƒ“î•ñ‚ğæ“¾‚·‚é
+// ãƒ­ã‚°ã‚¤ãƒ³æƒ…å ±ã‚’å–å¾—ã™ã‚‹
 $user = $ofxforms["loginID"];
 $pass1 = $ofxforms["telPin"];
 $pass2 = $ofxforms["webPin"];
@@ -16,10 +16,10 @@ $resp = array();
 $resp["status"] = ENV_NUM_STATUS_NONE;
 $ofx = "";
 
-// ÀsŠÔiƒ^ƒCƒ€ƒAƒEƒgj‚ğÄİ’è‚·‚é
+// å®Ÿè¡Œæ™‚é–“ï¼ˆã‚¿ã‚¤ãƒ ã‚¢ã‚¦ãƒˆï¼‰ã‚’å†è¨­å®šã™ã‚‹
 @set_time_limit(ENV_NUM_TIMEOUT);
 
-// ƒz[ƒ€‰æ–Ê‚ğæ“¾‚·‚é
+// ãƒ›ãƒ¼ãƒ ç”»é¢ã‚’å–å¾—ã™ã‚‹
 $urls = parse_url($settings["home"]);
 $method = "GET";
 $protocol = ($urls["scheme"] != ""? $urls["scheme"]: "");
@@ -29,13 +29,13 @@ $query = "";
 $cookie = "";
 list($head, $body) = surugavisa_http11($method, $protocol, $host, $page, $query, $cookie);
 
-// ƒƒOƒCƒ“‰æ–Ê‚ğæ“¾‚·‚é
+// ãƒ­ã‚°ã‚¤ãƒ³ç”»é¢ã‚’å–å¾—ã™ã‚‹
 $protocol = 'https';
 $page = '/Top.do';
 $cookie = surugavisa_updatecookie($head, $cookie);
 list($head, $body) = surugavisa_http11($method, $protocol, $host, $page, $query, $cookie);
 
-// ƒƒOƒCƒ“‚·‚é
+// ãƒ­ã‚°ã‚¤ãƒ³ã™ã‚‹
 $forms = parse_tag($body, "form");
 $c = parse_tag_search($forms, "name", "loginForm");
 $method = "POST";
@@ -59,8 +59,8 @@ $query = implode("&", $queries);
 $cookie = surugavisa_updatecookie($head, $cookie);
 list($head, $body) = surugavisa_http11($method, $protocol, $host, $page, $query, $cookie);
 
-if(strpos($body, "‘ü¡ƒƒ“ƒeƒiƒ“ƒX’†‚Å‚·") !== false) {
-    // ƒVƒXƒeƒ€ƒƒ“ƒeƒiƒ“ƒX‰æ–Ê‚Ìê‡
+if(strpos($body, "åªä»Šãƒ¡ãƒ³ãƒ†ãƒŠãƒ³ã‚¹ä¸­ã§ã™") !== false) {
+    // ã‚·ã‚¹ãƒ†ãƒ ãƒ¡ãƒ³ãƒ†ãƒŠãƒ³ã‚¹ç”»é¢ã®å ´åˆ
     $resp["status"] = ENV_NUM_STATUS_MAINTENANCE;
     $resp["method"] = $method;
     $resp["uri"] = $uris["scheme"] . "://" . $uris["host"] . $uris["path"];
@@ -70,7 +70,7 @@ if(strpos($body, "‘ü¡ƒƒ“ƒeƒiƒ“ƒX’†‚Å‚·") !== false) {
     $resp["body"] = $body;
     $resp["ofx"] = generate_ofx($resp["status"]);
 } else if(strpos($body, "loginForm") !== false) {
-    // ƒƒOƒCƒ“¸”s‚Ìê‡
+    // ãƒ­ã‚°ã‚¤ãƒ³å¤±æ•—ã®å ´åˆ
     $resp["status"] = ENV_NUM_STATUS_FAILURE;
     $resp["method"] = $method;
     $resp["uri"] = $uris["scheme"] . "://" . $uris["host"] . $uris["path"];
@@ -80,13 +80,13 @@ if(strpos($body, "‘ü¡ƒƒ“ƒeƒiƒ“ƒX’†‚Å‚·") !== false) {
     $resp["body"] = $body;
     $resp["ofx"] = generate_ofx($resp["status"]);
 } else {
-    // ƒJ[ƒh–¼ÌEƒJ[ƒh”Ô†‚ğæ“¾‚·‚é
-    $account['acctname'] = 'ƒXƒ‹ƒK Visaƒfƒrƒbƒg/ƒNƒŒƒWƒbƒg';
+    // ã‚«ãƒ¼ãƒ‰åç§°ãƒ»ã‚«ãƒ¼ãƒ‰ç•ªå·ã‚’å–å¾—ã™ã‚‹
+    $account['acctname'] = 'ã‚¹ãƒ«ã‚¬ Visaãƒ‡ãƒ“ãƒƒãƒˆ/ã‚¯ãƒ¬ã‚¸ãƒƒãƒˆ';
     $account['acctid'] = substr($user, 12);
-    // DOMƒcƒŠ[‚ğ¶¬
+    // DOMãƒ„ãƒªãƒ¼ã‚’ç”Ÿæˆ
     $ofxdom = new ofxDOM($account['acctid']);
     
-    // ƒƒjƒ…[‚©‚çu‚²—˜—p–¾×v‚ğ‘I‘ğ
+    // ãƒ¡ãƒ‹ãƒ¥ãƒ¼ã‹ã‚‰ã€Œã”åˆ©ç”¨æ˜ç´°ã€ã‚’é¸æŠ
     $cds = array();
     for ($i=0;$i<6;$i++) {
         $forms = parse_tag($body, "form");
@@ -103,7 +103,7 @@ if(strpos($body, "‘ü¡ƒƒ“ƒeƒiƒ“ƒX’†‚Å‚·") !== false) {
         $query = implode("&", $queries);
         $cookie = surugavisa_updatecookie($head, $cookie);
         list($head, $body) = surugavisa_http11($method, $protocol, $host, $page, $query, $cookie);
-        // –¾×‚ğƒp[ƒX
+        // æ˜ç´°ã‚’ãƒ‘ãƒ¼ã‚¹
         $cds = array_merge($cds, surugavisa_parsedom($body));
     }
     usort($cds, function($a, $b) {
@@ -116,33 +116,33 @@ if(strpos($body, "‘ü¡ƒƒ“ƒeƒiƒ“ƒX’†‚Å‚·") !== false) {
     $items = $ofxdom->getTrans();
     foreach ($items as $item) {
         $dtposted = $item->getElementsByTagName('DTPOSTED')->item(0)->nodeValue;
-        // DTSTART, DTEND‚ğæ“¾
+        // DTSTART, DTENDã‚’å–å¾—
         if($cds_s == "") $cds_s = $dtposted;
         $cds_e = $dtposted;
-        // c‚‚ğŒvZ
+        // æ®‹é«˜ã‚’è¨ˆç®—
         $cds_balamt += (double)$item->getElementsByTagName('TRNAMT')->item(0)->nodeValue;
     }
     
     // BANKTRANLIST
     $ofxdom->setBankTranList($cds_s, $cds_e);
     
-    // c‚‚ğˆ—
+    // æ®‹é«˜ã‚’å‡¦ç†
     $cds_balamt = (-1)*$cds_balamt;
     $ofxdom->setLedgerBalance($cds_balamt, ENV_STR_DATE_TODAY . ENV_STR_OFX_TZ);
     
-    //MKGTINFO‚ğİ’è
+    //MKGTINFOã‚’è¨­å®š
     $ofxdom->setMktginfo($settings["name"]);
     
-    // XML DOMƒcƒŠ[‚ğ•¶š—ñ‚É•ÏŠ·
+    // XML DOMãƒ„ãƒªãƒ¼ã‚’æ–‡å­—åˆ—ã«å¤‰æ›
     $xml = $ofxdom->getXML();
     
     $resp["status"] = ENV_NUM_STATUS_SUCCESS;
     $resp["ofx"] = generate_ofx($mode, $xml);
     
-    // ÀsŠÔiƒ^ƒCƒ€ƒAƒEƒgj‚ğÄİ’è‚·‚é
+    // å®Ÿè¡Œæ™‚é–“ï¼ˆã‚¿ã‚¤ãƒ ã‚¢ã‚¦ãƒˆï¼‰ã‚’å†è¨­å®šã™ã‚‹
     @set_time_limit(ENV_NUM_TIMEOUT);
     
-    // ƒƒOƒAƒEƒg‚·‚é
+    // ãƒ­ã‚°ã‚¢ã‚¦ãƒˆã™ã‚‹
     $forms = parse_tag($body, "form");
     $c = parse_tag_search($forms, "name", "logoutForm");
     $page = '/logout.do';
@@ -179,21 +179,21 @@ function surugavisa_updatecookie($head, $cookie) {
 }
 
 function surugavisa_parsedom($str) {
-    // –¾×•\“Ç‚İ‚İ—pDOMƒcƒŠ[ì¬
+    // æ˜ç´°è¡¨èª­ã¿è¾¼ã¿ç”¨DOMãƒ„ãƒªãƒ¼ä½œæˆ
     $doc = new DOMDocument();
-    // <meta c charset=Shift_JIS">‚Ì‘O‚Ì<title>‚ªC•¶š‰»‚¯‚ÌŒ´ˆö‚Æ‚È‚é‚½‚ßCíœ
+    // <meta â€¦ charset=Shift_JIS">ã®å‰ã®<title>ãŒï¼Œæ–‡å­—åŒ–ã‘ã®åŸå› ã¨ãªã‚‹ãŸã‚ï¼Œå‰Šé™¤
     preg_match("/(<body.*<\/body>)/s", $str, $matches);
     $str = $matches[1];
-    // ƒwƒbƒ_•t‰Á   
+    // ãƒ˜ãƒƒãƒ€ä»˜åŠ    
     $str = "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><\/head>" . $str . "<\/html>";
-    // •¶šƒGƒ“ƒR[ƒh•ÏŠ·
-    $str = mb_convert_encoding($str, 'UTF-8', 'SJIS');
+    // æ–‡å­—ã‚¨ãƒ³ã‚³ãƒ¼ãƒ‰å¤‰æ›
+    // $str = mb_convert_encoding($str, 'UTF-8', 'SJIS');
     // &nbsp;
     $str = str_replace("&nbsp;", "", $str);
-    // HTML‚©‚çDOMƒcƒŠ[ì¬
+    // HTMLã‹ã‚‰DOMãƒ„ãƒªãƒ¼ä½œæˆ
     @$doc->loadHTML($str);
     $xpath = new DOMXPath($doc);
-    // –¾×•\‚Ìƒe[ƒuƒ‹‚ğw’è
+    // æ˜ç´°è¡¨ã®ãƒ†ãƒ¼ãƒ–ãƒ«ã‚’æŒ‡å®š
     $rows = $xpath->query("//table[@class='table-type2 clear margin-b-10px']/tr"); 
     
     $ret = "";
@@ -205,24 +205,25 @@ function surugavisa_parsedom($str) {
         $row = $rows->item($i);
         $cols1 = $row->getElementsByTagName('th');
         $cols2 = $row->getElementsByTagName('td');
-        // —˜—p–¾×‚Å‚È‚¢s‚ÍƒXƒLƒbƒv
+        // åˆ©ç”¨æ˜ç´°ã§ãªã„è¡Œã¯ã‚¹ã‚­ãƒƒãƒ—
         if ($cols1->length != 2) continue;
         
         $cd["TRNTYPE"] = ENV_STR_OFX_TRNTYPE_CREDIT;
         
-        // “ú•t‚ğæ“¾‚·‚é
+        // æ—¥ä»˜ã‚’å–å¾—ã™ã‚‹
         preg_match("/([0-9]{4}).*?([0-9]{1,2}).*?([0-9]{1,2})/", str_replace(" ", "", $cols1->item(1)->nodeValue), $matches);
         $cd["DTPOSTED"] = sprintf("%d%02d%02d", $matches[1], $matches[2], $matches[3]);
         
-        // ƒgƒ‰ƒ“ƒUƒNƒVƒ‡ƒ“”Ô†i¿‹Œ‚Æƒf[ƒ^í•Êj‚ğ¶¬‚·‚é
+        // ãƒˆãƒ©ãƒ³ã‚¶ã‚¯ã‚·ãƒ§ãƒ³ç•ªå·ï¼ˆè«‹æ±‚æœˆã¨ãƒ‡ãƒ¼ã‚¿ç¨®åˆ¥ï¼‰ã‚’ç”Ÿæˆã™ã‚‹
         $cd["FITID"] = '000';
-        // “E—v‚ğæ“¾‚·‚é
+        // æ‘˜è¦ã‚’å–å¾—ã™ã‚‹
         $cd["NAME"] = $cols2->item(0)->nodeValue;
-        $cd["NAME"] = preg_replace('/-/', mb_convert_encoding('[', 'UTF-8', 'sjis-win'), $cd["NAME"]);
-        // ‹àŠz‚ğæ“¾‚·‚é
+        // $cd["NAME"] = preg_replace('/-/', mb_convert_encoding('ãƒ¼', 'UTF-8', 'sjis-win'), $cd["NAME"]);
+        $cd["NAME"] = str_replace('-', 'ãƒ¼', $cd["NAME"]);
+        // é‡‘é¡ã‚’å–å¾—ã™ã‚‹
         $cd["TRNAMT"] = (-1)*(double)parse_amount(trim($cols2->item(1)->nodeValue));
-        if (strpos($cols1->item(0)->nodeValue, mb_convert_encoding("æÁ", 'UTF-8', 'sjis-win')) !== false) {
-            $cd["NAME"] .= mb_convert_encoding("iæÁj", 'UTF-8', 'sjis-win');
+        if (strpos($cols1->item(0)->nodeValue, "å–æ¶ˆ") !== false) {
+            $cd["NAME"] .= "ï¼ˆå–æ¶ˆï¼‰";
             $cd["TRNAMT"] *= -1;
         }
         array_push($cds, $cd);

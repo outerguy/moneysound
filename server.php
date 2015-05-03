@@ -1,7 +1,7 @@
 <?php
 /*
 MoneySound
-server.php: ”FØî•ñ‚ðŽó‚¯Žæ‚Á‚Ä‹à—Z‹@ŠÖ–ˆ‚Ìˆ—‚ðŽÀs‚·‚é
+server.php: èªè¨¼æƒ…å ±ã‚’å—ã‘å–ã£ã¦é‡‘èžæ©Ÿé–¢æ¯Žã®å‡¦ç†ã‚’å®Ÿè¡Œã™ã‚‹
 Copyright (C) 2012-2015 OFFICE OUTERGUY. All rights reserved.
 mailto:contact@beatrek.com
 Dual-licensed under the GNU AGPLv3 and Beatrek Origin License.
@@ -14,7 +14,7 @@ $resp = array();
 $ofxforms = array();
 $debug = "";
 
-// ”FØî•ñ‚ðŽó‚¯Žæ‚é
+// èªè¨¼æƒ…å ±ã‚’å—ã‘å–ã‚‹
 while(list($k, $v) = each($_POST)) {
 	$ofxforms[$k] = parse_param($v);
 	$debug .= $k . "=" . $v . "\r\n";
@@ -22,16 +22,16 @@ while(list($k, $v) = each($_POST)) {
 $ofxforms["fiid"] = basename($ofxforms["fiid"]);
 env_dlog($debug);
 
-// ‹à—Z‹@ŠÖ–ˆ‚Ìˆ—‚ðŽÀs‚·‚é
+// é‡‘èžæ©Ÿé–¢æ¯Žã®å‡¦ç†ã‚’å®Ÿè¡Œã™ã‚‹
 if(file_exists(ENV_FILE_DIR_SERVER . $ofxforms["fiid"] . ENV_FILE_EXT_INC) == true && is_readable(ENV_FILE_DIR_SERVER . $ofxforms["fiid"] . ENV_FILE_EXT_INC) == true) {
 	$settings = get_fi_settings($ofxforms["fiid"]);
 	$resp = require_once(ENV_FILE_DIR_SERVER . $ofxforms["fiid"] . ENV_FILE_EXT_INC);
 }
 
-// ’†g‚ª‘¶Ý‚µ‚È‚¢ê‡A‰½‚ào—Í‚µ‚È‚¢
+// ä¸­èº«ãŒå­˜åœ¨ã—ãªã„å ´åˆã€ä½•ã‚‚å‡ºåŠ›ã—ãªã„
 if($resp["ofx"] == "") $resp["status"] = ENV_NUM_STATUS_NONE;
 
-// ƒŒƒXƒ|ƒ“ƒX‚ð•Ô‚·
+// ãƒ¬ã‚¹ãƒãƒ³ã‚¹ã‚’è¿”ã™
 header(get_http_status($resp["status"]));
 header("Cache-Control: no-cache");
 header("Pragma: no-cache");

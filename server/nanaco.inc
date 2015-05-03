@@ -1,31 +1,31 @@
 <?php
 /*
-nanaco.inc: nanaco‚ÌHTML‚æ‚èOFXƒtƒ@ƒCƒ‹‚ğ¶¬‚·‚é
+nanaco.inc: nanacoã®HTMLã‚ˆã‚ŠOFXãƒ•ã‚¡ã‚¤ãƒ«ã‚’ç”Ÿæˆã™ã‚‹
 Copyright (C) 2014-2015 OFFICE OUTERGUY. All rights reserved.
 mailto:contact@beatrek.com
 Licensed under the GNU AGPLv3.
 */
 
-// ƒƒOƒCƒ“î•ñ‚ğæ“¾‚·‚é
+// ãƒ­ã‚°ã‚¤ãƒ³æƒ…å ±ã‚’å–å¾—ã™ã‚‹
 $user = str_replace("-", "", $ofxforms["XCID"]);
 $pass = $ofxforms["LOGIN_PWD"];
 
 $resp = array();
 $ofx = "";
 
-// ÀsŠÔiƒ^ƒCƒ€ƒAƒEƒgj‚ğÄİ’è‚·‚é
+// å®Ÿè¡Œæ™‚é–“ï¼ˆã‚¿ã‚¤ãƒ ã‚¢ã‚¦ãƒˆï¼‰ã‚’å†è¨­å®šã™ã‚‹
 @set_time_limit(ENV_NUM_TIMEOUT);
 
-// ƒz[ƒ€‰æ–Ê‚ğæ“¾‚·‚é
+// ãƒ›ãƒ¼ãƒ ç”»é¢ã‚’å–å¾—ã™ã‚‹
 $method = "GET";
 $uris = parse_uri($settings["home"]);
 $query = "";
 $cookie = "";
 list($head, $body) = nanaco_http11($method, $uris, $query, $cookie);
 
-// PC”Åƒgƒbƒvƒy[ƒW‚ğæ“¾‚·‚é
+// PCç‰ˆãƒˆãƒƒãƒ—ãƒšãƒ¼ã‚¸ã‚’å–å¾—ã™ã‚‹
 $as = parse_tag($body, "a");
-$c = parse_tag_search($as, "innerHTML", "PC”Åƒgƒbƒvƒy[ƒW");
+$c = parse_tag_search($as, "innerHTML", "PCç‰ˆãƒˆãƒƒãƒ—ãƒšãƒ¼ã‚¸");
 if($c != -1) {
 	$method = "GET";
 	$uris = parse_uri($as[$c]["href"], $uris);
@@ -33,9 +33,9 @@ if($c != -1) {
 	list($head, $body) = nanaco_http11($method, $uris, $query, $cookie);
 }
 
-// ƒƒOƒCƒ“‰æ–Ê‚ğæ“¾‚·‚é
+// ãƒ­ã‚°ã‚¤ãƒ³ç”»é¢ã‚’å–å¾—ã™ã‚‹
 $as = parse_tag($body, "a");
-foreach($as as $a) if(parse_tag_search(parse_tag($a["innerHTML"], "img"), "alt", "ƒ}ƒl[/ƒ|ƒCƒ“ƒgc‚—š—ğŠm”F@ƒNƒŒƒWƒbƒgƒ`ƒƒ[ƒW‚È‚Ç‰ïˆõƒƒOƒCƒ“") != -1) {
+foreach($as as $a) if(parse_tag_search(parse_tag($a["innerHTML"], "img"), "alt", "ãƒãƒãƒ¼/ãƒã‚¤ãƒ³ãƒˆæ®‹é«˜å±¥æ­´ç¢ºèªã€€ã‚¯ãƒ¬ã‚¸ãƒƒãƒˆãƒãƒ£ãƒ¼ã‚¸ãªã©ä¼šå“¡ãƒ­ã‚°ã‚¤ãƒ³") != -1) {
 	$method = "GET";
 	$uris = parse_uri(($a["href"] == "javascript:WinOpenLogin()"? "https://www.nanaco-net.jp/pc/emServlet": $a["href"]), $uris);
 	$query = "";
@@ -43,7 +43,7 @@ foreach($as as $a) if(parse_tag_search(parse_tag($a["innerHTML"], "img"), "alt",
 	break;
 }
 
-// ƒƒOƒCƒ“‚·‚é
+// ãƒ­ã‚°ã‚¤ãƒ³ã™ã‚‹
 $forms = parse_tag($body, "form");
 $c = parse_tag_search($forms, "id", "login_password");
 if($c != -1) {
@@ -60,8 +60,8 @@ if($c != -1) {
 	list($head, $body) = nanaco_http11($method, $uris, $query, $cookie);
 }
 
-if(strpos($body, "c‚E—š—ğŠm”F") === false) {
-	// ƒƒOƒCƒ“¸”s‚Ìê‡
+if(strpos($body, "æ®‹é«˜ãƒ»å±¥æ­´ç¢ºèª") === false) {
+	// ãƒ­ã‚°ã‚¤ãƒ³å¤±æ•—ã®å ´åˆ
 	$resp["status"] = ENV_NUM_STATUS_FAILURE;
 	$resp["method"] = $method;
 	$resp["uri"] = $uris["scheme"] . "://" . $uris["host"] . $uris["path"];
@@ -75,13 +75,13 @@ if(strpos($body, "c‚E—š—ğŠm”F") === false) {
 	
 	$account["acctname"] = $settings["name"];
 	
-	// x“X”Ô†‚ğæ“¾‚·‚é
+	// æ”¯åº—ç•ªå·ã‚’å–å¾—ã™ã‚‹
 	$account["branchid"] = "0";
 	
-	// ŒûÀ”Ô†‚ğæ“¾‚·‚é
+	// å£åº§ç•ªå·ã‚’å–å¾—ã™ã‚‹
 	$account["acctid"] = $user;
 	
-	// c‚‚ğæ“¾‚·‚é
+	// æ®‹é«˜ã‚’å–å¾—ã™ã‚‹
 	$account["balance"] = 0;
 	$divs = parse_tag($body, "div", true);
 	$c = parse_tag_search($divs, "class", "moneyBox");
@@ -91,9 +91,9 @@ if(strpos($body, "c‚E—š—ğŠm”F") === false) {
 		if($c != -1) $account["balance"] = parse_amount(strip_tags($div2s[$c]["innerHTML"]));
 	}
 	
-	// c‚E—š—ğŠm”F‰æ–Êi1ƒy[ƒW–Új‚ğæ“¾‚·‚é
+	// æ®‹é«˜ãƒ»å±¥æ­´ç¢ºèªç”»é¢ï¼ˆ1ãƒšãƒ¼ã‚¸ç›®ï¼‰ã‚’å–å¾—ã™ã‚‹
 	$as = parse_tag($body, "a");
-	$c = parse_tag_search($as, "innerHTML", "c‚E—š—ğŠm”F");
+	$c = parse_tag_search($as, "innerHTML", "æ®‹é«˜ãƒ»å±¥æ­´ç¢ºèª");
 	if($c != -1) {
 		$method = "GET";
 		$uris = parse_uri($as[$c]["href"], $uris);
@@ -103,16 +103,16 @@ if(strpos($body, "c‚E—š—ğŠm”F") === false) {
 	}
 	$account["details"] = array();
 	
-	// –³ŒÀƒ‹[ƒv‚·‚é
+	// ç„¡é™ãƒ«ãƒ¼ãƒ—ã™ã‚‹
 	while(true) {
-		// –¾×‚ğæ“¾‚·‚é
+		// æ˜ç´°ã‚’å–å¾—ã™ã‚‹
 		$tables = parse_tag($body, "table");
 		$c = parse_tag_search($tables, "id", "historyTbl");
 		if($c != -1) $account["details"] = array_merge(nanaco_get_details($tables[$c]["innerHTML"]), $account["details"]);
 		
-		// c‚E—š—ğŠm”F‰æ–Êi2ƒy[ƒW–ÚˆÈ~j‚ğæ“¾‚·‚é
+		// æ®‹é«˜ãƒ»å±¥æ­´ç¢ºèªç”»é¢ï¼ˆ2ãƒšãƒ¼ã‚¸ç›®ä»¥é™ï¼‰ã‚’å–å¾—ã™ã‚‹
 		$as = parse_tag($body, "a");
-		$c = parse_tag_search($as, "innerHTML", " „„Ÿ‚Ö");
+		$c = parse_tag_search($as, "innerHTML", " ï¼ï¼æ¬¡ã¸");
 		if($c != -1) {
 			$method = "GET";
 			$uris = parse_uri($as[$c]["href"], $uris);
@@ -120,18 +120,18 @@ if(strpos($body, "c‚E—š—ğŠm”F") === false) {
 			$cookie = nanaco_update_cookie($head, $cookie);
 			list($head, $body) = nanaco_http11($method, $uris, $query, $cookie);
 		} else {
-			// Œ©‚Â‚©‚ç‚È‚¢ê‡Aƒ‹[ƒv‚ğ”²‚¯‚é
+			// è¦‹ã¤ã‹ã‚‰ãªã„å ´åˆã€ãƒ«ãƒ¼ãƒ—ã‚’æŠœã‘ã‚‹
 			break;
 		}
 	}
 	
 	
-	// ÀsŠÔiƒ^ƒCƒ€ƒAƒEƒgj‚ğÄİ’è‚·‚é
+	// å®Ÿè¡Œæ™‚é–“ï¼ˆã‚¿ã‚¤ãƒ ã‚¢ã‚¦ãƒˆï¼‰ã‚’å†è¨­å®šã™ã‚‹
 	@set_time_limit(ENV_NUM_TIMEOUT);
 	
-	// ƒƒOƒAƒEƒg‚·‚é
+	// ãƒ­ã‚°ã‚¢ã‚¦ãƒˆã™ã‚‹
 	$as = parse_tag($body, "a");
-	$c = parse_tag_search($as, "innerHTML", "ƒƒOƒAƒEƒg");
+	$c = parse_tag_search($as, "innerHTML", "ãƒ­ã‚°ã‚¢ã‚¦ãƒˆ");
 	if($c != -1) {
 		$method = "GET";
 		$uris = parse_uri($as[$c]["href"], $uris);
@@ -140,14 +140,14 @@ if(strpos($body, "c‚E—š—ğŠm”F") === false) {
 		list($head, $body) = nanaco_http11($method, $uris, $query, $cookie);
 	}
 	
-	// ÀsŠÔiƒ^ƒCƒ€ƒAƒEƒgj‚ğÄİ’è‚·‚é
+	// å®Ÿè¡Œæ™‚é–“ï¼ˆã‚¿ã‚¤ãƒ ã‚¢ã‚¦ãƒˆï¼‰ã‚’å†è¨­å®šã™ã‚‹
 	@set_time_limit(ENV_NUM_TIMEOUT);
 	
 	$bankmsgsrsv1 = "";
 	$bankmsgsrsv1 .= "<BANKMSGSRSV1>";
 	$bankmsgsrsv1 .= "\r\n";
 	
-	// ŒûÀî•ñ‚ğæ“¾‚·‚é
+	// å£åº§æƒ…å ±ã‚’å–å¾—ã™ã‚‹
 	$bankmsgsrsv1 .= "<STMTTRNRS>";
 	$bankmsgsrsv1 .= "\r\n";
 	$bankmsgsrsv1 .= "<TRNUID>0</TRNUID>";
@@ -174,7 +174,7 @@ if(strpos($body, "c‚E—š—ğŠm”F") === false) {
 	$bankmsgsrsv1 .= "</BANKMSGSRSV1>";
 	$bankmsgsrsv1 .= "\r\n";
 	
-	// OFXƒtƒ@ƒCƒ‹‚ğo—Í‚·‚é
+	// OFXãƒ•ã‚¡ã‚¤ãƒ«ã‚’å‡ºåŠ›ã™ã‚‹
 	$resp["status"] = ENV_NUM_STATUS_SUCCESS;
 	$resp["ofx"] = generate_ofx($resp["status"], $bankmsgsrsv1);
 }
@@ -198,14 +198,14 @@ function nanaco_get_details($body) {
 	foreach(array_reverse($trs) as $tr) {
 		$tds = parse_tag($tr["innerHTML"], "td");
 		if(count($tds) == 10) {
-			// “ú‚ğæ“¾‚·‚é
+			// æ—¥æ™‚ã‚’å–å¾—ã™ã‚‹
 			$dt = explode("<br>", $tds[0]["innerHTML"]);
 			
-			// æˆøí•ÊA‚¨‚æ‚ÑêŠ‚ğæ“¾‚·‚é
+			// å–å¼•ç¨®åˆ¥ã€ãŠã‚ˆã³å ´æ‰€ã‚’å–å¾—ã™ã‚‹
 			$name = trim(strip_tags($tds[1]["innerHTML"]));
 			$memo = trim(strip_tags($tds[9]["innerHTML"]));
 			
-			// nanacoƒ`ƒƒ[ƒWŠzEx•¥Šz‚ğæ“¾‚·‚é
+			// nanacoãƒãƒ£ãƒ¼ã‚¸é¡ãƒ»æ”¯æ‰•é¡ã‚’å–å¾—ã™ã‚‹
 			$am = explode("<br>", $tds[2]["innerHTML"]);
 			$amount = (string)((integer)parse_amount(trim(strip_tags($am[0]))) + (integer)parse_amount(trim(strip_tags(str_replace(array("(", ")"), array("", ""), $am[1])))));
 			if($amount == "0") $amount = (string)(-1 * (integer)parse_amount(trim(strip_tags($tds[3]["innerHTML"]))));
@@ -236,21 +236,21 @@ function nanaco_parse_details($account) {
 		$cd = array();
 		$cd["TRNTYPE"] = ENV_STR_OFX_TRNTYPE_DIRECTDEBIT;
 		
-		// “ú•t‚ğæ“¾‚·‚é
+		// æ—¥ä»˜ã‚’å–å¾—ã™ã‚‹
 		$cd["DTPOSTED"] = $line["date"];
 		
-		// ’Ê”Ô‚ğ¶¬‚·‚é
+		// é€šç•ªã‚’ç”Ÿæˆã™ã‚‹
 		if($cd["DTPOSTED"] == $cd_date) $cd_num++; else $cd_num = 0;
 		
-		// ƒgƒ‰ƒ“ƒUƒNƒVƒ‡ƒ“”Ô†‚ğ¶¬‚·‚é
+		// ãƒˆãƒ©ãƒ³ã‚¶ã‚¯ã‚·ãƒ§ãƒ³ç•ªå·ã‚’ç”Ÿæˆã™ã‚‹
 		$cd["FITID"] = $cd["DTPOSTED"] . "0000000" . sprintf("%05d", $cd_num);
 		
-		// “E—v‚ğæ“¾‚·‚é
-		$cd["NAME"] = mb_convert_string($line["summary"]);
+		// æ‘˜è¦ã‚’å–å¾—ã™ã‚‹
+		$cd["NAME"] = $line["summary"];
 		
-		// ‹àŠz‚ğæ“¾‚·‚é
+		// é‡‘é¡ã‚’å–å¾—ã™ã‚‹
 		$cd["TRNAMT"] = parse_amount($line["amount"]);
-		$cd["MEMO"] = ($line["memo"] != ""? mb_convert_string($line["memo"]): ENV_STR_OFX_MEMO);
+		$cd["MEMO"] = ($line["memo"] != ""? $line["memo"]: ENV_STR_OFX_MEMO);
 		
 		array_push($cds, $cd);
 		$cd_date = $cd["DTPOSTED"];
@@ -282,7 +282,7 @@ function nanaco_parse_details($account) {
 	$ret .= "</LEDGERBAL>";
 	$ret .= "\r\n";
 	
-	// ŒûÀ–¼Ì‚ğo—Í‚·‚é
+	// å£åº§åç§°ã‚’å‡ºåŠ›ã™ã‚‹
 	if($account["acctname"] != "") {
 		$ret .= "<MKTGINFO>" . $account["acctname"] . "</MKTGINFO>";
 		$ret .= "\r\n";

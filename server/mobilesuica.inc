@@ -1,12 +1,12 @@
 <?php
 /*
-mobilesuica.inc: ƒ‚ƒoƒCƒ‹Suica‚ÌHTML‚æ‚èOFXƒtƒ@ƒCƒ‹‚ğ¶¬‚·‚é
+mobilesuica.inc: ãƒ¢ãƒã‚¤ãƒ«Suicaã®HTMLã‚ˆã‚ŠOFXãƒ•ã‚¡ã‚¤ãƒ«ã‚’ç”Ÿæˆã™ã‚‹
 Copyright (C) 2014-2015 OFFICE OUTERGUY. All rights reserved.
 mailto:contact@beatrek.com
 Licensed under the GNU AGPLv3.
 */
 
-// ƒƒOƒCƒ“î•ñ‚ğæ“¾‚·‚é
+// ãƒ­ã‚°ã‚¤ãƒ³æƒ…å ±ã‚’å–å¾—ã™ã‚‹
 $user = $ofxforms["MailAddress"];
 $pass = $ofxforms["Password"];
 $auth = urlencode(mb_convert_encoding(urldecode($ofxforms["WebCaptcha1__editor"]), "Shift_JIS", "UTF-8"));
@@ -19,28 +19,28 @@ if($accesskey != "") {
 	$sid = (integer)$ssid;
 }
 
-// ÀsŠÔiƒ^ƒCƒ€ƒAƒEƒgj‚ğÄİ’è‚·‚é
+// å®Ÿè¡Œæ™‚é–“ï¼ˆã‚¿ã‚¤ãƒ ã‚¢ã‚¦ãƒˆï¼‰ã‚’å†è¨­å®šã™ã‚‹
 @set_time_limit(ENV_NUM_TIMEOUT);
 
 if($sid == 0) {
-	// ƒz[ƒ€‰æ–ÊiƒƒOƒCƒ“‰æ–Êj‚ğæ“¾‚·‚é
+	// ãƒ›ãƒ¼ãƒ ç”»é¢ï¼ˆãƒ­ã‚°ã‚¤ãƒ³ç”»é¢ï¼‰ã‚’å–å¾—ã™ã‚‹
 	$method = "GET";
 	$uris = parse_uri($settings["home"]);
 	$query = "";
 	$cookie = "";
 	list($head, $body) = mobilesuica_http11($method, $uris, $query, $cookie);
 	
-	// ‰æ‘œ”FØ‚Ì‰æ‘œ‚ğæ“¾‚·‚é
+	// ç”»åƒèªè¨¼ã®ç”»åƒã‚’å–å¾—ã™ã‚‹
 	$imgs = parse_tag($body, "img");
 	$c = parse_tag_search($imgs, "class", "igc_TrendyCaptchaImage");
 	if($c != -1) {
 		$imguris = parse_uri($imgs[$c]["src"], $uris);
 		$cookie = mobilesuica_update_cookie($head, $cookie);
-		list($imghead, $imgbody) = mobilesuica_http11($method, $imguris, $query, $cookie, $uris["scheme"] . "://" . $uris["host"] . $uris["path"] . $query);
+		list($imghead, $imgbody) = mobilesuica_http11($method, $imguris, $query, $cookie, $uris["scheme"] . "://" . $uris["host"] . $uris["path"] . $query, false); // æ–‡å­—ã‚³ãƒ¼ãƒ‰ã‚’å¤‰æ›ã—ãªã„
 		$imgsrc = "data:image/gif;base64," . base64_encode($imgbody);
 	}
 	
-	// ƒƒOƒCƒ“‚·‚é
+	// ãƒ­ã‚°ã‚¤ãƒ³ã™ã‚‹
 	$forms = parse_tag($body, "form");
 	$c = parse_tag_search($forms, "id", "form1");
 	if($c != -1) {
@@ -59,12 +59,12 @@ if($sid == 0) {
 		$cookie = mobilesuica_update_cookie($head, $cookie);
 	}
 	
-	// ƒZƒbƒVƒ‡ƒ“‚ğ‘Ş”ğ‚·‚é
+	// ã‚»ãƒƒã‚·ãƒ§ãƒ³ã‚’é€€é¿ã™ã‚‹
 	$sid = 1;
 	$head = "";
 	$body = "";
 } else if($sid == 1) {
-	// ƒZƒbƒVƒ‡ƒ“‚ğ•œŒ³‚·‚é
+	// ã‚»ãƒƒã‚·ãƒ§ãƒ³ã‚’å¾©å…ƒã™ã‚‹
 	$sid = 0;
 	$uris = parse_uri($uri);
 	$query = str_replace("WebCaptcha1__editor=", "WebCaptcha1__editor=" . $auth, $query);
@@ -73,7 +73,7 @@ if($sid == 0) {
 }
 
 if($sid > 0) {
-	// ƒZƒbƒVƒ‡ƒ“‚ğˆø‚«Œp‚®
+	// ã‚»ãƒƒã‚·ãƒ§ãƒ³ã‚’å¼•ãç¶™ã
 	$resp["status"] = ENV_NUM_STATUS_ADDITION;
 	$resp["aid"] = "WebCaptcha1__editor";
 	$resp["addition"] = $imgsrc;
@@ -86,14 +86,14 @@ if($sid > 0) {
 	$mfachallengetrnrs .= "<MFACHALLENGERS>";
 	$mfachallengetrnrs .= "<MFACHALLENGE>";
 	$mfachallengetrnrs .= "<MFAPHRASEID>" . $resp["aid"] . "</MFAPHRASEID>";
-	$mfachallengetrnrs .= "<MFAPHRASELABEL>" . mb_convert_string($resp["addition"]) . "</MFAPHRASELABEL>";
+	$mfachallengetrnrs .= "<MFAPHRASELABEL>" . $resp["addition"] . "</MFAPHRASELABEL>";
 	$mfachallengetrnrs .= "</MFACHALLENGE>";
 	$mfachallengetrnrs .= "</MFACHALLENGERS>";
 	$mfachallengetrnrs .= "</MFACHALLENGETRNRS>";
 	
 	$resp["ofx"] = generate_ofx($resp["status"], $mfachallengetrnrs, $resp["sesscookie"], $resp["accesskey"]);
-} else if(strpos($body, "SF(“dqƒ}ƒl[)—˜—p—š—ğ") === false) {
-	// ƒƒOƒCƒ“¸”s‚Ìê‡
+} else if(strpos($body, "SF(é›»å­ãƒãƒãƒ¼)åˆ©ç”¨å±¥æ­´") === false) {
+	// ãƒ­ã‚°ã‚¤ãƒ³å¤±æ•—ã®å ´åˆ
 	$resp["status"] = ENV_NUM_STATUS_FAILURE;
 	$resp["method"] = $method;
 	$resp["uri"] = $uris["scheme"] . "://" . $uris["host"] . $uris["path"];
@@ -107,18 +107,18 @@ if($sid > 0) {
 	
 	$account["acctname"] = $settings["name"];
 	
-	// x“X”Ô†‚ğæ“¾‚·‚é
+	// æ”¯åº—ç•ªå·ã‚’å–å¾—ã™ã‚‹
 	$account["branchid"] = "0";
 	
-	// ŒûÀ”Ô†‚ğæ“¾‚·‚é
+	// å£åº§ç•ªå·ã‚’å–å¾—ã™ã‚‹
 	$account["acctid"] = $user;
 	
-	// c‚‚ğæ“¾‚·‚é
+	// æ®‹é«˜ã‚’å–å¾—ã™ã‚‹
 	$account["balance"] = 0;
 	
-	// SFi“dqƒ}ƒl[j—˜—p—š—ğ‰æ–Ê‚ğæ“¾‚·‚é
+	// SFï¼ˆé›»å­ãƒãƒãƒ¼ï¼‰åˆ©ç”¨å±¥æ­´ç”»é¢ã‚’å–å¾—ã™ã‚‹
 	$as = parse_tag($body, "a");
-	foreach($as as $a) if(parse_tag_search(parse_tag($a["innerHTML"], "img"), "alt", "SF(“dqƒ}ƒl[)—˜—p—š—ğ") != -1) {
+	foreach($as as $a) if(parse_tag_search(parse_tag($a["innerHTML"], "img"), "alt", "SF(é›»å­ãƒãƒãƒ¼)åˆ©ç”¨å±¥æ­´") != -1) {
 		$method = "POST";
 		if(preg_match("/javascript:[^\']+?\'([^\']+)\'.*?/i", $a["href"], $matches) > 0) $uris = parse_uri($matches[1], $uris);
 		$query = "";
@@ -135,7 +135,7 @@ if($sid > 0) {
 		$account["balance"] = $detail["amount"];
 	}
 	
-	// SuicaID”Ô†‚ğæ“¾‚·‚é
+	// SuicaIDç•ªå·ã‚’å–å¾—ã™ã‚‹
 	$forms = parse_tag($body, "form", true);
 	$c = parse_tag_search($forms, "name", "form1");
 	if($c != -1) {
@@ -164,24 +164,24 @@ if($sid > 0) {
 	
 	}
 	
-	// ÀsŠÔiƒ^ƒCƒ€ƒAƒEƒgj‚ğÄİ’è‚·‚é
+	// å®Ÿè¡Œæ™‚é–“ï¼ˆã‚¿ã‚¤ãƒ ã‚¢ã‚¦ãƒˆï¼‰ã‚’å†è¨­å®šã™ã‚‹
 	@set_time_limit(ENV_NUM_TIMEOUT);
 	
-	// ƒƒOƒAƒEƒg‚·‚é
+	// ãƒ­ã‚°ã‚¢ã‚¦ãƒˆã™ã‚‹
 	$method = "POST";
 	$uris = parse_uri("/ka/lg/LogoutComplete.aspx", $uris);
 	$query = "";
 	$cookie = mobilesuica_update_cookie($head, $cookie);
 	list($head, $body) = mobilesuica_http11($method, $uris, $query, $cookie);
 	
-	// ÀsŠÔiƒ^ƒCƒ€ƒAƒEƒgj‚ğÄİ’è‚·‚é
+	// å®Ÿè¡Œæ™‚é–“ï¼ˆã‚¿ã‚¤ãƒ ã‚¢ã‚¦ãƒˆï¼‰ã‚’å†è¨­å®šã™ã‚‹
 	@set_time_limit(ENV_NUM_TIMEOUT);
 	
 	$bankmsgsrsv1 = "";
 	$bankmsgsrsv1 .= "<BANKMSGSRSV1>";
 	$bankmsgsrsv1 .= "\r\n";
 	
-	// ŒûÀî•ñ‚ğæ“¾‚·‚é
+	// å£åº§æƒ…å ±ã‚’å–å¾—ã™ã‚‹
 	$bankmsgsrsv1 .= "<STMTTRNRS>";
 	$bankmsgsrsv1 .= "\r\n";
 	$bankmsgsrsv1 .= "<TRNUID>0</TRNUID>";
@@ -208,16 +208,16 @@ if($sid > 0) {
 	$bankmsgsrsv1 .= "</BANKMSGSRSV1>";
 	$bankmsgsrsv1 .= "\r\n";
 	
-	// OFXƒtƒ@ƒCƒ‹‚ğo—Í‚·‚é
+	// OFXãƒ•ã‚¡ã‚¤ãƒ«ã‚’å‡ºåŠ›ã™ã‚‹
 	$resp["status"] = ENV_NUM_STATUS_SUCCESS;
 	$resp["ofx"] = generate_ofx($resp["status"], $bankmsgsrsv1);
 }
 return $resp;
 
 // HTTP/1.1
-function mobilesuica_http11($method, $uris, $query = "", $cookie = "", $referer = "") {
+function mobilesuica_http11($method, $uris, $query = "", $cookie = "", $referer = "", $autoconv = true) {
 	$ret = "INVALID HOST";
-	if(preg_match("/\.mobilesuica\.com$/", $uris["host"]) > 0) $ret = http11(strtoupper($method), $uris["scheme"], $uris["host"], 0, $uris["path"], $query, "", $cookie, true, ENV_PRODUCT_UA . " MSIE 7.0", "", $referer); // ƒƒOƒCƒ“‚ÉUser-Agent‚ğƒ`ƒFƒbƒN‚³‚ê‚é
+	if(preg_match("/\.mobilesuica\.com$/", $uris["host"]) > 0) $ret = http11(strtoupper($method), $uris["scheme"], $uris["host"], 0, $uris["path"], $query, "", $cookie, $autoconv, ENV_PRODUCT_UA . " MSIE 7.0", "", $referer); // ãƒ­ã‚°ã‚¤ãƒ³æ™‚ã«User-Agentã‚’ãƒã‚§ãƒƒã‚¯ã•ã‚Œã‚‹
 	return explode("\r\n\r\n", $ret, 2);
 }
 
@@ -235,7 +235,7 @@ function mobilesuica_get_details($body) {
 	foreach($trs as $tr) {
 		$tds = parse_tag($tr["innerHTML"], "td");
 		if(count($tds) == 7) {
-			// “ú‚ğæ“¾‚·‚é
+			// æ—¥æ™‚ã‚’å–å¾—ã™ã‚‹
 			$dt = trim(str_replace("/", "", strip_tags($tds[0]["innerHTML"])));
 			if($dt > substr(ENV_STR_DATE_TODAY, 4, 4)) {
 				$dt = (string)((integer)substr(ENV_STR_DATE_TODAY, 0, 4) - 1) . $dt;
@@ -243,7 +243,7 @@ function mobilesuica_get_details($body) {
 				$dt = substr(ENV_STR_DATE_TODAY, 0, 4) . $dt;
 			}
 			
-			// æˆøí•ÊA‚¨‚æ‚ÑêŠ‚ğæ“¾‚·‚é
+			// å–å¼•ç¨®åˆ¥ã€ãŠã‚ˆã³å ´æ‰€ã‚’å–å¾—ã™ã‚‹
 			$class1 = mobilesuica_parse_string($tds[1]["innerHTML"]);
 			$place1 = mobilesuica_parse_string($tds[2]["innerHTML"]);
 			$class2 = mobilesuica_parse_string($tds[3]["innerHTML"]);
@@ -254,10 +254,10 @@ function mobilesuica_get_details($body) {
 			if($place2 != "") $memo .= "-" . $place2;
 			if($memo == "") $memo = ENV_STR_OFX_MEMO;
 			
-			// ûx‚ğŒvZ‚·‚é
+			// åæ”¯ã‚’è¨ˆç®—ã™ã‚‹
 			$amount = mobilesuica_parse_string($tds[6]["innerHTML"]);
 			
-			// c‚‚ğæ“¾‚·‚é
+			// æ®‹é«˜ã‚’å–å¾—ã™ã‚‹
 			if($last == "") $last = parse_amount(str_replace("&yen;", "", trim(strip_tags($tds[5]["innerHTML"]))));
 			
 			$rets[$i]["date"] = $dt;
@@ -270,12 +270,12 @@ function mobilesuica_get_details($body) {
 	}
 	$rets[0]["amount"] = $last;
 	
-	// –ß‚è’l‚Ì”z—ñ‚Ìæ“ª‚ªc‚‚Æ‚È‚éi–¾×‚Æ‚µ‚Ä‚Í–³Œøj
+	// æˆ»ã‚Šå€¤ã®é…åˆ—ã®å…ˆé ­ãŒæ®‹é«˜ã¨ãªã‚‹ï¼ˆæ˜ç´°ã¨ã—ã¦ã¯ç„¡åŠ¹ï¼‰
 	return array_reverse($rets);
 }
 
 function mobilesuica_parse_string($str) {
-	return trim(mb_convert_kana(strip_tags($str), "sKV", "Shift_JIS"));
+	return trim(mb_convert_kana(strip_tags($str), "sKV", "UTF-8"));
 }
 
 function mobilesuica_parse_details($account) {
@@ -290,21 +290,21 @@ function mobilesuica_parse_details($account) {
 		$cd = array();
 		$cd["TRNTYPE"] = ENV_STR_OFX_TRNTYPE_DIRECTDEBIT;
 		
-		// “ú•t‚ğæ“¾‚·‚é
+		// æ—¥ä»˜ã‚’å–å¾—ã™ã‚‹
 		$cd["DTPOSTED"] = $line["date"];
 		
-		// ’Ê”Ô‚ğ¶¬‚·‚é
+		// é€šç•ªã‚’ç”Ÿæˆã™ã‚‹
 		if($cd["DTPOSTED"] == $cd_date) $cd_num++; else $cd_num = 0;
 		
-		// ƒgƒ‰ƒ“ƒUƒNƒVƒ‡ƒ“”Ô†‚ğ¶¬‚·‚é
+		// ãƒˆãƒ©ãƒ³ã‚¶ã‚¯ã‚·ãƒ§ãƒ³ç•ªå·ã‚’ç”Ÿæˆã™ã‚‹
 		$cd["FITID"] = $cd["DTPOSTED"] . "0000000" . sprintf("%05d", $cd_num);
 		
-		// “E—v‚ğæ“¾‚·‚é
-		$cd["NAME"] = mb_convert_string($line["summary"]);
+		// æ‘˜è¦ã‚’å–å¾—ã™ã‚‹
+		$cd["NAME"] = $line["summary"];
 		
-		// ‹àŠz‚ğæ“¾‚·‚é
+		// é‡‘é¡ã‚’å–å¾—ã™ã‚‹
 		$cd["TRNAMT"] = parse_amount($line["amount"]);
-		$cd["MEMO"] = ($line["memo"] != ""? mb_convert_string($line["memo"]): ENV_STR_OFX_MEMO);
+		$cd["MEMO"] = ($line["memo"] != ""? $line["memo"]: ENV_STR_OFX_MEMO);
 		
 		array_push($cds, $cd);
 		$cd_date = $cd["DTPOSTED"];
@@ -336,7 +336,7 @@ function mobilesuica_parse_details($account) {
 	$ret .= "</LEDGERBAL>";
 	$ret .= "\r\n";
 	
-	// ŒûÀ–¼Ì‚ğo—Í‚·‚é
+	// å£åº§åç§°ã‚’å‡ºåŠ›ã™ã‚‹
 	if($account["acctname"] != "") {
 		$ret .= "<MKTGINFO>" . $account["acctname"] . "</MKTGINFO>";
 		$ret .= "\r\n";

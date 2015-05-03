@@ -1,31 +1,31 @@
 <?php
 /*
-smbc.inc: OˆäZ—F‹âs‚ÌOFX‚æ‚èOFXƒtƒ@ƒCƒ‹‚ğ•ÏŠ·EŒ‹‡‚·‚é
+smbc.inc: ä¸‰äº•ä½å‹éŠ€è¡Œã®OFXã‚ˆã‚ŠOFXãƒ•ã‚¡ã‚¤ãƒ«ã‚’å¤‰æ›ãƒ»çµåˆã™ã‚‹
 Copyright (C) 2012-2015 OFFICE OUTERGUY. All rights reserved.
 mailto:contact@beatrek.com
 Licensed under the GNU AGPLv3.
 */
 
-// ƒƒOƒCƒ“î•ñ‚ğæ“¾‚·‚é
+// ãƒ­ã‚°ã‚¤ãƒ³æƒ…å ±ã‚’å–å¾—ã™ã‚‹
 $user = str_replace("-", "", $ofxforms["USRID"]);
 $pass = $ofxforms["PASSWORD"];
 
 $resp = array();
 $ofx = "";
 
-// ÀsŠÔiƒ^ƒCƒ€ƒAƒEƒgj‚ğÄİ’è‚·‚é
+// å®Ÿè¡Œæ™‚é–“ï¼ˆã‚¿ã‚¤ãƒ ã‚¢ã‚¦ãƒˆï¼‰ã‚’å†è¨­å®šã™ã‚‹
 @set_time_limit(ENV_NUM_TIMEOUT);
 
-// ƒz[ƒ€‰æ–Ê‚ğæ“¾‚·‚é
+// ãƒ›ãƒ¼ãƒ ç”»é¢ã‚’å–å¾—ã™ã‚‹
 $method = "GET";
 $uris = parse_uri($settings["home"]);
 $query = "";
 $cookie = "";
 list($head, $body) = smbc_http11($method, $uris, $query, $cookie);
 
-// ƒƒOƒCƒ“‰æ–Ê‚ğæ“¾‚·‚é
+// ãƒ­ã‚°ã‚¤ãƒ³ç”»é¢ã‚’å–å¾—ã™ã‚‹
 $as = parse_tag($body, "a");
-$c = parse_tag_search($as, "innerHTML", "SMBCƒ_ƒCƒŒƒNƒg ƒƒOƒCƒ“");
+$c = parse_tag_search($as, "innerHTML", "SMBCãƒ€ã‚¤ãƒ¬ã‚¯ãƒˆ ãƒ­ã‚°ã‚¤ãƒ³");
 if($c != -1) {
 	$method = "GET";
 	$uris = parse_uri($as[$c]["href"], $uris);
@@ -34,7 +34,7 @@ if($c != -1) {
 	list($head, $body) = smbc_http11($method, $uris, $query, $cookie);
 }
 
-// ƒƒOƒCƒ“‚·‚é
+// ãƒ­ã‚°ã‚¤ãƒ³ã™ã‚‹
 $forms = parse_tag($body, "form");
 $c = parse_tag_search($forms, "name", "Login");
 if($c != -1) {
@@ -42,11 +42,11 @@ if($c != -1) {
 	$queries = array();
 	foreach($inputs as $input) switch($input["name"]) {
 	case "":
-		// ‰½‚à‚µ‚È‚¢
+		// ä½•ã‚‚ã—ãªã„
 		break;
 	case "domainSumitomo": // checkUserID()
 		$forms[$c]["action"] = $input["value"];
-		// break‚µ‚È‚¢
+		// breakã—ãªã„
 	default:
 		$queries[$input["name"]] = urlencode($input["name"]) . "=" . urlencode($input["value"]);
 		break;
@@ -55,7 +55,7 @@ if($c != -1) {
 	$queries["USRID1"] = "USRID1=" . substr($user, 0, 5);
 	$queries["USRID2"] = "USRID2=" . substr($user, 5);
 	$queries["PASSWORD"] = "PASSWORD=" . $pass;
-	$queries["LOGIN_TYPE"] = "LOGIN_TYPE=0"; // Œ_–ñÒ”Ô†‚ÅƒƒOƒCƒ“
+	$queries["LOGIN_TYPE"] = "LOGIN_TYPE=0"; // å¥‘ç´„è€…ç•ªå·ã§ãƒ­ã‚°ã‚¤ãƒ³
 	if(isset($queries["key_Delete"]) == true) unset($queries["key_Delete"]);
 	
 	$method = $forms[$c]["method"];
@@ -65,7 +65,7 @@ if($c != -1) {
 	list($head, $body) = smbc_http11($method, $uris, $query, $cookie);
 }
 
-// ƒŠƒ_ƒCƒŒƒNƒg‚·‚é
+// ãƒªãƒ€ã‚¤ãƒ¬ã‚¯ãƒˆã™ã‚‹
 $retry = 0;
 while($retry++ < ENV_NUM_HTTP11_RETRY) {
 	$locations = parse_header($head, "location");
@@ -78,8 +78,8 @@ while($retry++ < ENV_NUM_HTTP11_RETRY) {
 	}
 }
 
-if(strpos($body, "OˆäZ—F‹âs‚©‚ç‚Ìd—v‚È‚¨’m‚ç‚¹") !== false) {
-	// d—v‚È‚¨’m‚ç‚¹‰æ–Ê‚Ìê‡AƒXƒLƒbƒv‚·‚é
+if(strpos($body, "ä¸‰äº•ä½å‹éŠ€è¡Œã‹ã‚‰ã®é‡è¦ãªãŠçŸ¥ã‚‰ã›") !== false) {
+	// é‡è¦ãªãŠçŸ¥ã‚‰ã›ç”»é¢ã®å ´åˆã€ã‚¹ã‚­ãƒƒãƒ—ã™ã‚‹
 	$forms = parse_tag($body, "form");
 	if(count($forms) == 1) {
 		$inputs = parse_tag($forms[0]["innerHTML"], "input");
@@ -87,7 +87,7 @@ if(strpos($body, "OˆäZ—F‹âs‚©‚ç‚Ìd—v‚È‚¨’m‚ç‚¹") !== false) {
 		foreach($inputs as $input) $queries[$input["name"]] = urlencode($input["name"]) . "=" . urlencode($input["value"]);
 		if(isset($queries["__btn__"]) == true) unset($queries["__btn__"]);
 		if(isset($queries["STOP_INFO_FLG"]) == true) unset($queries["STOP_INFO_FLG"]);
-		$queries["imgNext.y"] = "imgNext.y=" . urlencode("Ÿ‚Ö");
+		$queries["imgNext.y"] = "imgNext.y=" . urlencode("æ¬¡ã¸");
 		
 		$method = $forms[0]["method"];
 		$uris = parse_uri($forms[0]["action"], $uris);
@@ -96,7 +96,7 @@ if(strpos($body, "OˆäZ—F‹âs‚©‚ç‚Ìd—v‚È‚¨’m‚ç‚¹") !== false) {
 		list($head, $body) = smbc_http11($method, $uris, $query, $cookie);
 	}
 	
-	// ƒŠƒ_ƒCƒŒƒNƒg‚·‚é
+	// ãƒªãƒ€ã‚¤ãƒ¬ã‚¯ãƒˆã™ã‚‹
 	$retry = 0;
 	while($retry++ < ENV_NUM_HTTP11_RETRY) {
 		$locations = parse_header($head, "location");
@@ -110,8 +110,8 @@ if(strpos($body, "OˆäZ—F‹âs‚©‚ç‚Ìd—v‚È‚¨’m‚ç‚¹") !== false) {
 	}
 }
 
-if(strpos($body, "ƒVƒXƒeƒ€ƒƒ“ƒeƒiƒ“ƒX‚Ì‚½‚ß") !== false) {
-	// ƒVƒXƒeƒ€ƒƒ“ƒeƒiƒ“ƒX‰æ–Ê‚Ìê‡
+if(strpos($body, "ã‚·ã‚¹ãƒ†ãƒ ãƒ¡ãƒ³ãƒ†ãƒŠãƒ³ã‚¹ã®ãŸã‚") !== false) {
+	// ã‚·ã‚¹ãƒ†ãƒ ãƒ¡ãƒ³ãƒ†ãƒŠãƒ³ã‚¹ç”»é¢ã®å ´åˆ
 	$resp["status"] = ENV_NUM_STATUS_MAINTENANCE;
 	$resp["method"] = $method;
 	$resp["uri"] = $uris["scheme"] . "://" . $uris["host"] . $uris["path"];
@@ -120,8 +120,8 @@ if(strpos($body, "ƒVƒXƒeƒ€ƒƒ“ƒeƒiƒ“ƒX‚Ì‚½‚ß") !== false) {
 	$resp["head"] = $head;
 	$resp["body"] = $body;
 	$resp["ofx"] = generate_ofx($resp["status"]);
-} else if(strpos($body, "‘O‰ñƒƒOƒCƒ““ú") === false) {
-	// ƒƒOƒCƒ“¸”s‚Ìê‡
+} else if(strpos($body, "å‰å›ãƒ­ã‚°ã‚¤ãƒ³æ—¥æ™‚") === false) {
+	// ãƒ­ã‚°ã‚¤ãƒ³å¤±æ•—ã®å ´åˆ
 	$resp["status"] = ENV_NUM_STATUS_FAILURE;
 	$resp["method"] = $method;
 	$resp["uri"] = $uris["scheme"] . "://" . $uris["host"] . $uris["path"];
@@ -131,9 +131,9 @@ if(strpos($body, "ƒVƒXƒeƒ€ƒƒ“ƒeƒiƒ“ƒX‚Ì‚½‚ß") !== false) {
 	$resp["body"] = $body;
 	$resp["ofx"] = generate_ofx($resp["status"]);
 } else {
-	// Š—LŒûÀˆê——‰æ–Ê‚ğæ“¾‚·‚é
+	// æ‰€æœ‰å£åº§ä¸€è¦§ç”»é¢ã‚’å–å¾—ã™ã‚‹
 	$as = parse_tag($body, "a");
-	$c = parse_tag_search($as, "innerHTML", "Š—LŒûÀˆê——");
+	$c = parse_tag_search($as, "innerHTML", "æ‰€æœ‰å£åº§ä¸€è¦§");
 	if($c != -1) {
 		$method = "GET";
 		$uris = parse_uri($as[$c]["href"], $uris);
@@ -142,7 +142,7 @@ if(strpos($body, "ƒVƒXƒeƒ€ƒƒ“ƒeƒiƒ“ƒX‚Ì‚½‚ß") !== false) {
 		list($head, $body) = smbc_http11($method, $uris, $query, $cookie);
 	}
 	
-	// ƒŠƒ_ƒCƒŒƒNƒg‚·‚é
+	// ãƒªãƒ€ã‚¤ãƒ¬ã‚¯ãƒˆã™ã‚‹
 	$retry = 0;
 	while($retry++ < ENV_NUM_HTTP11_RETRY) {
 		$locations = parse_header($head, "location");
@@ -157,7 +157,7 @@ if(strpos($body, "ƒVƒXƒeƒ€ƒƒ“ƒeƒiƒ“ƒX‚Ì‚½‚ß") !== false) {
 	
 	$accounts = array();
 	
-	// ŒûÀˆê——‚ğæ“¾‚·‚é
+	// å£åº§ä¸€è¦§ã‚’å–å¾—ã™ã‚‹
 	$c = 0;
 	$trs = parse_tag($body, "tr");
 	foreach($trs as $tr) {
@@ -165,33 +165,33 @@ if(strpos($body, "ƒVƒXƒeƒ€ƒƒ“ƒeƒiƒ“ƒX‚Ì‚½‚ß") !== false) {
 		if(count($tds) == 5) {
 			$inputs = parse_tag($tds[4]["innerHTML"], "input");
 			foreach($inputs as $input) if(preg_match("/[^\']+?\'([0-9]+)\'.*?/", $input["onclick"], $matches) > 0) {
-				$branch = str_replace("@", "", trim(strip_tags($tds[1]["innerHTML"])));
+				$branch = str_replace("ã€€", "", trim(strip_tags($tds[1]["innerHTML"])));
 				$accttype = trim(strip_tags($tds[2]["innerHTML"]));
 				$accounts[$c]["branchid"] = smbc_get_branchid($settings, $branch);
 				$accounts[$c]["acctid"] = trim(strip_tags($tds[3]["innerHTML"]));
 				$accounts[$c]["id"] = $matches[1];
-				$accounts[$c]["acctname"] = implode(mb_convert_string(ENV_CHR_CONCATENATOR), array($settings["name"], mb_convert_string($branch), mb_convert_string($accttype)));
+				$accounts[$c]["acctname"] = implode(ENV_CHR_CONCATENATOR, array($settings["name"], $branch, $accttype));
 				$c++;
 				break;
 			}
 		}
 	}
 	
-	// Œ»İ‚æ‚è¼—ï‚Æ˜a—ï‚Ì·‚ğæ“¾‚·‚é
+	// ç¾åœ¨æ™‚åˆ»ã‚ˆã‚Šè¥¿æš¦ã¨å’Œæš¦ã®å·®ã‚’å–å¾—ã™ã‚‹
 	$delta = 0;
 	$divs = parse_tag($body, "div", true);
 	$c = parse_tag_search($divs, "class", "curTime");
 	if($c != -1) {
-		$geny = (preg_match("/([0-9]+)" . preg_quote("”N") . "/", $divs[$c]["innerHTML"], $matches) > 0? $matches[1]: "0");
+		$geny = (preg_match("/([0-9]+)" . preg_quote("å¹´") . "/", $divs[$c]["innerHTML"], $matches) > 0? $matches[1]: "0");
 		$delta = (integer)substr(ENV_STR_DATE_TODAY, 0, 4) - (integer)$geny;
 	}
 	
-	// ŒûÀ”•ªƒ‹[ƒv‚·‚é
+	// å£åº§æ•°åˆ†ãƒ«ãƒ¼ãƒ—ã™ã‚‹
 	foreach($accounts as $account) {
-		// ÀsŠÔiƒ^ƒCƒ€ƒAƒEƒgj‚ğÄİ’è‚·‚é
+		// å®Ÿè¡Œæ™‚é–“ï¼ˆã‚¿ã‚¤ãƒ ã‚¢ã‚¦ãƒˆï¼‰ã‚’å†è¨­å®šã™ã‚‹
 		@set_time_limit(ENV_NUM_TIMEOUT);
 		
-		// c‚E–¾×‰æ–Ê‚ğæ“¾‚·‚é
+		// æ®‹é«˜ãƒ»æ˜ç´°ç”»é¢ã‚’å–å¾—ã™ã‚‹
 		$forms = parse_tag($body, "form");
 		$c = parse_tag_search($forms, "name", "accnt_ryu_web");
 		if($c == -1) $c = parse_tag_search($forms, "name", "accnt_ryu");
@@ -228,7 +228,7 @@ if(strpos($body, "ƒVƒXƒeƒ€ƒƒ“ƒeƒiƒ“ƒX‚Ì‚½‚ß") !== false) {
 				$j = ($v != ""? parse_tag_search($options, "innerHTML", $v): -1);
 				if($j != -1) $queries[$select["name"]] = urlencode($select["name"]) . "=" . urlencode($options[$j]["value"]); else foreach($options as $option) if($select["name"] != "" && $option["selected"] == "selected") $queries[$select["name"]] = urlencode($select["name"]) . "=" . urlencode($option["value"]);
 			}
-			$queries["select_mode"] = "select_mode=1"; // 1=ŠúŠÔw’è
+			$queries["select_mode"] = "select_mode=1"; // 1=æœŸé–“æŒ‡å®š
 			$queries["RYUDO_ACCNT_IDX"] = "RYUDO_ACCNT_IDX=" . $account["id"];
 			
 			$method = $forms[$c]["method"];
@@ -238,7 +238,7 @@ if(strpos($body, "ƒVƒXƒeƒ€ƒƒ“ƒeƒiƒ“ƒX‚Ì‚½‚ß") !== false) {
 			list($head, $body) = smbc_http11($method, $uris, $query, $cookie);
 		}
 		
-		// ƒŠƒ_ƒCƒŒƒNƒg‚·‚é
+		// ãƒªãƒ€ã‚¤ãƒ¬ã‚¯ãƒˆã™ã‚‹
 		$retry = 0;
 		while($retry++ < ENV_NUM_HTTP11_RETRY) {
 			$locations = parse_header($head, "location");
@@ -251,12 +251,12 @@ if(strpos($body, "ƒVƒXƒeƒ€ƒƒ“ƒeƒiƒ“ƒX‚Ì‚½‚ß") !== false) {
 			}
 		}
 		
-		if(strpos($body, "w’èŠúŠÔ‚Ì“üo‹à‚Í‚²‚´‚¢‚Ü‚¹‚ñ") === false) {
+		if(strpos($body, "æŒ‡å®šæœŸé–“ã®å…¥å‡ºé‡‘ã¯ã”ã–ã„ã¾ã›ã‚“") === false) {
 			$body_old = $body;
 			
-			// OFXƒtƒ@ƒCƒ‹‚ğæ“¾‚·‚é
+			// OFXãƒ•ã‚¡ã‚¤ãƒ«ã‚’å–å¾—ã™ã‚‹
 			$as = parse_tag($body, "a");
-			$c = parse_tag_search($as, "innerHTML", "ƒ}ƒCƒNƒƒ\ƒtƒgƒ}ƒl[‚Éæ‚Ş");
+			$c = parse_tag_search($as, "innerHTML", "ãƒã‚¤ã‚¯ãƒ­ã‚½ãƒ•ãƒˆãƒãƒãƒ¼ã«å–è¾¼ã‚€");
 			if($c != -1) {
 				$method = "GET";
 				$uris = parse_uri($as[$c]["href"], $uris);
@@ -265,7 +265,7 @@ if(strpos($body, "ƒVƒXƒeƒ€ƒƒ“ƒeƒiƒ“ƒX‚Ì‚½‚ß") !== false) {
 				list($head, $body) = smbc_http11($method, $uris, $query, $cookie);
 			}
 			
-			// ƒŠƒ_ƒCƒŒƒNƒg‚·‚é
+			// ãƒªãƒ€ã‚¤ãƒ¬ã‚¯ãƒˆã™ã‚‹
 			$retry = 0;
 			while($retry++ < ENV_NUM_HTTP11_RETRY) {
 				$locations = parse_header($head, "location");
@@ -281,13 +281,13 @@ if(strpos($body, "ƒVƒXƒeƒ€ƒƒ“ƒeƒiƒ“ƒX‚Ì‚½‚ß") !== false) {
 			if(strpos($head, "Content-Type: text/html") === false) {
 				$str = convert_ofx($body);
 				
-				// BRANCHID‚Ì”’l‚Ì‘®‚ğ•â³‚·‚é
+				// BRANCHIDã®æ•°å€¤ã®æ›¸å¼ã‚’è£œæ­£ã™ã‚‹
 				$str = str_replace("<BRANCHID>0" . $account["branchid"] . "</BRANCHID>", "<BRANCHID>" . $account["branchid"] . "</BRANCHID>", $str);
 				
-				// ACCTID‚Ì”’l‚Ì‘®‚ğ•â³‚·‚é
+				// ACCTIDã®æ•°å€¤ã®æ›¸å¼ã‚’è£œæ­£ã™ã‚‹
 				$str = str_replace("<ACCTID>0" . $account["acctid"] . "</ACCTID>", "<ACCTID>" . $account["acctid"] . "</ACCTID>", $str);
 				
-				// FITID‚Ì”’l‚Ì‘®‚ğ•â³‚·‚é
+				// FITIDã®æ•°å€¤ã®æ›¸å¼ã‚’è£œæ­£ã™ã‚‹
 				$dtposteds = parse_tag($str, "DTPOSTED");
 				$fitids = parse_tag($str, "FITID");
 				$dtpostedbuf = "";
@@ -298,18 +298,18 @@ if(strpos($body, "ƒVƒXƒeƒ€ƒƒ“ƒeƒiƒ“ƒX‚Ì‚½‚ß") !== false) {
 					$dtpostedbuf = $dtposteds[$j]["innerHTML"];
 				}
 				
-				// ŒûÀ–¼Ì‚ğo—Í‚·‚é
+				// å£åº§åç§°ã‚’å‡ºåŠ›ã™ã‚‹
 				if($account["acctname"] != "") $str = str_replace("</STMTRS>", "<MKTGINFO>" . $account["acctname"] . "</MKTGINFO>\r\n</STMTRS>", $str);
 			}
 			
 			$body = $body_old;
 		} else {
-			// c‚‚ğæ“¾‚·‚é
+			// æ®‹é«˜ã‚’å–å¾—ã™ã‚‹
 			$spans = parse_tag($body, "span", true);
 			$c = parse_tag_search($spans, "class", "amount");
 			if($c != -1) $account["balance"] = parse_amount($spans[$c]["innerHTML"]);
 			
-			// ‹ó‚ÌOFXƒtƒ@ƒCƒ‹‚ğ¶¬‚·‚é
+			// ç©ºã®OFXãƒ•ã‚¡ã‚¤ãƒ«ã‚’ç”Ÿæˆã™ã‚‹
 			$bankmsgsrsv1 = "";
 			$bankmsgsrsv1 .= "<BANKMSGSRSV1>";
 			$bankmsgsrsv1 .= "\r\n";
@@ -346,7 +346,7 @@ if(strpos($body, "ƒVƒXƒeƒ€ƒƒ“ƒeƒiƒ“ƒX‚Ì‚½‚ß") !== false) {
 			$bankmsgsrsv1 .= "</LEDGERBAL>";
 			$bankmsgsrsv1 .= "\r\n";
 			
-			// ŒûÀ–¼Ì‚ğo—Í‚·‚é
+			// å£åº§åç§°ã‚’å‡ºåŠ›ã™ã‚‹
 			if($account["acctname"] != "") {
 				$bankmsgsrsv1 .= "<MKTGINFO>" . $account["acctname"] . "</MKTGINFO>";
 				$bankmsgsrsv1 .= "\r\n";
@@ -364,7 +364,7 @@ if(strpos($body, "ƒVƒXƒeƒ€ƒƒ“ƒeƒiƒ“ƒX‚Ì‚½‚ß") !== false) {
 			$str = generate_ofx($resp["status"], $bankmsgsrsv1);
 		}
 		
-		// OFXƒtƒ@ƒCƒ‹‚ª•¡”‚Æ‚È‚éê‡‚Í˜AŒ‹‚·‚é
+		// OFXãƒ•ã‚¡ã‚¤ãƒ«ãŒè¤‡æ•°ã¨ãªã‚‹å ´åˆã¯é€£çµã™ã‚‹
 		if($ofx != "") {
 			$c = strpos($str, "<BANKMSGSRSV1>");
 			if($c !== false) $str = substr($str, $c + 14);
@@ -375,12 +375,12 @@ if(strpos($body, "ƒVƒXƒeƒ€ƒƒ“ƒeƒiƒ“ƒX‚Ì‚½‚ß") !== false) {
 		}
 	}
 	
-	// ÀsŠÔiƒ^ƒCƒ€ƒAƒEƒgj‚ğÄİ’è‚·‚é
+	// å®Ÿè¡Œæ™‚é–“ï¼ˆã‚¿ã‚¤ãƒ ã‚¢ã‚¦ãƒˆï¼‰ã‚’å†è¨­å®šã™ã‚‹
 	@set_time_limit(ENV_NUM_TIMEOUT);
 	
-	// ƒƒOƒAƒEƒg‚·‚é
+	// ãƒ­ã‚°ã‚¢ã‚¦ãƒˆã™ã‚‹
 	$as = parse_tag($body, "a");
-	$c = parse_tag_search($as, "innerHTML", "ƒƒOƒAƒEƒg"); // ƒƒOƒAƒEƒg
+	$c = parse_tag_search($as, "innerHTML", "ãƒ­ã‚°ã‚¢ã‚¦ãƒˆ"); // ãƒ­ã‚°ã‚¢ã‚¦ãƒˆ
 	if($c != -1) {
 		$method = "GET";
 		$uris = parse_uri($as[$c]["href"], $uris);
@@ -389,7 +389,7 @@ if(strpos($body, "ƒVƒXƒeƒ€ƒƒ“ƒeƒiƒ“ƒX‚Ì‚½‚ß") !== false) {
 		list($head, $body) = smbc_http11($method, $uris, $query, $cookie);
 	}
 	
-	// ƒŠƒ_ƒCƒŒƒNƒg‚·‚é
+	// ãƒªãƒ€ã‚¤ãƒ¬ã‚¯ãƒˆã™ã‚‹
 	$retry = 0;
 	while($retry++ < ENV_NUM_HTTP11_RETRY) {
 		$locations = parse_header($head, "location");
@@ -402,9 +402,9 @@ if(strpos($body, "ƒVƒXƒeƒ€ƒƒ“ƒeƒiƒ“ƒX‚Ì‚½‚ß") !== false) {
 		}
 	}
 	
-	// –¢ŠJ••ƒƒbƒZ[ƒW‰æ–Ê‚ğƒXƒLƒbƒv‚·‚é
+	// æœªé–‹å°ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ç”»é¢ã‚’ã‚¹ã‚­ãƒƒãƒ—ã™ã‚‹
 	$as = parse_tag($body, "a");
-	$c = parse_tag_search($as, "innerHTML", "Šm”F‚¹‚¸‚É‚±‚Ì‚Ü‚ÜƒƒOƒAƒEƒg‚·‚é");
+	$c = parse_tag_search($as, "innerHTML", "ç¢ºèªã›ãšã«ã“ã®ã¾ã¾ãƒ­ã‚°ã‚¢ã‚¦ãƒˆã™ã‚‹");
 	if($c != -1) {
 		$method = "GET";
 		$uris = parse_uri($as[$c]["href"], $uris);
@@ -413,7 +413,7 @@ if(strpos($body, "ƒVƒXƒeƒ€ƒƒ“ƒeƒiƒ“ƒX‚Ì‚½‚ß") !== false) {
 		list($head, $body) = smbc_http11($method, $uris, $query, $cookie);
 	}
 	
-	// ƒŠƒ_ƒCƒŒƒNƒg‚·‚é
+	// ãƒªãƒ€ã‚¤ãƒ¬ã‚¯ãƒˆã™ã‚‹
 	$retry = 0;
 	while($retry++ < ENV_NUM_HTTP11_RETRY) {
 		$locations = parse_header($head, "location");
@@ -426,9 +426,9 @@ if(strpos($body, "ƒVƒXƒeƒ€ƒƒ“ƒeƒiƒ“ƒX‚Ì‚½‚ß") !== false) {
 		}
 	}
 	
-	// ƒƒOƒAƒEƒg‚·‚é
+	// ãƒ­ã‚°ã‚¢ã‚¦ãƒˆã™ã‚‹
 	$inputs = parse_tag($body, "input");
-	$c = parse_tag_search($inputs, "value", "‚Í‚¢");
+	$c = parse_tag_search($inputs, "value", "ã¯ã„");
 	if($c != -1) {
 		$method = "GET";
 		if(preg_match("/location[\s\t]*=[\s\t]*\'(.*?)\'/i", $inputs[$c]["onclick"], $matches) > 0) $uris = parse_uri($matches[1], $uris);
@@ -437,7 +437,7 @@ if(strpos($body, "ƒVƒXƒeƒ€ƒƒ“ƒeƒiƒ“ƒX‚Ì‚½‚ß") !== false) {
 		list($head, $body) = smbc_http11($method, $uris, $query, $cookie);
 	}
 	
-	// ƒŠƒ_ƒCƒŒƒNƒg‚·‚é
+	// ãƒªãƒ€ã‚¤ãƒ¬ã‚¯ãƒˆã™ã‚‹
 	$retry = 0;
 	while($retry++ < ENV_NUM_HTTP11_RETRY) {
 		$locations = parse_header($head, "location");
@@ -450,13 +450,13 @@ if(strpos($body, "ƒVƒXƒeƒ€ƒƒ“ƒeƒiƒ“ƒX‚Ì‚½‚ß") !== false) {
 		}
 	}
 	
-	// OFXƒtƒ@ƒCƒ‹‚ğo—Í‚·‚é
+	// OFXãƒ•ã‚¡ã‚¤ãƒ«ã‚’å‡ºåŠ›ã™ã‚‹
 	if($ofx == "") {
-		// OFXƒf[ƒ^‚ª‘¶İ‚µ‚È‚¢ê‡
+		// OFXãƒ‡ãƒ¼ã‚¿ãŒå­˜åœ¨ã—ãªã„å ´åˆ
 		$resp["status"] = ENV_NUM_STATUS_SUCCESS;
 		$resp["ofx"] = generate_ofx($resp["status"]);
 	} else {
-		// OFXƒf[ƒ^‚ª‘¶İ‚·‚éê‡
+		// OFXãƒ‡ãƒ¼ã‚¿ãŒå­˜åœ¨ã™ã‚‹å ´åˆ
 		$resp["status"] = ENV_NUM_STATUS_SUCCESS;
 		$resp["ofx"] = $ofx;
 	}
@@ -480,11 +480,11 @@ function emap_http11($method, $uris, $query = "", $cookie = "") {
 	return explode("\r\n\r\n", $ret, 2);
 }
 
-// x“X–¼‚æ‚è“X”Ô‚ğŒŸõ‚·‚é
+// æ”¯åº—åã‚ˆã‚Šåº—ç•ªã‚’æ¤œç´¢ã™ã‚‹
 function smbc_get_branchid($settings, $str) {
-	$ret = mb_convert_string($str);
+	$ret = $str;
 	
-	// ŒŸõ‰æ–Ê‚ğæ“¾‚·‚é
+	// æ¤œç´¢ç”»é¢ã‚’å–å¾—ã™ã‚‹
 	$method = "GET";
 	$uris = parse_uri($settings["getbranchid"] . urlencode($ret));
 	$query = "";

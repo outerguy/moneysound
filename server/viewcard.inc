@@ -1,31 +1,31 @@
 <?php
 /*
-viewcard.inc: ƒrƒ…[ƒJ[ƒh‚ÌCSV‚æ‚èOFXƒtƒ@ƒCƒ‹‚ğ¶¬‚·‚é
+viewcard.inc: ãƒ“ãƒ¥ãƒ¼ã‚«ãƒ¼ãƒ‰ã®CSVã‚ˆã‚ŠOFXãƒ•ã‚¡ã‚¤ãƒ«ã‚’ç”Ÿæˆã™ã‚‹
 Copyright (C) 2012-2015 OFFICE OUTERGUY. All rights reserved.
 mailto:contact@beatrek.com
 Licensed under the GNU AGPLv3.
 */
 
-// ƒƒOƒCƒ“î•ñ‚ğæ“¾‚·‚é
+// ãƒ­ã‚°ã‚¤ãƒ³æƒ…å ±ã‚’å–å¾—ã™ã‚‹
 $user = $ofxforms["id"];
 $pass = $ofxforms["pass"];
 
 $resp = array();
 $ofx = "";
 
-// ÀsŠÔiƒ^ƒCƒ€ƒAƒEƒgj‚ğÄİ’è‚·‚é
+// å®Ÿè¡Œæ™‚é–“ï¼ˆã‚¿ã‚¤ãƒ ã‚¢ã‚¦ãƒˆï¼‰ã‚’å†è¨­å®šã™ã‚‹
 @set_time_limit(ENV_NUM_TIMEOUT);
 
-// ƒz[ƒ€‰æ–Ê‚ğæ“¾‚·‚é
+// ãƒ›ãƒ¼ãƒ ç”»é¢ã‚’å–å¾—ã™ã‚‹
 $method = "GET";
 $uris = parse_uri($settings["home"]);
 $query = "";
 $cookie = "";
 list($head, $body) = viewcard_http11($method, $uris, $query, $cookie);
 
-// ƒƒOƒCƒ“‰æ–Ê‚ğæ“¾‚·‚é
+// ãƒ­ã‚°ã‚¤ãƒ³ç”»é¢ã‚’å–å¾—ã™ã‚‹
 $as = parse_tag($body, "a");
-foreach($as as $a) if(strip_tags($a["innerHTML"]) == "VIEW&#39;s NETƒƒOƒCƒ“iVIEW&#39;s NET ID‚Ì•ûj") {
+foreach($as as $a) if(strip_tags($a["innerHTML"]) == "VIEW&#39;s NETãƒ­ã‚°ã‚¤ãƒ³ï¼ˆVIEW&#39;s NET IDã®æ–¹ï¼‰") {
 	$method = "GET";
 	$uris = parse_uri($a["href"], $uris);
 	$query = "";
@@ -34,7 +34,7 @@ foreach($as as $a) if(strip_tags($a["innerHTML"]) == "VIEW&#39;s NETƒƒOƒCƒ“iVI
 	break;
 }
 
-// ƒŠƒ_ƒCƒŒƒNƒg‚·‚é
+// ãƒªãƒ€ã‚¤ãƒ¬ã‚¯ãƒˆã™ã‚‹
 $retry = 0;
 while($retry++ < ENV_NUM_HTTP11_RETRY) {
 	$locations = parse_header($head, "location");
@@ -47,7 +47,7 @@ while($retry++ < ENV_NUM_HTTP11_RETRY) {
 	}
 }
 
-// ƒƒOƒCƒ“‚·‚é
+// ãƒ­ã‚°ã‚¤ãƒ³ã™ã‚‹
 $forms = parse_tag($body, "form");
 $c = parse_tag_search($forms, "target", "_self");
 if($c != -1) {
@@ -64,7 +64,7 @@ if($c != -1) {
 	list($head, $body) = viewcard_http11($method, $uris, $query, $cookie);
 }
 
-// ƒŠƒ_ƒCƒŒƒNƒg‚·‚é
+// ãƒªãƒ€ã‚¤ãƒ¬ã‚¯ãƒˆã™ã‚‹
 $retry = 0;
 while($retry++ < ENV_NUM_HTTP11_RETRY) {
 	$locations = parse_header($head, "location");
@@ -77,8 +77,8 @@ while($retry++ < ENV_NUM_HTTP11_RETRY) {
 	}
 }
 
-if(strpos($body, "‘O‰ñƒƒOƒCƒ“") === false) {
-	// ƒƒOƒCƒ“¸”s‚Ìê‡
+if(strpos($body, "å‰å›ãƒ­ã‚°ã‚¤ãƒ³") === false) {
+	// ãƒ­ã‚°ã‚¤ãƒ³å¤±æ•—ã®å ´åˆ
 	$resp["status"] = ENV_NUM_STATUS_FAILURE;
 	$resp["method"] = $method;
 	$resp["uri"] = $uris["scheme"] . "://" . $uris["host"] . $uris["path"];
@@ -88,9 +88,9 @@ if(strpos($body, "‘O‰ñƒƒOƒCƒ“") === false) {
 	$resp["body"] = $body;
 	$resp["ofx"] = generate_ofx($resp["status"]);
 } else {
-	// ‚²—˜—p–¾×Æ‰ïi‚¨x•¥•û–@‚Ì•ÏXj‰æ–Ê‚ğæ“¾‚·‚é
+	// ã”åˆ©ç”¨æ˜ç´°ç…§ä¼šï¼ˆãŠæ”¯æ‰•æ–¹æ³•ã®å¤‰æ›´ï¼‰ç”»é¢ã‚’å–å¾—ã™ã‚‹
 	$as = parse_tag($body, "a");
-	$c = parse_tag_search($as, "alt", "‚²—˜—p–¾×Æ‰ïi‚¨x•¥•û–@‚Ì•ÏXj");
+	$c = parse_tag_search($as, "alt", "ã”åˆ©ç”¨æ˜ç´°ç…§ä¼šï¼ˆãŠæ”¯æ‰•æ–¹æ³•ã®å¤‰æ›´ï¼‰");
 	if($c != -1) {
 		$method = "GET";
 		$uris = parse_uri($as[$c]["href"], $uris);
@@ -99,7 +99,7 @@ if(strpos($body, "‘O‰ñƒƒOƒCƒ“") === false) {
 		list($head, $body) = viewcard_http11($method, $uris, $query, $cookie);
 	}
 	
-	// ƒŠƒ_ƒCƒŒƒNƒg‚·‚é
+	// ãƒªãƒ€ã‚¤ãƒ¬ã‚¯ãƒˆã™ã‚‹
 	$retry = 0;
 	while($retry++ < ENV_NUM_HTTP11_RETRY) {
 		$locations = parse_header($head, "location");
@@ -114,7 +114,7 @@ if(strpos($body, "‘O‰ñƒƒOƒCƒ“") === false) {
 	
 	$accounts = array();
 	
-	// ƒJ[ƒh”‚ğæ“¾‚·‚é
+	// ã‚«ãƒ¼ãƒ‰æ•°ã‚’å–å¾—ã™ã‚‹
 	$selects = parse_tag($body, "select");
 	$c = parse_tag_search($selects, "name", "DdlCardNO");
 	if($c != -1) {
@@ -123,12 +123,12 @@ if(strpos($body, "‘O‰ñƒƒOƒCƒ“") === false) {
 			$accounts[$i]["id"] = $options[$i]["value"];
 			$accounts[$i]["ym"] = $ym;
 			if(preg_match("/(.*?)[\s\t]*([0-9\*\-]+)/", trim(strip_tags($options[$i]["innerHTML"])), $matches) > 0) {
-				// ƒJ[ƒh–¼Ì‚ğæ“¾‚·‚é
-				$accounts[$i]["acctname"] = implode(mb_convert_string(ENV_CHR_CONCATENATOR), array($settings["name"], mb_convert_string($matches[1])));
+				// ã‚«ãƒ¼ãƒ‰åç§°ã‚’å–å¾—ã™ã‚‹
+				$accounts[$i]["acctname"] = implode(ENV_CHR_CONCATENATOR, array($settings["name"], $matches[1]));
 				
 				$accounts[$i]["name"] = $settings["name"];
 				
-				// ƒJ[ƒh”Ô†‚ğæ“¾‚·‚é
+				// ã‚«ãƒ¼ãƒ‰ç•ªå·ã‚’å–å¾—ã™ã‚‹
 				$accounts[$i]["acctid"] = $matches[2];
 			}
 		}
@@ -140,14 +140,14 @@ if(strpos($body, "‘O‰ñƒƒOƒCƒ“") === false) {
 	$creditcardmsgsrsv1 .= "<CREDITCARDMSGSRSV1>";
 	$creditcardmsgsrsv1 .= "\r\n";
 	
-	// ƒJ[ƒh”•ªƒ‹[ƒv‚·‚é
+	// ã‚«ãƒ¼ãƒ‰æ•°åˆ†ãƒ«ãƒ¼ãƒ—ã™ã‚‹
 	foreach($accounts as $account) {
 		$body = $body_old;
 		
-		// ÀsŠÔiƒ^ƒCƒ€ƒAƒEƒgj‚ğÄİ’è‚·‚é
+		// å®Ÿè¡Œæ™‚é–“ï¼ˆã‚¿ã‚¤ãƒ ã‚¢ã‚¦ãƒˆï¼‰ã‚’å†è¨­å®šã™ã‚‹
 		@set_time_limit(ENV_NUM_TIMEOUT);
 		
-		// Šm’èÏ‚İ‚ÌÅV–¾×‰æ–Ê‚ğæ“¾‚·‚é
+		// ç¢ºå®šæ¸ˆã¿ã®æœ€æ–°æ˜ç´°ç”»é¢ã‚’å–å¾—ã™ã‚‹
 		$forms = parse_tag($body, "form");
 		$c = parse_tag_search($forms, "name", "Frm002");
 		if($c != -1) {
@@ -155,7 +155,7 @@ if(strpos($body, "‘O‰ñƒƒOƒCƒ“") === false) {
 			$queries = array();
 			foreach($inputs as $input) if($input["name"] != "") $queries[$input["name"]] = urlencode($input["name"]) . "=" . urlencode($input["value"]);
 			$queries["DdlCardNO"] = "DdlCardNO=" . $account["id"];
-			$queries["__EVENTTARGET"] = "__EVENTTARGET=LnkClaimYm1"; // Šm’èÏ‚İ‚ÌÅV–¾×
+			$queries["__EVENTTARGET"] = "__EVENTTARGET=LnkClaimYm1"; // ç¢ºå®šæ¸ˆã¿ã®æœ€æ–°æ˜ç´°
 			
 			$method = $forms[$c]["method"];
 			$uris = parse_uri($forms[$c]["action"], $uris);
@@ -164,7 +164,7 @@ if(strpos($body, "‘O‰ñƒƒOƒCƒ“") === false) {
 			list($head, $body) = viewcard_http11($method, $uris, $query, $cookie);
 		}
 		
-		// ƒŠƒ_ƒCƒŒƒNƒg‚·‚é
+		// ãƒªãƒ€ã‚¤ãƒ¬ã‚¯ãƒˆã™ã‚‹
 		$retry = 0;
 		while($retry++ < ENV_NUM_HTTP11_RETRY) {
 			$locations = parse_header($head, "location");
@@ -177,15 +177,15 @@ if(strpos($body, "‘O‰ñƒƒOƒCƒ“") === false) {
 			}
 		}
 		
-		// ‚¨x•¥“ú‚Í4“ú‚Å‚ ‚é‚Æ‰¼’è‚·‚é
-		if(strpos($body, "¡Œ•ª‚Ì‚²¿‹iƒJ[ƒh”N‰ï”ï‚Íœ‚­j‚Í‚ ‚è‚Ü‚¹‚ñB") !== false) {
+		// ãŠæ”¯æ‰•æ—¥ã¯4æ—¥ã§ã‚ã‚‹ã¨ä»®å®šã™ã‚‹
+		if(strpos($body, "ä»Šæœˆåˆ†ã®ã”è«‹æ±‚ï¼ˆã‚«ãƒ¼ãƒ‰å¹´ä¼šè²»ã¯é™¤ãï¼‰ã¯ã‚ã‚Šã¾ã›ã‚“ã€‚") !== false) {
 			$body = "";
 			$account["paydate"] = substr(ENV_STR_DATE_TODAY, 0, 6) . "04";
 		}
 		
 		$body_old = $body;
 		
-		// –¾×CSV‚ğƒ_ƒEƒ“ƒ[ƒh‚·‚é
+		// æ˜ç´°CSVã‚’ãƒ€ã‚¦ãƒ³ãƒ­ãƒ¼ãƒ‰ã™ã‚‹
 		$forms = parse_tag($body, "form");
 		$c = parse_tag_search($forms, "name", "Form1");
 		if($c != -1) {
@@ -236,12 +236,12 @@ if(strpos($body, "‘O‰ñƒƒOƒCƒ“") === false) {
 	$creditcardmsgsrsv1 .= "</CREDITCARDMSGSRSV1>";
 	$creditcardmsgsrsv1 .= "\r\n";
 	
-	// ÀsŠÔiƒ^ƒCƒ€ƒAƒEƒgj‚ğÄİ’è‚·‚é
+	// å®Ÿè¡Œæ™‚é–“ï¼ˆã‚¿ã‚¤ãƒ ã‚¢ã‚¦ãƒˆï¼‰ã‚’å†è¨­å®šã™ã‚‹
 	@set_time_limit(ENV_NUM_TIMEOUT);
 	
-	// ƒƒOƒAƒEƒg‚·‚é
+	// ãƒ­ã‚°ã‚¢ã‚¦ãƒˆã™ã‚‹
 	$as = parse_tag($body, "a");
-	$c = parse_tag_search($as, "innerHTML", "ƒƒOƒAƒEƒg"); // ƒƒOƒAƒEƒg
+	$c = parse_tag_search($as, "innerHTML", "ãƒ­ã‚°ã‚¢ã‚¦ãƒˆ"); // ãƒ­ã‚°ã‚¢ã‚¦ãƒˆ
 	if($c != -1) {
 		$method = "GET";
 		$uris = parse_uri($as[$c]["href"], $uris);
@@ -250,7 +250,7 @@ if(strpos($body, "‘O‰ñƒƒOƒCƒ“") === false) {
 		list($head, $body) = viewcard_http11($method, $uris, $query, $cookie);
 	}
 	
-	// ƒŠƒ_ƒCƒŒƒNƒg‚·‚é
+	// ãƒªãƒ€ã‚¤ãƒ¬ã‚¯ãƒˆã™ã‚‹
 	$forms = parse_tag($body, "form");
 		$c = parse_tag_search($forms, "name", "frmMain");
 		if($c != -1) {
@@ -267,7 +267,7 @@ if(strpos($body, "‘O‰ñƒƒOƒCƒ“") === false) {
 		list($head, $body) = viewcard_http11($method, $uris, $query, $cookie);
 	}
 	
-	// ƒŠƒ_ƒCƒŒƒNƒg‚·‚é
+	// ãƒªãƒ€ã‚¤ãƒ¬ã‚¯ãƒˆã™ã‚‹
 	$retry = 0;
 	while($retry++ < ENV_NUM_HTTP11_RETRY) {
 		$locations = parse_header($head, "location");
@@ -280,13 +280,13 @@ if(strpos($body, "‘O‰ñƒƒOƒCƒ“") === false) {
 		}
 	}
 	
-	// OFXƒtƒ@ƒCƒ‹‚ğo—Í‚·‚é
+	// OFXãƒ•ã‚¡ã‚¤ãƒ«ã‚’å‡ºåŠ›ã™ã‚‹
 	$resp["status"] = ENV_NUM_STATUS_SUCCESS;
 	if(strpos($creditcardmsgsrsv1, "<BANKTRANLIST>") === false) {
-		// –¾×‚ª‘¶İ‚µ‚È‚¢ê‡
+		// æ˜ç´°ãŒå­˜åœ¨ã—ãªã„å ´åˆ
 		$resp["ofx"] = generate_ofx($resp["status"]);
 	} else {
-		// –¾×‚ª‘¶İ‚·‚éê‡
+		// æ˜ç´°ãŒå­˜åœ¨ã™ã‚‹å ´åˆ
 		$resp["ofx"] = generate_ofx($resp["status"], $creditcardmsgsrsv1);
 	}
 }
@@ -305,7 +305,7 @@ function viewcard_update_cookie($head, $cookie) {
 
 function viewcard_parse_csv($str, $account) {
 	$ret = "";
-	$lines = parse_csv($str);
+	$lines = parse_csv(mb_convert_string($str));
 	$cds = array();
 	$cds_balamt = "0";
 	$cds_paydate = $account["paydate"];
@@ -320,47 +320,47 @@ function viewcard_parse_csv($str, $account) {
 		
 		if(count($line) == 2) {
 			switch($line[0]) {
-			case "‚¨x•¥“ú":
+			case "ãŠæ”¯æ‰•æ—¥":
 				$cds_paydate = parse_date($line[1]);
 				break;
-			case "¡‰ñ‚¨x•¥‹àŠz":
+			case "ä»Šå›ãŠæ”¯æ‰•é‡‘é¡":
 				$cds_balamt = (string)(double)parse_amount($line[1]);
 				$ledge_balamt = (double)$cds_balamt;
 				break;
-			case "‰ïˆõ”Ô†":
-			case "‘ÎÛƒJ[ƒh":
+			case "ä¼šå“¡ç•ªå·":
+			case "å¯¾è±¡ã‚«ãƒ¼ãƒ‰":
 			default:
 				break;
 			}
-		} else if(count($line) == 11 && $line[0] != "‚²—˜—p”NŒ“ú") {
+		} else if(count($line) == 11 && $line[0] != "ã”åˆ©ç”¨å¹´æœˆæ—¥") {
 			
-			// “ú•t‚ğæ“¾‚·‚é
+			// æ—¥ä»˜ã‚’å–å¾—ã™ã‚‹
 			$cd["DTPOSTED"] = parse_date($line[0]);
-			if($line[1] == "ƒVƒ‡ƒbƒsƒ“ƒOƒŠƒ{•ÙÏ‹à") {
+			if($line[1] == "ã‚·ãƒ§ãƒƒãƒ”ãƒ³ã‚°ãƒªãƒœå¼æ¸ˆé‡‘") {
 				$cd["DTPOSTED"] = $cds_paydate;
 				$cd["TRNTYPE"] = ENV_STR_OFX_TRNTYPE_INT;
 			} else {
-				// PAYMENTŒÅ’è‚Æ‚·‚é
+				// PAYMENTå›ºå®šã¨ã™ã‚‹
 				$cd["TRNTYPE"] = ENV_STR_OFX_TRNTYPE_PAYMENT;
 			}
 			if($cds_s == "") $cds_s = $cd["DTPOSTED"];
 			$cds_e = $cd["DTPOSTED"];
 			
-			// ’Ê”Ô‚ğ¶¬‚·‚é
+			// é€šç•ªã‚’ç”Ÿæˆã™ã‚‹
 			if($cd["DTPOSTED"] == $cd_date) $cd_num++; else $cd_num = 0;
 			
-			// ƒgƒ‰ƒ“ƒUƒNƒVƒ‡ƒ“”Ô†‚ğ¶¬‚·‚é
+			// ãƒˆãƒ©ãƒ³ã‚¶ã‚¯ã‚·ãƒ§ãƒ³ç•ªå·ã‚’ç”Ÿæˆã™ã‚‹
 			$cd["FITID"] = $cd["DTPOSTED"] . sprintf("%04d", $account["id"]) . substr($account["paydate"], 4, 2) . "0" . sprintf("%05d", $cd_num);
 			
-			// “E—v‚ğæ“¾‚·‚é
-			$cd["NAME"] = mb_convert_string($line[1]);
+			// æ‘˜è¦ã‚’å–å¾—ã™ã‚‹
+			$cd["NAME"] = $line[1];
 			
-			// ‹àŠz‚ğæ“¾‚·‚é
+			// é‡‘é¡ã‚’å–å¾—ã™ã‚‹
 			$cd["TRNAMT"] = (string)(-1 * (double)parse_amount($line[7]));
 			$ledge_balamt += (double)$cd["TRNAMT"];
 			
-			// c‚‚ğæ“¾‚·‚é
-			$cd["MEMO"] = ($line[5] != ""? mb_convert_string($line[5]): ENV_STR_OFX_MEMO);
+			// æ®‹é«˜ã‚’å–å¾—ã™ã‚‹
+			$cd["MEMO"] = ($line[5] != ""? $line[5]: ENV_STR_OFX_MEMO);
 			
 			array_push($cds, $cd);
 			$cd_date = $cd["DTPOSTED"];
@@ -371,7 +371,7 @@ function viewcard_parse_csv($str, $account) {
 	if($cds_e == "") $cds_e = ENV_STR_DATE_TODAY;
 	if($cds_s > $cds_e) $cds_e = $cds_s;
 	
-	// ƒNƒŒƒWƒbƒgƒJ[ƒhx•¥¿‹‚ğ–¾×‚É’Ç‰Á‚·‚é
+	// ã‚¯ãƒ¬ã‚¸ãƒƒãƒˆã‚«ãƒ¼ãƒ‰æ”¯æ‰•è«‹æ±‚ã‚’æ˜ç´°ã«è¿½åŠ ã™ã‚‹
 	$i = count($cds);
 	$cds[$i]["DTPOSTED"] = $cds_paydate;
 	$cds[$i]["NAME"] = $account["name"];
@@ -402,14 +402,14 @@ function viewcard_parse_csv($str, $account) {
 	$ret .= "</BANKTRANLIST>";
 	$ret .= "\r\n";
 	
-	// x•¥Œãc‚‚ğo—Í‚·‚é
+	// æ”¯æ‰•å¾Œæ®‹é«˜ã‚’å‡ºåŠ›ã™ã‚‹
 	$ret .= "<LEDGERBAL>";
 	$ret .= "<BALAMT>" . (string)$ledge_balamt . "</BALAMT>";
 	$ret .= "<DTASOF>" . ENV_STR_DATE_TODAY . ENV_STR_OFX_TZ . "</DTASOF>";
 	$ret .= "</LEDGERBAL>";
 	$ret .= "\r\n";
 	
-	// ƒJ[ƒh–¼Ì‚ğo—Í‚·‚é
+	// ã‚«ãƒ¼ãƒ‰åç§°ã‚’å‡ºåŠ›ã™ã‚‹
 	if($account["acctname"] != "") {
 		$ret .= "<MKTGINFO>" . $account["acctname"] . "</MKTGINFO>";
 		$ret .= "\r\n";

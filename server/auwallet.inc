@@ -1,12 +1,12 @@
 <?php
 /*
-auwallet.inc: au WALLET‚ÌCSV/HTML‚æ‚èOFXƒtƒ@ƒCƒ‹‚ğ¶¬‚·‚é
+auwallet.inc: au WALLETã®CSV/HTMLã‚ˆã‚ŠOFXãƒ•ã‚¡ã‚¤ãƒ«ã‚’ç”Ÿæˆã™ã‚‹
 Copyright (C) 2014-2015 OFFICE OUTERGUY. All rights reserved.
 mailto:contact@beatrek.com
 Licensed under the GNU AGPLv3.
 */
 
-// ƒƒOƒCƒ“î•ñ‚ğæ“¾‚·‚é
+// ãƒ­ã‚°ã‚¤ãƒ³æƒ…å ±ã‚’å–å¾—ã™ã‚‹
 $user = $ofxforms["loginAliasId"];
 $pass = $ofxforms["loginAuonePwd"];
 $sesscookie = $ofxforms["sesscookie"];
@@ -27,18 +27,18 @@ if($accesskey != "") {
 	$sid = (integer)$ssid;
 }
 
-// ÀsŠÔiƒ^ƒCƒ€ƒAƒEƒgj‚ğÄİ’è‚·‚é
+// å®Ÿè¡Œæ™‚é–“ï¼ˆã‚¿ã‚¤ãƒ ã‚¢ã‚¦ãƒˆï¼‰ã‚’å†è¨­å®šã™ã‚‹
 @set_time_limit(ENV_NUM_TIMEOUT);
 
 if($sid == 0) {
-	// ƒz[ƒ€‰æ–Ê‚ğæ“¾‚·‚é
+	// ãƒ›ãƒ¼ãƒ ç”»é¢ã‚’å–å¾—ã™ã‚‹
 	$method = "GET";
 	$uris = parse_uri($settings["home"]);
 	$query = "";
 	$cookie = (ENV_BOOL_ADD_RISKBASE == true && $token != ""? $token: "");
 	list($head, $body) = auwallet_http11($method, $uris, $query, $cookie);
 	
-	// ƒƒOƒCƒ“‰æ–Ê‚ğæ“¾‚·‚é
+	// ãƒ­ã‚°ã‚¤ãƒ³ç”»é¢ã‚’å–å¾—ã™ã‚‹
 	$forms = parse_tag($body, "form");
 	$c = parse_tag_search($forms, "name", "login");
 	if($c != -1) {
@@ -52,7 +52,7 @@ if($sid == 0) {
 		$cookie = auwallet_update_cookie($head, $cookie);
 		list($head, $body) = auwallet_http11($method, $uris, $query, $cookie);
 		
-		// ƒŠƒ_ƒCƒŒƒNƒg‚·‚é
+		// ãƒªãƒ€ã‚¤ãƒ¬ã‚¯ãƒˆã™ã‚‹
 		$retry = 0;
 		while($retry++ < ENV_NUM_HTTP11_RETRY) {
 			$locations = parse_header($head, "location");
@@ -66,7 +66,7 @@ if($sid == 0) {
 		}
 	}
 	
-	// ƒƒOƒCƒ“‚·‚é
+	// ãƒ­ã‚°ã‚¤ãƒ³ã™ã‚‹
 	$forms = parse_tag($body, "form");
 	$c = parse_tag_search($forms, "name", "main");
 	if($c != -1) {
@@ -75,7 +75,7 @@ if($sid == 0) {
 		foreach($inputs as $input) if($input["name"] != "") $queries[$input["name"]] = urlencode($input["name"]) . "=" . urlencode($input["value"]);
 		$queries["loginAliasId"] = "loginAliasId=" . $user;
 		$queries["loginAuonePwd"] = "loginAuonePwd=" . $pass;
-		$queries["loginStateHold"] = "loginStateHold="; // uƒƒOƒCƒ“ó‘Ô‚ğˆÛ‚·‚évƒ`ƒFƒbƒNƒ{ƒbƒNƒX‚ğƒIƒt‚Éİ’è‚·‚é
+		$queries["loginStateHold"] = "loginStateHold="; // ã€Œãƒ­ã‚°ã‚¤ãƒ³çŠ¶æ…‹ã‚’ç¶­æŒã™ã‚‹ã€ãƒã‚§ãƒƒã‚¯ãƒœãƒƒã‚¯ã‚¹ã‚’ã‚ªãƒ•ã«è¨­å®šã™ã‚‹
 		
 		$method = $forms[$c]["method"];
 		$uris = parse_uri($forms[$c]["action"], $uris);
@@ -83,7 +83,7 @@ if($sid == 0) {
 		$cookie = auwallet_update_cookie($head, $cookie);
 		list($head, $body) = auwallet_http11($method, $uris, $query, $cookie);
 		
-		// ƒŠƒ_ƒCƒŒƒNƒg‚·‚é
+		// ãƒªãƒ€ã‚¤ãƒ¬ã‚¯ãƒˆã™ã‚‹
 		$retry = 0;
 		while($retry++ < ENV_NUM_HTTP11_RETRY) {
 			$locations = parse_header($head, "location");
@@ -98,15 +98,15 @@ if($sid == 0) {
 	}
 }
 
-if(strpos($body, "2’iŠK”FØ") !== false) {
-	// 2’iŠK”FØ‚·‚é
+if(strpos($body, "2æ®µéšèªè¨¼") !== false) {
+	// 2æ®µéšèªè¨¼ã™ã‚‹
 	
 	$ps = parse_tag($body, "p");
 	$shitsumon = "";
 	foreach($ps as $p) {
 		if($p["class"] == "f_14") {
 			$shitsumon = trim(strip_tags($p["innerHTML"]));
-			// break‚µ‚È‚¢
+			// breakã—ãªã„
 		}
 	}
 	
@@ -123,17 +123,17 @@ if(strpos($body, "2’iŠK”FØ") !== false) {
 		$cookie = auwallet_update_cookie($head, $cookie);
 	}
 	
-	// ƒZƒbƒVƒ‡ƒ“‚ğ‘Ş”ğ‚·‚é
+	// ã‚»ãƒƒã‚·ãƒ§ãƒ³ã‚’é€€é¿ã™ã‚‹
 	$sid = 1;
 	$head = "";
 	$body = "";
 } else if($sid == 1) {
-	// ƒZƒbƒVƒ‡ƒ“‚ğ•œŒ³‚·‚é
+	// ã‚»ãƒƒã‚·ãƒ§ãƒ³ã‚’å¾©å…ƒã™ã‚‹
 	$sid = 0;
 	$uris = parse_uri($uri);
 	list($head, $body) = auwallet_http11($method, $uris, $query, $cookie);
 	
-	// ƒŠƒ_ƒCƒŒƒNƒg‚·‚é
+	// ãƒªãƒ€ã‚¤ãƒ¬ã‚¯ãƒˆã™ã‚‹
 	$retry = 0;
 	while($retry++ < ENV_NUM_HTTP11_RETRY) {
 		$locations = parse_header($head, "location");
@@ -148,7 +148,7 @@ if(strpos($body, "2’iŠK”FØ") !== false) {
 }
 
 if($sid > 0) {
-	// ƒZƒbƒVƒ‡ƒ“‚ğˆø‚«Œp‚®
+	// ã‚»ãƒƒã‚·ãƒ§ãƒ³ã‚’å¼•ãç¶™ã
 	$resp["status"] = ENV_NUM_STATUS_ADDITION;
 	$resp["aid"] = "hidden";
 	$resp["addition"] = $shitsumon;
@@ -161,14 +161,14 @@ if($sid > 0) {
 	$mfachallengetrnrs .= "<MFACHALLENGERS>";
 	$mfachallengetrnrs .= "<MFACHALLENGE>";
 	$mfachallengetrnrs .= "<MFAPHRASEID>" . $resp["aid"] . "</MFAPHRASEID>";
-	$mfachallengetrnrs .= "<MFAPHRASELABEL>" . mb_convert_string($resp["addition"]) . "</MFAPHRASELABEL>";
+	$mfachallengetrnrs .= "<MFAPHRASELABEL>" . $resp["addition"] . "</MFAPHRASELABEL>";
 	$mfachallengetrnrs .= "</MFACHALLENGE>";
 	$mfachallengetrnrs .= "</MFACHALLENGERS>";
 	$mfachallengetrnrs .= "</MFACHALLENGETRNRS>";
 	
 	$resp["ofx"] = generate_ofx($resp["status"], $mfachallengetrnrs, $resp["sesscookie"], $resp["accesskey"]);
-} else if(strpos($body, "Œ»İƒƒ“ƒeƒiƒ“ƒX‚ğs‚Á‚Ä‚¨‚è‚Ü‚·") !== false) {
-	// ƒVƒXƒeƒ€ƒƒ“ƒeƒiƒ“ƒX‰æ–Ê‚Ìê‡
+} else if(strpos($body, "ç¾åœ¨ãƒ¡ãƒ³ãƒ†ãƒŠãƒ³ã‚¹ã‚’è¡Œã£ã¦ãŠã‚Šã¾ã™") !== false) {
+	// ã‚·ã‚¹ãƒ†ãƒ ãƒ¡ãƒ³ãƒ†ãƒŠãƒ³ã‚¹ç”»é¢ã®å ´åˆ
 	$resp["status"] = ENV_NUM_STATUS_MAINTENANCE;
 	$resp["method"] = $method;
 	$resp["uri"] = $uris["scheme"] . "://" . $uris["host"] . $uris["path"];
@@ -177,8 +177,8 @@ if($sid > 0) {
 	$resp["head"] = $head;
 	$resp["body"] = $body;
 	$resp["ofx"] = generate_ofx($resp["status"]);
-} else if(strpos($body, "”z‘—ó‹µ") !== false) {
-	// ƒƒOƒCƒ“Œã‚Ì‰æ–Ê‚ª’Êí‚ÆˆÙ‚È‚éê‡
+} else if(strpos($body, "é…é€çŠ¶æ³") !== false) {
+	// ãƒ­ã‚°ã‚¤ãƒ³å¾Œã®ç”»é¢ãŒé€šå¸¸ã¨ç•°ãªã‚‹å ´åˆ
 	$resp["status"] = ENV_NUM_STATUS_CAUTION;
 	$resp["method"] = $method;
 	$resp["uri"] = $uris["scheme"] . "://" . $uris["host"] . $uris["path"];
@@ -187,8 +187,8 @@ if($sid > 0) {
 	$resp["head"] = $head;
 	$resp["body"] = $body;
 	$resp["ofx"] = generate_ofx($resp["status"]);
-} else if(strpos($body, "ƒƒjƒ…[ˆê——") === false) {
-	// ƒƒOƒCƒ“¸”s‚Ìê‡
+} else if(strpos($body, "ãƒ¡ãƒ‹ãƒ¥ãƒ¼ä¸€è¦§") === false) {
+	// ãƒ­ã‚°ã‚¤ãƒ³å¤±æ•—ã®å ´åˆ
 	$resp["status"] = ENV_NUM_STATUS_FAILURE;
 	$resp["method"] = $method;
 	$resp["uri"] = $uris["scheme"] . "://" . $uris["host"] . $uris["path"];
@@ -200,26 +200,26 @@ if($sid > 0) {
 } else {
 	$account = array();
 	
-	// ÀsŠÔiƒ^ƒCƒ€ƒAƒEƒgj‚ğÄİ’è‚·‚é
+	// å®Ÿè¡Œæ™‚é–“ï¼ˆã‚¿ã‚¤ãƒ ã‚¢ã‚¦ãƒˆï¼‰ã‚’å†è¨­å®šã™ã‚‹
 	@set_time_limit(ENV_NUM_TIMEOUT);
 	
-	$account["acctname"] = $settings["name"] . mb_convert_string(ENV_CHR_CONCATENATOR . $user);
+	$account["acctname"] = $settings["name"] . ENV_CHR_CONCATENATOR . $user;
 	$account["acctid"] = $user;
 	
-	// x“X”Ô†‚ğæ“¾‚·‚é
+	// æ”¯åº—ç•ªå·ã‚’å–å¾—ã™ã‚‹
 	$account["branchid"] = "0";
 	
-	// c‚‚ğæ“¾‚·‚é
+	// æ®‹é«˜ã‚’å–å¾—ã™ã‚‹
 	$dls = parse_tag($body, "dl");
-	foreach($dls as $dl) if(strpos($dl["innerHTML"], "c‚") !== false) {
+	foreach($dls as $dl) if(strpos($dl["innerHTML"], "æ®‹é«˜") !== false) {
 		$ps = parse_tag($dl["innerHTML"], "p");
 		$account["balance"] = parse_amount(trim(strip_tags($ps[0]["innerHTML"])));
 		break;
 	}
 	
-	// ƒƒjƒ…[ˆê——‰æ–Ê‚ğæ“¾‚·‚é
+	// ãƒ¡ãƒ‹ãƒ¥ãƒ¼ä¸€è¦§ç”»é¢ã‚’å–å¾—ã™ã‚‹
 	$as = parse_tag($body, "a");
-	$c = parse_tag_search($as, "innerHTML", "ƒƒjƒ…[ˆê——");
+	$c = parse_tag_search($as, "innerHTML", "ãƒ¡ãƒ‹ãƒ¥ãƒ¼ä¸€è¦§");
 	if($c != -1) {
 		$method = "GET";
 		$uris = parse_uri($as[$c]["href"], $uris);
@@ -228,9 +228,9 @@ if($sid > 0) {
 		list($head, $body) = auwallet_http11($method, $uris, $query, $cookie);
 	}
 	
-	// ƒJ[ƒhî•ñÆ‰ï/İ’è‰æ–Ê‚ğæ“¾‚·‚é
+	// ã‚«ãƒ¼ãƒ‰æƒ…å ±ç…§ä¼š/è¨­å®šç”»é¢ã‚’å–å¾—ã™ã‚‹
 	$as = parse_tag($body, "a");
-	$c = parse_tag_search($as, "innerHTML", "ƒJ[ƒhî•ñÆ‰ï/İ’è");
+	$c = parse_tag_search($as, "innerHTML", "ã‚«ãƒ¼ãƒ‰æƒ…å ±ç…§ä¼š/è¨­å®š");
 	if($c != -1) {
 		$method = "GET";
 		$uris = parse_uri($as[$c]["href"], $uris);
@@ -238,14 +238,14 @@ if($sid > 0) {
 		$cookie = auwallet_update_cookie($head, $cookie);
 		list($head, $body) = auwallet_http11($method, $uris, $query, $cookie);
 		
-		// ŒûÀ”Ô†‚ğæ“¾‚·‚é
+		// å£åº§ç•ªå·ã‚’å–å¾—ã™ã‚‹
 		$tds = parse_tag($body, "td");
 		if(count($tds) > 2) $account["acctid"] = trim(strip_tags($tds[2]["innerHTML"]));
 	}
 	
-	// —˜—p–¾×Æ‰ï‰æ–Ê‚ğæ“¾‚·‚é
+	// åˆ©ç”¨æ˜ç´°ç…§ä¼šç”»é¢ã‚’å–å¾—ã™ã‚‹
 	$as = parse_tag($body, "a");
-	foreach($as as $a) if(trim(strip_tags($a["innerHTML"])) == "—˜—p–¾×Æ‰ï") {
+	foreach($as as $a) if(trim(strip_tags($a["innerHTML"])) == "åˆ©ç”¨æ˜ç´°ç…§ä¼š") {
 		$method = "GET";
 		$uris = parse_uri($a["href"], $uris);
 		$query = "";
@@ -259,10 +259,10 @@ if($sid > 0) {
 	$csv = "";
 	$body_old = $body;
 	
-	// ÀsŠÔiƒ^ƒCƒ€ƒAƒEƒgj‚ğÄİ’è‚·‚é
+	// å®Ÿè¡Œæ™‚é–“ï¼ˆã‚¿ã‚¤ãƒ ã‚¢ã‚¦ãƒˆï¼‰ã‚’å†è¨­å®šã™ã‚‹
 	@set_time_limit(ENV_NUM_TIMEOUT);
 	
-	// ¡Œ‚ÌCSVƒtƒ@ƒCƒ‹‚ğæ“¾‚·‚é
+	// ä»Šæœˆã®CSVãƒ•ã‚¡ã‚¤ãƒ«ã‚’å–å¾—ã™ã‚‹
 	$forms = parse_tag($body, "form");
 	$c = parse_tag_search($forms, "name", "download_form");
 	if($c != -1) {
@@ -278,12 +278,12 @@ if($sid > 0) {
 		$cookie = auwallet_update_cookie($head, $cookie);
 		list($head, $body) = auwallet_http11($method, $uris, $query, $cookie);
 		
-		if(strpos($head, "Content-Type: text/html") === false) $csv = $body;
+		if(strpos($head, "Content-Type: text/html") === false) $csv = mb_convert_string($body);
 	}
 	
 	$body = $body_old;
 	
-	// ‘OŒ‚Ì‰æ–Ê‚ğæ“¾‚·‚é
+	// å‰æœˆã®ç”»é¢ã‚’å–å¾—ã™ã‚‹
 	$forms = parse_tag($body, "form");
 	$c = parse_tag_search($forms, "name", "history_form");
 	if($c != -1) {
@@ -301,10 +301,10 @@ if($sid > 0) {
 	
 	$body_old = $body;
 	
-	// ÀsŠÔiƒ^ƒCƒ€ƒAƒEƒgj‚ğÄİ’è‚·‚é
+	// å®Ÿè¡Œæ™‚é–“ï¼ˆã‚¿ã‚¤ãƒ ã‚¢ã‚¦ãƒˆï¼‰ã‚’å†è¨­å®šã™ã‚‹
 	@set_time_limit(ENV_NUM_TIMEOUT);
 	
-	// ‘OŒ‚ÌCSVƒtƒ@ƒCƒ‹‚ğæ“¾‚·‚é
+	// å‰æœˆã®CSVãƒ•ã‚¡ã‚¤ãƒ«ã‚’å–å¾—ã™ã‚‹
 	$forms = parse_tag($body, "form");
 	$c = parse_tag_search($forms, "name", "download_form");
 	if($c != -1) {
@@ -320,17 +320,17 @@ if($sid > 0) {
 		$cookie = auwallet_update_cookie($head, $cookie);
 		list($head, $body) = auwallet_http11($method, $uris, $query, $cookie);
 		
-		if(strpos($head, "Content-Type: text/html") === false) $csv .= $body;
+		if(strpos($head, "Content-Type: text/html") === false) $csv .= mb_convert_string($body);
 	}
 	
 	$body = $body_old;
 	
-	// ÀsŠÔiƒ^ƒCƒ€ƒAƒEƒgj‚ğÄİ’è‚·‚é
+	// å®Ÿè¡Œæ™‚é–“ï¼ˆã‚¿ã‚¤ãƒ ã‚¢ã‚¦ãƒˆï¼‰ã‚’å†è¨­å®šã™ã‚‹
 	@set_time_limit(ENV_NUM_TIMEOUT);
 	
-	// ƒ`ƒƒ[ƒW—š—ğ‰æ–Ê‚ğæ“¾‚·‚é
+	// ãƒãƒ£ãƒ¼ã‚¸å±¥æ­´ç”»é¢ã‚’å–å¾—ã™ã‚‹
 	$as = parse_tag($body, "a");
-	$c = parse_tag_search($as, "innerHTML", "ƒ`ƒƒ[ƒW—š—ğ‚Í‚±‚¿‚ç");
+	$c = parse_tag_search($as, "innerHTML", "ãƒãƒ£ãƒ¼ã‚¸å±¥æ­´ã¯ã“ã¡ã‚‰");
 	if($c != -1) {
 		$method = "GET";
 		$uris = parse_uri($as[$c]["href"], $uris);
@@ -339,7 +339,7 @@ if($sid > 0) {
 		list($head, $body) = auwallet_http11($method, $uris, $query, $cookie);
 	}
 	
-	// ¡Œ‚Ìƒ`ƒƒ[ƒW—š—ğ‚ğæ“¾‚·‚é
+	// ä»Šæœˆã®ãƒãƒ£ãƒ¼ã‚¸å±¥æ­´ã‚’å–å¾—ã™ã‚‹
 	$divs = parse_tag($body, "div", true);
 	foreach($divs as $div) if($div["class"] == "accordion") {
 		$memo = "";
@@ -362,7 +362,7 @@ if($sid > 0) {
 		if($date != "" && $summary != "" && $amount != "" && $memo != "") $csv .= implode(",", array("0", $date, "", $summary, $amount, "", $memo, "", "", "")) . "\r\n";
 	}
 	
-	// ‘OŒ‚Ì‰æ–Ê‚ğæ“¾‚·‚é
+	// å‰æœˆã®ç”»é¢ã‚’å–å¾—ã™ã‚‹
 	$forms = parse_tag($body, "form");
 	$c = parse_tag_search($forms, "name", "history_form");
 	if($c != -1) {
@@ -379,7 +379,7 @@ if($sid > 0) {
 		list($head, $body) = auwallet_http11($method, $uris, $query, $cookie);
 	}
 	
-	// ‘OŒ‚Ìƒ`ƒƒ[ƒW—š—ğ‚ğæ“¾‚·‚é
+	// å‰æœˆã®ãƒãƒ£ãƒ¼ã‚¸å±¥æ­´ã‚’å–å¾—ã™ã‚‹
 	$divs = parse_tag($body, "div", true);
 	foreach($divs as $div) if($div["class"] == "accordion") {
 		$memo = "";
@@ -402,7 +402,7 @@ if($sid > 0) {
 		if($date != "" && $summary != "" && $amount != "" && $memo != "") $csv .= implode(",", array("0", $date, "", $summary, $amount, "", $memo, "", "", "")) . "\r\n";
 	}
 	
-	// ÀsŠÔiƒ^ƒCƒ€ƒAƒEƒgj‚ğÄİ’è‚·‚é
+	// å®Ÿè¡Œæ™‚é–“ï¼ˆã‚¿ã‚¤ãƒ ã‚¢ã‚¦ãƒˆï¼‰ã‚’å†è¨­å®šã™ã‚‹
 	@set_time_limit(ENV_NUM_TIMEOUT);
 	
 	$details = array();
@@ -410,7 +410,7 @@ if($sid > 0) {
 	$lines = array_reverse(parse_csv($csv));
 	foreach($lines as $line) {
 		$c = count($line);
-		if($c >= 9 && $line[0] != "" && $line[1] != "—˜—p“ú") {
+		if($c >= 9 && $line[0] != "" && $line[1] != "åˆ©ç”¨æ—¥æ™‚") {
 			// $details[$j]["date"] = parse_date($line[1]);
 			$details[$j]["date"] = $line[1];
 			$details[$j]["summary"] = $line[3];
@@ -418,7 +418,7 @@ if($sid > 0) {
 			$details[$j]["memo"] = ($line[6] != ""? $line[6]: ENV_STR_OFX_MEMO);
 			// $details[$j]["trntype"] = ($line[2] != ""? $line[2]: "");
 			
-			if($line[2] == "ƒLƒƒƒ“ƒy[ƒ“" && $line[3] == "ƒLƒƒƒ“ƒy[ƒ“" && $details[$j]["amount"] == "0" && $line[6] != "") {
+			if($line[2] == "ã‚­ãƒ£ãƒ³ãƒšãƒ¼ãƒ³" && $line[3] == "ã‚­ãƒ£ãƒ³ãƒšãƒ¼ãƒ³" && $details[$j]["amount"] == "0" && $line[6] != "") {
 				$cs = explode(":", $line[6]);
 				$details[$j]["amount"] = parse_amount($cs[count($cs) - 1]);
 			}
@@ -428,12 +428,12 @@ if($sid > 0) {
 	asort($details);
 	$account["details"] = $details;
 	
-	// ÀsŠÔiƒ^ƒCƒ€ƒAƒEƒgj‚ğÄİ’è‚·‚é
+	// å®Ÿè¡Œæ™‚é–“ï¼ˆã‚¿ã‚¤ãƒ ã‚¢ã‚¦ãƒˆï¼‰ã‚’å†è¨­å®šã™ã‚‹
 	@set_time_limit(ENV_NUM_TIMEOUT);
 	
-	// ƒƒOƒAƒEƒg‚·‚é
+	// ãƒ­ã‚°ã‚¢ã‚¦ãƒˆã™ã‚‹
 	$as = parse_tag($body, "a");
-	$c = parse_tag_search($as, "innerHTML", "ƒƒOƒAƒEƒg");
+	$c = parse_tag_search($as, "innerHTML", "ãƒ­ã‚°ã‚¢ã‚¦ãƒˆ");
 	if($c != -1) {
 		$method = "GET";
 		$uris = parse_uri($as[$c]["href"], $uris);
@@ -442,7 +442,7 @@ if($sid > 0) {
 		list($head, $body) = auwallet_http11($method, $uris, $query, $cookie);
 	}
 	
-	// ƒŠƒ_ƒCƒŒƒNƒg‚·‚é
+	// ãƒªãƒ€ã‚¤ãƒ¬ã‚¯ãƒˆã™ã‚‹
 	$retry = 0;
 	while($retry++ < ENV_NUM_HTTP11_RETRY) {
 		$locations = parse_header($head, "location");
@@ -455,14 +455,14 @@ if($sid > 0) {
 		}
 	}
 	
-	// ÀsŠÔiƒ^ƒCƒ€ƒAƒEƒgj‚ğÄİ’è‚·‚é
+	// å®Ÿè¡Œæ™‚é–“ï¼ˆã‚¿ã‚¤ãƒ ã‚¢ã‚¦ãƒˆï¼‰ã‚’å†è¨­å®šã™ã‚‹
 	@set_time_limit(ENV_NUM_TIMEOUT);
 	
 	$bankmsgsrsv1 = "";
 	$bankmsgsrsv1 .= "<BANKMSGSRSV1>";
 	$bankmsgsrsv1 .= "\r\n";
 	
-	// ŒûÀî•ñ‚ğæ“¾‚·‚é
+	// å£åº§æƒ…å ±ã‚’å–å¾—ã™ã‚‹
 	$bankmsgsrsv1 .= "<STMTTRNRS>";
 	$bankmsgsrsv1 .= "\r\n";
 	$bankmsgsrsv1 .= "<TRNUID>0</TRNUID>";
@@ -490,11 +490,11 @@ if($sid > 0) {
 	$bankmsgsrsv1 .= "\r\n";
 	
 	if(ENV_BOOL_ADD_RISKBASE == true) {
-		// Ÿ‰ñƒƒOƒCƒ“‚É2’iŠK”FØ‚ğs‚í‚È‚¢
+		// æ¬¡å›ãƒ­ã‚°ã‚¤ãƒ³æ™‚ã«2æ®µéšèªè¨¼ã‚’è¡Œã‚ãªã„
 		$resp["token"] = auwallet_get_token("DVCK", $cookie);
 	}
 	
-	// OFXƒtƒ@ƒCƒ‹‚ğo—Í‚·‚é
+	// OFXãƒ•ã‚¡ã‚¤ãƒ«ã‚’å‡ºåŠ›ã™ã‚‹
 	$resp["status"] = ENV_NUM_STATUS_SUCCESS;
 	$resp["ofx"] = generate_ofx($resp["status"], $bankmsgsrsv1);
 }
@@ -539,21 +539,21 @@ function auwallet_parse_details($account) {
 		$cd = array();
 		$cd["TRNTYPE"] = ENV_STR_OFX_TRNTYPE_DIRECTDEBIT;
 		
-		// “ú•t‚ğæ“¾‚·‚é
+		// æ—¥ä»˜ã‚’å–å¾—ã™ã‚‹
 		$cd["DTPOSTED"] = $line["date"];
 		
-		// ’Ê”Ô‚ğ¶¬‚·‚é
+		// é€šç•ªã‚’ç”Ÿæˆã™ã‚‹
 		if($cd["DTPOSTED"] == $cd_date) $cd_num++; else $cd_num = 0;
 		
-		// ƒgƒ‰ƒ“ƒUƒNƒVƒ‡ƒ“”Ô†‚ğ¶¬‚·‚é
+		// ãƒˆãƒ©ãƒ³ã‚¶ã‚¯ã‚·ãƒ§ãƒ³ç•ªå·ã‚’ç”Ÿæˆã™ã‚‹
 		$cd["FITID"] = $cd["DTPOSTED"] . "0000000" . sprintf("%05d", $cd_num);
 		
-		// “E—v‚ğæ“¾‚·‚é
-		$cd["NAME"] = mb_convert_string($line["summary"]);
+		// æ‘˜è¦ã‚’å–å¾—ã™ã‚‹
+		$cd["NAME"] = $line["summary"];
 		
-		// ‹àŠz‚ğæ“¾‚·‚é
+		// é‡‘é¡ã‚’å–å¾—ã™ã‚‹
 		$cd["TRNAMT"] = parse_amount($line["amount"]);
-		$cd["MEMO"] = ($line["memo"] != ""? mb_convert_string($line["memo"]): ENV_STR_OFX_MEMO);
+		$cd["MEMO"] = ($line["memo"] != ""? $line["memo"]: ENV_STR_OFX_MEMO);
 		
 		array_push($cds, $cd);
 		$cd_date = $cd["DTPOSTED"];
@@ -585,7 +585,7 @@ function auwallet_parse_details($account) {
 	$ret .= "</LEDGERBAL>";
 	$ret .= "\r\n";
 	
-	// ŒûÀ–¼Ì‚ğo—Í‚·‚é
+	// å£åº§åç§°ã‚’å‡ºåŠ›ã™ã‚‹
 	if($account["acctname"] != "") {
 		$ret .= "<MKTGINFO>" . $account["acctname"] . "</MKTGINFO>";
 		$ret .= "\r\n";

@@ -1,28 +1,28 @@
 <?php
 /*
-kabucom.inc: ƒJƒuƒhƒbƒgƒRƒ€ØŒ”‚ÌCSV‚æ‚èOFXƒtƒ@ƒCƒ‹‚ğ¶¬‚·‚é
+kabucom.inc: ã‚«ãƒ–ãƒ‰ãƒƒãƒˆã‚³ãƒ è¨¼åˆ¸ã®CSVã‚ˆã‚ŠOFXãƒ•ã‚¡ã‚¤ãƒ«ã‚’ç”Ÿæˆã™ã‚‹
 Copyright (C) 2010-2015 OFFICE OUTERGUY. All rights reserved.
 mailto:contact@beatrek.com
 Licensed under the GNU AGPLv3.
 */
 
-// ƒƒOƒCƒ“î•ñ‚ğæ“¾‚·‚é
+// ãƒ­ã‚°ã‚¤ãƒ³æƒ…å ±ã‚’å–å¾—ã™ã‚‹
 $user = $ofxforms["SsLogonUser"];
 $pass = $ofxforms["SsLogonPassword"];
 
 $resp = array();
 
-define("ENV_STR_ASSET_STOCK_BUY", "”ƒ");
-define("ENV_STR_ASSET_STOCK_SELL", "”„");
-define("ENV_STR_ASSET_FUND_BUY", "”ƒ•t");
-define("ENV_STR_ASSET_FUND_SELL", "‰ğ–ñ");
+define("ENV_STR_ASSET_STOCK_BUY", "è²·");
+define("ENV_STR_ASSET_STOCK_SELL", "å£²");
+define("ENV_STR_ASSET_FUND_BUY", "è²·ä»˜");
+define("ENV_STR_ASSET_FUND_SELL", "è§£ç´„");
 
-$acctid = mb_convert_string($user);
+$acctid = $user;
 
-// ÀsŠÔiƒ^ƒCƒ€ƒAƒEƒgj‚ğÄİ’è‚·‚é
+// å®Ÿè¡Œæ™‚é–“ï¼ˆã‚¿ã‚¤ãƒ ã‚¢ã‚¦ãƒˆï¼‰ã‚’å†è¨­å®šã™ã‚‹
 @set_time_limit(ENV_NUM_TIMEOUT);
 
-// ƒz[ƒ€‰æ–Ê‚ğæ“¾‚·‚é
+// ãƒ›ãƒ¼ãƒ ç”»é¢ã‚’å–å¾—ã™ã‚‹
 $urls = parse_url($settings["home"]);
 $method = "GET";
 $protocol = ($urls["scheme"] != ""? $urls["scheme"]: "");
@@ -32,9 +32,9 @@ $query = ($urls["query"] != ""? $urls["query"]: "");
 $cookie = "";
 list($head, $body) = kabucom_http11($method, $protocol, $host, $page, $query, $cookie);
 
-// ƒƒOƒCƒ“‰æ–Ê‚ğæ“¾‚·‚é
+// ãƒ­ã‚°ã‚¤ãƒ³ç”»é¢ã‚’å–å¾—ã™ã‚‹
 $as = parse_tag($body, "a");
-foreach($as as $a) if(trim(strip_tags($a["innerHTML"])) == "ƒƒOƒCƒ“") {
+foreach($as as $a) if(trim(strip_tags($a["innerHTML"])) == "ãƒ­ã‚°ã‚¤ãƒ³") {
 	$urls = parse_url($a["href"]);
 	$method = "GET";
 	$protocol = ($urls["scheme"] != ""? $urls["scheme"]: "");
@@ -46,7 +46,7 @@ foreach($as as $a) if(trim(strip_tags($a["innerHTML"])) == "ƒƒOƒCƒ“") {
 	break;
 }
 
-// ƒŠƒ_ƒCƒŒƒNƒg‚·‚é
+// ãƒªãƒ€ã‚¤ãƒ¬ã‚¯ãƒˆã™ã‚‹
 $retry = 0;
 while($retry++ < ENV_NUM_HTTP11_RETRY && preg_match("/[Ll][Oo][Cc][Aa][Tt][Ii][Oo][Nn][\s\t]*:[\s\t]*([^\r\n]+)/", $head, $matches) > 0) {
 	$method = "GET";
@@ -59,8 +59,8 @@ while($retry++ < ENV_NUM_HTTP11_RETRY && preg_match("/[Ll][Oo][Cc][Aa][Tt][Ii][O
 	list($head, $body) = kabucom_http11($method, $protocol, $host, $page, $query, $cookie);
 }
 
-// Light”Å‰æ–Ê‚ğæ“¾‚·‚é
-if(preg_match("/<[Aa].*?[Hh][Rr][Ee][Ff][\s\t]*\=[\s\t]*\"([^\"]*)\"[^>]*>[\s\t\r\n]*<[Ii][Mm][Gg].*?[Aa][Ll][Tt][\s\t]*\=[\s\t]*\"" . preg_quote("LightiŠÈˆÕ”Åj") . "\"[^>]*><\/[Aa]>/", $body, $matches) > 0) {
+// Lightç‰ˆç”»é¢ã‚’å–å¾—ã™ã‚‹
+if(preg_match("/<[Aa].*?[Hh][Rr][Ee][Ff][\s\t]*\=[\s\t]*\"([^\"]*)\"[^>]*>[\s\t\r\n]*<[Ii][Mm][Gg].*?[Aa][Ll][Tt][\s\t]*\=[\s\t]*\"" . preg_quote("Lightï¼ˆç°¡æ˜“ç‰ˆï¼‰") . "\"[^>]*><\/[Aa]>/", $body, $matches) > 0) {
 	$method = "GET";
 	$urls = parse_url($matches[1]);
 	if($urls["scheme"] != "") $protocol = $urls["scheme"];
@@ -69,7 +69,7 @@ if(preg_match("/<[Aa].*?[Hh][Rr][Ee][Ff][\s\t]*\=[\s\t]*\"([^\"]*)\"[^>]*>[\s\t\
 	if($urls["query"] != "") $query = $urls["query"];
 	list($head, $body) = kabucom_http11($method, $protocol, $host, $page, $query, $cookie);
 	
-	// ƒŠƒ_ƒCƒŒƒNƒg‚·‚é
+	// ãƒªãƒ€ã‚¤ãƒ¬ã‚¯ãƒˆã™ã‚‹
 	if(preg_match("/[Ll][Oo][Cc][Aa][Tt][Ii][Oo][Nn][\s\t]*:[\s\t]*([^\r\n]+)/", $head, $matches) > 0) {
 		$method = "GET";
 		$urls = parse_url($matches[1]);
@@ -82,14 +82,14 @@ if(preg_match("/<[Aa].*?[Hh][Rr][Ee][Ff][\s\t]*\=[\s\t]*\"([^\"]*)\"[^>]*>[\s\t\
 	}
 }
 
-// ƒƒOƒCƒ“‚·‚é
+// ãƒ­ã‚°ã‚¤ãƒ³ã™ã‚‹
 $forms = parse_tag($body, "form");
 $c = parse_tag_search($forms, "name", "xyz");
 if($c != -1) {
 	$inputs = parse_tag($forms[$c]["innerHTML"], "input");
 	$queries = array();
 	foreach($inputs as $input) if($input["name"] != "") $queries[$input["name"]] = urlencode($input["name"]) . "=" . urlencode($input["value"]);
-	$queries["SsLogonHost"] = "SsLogonHost=100"; // åŒn
+	$queries["SsLogonHost"] = "SsLogonHost=100"; // ä¸»ç³»
 	$queries["SsLogonUser"] = "SsLogonUser=" . $user;
 	$queries["SsLogonPassword"] = "SsLogonPassword=" . $pass;
 	
@@ -103,7 +103,7 @@ if($c != -1) {
 	$cookie = kabucom_updatecookie($head, $cookie);
 	list($head, $body) = kabucom_http11($method, $protocol, $host, $page, $query, $cookie);
 	
-	// ƒŠƒ_ƒCƒŒƒNƒg‚·‚é
+	// ãƒªãƒ€ã‚¤ãƒ¬ã‚¯ãƒˆã™ã‚‹
 	$retry = 0;
 	while($retry++ < ENV_NUM_HTTP11_RETRY && preg_match("/[Ll][Oo][Cc][Aa][Tt][Ii][Oo][Nn][\s\t]*:[\s\t]*([^\r\n]+)/", $head, $matches) > 0) {
 		$method = "GET";
@@ -117,11 +117,11 @@ if($c != -1) {
 	}
 }
 
-// d—v‚È‚¨’m‚ç‚¹‰æ–Ê‚Ì•¶šƒR[ƒh‚ğ‹­§“I‚É•ÏŠ·‚·‚é
+// é‡è¦ãªãŠçŸ¥ã‚‰ã›ç”»é¢ã®æ–‡å­—ã‚³ãƒ¼ãƒ‰ã‚’å¼·åˆ¶çš„ã«å¤‰æ›ã™ã‚‹
 if(preg_match("/<[Mm][Ee][Tt][Aa].*?[Cc][Oo][Nn][Tt][Ee][Nn][Tt][\s\t]*=[\s\t]*([\'\"]?).*?[Cc][Hh][Aa][Rr][Ss][Ee][Tt][\s\t]*\=[\s\t]*x\-sjis\\1[^>]*>/", $body, $matches) > 0) $body_old = mb_convert_encoding($body, "Shift_JIS", "UTF-8");
 
-// d—v‚È‚¨’m‚ç‚¹‰æ–Ê‚ğƒXƒLƒbƒv‚·‚é
-if(strpos($body_old, "|d—v‚È‚¨’m‚ç‚¹|") !== false) {
+// é‡è¦ãªãŠçŸ¥ã‚‰ã›ç”»é¢ã‚’ã‚¹ã‚­ãƒƒãƒ—ã™ã‚‹
+if(strpos($body_old, "ï¼é‡è¦ãªãŠçŸ¥ã‚‰ã›ï¼") !== false) {
 	if(preg_match("/<[Ff][Oo][Rr][Mm].*?[Aa][Cc][Tt][Ii][Oo][Nn][\s\t]*=[\s\t]*\"([^\"]*)\"[^>]*>/", $body_old, $matches) > 0) {
 		$method = "POST";
 		$urls = parse_url($matches[1]);
@@ -137,7 +137,7 @@ if(strpos($body_old, "|d—v‚È‚¨’m‚ç‚¹|") !== false) {
 		$cookie = kabucom_updatecookie($head, $cookie);
 		list($head, $body) = kabucom_http11($method, $protocol, $host, $page, $query, $cookie);
 		
-		// ƒŠƒ_ƒCƒŒƒNƒg‚·‚é
+		// ãƒªãƒ€ã‚¤ãƒ¬ã‚¯ãƒˆã™ã‚‹
 		$retry = 0;
 		while($retry++ < ENV_NUM_HTTP11_RETRY && preg_match("/[Ll][Oo][Cc][Aa][Tt][Ii][Oo][Nn][\s\t]*:[\s\t]*([^\r\n]+)/", $head, $matches) > 0) {
 			$method = "GET";
@@ -152,8 +152,8 @@ if(strpos($body_old, "|d—v‚È‚¨’m‚ç‚¹|") !== false) {
 	}
 }
 
-if(strpos($body, "‚½‚¾‚¢‚ÜƒT[ƒrƒX‚ğ‚²—˜—p‚É‚È‚ê‚Ü‚¹‚ñ") !== false || strpos($body, "Œ»İƒƒ“ƒeƒiƒ“ƒX’†") !== false) {
-	// ƒVƒXƒeƒ€ƒƒ“ƒeƒiƒ“ƒX‰æ–Ê‚Ìê‡
+if(strpos($body, "ãŸã ã„ã¾ã‚µãƒ¼ãƒ“ã‚¹ã‚’ã”åˆ©ç”¨ã«ãªã‚Œã¾ã›ã‚“") !== false || strpos($body, "ç¾åœ¨ãƒ¡ãƒ³ãƒ†ãƒŠãƒ³ã‚¹ä¸­") !== false) {
+	// ã‚·ã‚¹ãƒ†ãƒ ãƒ¡ãƒ³ãƒ†ãƒŠãƒ³ã‚¹ç”»é¢ã®å ´åˆ
 	$resp["status"] = ENV_NUM_STATUS_MAINTENANCE;
 	$resp["method"] = $method;
 	$resp["uri"] = $uris["scheme"] . "://" . $uris["host"] . $uris["path"];
@@ -162,8 +162,8 @@ if(strpos($body, "‚½‚¾‚¢‚ÜƒT[ƒrƒX‚ğ‚²—˜—p‚É‚È‚ê‚Ü‚¹‚ñ") !== false || strpos($bo
 	$resp["head"] = $head;
 	$resp["body"] = $body;
 	$resp["ofx"] = generate_ofx($resp["status"]);
-} else if($retry == ENV_NUM_HTTP11_RETRY || strpos($body, "‚¨‹q‚³‚Ü‚Ö‚Ì‚¨’m‚ç‚¹") === false) {
-	// ƒƒOƒCƒ“¸”s‚Ìê‡
+} else if($retry == ENV_NUM_HTTP11_RETRY || strpos($body, "ãŠå®¢ã•ã¾ã¸ã®ãŠçŸ¥ã‚‰ã›") === false) {
+	// ãƒ­ã‚°ã‚¤ãƒ³å¤±æ•—ã®å ´åˆ
 	$resp["status"] = ENV_NUM_STATUS_FAILURE;
 	$resp["method"] = $method;
 	$resp["uri"] = $uris["scheme"] . "://" . $uris["host"] . $uris["path"];
@@ -178,51 +178,51 @@ if(strpos($body, "‚½‚¾‚¢‚ÜƒT[ƒrƒX‚ğ‚²—˜—p‚É‚È‚ê‚Ü‚¹‚ñ") !== false || strpos($bo
 	$ct_date = "";
 	$ct_num = 0;
 	
-	// ÀsŠÔiƒ^ƒCƒ€ƒAƒEƒgj‚ğÄİ’è‚·‚é
+	// å®Ÿè¡Œæ™‚é–“ï¼ˆã‚¿ã‚¤ãƒ ã‚¢ã‚¦ãƒˆï¼‰ã‚’å†è¨­å®šã™ã‚‹
 	@set_time_limit(ENV_NUM_TIMEOUT);
 	
-	// Œ»•¨Š”®‚ğæ“¾‚·‚é
+	// ç¾ç‰©æ ªå¼ã‚’å–å¾—ã™ã‚‹
 	$method = "GET";
 	$page = "/Light/Account/Accountstatus/AccountStatus.asp";
 	$cookie = kabucom_updatecookie($head, $cookie);
 	$query = "";
 	list($head, $body) = kabucom_http11($method, $protocol, $host, $page, $query, $cookie);
 	
-	// Œ»•¨Š”®CSV‚ğæ“¾‚·‚é
+	// ç¾ç‰©æ ªå¼CSVã‚’å–å¾—ã™ã‚‹
 	$page = "/Light/Account/Accountstatus/AccountStatusCsv.asp";
 	$cookie = kabucom_updatecookie($head, $cookie);
 	list($head, $body) = kabucom_http11($method, $protocol, $host, $page, $query, $cookie);
 	
-	// –Á•¿ˆê——‚ğ¶¬‚·‚é
-	$lines = parse_csv($body);
+	// éŠ˜æŸ„ä¸€è¦§ã‚’ç”Ÿæˆã™ã‚‹
+	$lines = parse_csv(mb_convert_string($body));
 	foreach($lines as $line) {
-		if(count($line) == 12 && $line[0] != "–Á•¿–¼") {
-			// Š”®
-			array_push($investments, array(ENV_STR_OFX_STOCK, rtrim($line[1]), mb_convert_string($line[0]), mb_convert_uniquename($line[0]), $line[3], $line[4], $line[6], $line[8]));
+		if(count($line) == 12 && $line[0] != "éŠ˜æŸ„å") {
+			// æ ªå¼
+			array_push($investments, array(ENV_STR_OFX_STOCK, rtrim($line[1]), $line[0], mb_convert_uniquename($line[0]), $line[3], $line[4], $line[6], $line[8]));
 		} else {
-			// ‚»‚Ì‘¼iˆ—‘ÎÛŠOj
+			// ãã®ä»–ï¼ˆå‡¦ç†å¯¾è±¡å¤–ï¼‰
 		}
 	}
 	
-	// “Š‘M‘õ‚ğæ“¾‚·‚é
+	// æŠ•è³‡ä¿¡è¨—ã‚’å–å¾—ã™ã‚‹
 	$method = "GET";
 	$page = "/Light/Account/Accountstatus/AccountStatusToshin.asp";
 	$cookie = kabucom_updatecookie($head, $cookie);
 	list($head, $body) = kabucom_http11($method, $protocol, $host, $page, $query, $cookie);
 	
-	// “Š‘M‘õCSV‚ğæ“¾‚·‚é
+	// æŠ•è³‡ä¿¡è¨—CSVã‚’å–å¾—ã™ã‚‹
 	$page = "/Light/Account/Accountstatus/AccountStatusToshinCsv.asp";
 	$cookie = kabucom_updatecookie($head, $cookie);
 	list($head, $body) = kabucom_http11($method, $protocol, $host, $page, $query, $cookie);
 	
-	// –Á•¿ˆê——‚ğ¶¬‚·‚é
-	$lines = parse_csv($body);
+	// éŠ˜æŸ„ä¸€è¦§ã‚’ç”Ÿæˆã™ã‚‹
+	$lines = parse_csv(mb_convert_string($body));
 	foreach($lines as $line) {
-		if(count($line) == 11 && $line[0] != "ƒtƒ@ƒ“ƒh–¼") {
-			// “Š‘M‘õ
-			array_push($investments, array(ENV_STR_OFX_FUND, "", mb_convert_string($line[0]), mb_convert_uniquename($line[0]), $line[3], $line[2], $line[7], $line[6]));
+		if(count($line) == 11 && $line[0] != "ãƒ•ã‚¡ãƒ³ãƒ‰å") {
+			// æŠ•è³‡ä¿¡è¨—
+			array_push($investments, array(ENV_STR_OFX_FUND, "", $line[0], mb_convert_uniquename($line[0]), $line[3], $line[2], $line[7], $line[6]));
 		} else {
-			// ‚»‚Ì‘¼iˆ—‘ÎÛŠOj
+			// ãã®ä»–ï¼ˆå‡¦ç†å¯¾è±¡å¤–ï¼‰
 		}
 	}
 	
@@ -277,35 +277,35 @@ if(strpos($body, "‚½‚¾‚¢‚ÜƒT[ƒrƒX‚ğ‚²—˜—p‚É‚È‚ê‚Ü‚¹‚ñ") !== false || strpos($bo
 		}
 	}
 	
-	// ‚¨—a‚è‹à‚ğæ“¾‚·‚éi‰æ–Ê‘JˆÚ‚ª•K—v‚È‚½‚ßj
+	// ãŠé ã‚Šé‡‘ã‚’å–å¾—ã™ã‚‹ï¼ˆç”»é¢é·ç§»ãŒå¿…è¦ãªãŸã‚ï¼‰
 	$page = "/Light/Support/Rule/TradeLimit.asp";
 	$cookie = kabucom_updatecookie($head, $cookie);
 	list($head, $body) = kabucom_http11($method, $protocol, $host, $page, $query, $cookie);
 	
-	// Œ»•¨Š”®‚¨æˆø—š—ğCSV‚ğæ“¾‚·‚é
+	// ç¾ç‰©æ ªå¼ãŠå–å¼•å±¥æ­´CSVã‚’å–å¾—ã™ã‚‹
 	$page = "/Light/Account/TradeRireki/TradeRirekiKabuCsv.asp";
 	$cookie = kabucom_updatecookie($head, $cookie);
 	list($head, $body) = kabucom_http11($method, $protocol, $host, $page, $query, $cookie);
 	
-	$lines = parse_csv($body);
+	$lines = parse_csv(mb_convert_string($body));
 	foreach($lines as $line) {
-		if(count($line) == 13 && $line[0] != "–ñ’è“ú") {
-			// í•ÊA–Á•¿A”„”ƒ‚ğæ“¾‚·‚é
+		if(count($line) == 13 && $line[0] != "ç´„å®šæ—¥") {
+			// ç¨®åˆ¥ã€éŠ˜æŸ„ã€å£²è²·ã‚’å–å¾—ã™ã‚‹
 			$ct_category = ENV_STR_OFX_STOCK;
-			$ct_uniqueid = mb_convert_string(rtrim($line[4]));
+			$ct_uniqueid = rtrim($line[4]);
 			$ct_secname = "";
 			$ct_uniqueidtype = ENV_STR_OFX_CODE_STOCK;
-			// –Á•¿ˆê——‚æ‚èŒŸõ‚·‚é
+			// éŠ˜æŸ„ä¸€è¦§ã‚ˆã‚Šæ¤œç´¢ã™ã‚‹
 			foreach($investments as $investment) {
 				if($investment[0] == ENV_STR_OFX_STOCK && $investment[1] == $ct_uniqueid) {
-					// ‚¿‚‚ª‚ ‚éê‡
-					$ct_secname = mb_convert_string($investment[2]);
+					// æŒã¡é«˜ãŒã‚ã‚‹å ´åˆ
+					$ct_secname = $investment[2];
 					break;
 				}
 			}
 			if($ct_secname == "") {
-				// ‚¿‚‚ª‚È‚¢ê‡
-				$ct_secname = mb_convert_string($line[3]);
+				// æŒã¡é«˜ãŒãªã„å ´åˆ
+				$ct_secname = $line[3];
 				
 				// SECLIST
 				if(strpos($seclist, $ct_uniqueid) === false) {
@@ -317,11 +317,11 @@ if(strpos($body, "‚½‚¾‚¢‚ÜƒT[ƒrƒX‚ğ‚²—˜—p‚É‚È‚ê‚Ü‚¹‚ñ") !== false || strpos($bo
 					$seclist .= "\r\n";
 				}
 			}
-			// ’P‰¿‚ğæ“¾‚·‚é
+			// å˜ä¾¡ã‚’å–å¾—ã™ã‚‹
 			$ct_unitprice = (double)$line[7];
-			// è”—¿‚ğæ“¾‚·‚é
+			// æ‰‹æ•°æ–™ã‚’å–å¾—ã™ã‚‹
 			$ct_fees = (integer)$line[9];
-			// Å‚ğæ“¾‚·‚é
+			// ç¨ã‚’å–å¾—ã™ã‚‹
 			$ct_taxes = (integer)$line[10];
 			switch($line[5]) {
 			case ENV_STR_ASSET_STOCK_SELL:
@@ -336,15 +336,15 @@ if(strpos($body, "‚½‚¾‚¢‚ÜƒT[ƒrƒX‚ğ‚²—˜—p‚É‚È‚ê‚Ü‚¹‚ñ") !== false || strpos($bo
 				$ct_total = -1;
 				break;
 			}
-			// ”—Ê‚ğæ“¾‚·‚é
+			// æ•°é‡ã‚’å–å¾—ã™ã‚‹
 			$ct_units *= (integer)$line[6];
-			// ‹àŠz‚ğæ“¾‚·‚é
+			// é‡‘é¡ã‚’å–å¾—ã™ã‚‹
 			$ct_total *= (integer)$line[8];
-			// –ñ’è“ú‚ğæ“¾‚·‚é
+			// ç´„å®šæ—¥ã‚’å–å¾—ã™ã‚‹
 			$ct_dttrade = parse_date($line[0]);
-			// ’Ê”Ô‚ğ¶¬‚·‚é
+			// é€šç•ªã‚’ç”Ÿæˆã™ã‚‹
 			if($ct_dttrade == $ct_date) $ct_num++; else $ct_num = 0;
-			// ƒgƒ‰ƒ“ƒUƒNƒVƒ‡ƒ“”Ô†‚ğ¶¬‚·‚é
+			// ãƒˆãƒ©ãƒ³ã‚¶ã‚¯ã‚·ãƒ§ãƒ³ç•ªå·ã‚’ç”Ÿæˆã™ã‚‹
 			$ct_fitid = $ct_dttrade . "0000010" . sprintf("%05d", $ct_num);
 			
 			$ct = array();
@@ -356,7 +356,7 @@ if(strpos($body, "‚½‚¾‚¢‚ÜƒT[ƒrƒX‚ğ‚²—˜—p‚É‚È‚ê‚Ü‚¹‚ñ") !== false || strpos($bo
 			$ct["UNIQUEIDTYPE"] = $ct_uniqueidtype;
 			$ct["UNITS"] = (string)$ct_units;
 			$ct["UNITPRICE"] = (string)$ct_unitprice;
-			// OFXd—lãACOMMISSIONAFEESATAXES‚Íƒ}ƒCƒiƒX’l‚ğ‹–—e‚µ‚È‚¢
+			// OFXä»•æ§˜ä¸Šã€COMMISSIONã€FEESã€TAXESã¯ãƒã‚¤ãƒŠã‚¹å€¤ã‚’è¨±å®¹ã—ãªã„
 			// $ct["COMMISSION"] = (string)abs($ct_commission);
 			$ct["FEES"] = (string)abs($ct_fees);
 			$ct["TAXES"] = (string)abs($ct_taxes);
@@ -370,35 +370,35 @@ if(strpos($body, "‚½‚¾‚¢‚ÜƒT[ƒrƒX‚ğ‚²—˜—p‚É‚È‚ê‚Ü‚¹‚ñ") !== false || strpos($bo
 		}
 	}
 	
-	// “Š‘M‘õ‚¨æˆø—š—ğCSV‚ğæ“¾‚·‚é
+	// æŠ•è³‡ä¿¡è¨—ãŠå–å¼•å±¥æ­´CSVã‚’å–å¾—ã™ã‚‹
 	$page = "/Light/Account/TradeRireki/TradeRirekiToshinCsv.asp";
 	$cookie = kabucom_updatecookie($head, $cookie);
 	list($head, $body) = kabucom_http11($method, $protocol, $host, $page, $query, $cookie);
 	
-	$lines = parse_csv($body);
+	$lines = parse_csv(mb_convert_string($body));
 	$ct_date = "";
 	$ct_num = 0;
 	foreach($lines as $line) {
-		if(count($line) == 14 && $line[0] != "–ñ’è“ú") {
-			// í•ÊA–Á•¿A”„”ƒ‚ğæ“¾‚·‚é
+		if(count($line) == 14 && $line[0] != "ç´„å®šæ—¥") {
+			// ç¨®åˆ¥ã€éŠ˜æŸ„ã€å£²è²·ã‚’å–å¾—ã™ã‚‹
 			$ct_category = ENV_STR_OFX_FUND;
-			// –Á•¿ˆê——‚æ‚è–¼‘O‚ğæ“¾‚·‚é
+			// éŠ˜æŸ„ä¸€è¦§ã‚ˆã‚Šåå‰ã‚’å–å¾—ã™ã‚‹
 			$ct_uniqueid = mb_convert_uniquename($line[2]);
 			$ct_uniqueidtype = ENV_STR_OFX_CODE_HC;
 			$ct_secname = "";
-			// –Á•¿ˆê——‚æ‚èŒŸõ‚·‚é
+			// éŠ˜æŸ„ä¸€è¦§ã‚ˆã‚Šæ¤œç´¢ã™ã‚‹
 			foreach($investments as $investment) {
 				if($investment[0] == ENV_STR_OFX_FUND && strpos($investment[3], $ct_uniqueid) !== false) {
-					// ‚¿‚‚ª‚ ‚éê‡
+					// æŒã¡é«˜ãŒã‚ã‚‹å ´åˆ
 					$ct_uniqueid = mb_convert_uniqueid($investment[3]);
 					$ct_secname = $investment[2];
 					break;
 				}
 			}
 			if($ct_secname == "") {
-				// ‚¿‚‚ª‚È‚¢ê‡
+				// æŒã¡é«˜ãŒãªã„å ´åˆ
 				$ct_uniqueid = mb_convert_uniqueid(mb_convert_uniquename($line[2]));
-				$ct_secname = mb_convert_string($line[2]);
+				$ct_secname = $line[2];
 				
 				if(strpos($seclist, $ct_uniqueid) === false) {
 					// SECLIST
@@ -410,12 +410,12 @@ if(strpos($body, "‚½‚¾‚¢‚ÜƒT[ƒrƒX‚ğ‚²—˜—p‚É‚È‚ê‚Ü‚¹‚ñ") !== false || strpos($bo
 					$seclist .= "\r\n";
 				}
 			}
-			// ’P‰¿‚ğæ“¾‚·‚é
+			// å˜ä¾¡ã‚’å–å¾—ã™ã‚‹
 			$ct_unitprice = round((integer)$line[6] / 10000, 4);
-			// è”—¿‚ğæ“¾‚·‚é
+			// æ‰‹æ•°æ–™ã‚’å–å¾—ã™ã‚‹
 			// $ct_commission = round((integer)$line[5] * $ct_unitprice - (integer)$line[10], 4);
 			$ct_commission = round((integer)$line[10], 4);
-			// Å‚ğæ“¾‚·‚é
+			// ç¨ã‚’å–å¾—ã™ã‚‹
 			$ct_taxes = "";
 			switch($line[4]) {
 			case ENV_STR_ASSET_FUND_SELL:
@@ -430,16 +430,16 @@ if(strpos($body, "‚½‚¾‚¢‚ÜƒT[ƒrƒX‚ğ‚²—˜—p‚É‚È‚ê‚Ü‚¹‚ñ") !== false || strpos($bo
 				$ct_total = -1;
 				break;
 			}
-			// ”—Ê‚ğæ“¾‚·‚é
+			// æ•°é‡ã‚’å–å¾—ã™ã‚‹
 			$ct_units *= (integer)$line[5];
-			// ‹àŠz‚ğæ“¾‚·‚é
-			// ƒ}ƒCƒiƒX’l‚Ìè”—¿‚Í‹–—e‚³‚ê‚È‚¢‚½‚ßA‹àŠz‚Éãæ‚¹‚µ‚Ä’²®‚·‚é
+			// é‡‘é¡ã‚’å–å¾—ã™ã‚‹
+			// ãƒã‚¤ãƒŠã‚¹å€¤ã®æ‰‹æ•°æ–™ã¯è¨±å®¹ã•ã‚Œãªã„ãŸã‚ã€é‡‘é¡ã«ä¸Šä¹—ã›ã—ã¦èª¿æ•´ã™ã‚‹
 			$ct_total *= ((integer)$line[9] + $ct_commission);
-			// –ñ’è“ú‚ğæ“¾‚·‚é
+			// ç´„å®šæ—¥ã‚’å–å¾—ã™ã‚‹
 			$ct_dttrade = parse_date($line[0]);
-			// ’Ê”Ô‚ğ¶¬‚·‚é
+			// é€šç•ªã‚’ç”Ÿæˆã™ã‚‹
 			if($ct_dttrade == $ct_date) $ct_num++; else $ct_num = 0;
-			// ƒgƒ‰ƒ“ƒUƒNƒVƒ‡ƒ“”Ô†‚ğ¶¬‚·‚é
+			// ãƒˆãƒ©ãƒ³ã‚¶ã‚¯ã‚·ãƒ§ãƒ³ç•ªå·ã‚’ç”Ÿæˆã™ã‚‹
 			$ct_fitid = $ct_dttrade . "0000010" . sprintf("%05d", $ct_num);
 			
 			$ct = array();
@@ -451,7 +451,7 @@ if(strpos($body, "‚½‚¾‚¢‚ÜƒT[ƒrƒX‚ğ‚²—˜—p‚É‚È‚ê‚Ü‚¹‚ñ") !== false || strpos($bo
 			$ct["UNIQUEIDTYPE"] = $ct_uniqueidtype;
 			$ct["UNITS"] = (string)$ct_units;
 			$ct["UNITPRICE"] = (string)$ct_unitprice;
-			// OFXd—lãACOMMISSIONAFEESATAXES‚Íƒ}ƒCƒiƒX’l‚ğ‹–—e‚µ‚È‚¢
+			// OFXä»•æ§˜ä¸Šã€COMMISSIONã€FEESã€TAXESã¯ãƒã‚¤ãƒŠã‚¹å€¤ã‚’è¨±å®¹ã—ãªã„
 			// $ct["COMMISSION"] = (string)abs($ct_commission);
 			$ct["FEES"] = (string)abs($ct_fees);
 			$ct["TAXES"] = (string)abs($ct_taxes);
@@ -483,7 +483,7 @@ if(strpos($body, "‚½‚¾‚¢‚ÜƒT[ƒrƒX‚ğ‚²—˜—p‚É‚È‚ê‚Ü‚¹‚ñ") !== false || strpos($bo
 			$invtranlist .= "<FEES>" . $ct["FEES"] . "</FEES>";
 			break;
 		case ENV_STR_OFX_FUND:
-			// ƒ}ƒCƒiƒX’l‚Ìè”—¿‚Í‹–—e‚³‚ê‚È‚¢‚½‚ßA‹àŠz‚Éãæ‚¹‚µ‚Ä’²®‚·‚é
+			// ãƒã‚¤ãƒŠã‚¹å€¤ã®æ‰‹æ•°æ–™ã¯è¨±å®¹ã•ã‚Œãªã„ãŸã‚ã€é‡‘é¡ã«ä¸Šä¹—ã›ã—ã¦èª¿æ•´ã™ã‚‹
 			// $invtranlist .= "<COMMISSION>" . $ct["COMMISSION"] . "</COMMISSION>";
 			break;
 		case ENV_STR_OFX_CASH:
@@ -499,67 +499,67 @@ if(strpos($body, "‚½‚¾‚¢‚ÜƒT[ƒrƒX‚ğ‚²—˜—p‚É‚È‚ê‚Ü‚¹‚ñ") !== false || strpos($bo
 		$invtranlist .= "\r\n";
 	}
 	
-	// “üo‹àÆ‰ïCSV‚ğæ“¾‚·‚éi“üo‹àj
+	// å…¥å‡ºé‡‘ç…§ä¼šCSVã‚’å–å¾—ã™ã‚‹ï¼ˆå…¥å‡ºé‡‘ï¼‰
 	$page = "/Light/Account/CashStatus/CashStatusCsv.asp";
 	$cookie = kabucom_updatecookie($head, $cookie);
 	list($head, $body) = kabucom_http11($method, $protocol, $host, $page, $query, $cookie);
 	
-	$lines = array_reverse(parse_csv($body));
+	$lines = array_reverse(parse_csv(mb_convert_string($body)));
 	$cd_date = "";
 	$cd_num = 0;
 	foreach($lines as $line) {
-		if(count($line) == 4 && $line[0] != "[ “üo‹àŠm”F ]" && $line[0] != "‚¨æ‚èˆµ‚¢“ú") {
+		if(count($line) == 4 && $line[0] != "[ å…¥å‡ºé‡‘ç¢ºèª ]" && $line[0] != "ãŠå–ã‚Šæ‰±ã„æ—¥") {
 			$cd = array();
-			list($cd_name, $cd_memo, $cd_dummy) = explode(ENV_CHR_SEPARATOR, str_replace(array("@", "^"), array(ENV_CHR_SEPARATOR, ENV_CHR_SEPARATOR), $line[3]), 3);
+			list($cd_name, $cd_memo, $cd_dummy) = explode(ENV_CHR_SEPARATOR, str_replace(array("ã€€", "ï¼"), array(ENV_CHR_SEPARATOR, ENV_CHR_SEPARATOR), $line[3]), 3);
 			if($cd_memo != "") {
-				$cd["NAME"] = mb_convert_string($cd_name);
-				$cd["MEMO"] = mb_convert_string($cd_memo);
+				$cd["NAME"] = $cd_name;
+				$cd["MEMO"] = $cd_memo;
 			} else {
-				$cd["NAME"] = mb_convert_string($line[3]);
+				$cd["NAME"] = $line[3];
 				$cd["MEMO"] = "";
 			}
 			if($cd["MEMO"] == "") $cd["MEMO"] = ENV_STR_OFX_MEMO;
 			switch($cd_name) {
-			case "U“ü‹à":
-			case "Uo‹à":
+			case "æŒ¯è¾¼å…¥é‡‘":
+			case "æŒ¯è¾¼å‡ºé‡‘":
 				$cd["TRNTYPE"] = ENV_STR_OFX_TRNTYPE_DIRECTDEP;
 				break;
-			case "”z“–‹à":
+			case "é…å½“é‡‘":
 				$cd["TRNTYPE"] = ENV_STR_OFX_TRNTYPE_DIV;
 				break;
-			case "Š”®”ƒ•t":
-			case "Š”®”„‹p":
-			case "“ŠM”ƒ•t":
-			case "“ŠM”„‹p":
+			case "æ ªå¼è²·ä»˜":
+			case "æ ªå¼å£²å´":
+			case "æŠ•ä¿¡è²·ä»˜":
+			case "æŠ•ä¿¡å£²å´":
 				$cd["TRNTYPE"] = ENV_STR_OFX_TRNTYPE_CASH;
 				break;
-			case "÷“n‰vÅŠÒ•t‹à":
+			case "è­²æ¸¡ç›Šç¨é‚„ä»˜é‡‘":
 				$cd["TRNTYPE"] = ENV_STR_OFX_TRNTYPE_DEP;
 				break;
-			case "Šm’è”z“–’²®‹à":
+			case "ç¢ºå®šé…å½“èª¿æ•´é‡‘":
 				$cd["TRNTYPE"] = ENV_STR_OFX_TRNTYPE_INT;
 				break;
-			case "Uè”—¿":
+			case "æŒ¯è¾¼æ‰‹æ•°æ–™":
 				$cd["TRNTYPE"] = ENV_STR_OFX_TRNTYPE_SRVCHG;
 				break;
-			case "©“®ˆø—":
+			case "è‡ªå‹•å¼•è½":
 				$cd["TRNTYPE"] = ENV_STR_OFX_TRNTYPE_DIRECTDEBIT;
 				break;
-			case "M—p•ÔÏ":
-			case "•ió":
-			case "•i“n":
-			case "æ•¨•ÔÏ":
-			case "OP•ÔÏ":
-			case "Cƒƒ‰ƒ“ƒg”„”ƒ":
+			case "ä¿¡ç”¨è¿”æ¸ˆ":
+			case "å“å—":
+			case "å“æ¸¡":
+			case "å…ˆç‰©è¿”æ¸ˆ":
+			case "OPè¿”æ¸ˆ":
+			case "Cãƒ¯ãƒ©ãƒ³ãƒˆå£²è²·":
 			default:
 				$cd["TRNTYPE"] = ENV_STR_OFX_TRNTYPE_OTHER;
 				break;
 			}
-			// –ñ’è“ú‚ğæ“¾‚·‚é
+			// ç´„å®šæ—¥ã‚’å–å¾—ã™ã‚‹
 			$cd_dtposted = parse_date($line[0]);
-			// ’Ê”Ô‚ğ¶¬‚·‚é
+			// é€šç•ªã‚’ç”Ÿæˆã™ã‚‹
 			if($cd_dtposted == $cd_date) $cd_num++; else $cd_num = 0;
-			// ƒgƒ‰ƒ“ƒUƒNƒVƒ‡ƒ“”Ô†‚ğ¶¬‚·‚é
+			// ãƒˆãƒ©ãƒ³ã‚¶ã‚¯ã‚·ãƒ§ãƒ³ç•ªå·ã‚’ç”Ÿæˆã™ã‚‹
 			$cd["FITID"] = $cd_dtposted . "0000000" . sprintf("%05d", $cd_num);
 			$cd["TRNAMT"] = (string)((double)parse_amount($line[1]) - (double)parse_amount($line[2]));
 			$cd["DTPOSTED"] = $cd_dtposted;
@@ -583,10 +583,10 @@ if(strpos($body, "‚½‚¾‚¢‚ÜƒT[ƒrƒX‚ğ‚²—˜—p‚É‚È‚ê‚Ü‚¹‚ñ") !== false || strpos($bo
 		}
 	}
 	
-	// ÀsŠÔiƒ^ƒCƒ€ƒAƒEƒgj‚ğÄİ’è‚·‚é
+	// å®Ÿè¡Œæ™‚é–“ï¼ˆã‚¿ã‚¤ãƒ ã‚¢ã‚¦ãƒˆï¼‰ã‚’å†è¨­å®šã™ã‚‹
 	@set_time_limit(ENV_NUM_TIMEOUT);
 	
-	// ƒƒOƒAƒEƒg‚·‚é
+	// ãƒ­ã‚°ã‚¢ã‚¦ãƒˆã™ã‚‹
 	$method = "POST";
 	$protocol = "http";
 	$host = "s20.si1.kabu.co.jp";

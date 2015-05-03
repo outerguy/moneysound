@@ -1,35 +1,35 @@
 <?php
 /*
-nrkn.inc: “ú–{ƒŒƒR[ƒhEƒL[ƒsƒ“ƒOEƒlƒbƒgƒ[ƒN‚ÌHTML‚æ‚èOFXƒtƒ@ƒCƒ‹‚ğ¶¬‚·‚é
+nrkn.inc: æ—¥æœ¬ãƒ¬ã‚³ãƒ¼ãƒ‰ãƒ»ã‚­ãƒ¼ãƒ”ãƒ³ã‚°ãƒ»ãƒãƒƒãƒˆãƒ¯ãƒ¼ã‚¯ã®HTMLã‚ˆã‚ŠOFXãƒ•ã‚¡ã‚¤ãƒ«ã‚’ç”Ÿæˆã™ã‚‹
 Copyright (C) 2012-2015 OFFICE OUTERGUY. All rights reserved.
 mailto:contact@beatrek.com
 Licensed under the GNU AGPLv3.
 */
 
-// ƒƒOƒCƒ“î•ñ‚ğæ“¾‚·‚é
+// ãƒ­ã‚°ã‚¤ãƒ³æƒ…å ±ã‚’å–å¾—ã™ã‚‹
 $user = $ofxforms["userId"];
 $pass = $ofxforms["password"];
 
 $resp = array();
 
-define("ENV_STR_ASSET_REINVESTMENT", "Ä“Š‘");
-define("ENV_STR_ASSET_CONTRIBUTION", "‹’o");
-define("ENV_STR_ASSET_SELL", "‘Y”„‹p");
-define("ENV_STR_ASSET_PAYMENT", "x•¥");
+define("ENV_STR_ASSET_REINVESTMENT", "å†æŠ•è³‡");
+define("ENV_STR_ASSET_CONTRIBUTION", "æ‹ å‡º");
+define("ENV_STR_ASSET_SELL", "è³‡ç”£å£²å´");
+define("ENV_STR_ASSET_PAYMENT", "æ”¯æ‰•");
 
-// ÀsŠÔiƒ^ƒCƒ€ƒAƒEƒgj‚ğÄİ’è‚·‚é
+// å®Ÿè¡Œæ™‚é–“ï¼ˆã‚¿ã‚¤ãƒ ã‚¢ã‚¦ãƒˆï¼‰ã‚’å†è¨­å®šã™ã‚‹
 @set_time_limit(ENV_NUM_TIMEOUT);
 
-// ƒz[ƒ€‰æ–Ê‚ğæ“¾‚·‚é
+// ãƒ›ãƒ¼ãƒ ç”»é¢ã‚’å–å¾—ã™ã‚‹
 $method = "GET";
 $uris = parse_uri($settings["home"]);
 $query = "";
 $cookie = "";
 list($head, $body) = nrkn_http11($method, $uris, $query, $cookie);
 
-// ƒƒOƒCƒ“‰æ–Ê‚ğæ“¾‚·‚é
+// ãƒ­ã‚°ã‚¤ãƒ³ç”»é¢ã‚’å–å¾—ã™ã‚‹
 $as = parse_tag($body, "a");
-foreach($as as $a) if(strip_tags($a["innerHTML"]) == "ƒƒOƒCƒ“") {
+foreach($as as $a) if(strip_tags($a["innerHTML"]) == "ãƒ­ã‚°ã‚¤ãƒ³") {
 	$method = "GET";
 	$uris = parse_uri($a["href"], $uris);
 	$query = "";
@@ -38,7 +38,7 @@ foreach($as as $a) if(strip_tags($a["innerHTML"]) == "ƒƒOƒCƒ“") {
 	break;
 }
 
-// ƒƒOƒCƒ“‚·‚é
+// ãƒ­ã‚°ã‚¤ãƒ³ã™ã‚‹
 $forms = parse_tag($body, "form");
 if(count($forms) >= 1) {
 	$inputs = parse_tag($forms[0]["innerHTML"], "input");
@@ -56,7 +56,7 @@ if(count($forms) >= 1) {
 	list($head, $body) = nrkn_http11($method, $uris, $query, $cookie);
 }
 
-// ƒŠƒ_ƒCƒŒƒNƒg‚·‚é
+// ãƒªãƒ€ã‚¤ãƒ¬ã‚¯ãƒˆã™ã‚‹
 $forms = parse_tag($body, "form");
 if(count($forms) == 1) {
 	$inputs = parse_tag($forms[0]["innerHTML"], "input");
@@ -70,8 +70,8 @@ if(count($forms) == 1) {
 	list($head, $body) = nrkn_http11($method, $uris, $query, $cookie);
 }
 
-if(strpos($body, "ƒVƒXƒeƒ€ƒƒ“ƒeƒiƒ“ƒX’†") !== false || strpos($body, "ƒVƒXƒeƒ€ƒƒ“ƒeƒiƒ“ƒX‚Ì‚½‚ß") !== false) {
-	// ƒVƒXƒeƒ€ƒƒ“ƒeƒiƒ“ƒX‰æ–Ê‚Ìê‡
+if(strpos($body, "ã‚·ã‚¹ãƒ†ãƒ ãƒ¡ãƒ³ãƒ†ãƒŠãƒ³ã‚¹ä¸­") !== false || strpos($body, "ã‚·ã‚¹ãƒ†ãƒ ãƒ¡ãƒ³ãƒ†ãƒŠãƒ³ã‚¹ã®ãŸã‚") !== false) {
+	// ã‚·ã‚¹ãƒ†ãƒ ãƒ¡ãƒ³ãƒ†ãƒŠãƒ³ã‚¹ç”»é¢ã®å ´åˆ
 	$resp["status"] = ENV_NUM_STATUS_MAINTENANCE;
 	$resp["method"] = $method;
 	$resp["uri"] = $uris["scheme"] . "://" . $uris["host"] . $uris["path"];
@@ -80,8 +80,8 @@ if(strpos($body, "ƒVƒXƒeƒ€ƒƒ“ƒeƒiƒ“ƒX’†") !== false || strpos($body, "ƒVƒXƒeƒ€ƒ
 	$resp["head"] = $head;
 	$resp["body"] = $body;
 	$resp["ofx"] = generate_ofx($resp["status"]);
-} else if(strpos($body, "‘O‰ñ‚²—˜—piƒƒOƒCƒ“j“ú") === false) {
-	// ƒƒOƒCƒ“¸”s‚Ìê‡
+} else if(strpos($body, "å‰å›ã”åˆ©ç”¨ï¼ˆãƒ­ã‚°ã‚¤ãƒ³ï¼‰æ—¥æ™‚") === false) {
+	// ãƒ­ã‚°ã‚¤ãƒ³å¤±æ•—ã®å ´åˆ
 	$resp["status"] = ENV_NUM_STATUS_FAILURE;
 	$resp["method"] = $method;
 	$resp["uri"] = $uris["scheme"] . "://" . $uris["host"] . $uris["path"];
@@ -94,26 +94,26 @@ if(strpos($body, "ƒVƒXƒeƒ€ƒƒ“ƒeƒiƒ“ƒX’†") !== false || strpos($body, "ƒVƒXƒeƒ€ƒ
 	$marginbalance = "0";
 	$availcash = "0";
 	
-	// ÀsŠÔiƒ^ƒCƒ€ƒAƒEƒgj‚ğÄİ’è‚·‚é
+	// å®Ÿè¡Œæ™‚é–“ï¼ˆã‚¿ã‚¤ãƒ ã‚¢ã‚¦ãƒˆï¼‰ã‚’å†è¨­å®šã™ã‚‹
 	@set_time_limit(ENV_NUM_TIMEOUT);
 	
 	$acctid = "";
 	$acctname = "";
 	
-	// tdƒ^ƒO‚ğƒp[ƒX‚·‚é
+	// tdã‚¿ã‚°ã‚’ãƒ‘ãƒ¼ã‚¹ã™ã‚‹
 	$f = false;
-	$tds = parse_tag($body, "td", true); // Ä‹A“I‚Éæ“¾‚·‚é
+	$tds = parse_tag($body, "td", true); // å†å¸°çš„ã«å–å¾—ã™ã‚‹
 	foreach($tds as $td) {
 		if($f == true) {
 			$acctid = trim(strip_tags($td["innerHTML"]));
 			$f = false;
 		}
-		if($td["innerHTML"] == "‰Á“üÒ”Ô†") $f = true;
+		if($td["innerHTML"] == "åŠ å…¥è€…ç•ªå·") $f = true;
 	}
 	
 	if($acctid == "") $acctid = $user;
 	
-	// ‘Y•]‰¿ŠzÆ‰ï‰æ–Ê‚ğæ“¾‚·‚é
+	// è³‡ç”£è©•ä¾¡é¡ç…§ä¼šç”»é¢ã‚’å–å¾—ã™ã‚‹
 	$forms = parse_tag($body, "form");
 	foreach($forms as $form) if($form["name"] == "W37S1040_Form") {
 		$inputs = parse_tag($form["innerHTML"], "input");
@@ -128,47 +128,47 @@ if(strpos($body, "ƒVƒXƒeƒ€ƒƒ“ƒeƒiƒ“ƒX’†") !== false || strpos($body, "ƒVƒXƒeƒ€ƒ
 		break;
 	}
 	
-	// tdƒ^ƒO‚ğƒp[ƒX‚·‚é
-	$tds = parse_tag($body, "td", true); // Ä‹A“I‚Éæ“¾‚·‚é
+	// tdã‚¿ã‚°ã‚’ãƒ‘ãƒ¼ã‚¹ã™ã‚‹
+	$tds = parse_tag($body, "td", true); // å†å¸°çš„ã«å–å¾—ã™ã‚‹
 	$securities = array();
 	$bufs = array();
 	foreach($tds as $td) switch($td["class"]) {
 	case "s1040-t2-o1":
 	case "s1040-t2-e1":
-		$bufs["SECNAME"] = mb_convert_string(trim(strip_tags($td["innerHTML"]))); // ¤•i–¼
+		$bufs["SECNAME"] = trim(strip_tags($td["innerHTML"])); // å•†å“å
 		break;
 	case "s1040-t2-o2":
 	case "s1040-t2-e2":
-		$bufs["TYPE"] = mb_convert_string(trim(strip_tags($td["innerHTML"]))); // ¤•i•ª—Ş
+		$bufs["TYPE"] = trim(strip_tags($td["innerHTML"])); // å•†å“åˆ†é¡
 		break;
 	case "s1040-t2-o3":
 	case "s1040-t2-e3":
-		$bufs["UNITS"] = parse_amount($td["innerHTML"]); // ”—Ê
+		$bufs["UNITS"] = parse_amount($td["innerHTML"]); // æ•°é‡
 		break;
 	case "s1040-t2-o4":
 	case "s1040-t2-e4":
-		$bufs["UNITPRICE"] = parse_amount($td["innerHTML"]); // Šî€‰¿Šz
+		$bufs["UNITPRICE"] = parse_amount($td["innerHTML"]); // åŸºæº–ä¾¡é¡
 		break;
 	case "s1040-t2-o5":
 	case "s1040-t2-e5":
-		$bufs["MKTVAL"] = parse_amount($td["innerHTML"]); // •]‰¿‹àŠz
+		$bufs["MKTVAL"] = parse_amount($td["innerHTML"]); // è©•ä¾¡é‡‘é¡
 		break;
 	case "s1040-t2-o7":
 	case "s1040-t2-e7":
-		$bufs["MEMO"] = parse_amount($td["innerHTML"]); // ‘¹‰v
+		$bufs["MEMO"] = parse_amount($td["innerHTML"]); // æç›Š
 		break;
 	case "s1040-t2-o9":
 	case "s1040-t2-e9":
-		$bufs["DTPRICEASOF"] = ($td["innerHTML"] == "&nbsp;"? ENV_STR_DATE_TODAY: parse_date($td["innerHTML"])); // Šî€“ú
+		$bufs["DTPRICEASOF"] = ($td["innerHTML"] == "&nbsp;"? ENV_STR_DATE_TODAY: parse_date($td["innerHTML"])); // åŸºæº–æ—¥
 		
-		if($bufs["TYPE"] == mb_convert_string("Œ»‹à")) {
+		if($bufs["TYPE"] == "ç¾é‡‘") {
 			$marginbalance = (string)((double)$marginbalance + (double)$bufs["MKTVAL"]);
 			$availcash = $marginbalance;
 		} else {
 			$bufs["UNIQUEIDTYPE"] = $settings["code"];
-			$bufs["HELDINACCT"] = ENV_STR_OFX_TRNTYPE_CASH; // Œ»‹à
+			$bufs["HELDINACCT"] = ENV_STR_OFX_TRNTYPE_CASH; // ç¾é‡‘
 			$bufs["POSTYPE"] = "LONG";
-			$bufs["CATEGORY"] = ENV_STR_OFX_FUND; // “Š‘M‘õ
+			$bufs["CATEGORY"] = ENV_STR_OFX_FUND; // æŠ•è³‡ä¿¡è¨—
 			$bufs["UNITPRICE"] = ($bufs["UNITPRICE"] == "0"? 0: (string)round((double)$bufs["UNITPRICE"] / round((double)$bufs["UNITS"] * (double)$bufs["UNITPRICE"] / (double)$bufs["MKTVAL"]), 4));
 			array_push($securities, $bufs);
 		}
@@ -178,7 +178,7 @@ if(strpos($body, "ƒVƒXƒeƒ€ƒƒ“ƒeƒiƒ“ƒX’†") !== false || strpos($body, "ƒVƒXƒeƒ€ƒ
 		break;
 	}
 	
-	// æˆø—š—ğÆ‰ï‰æ–Ê‚ğæ“¾‚·‚é
+	// å–å¼•å±¥æ­´ç…§ä¼šç”»é¢ã‚’å–å¾—ã™ã‚‹
 	$forms = parse_tag($body, "form");
 	foreach($forms as $form) if($form["name"] == "W37S1050_Head") {
 		$inputs = parse_tag($form["innerHTML"], "input");
@@ -193,7 +193,7 @@ if(strpos($body, "ƒVƒXƒeƒ€ƒƒ“ƒeƒiƒ“ƒX’†") !== false || strpos($body, "ƒVƒXƒeƒ€ƒ
 		break;
 	}
 	
-	// ƒŠƒ_ƒCƒŒƒNƒg‚·‚é
+	// ãƒªãƒ€ã‚¤ãƒ¬ã‚¯ãƒˆã™ã‚‹
 	$forms = parse_tag($body, "form");
 	foreach($forms as $form) if($form["name"] == "W37S1050_Form") {
 		$inputs = parse_tag($form["innerHTML"], "input");
@@ -208,7 +208,7 @@ if(strpos($body, "ƒVƒXƒeƒ€ƒƒ“ƒeƒiƒ“ƒX’†") !== false || strpos($body, "ƒVƒXƒeƒ€ƒ
 		$queries["lst_ddiv_mm_refBegin"] = "lst_ddiv_mm_refBegin=" . substr(ENV_STR_DATE_PASTDAY, 4, 2);
 		$queries["lst_ddiv_yyyy_refEnd"] = "lst_ddiv_yyyy_refEnd=" . substr(ENV_STR_DATE_TODAY, 0, 4);
 		$queries["lst_ddiv_mm_refEnd"] = "lst_ddiv_mm_refEnd=" . substr(ENV_STR_DATE_TODAY, 4, 2);
-		$queries["chk_transType"] = "chk_transType=01&chk_transType=04&chk_transType=06&chk_transType=07"; // ‹’oAû‰v•ª”zE–ŠúŒp‘±A‘Y”„‹pAx•¥
+		$queries["chk_transType"] = "chk_transType=01&chk_transType=04&chk_transType=06&chk_transType=07"; // æ‹ å‡ºã€åç›Šåˆ†é…ãƒ»æº€æœŸç¶™ç¶šã€è³‡ç”£å£²å´ã€æ”¯æ‰•
 		
 		$method = $form["method"];
 		$uris = parse_uri($form["action"], $uris);
@@ -222,15 +222,15 @@ if(strpos($body, "ƒVƒXƒeƒ€ƒƒ“ƒeƒiƒ“ƒX’†") !== false || strpos($body, "ƒVƒXƒeƒ€ƒ
 	$banks = array();
 	$exchanges = array();
 	
-	// ÀsŠÔiƒ^ƒCƒ€ƒAƒEƒgj‚ğÄİ’è‚·‚é
+	// å®Ÿè¡Œæ™‚é–“ï¼ˆã‚¿ã‚¤ãƒ ã‚¢ã‚¦ãƒˆï¼‰ã‚’å†è¨­å®šã™ã‚‹
 	@set_time_limit(ENV_NUM_TIMEOUT);
 	
-	// –¾×•\¦‰æ–Ê‚ğæ“¾‚·‚é
+	// æ˜ç´°è¡¨ç¤ºç”»é¢ã‚’å–å¾—ã™ã‚‹
 	$forms = parse_tag($body, "form");
 	$f = false;
 	foreach($forms as $form) if($form["name"] == "W37S1060_Form") {
 		if($f == false) {
-			$f = true; // 1‚Â–Ú‚ÌƒtƒH[ƒ€‚Í–¾×‚Å‚È‚¢‚½‚ß–³‹‚·‚é
+			$f = true; // 1ã¤ç›®ã®ãƒ•ã‚©ãƒ¼ãƒ ã¯æ˜ç´°ã§ãªã„ãŸã‚ç„¡è¦–ã™ã‚‹
 			continue;
 		}
 		
@@ -244,65 +244,65 @@ if(strpos($body, "ƒVƒXƒeƒ€ƒƒ“ƒeƒiƒ“ƒX’†") !== false || strpos($body, "ƒVƒXƒeƒ€ƒ
 		$cookie = nrkn_update_cookie($head, $cookie);
 		list($head, $body) = nrkn_http11($method, $uris, $query, $cookie);
 		
-		// tdƒ^ƒO‚ğƒp[ƒX‚·‚é
-		$tds = parse_tag($body, "td", true); // Ä‹A“I‚Éæ“¾‚·‚é
+		// tdã‚¿ã‚°ã‚’ãƒ‘ãƒ¼ã‚¹ã™ã‚‹
+		$tds = parse_tag($body, "td", true); // å†å¸°çš„ã«å–å¾—ã™ã‚‹
 		$bufs = array();
 		foreach($tds as $td) switch($td["class"]) {
-		// û‰v•ª”z
+		// åç›Šåˆ†é…
 		case "s1110-t1-d1":
-			$bufs["DTPOSTED"] = parse_date($td["innerHTML"]); // ŒˆZ“úE–Šú“ú
+			$bufs["DTPOSTED"] = parse_date($td["innerHTML"]); // æ±ºç®—æ—¥ãƒ»æº€æœŸæ—¥
 			break;
 		case "s1110-t1-d2":
-			$bufs["NAME"] = mb_convert_string(trim(strip_tags($td["innerHTML"]))); // æˆø‹æ•ª
+			$bufs["NAME"] = trim(strip_tags($td["innerHTML"])); // å–å¼•åŒºåˆ†
 			break;
 		case "s1110-t2-o1":
 		case "s1110-t2-e1":
-			$bufs["MEMO"] = mb_convert_string(trim(strip_tags($td["innerHTML"]))); // ¤•i–¼
+			$bufs["MEMO"] = trim(strip_tags($td["innerHTML"])); // å•†å“å
 			break;
 		case "s1110-t2-o5":
 		case "s1110-t2-e5":
-			$bufs["TRNAMT"] = parse_amount($td["innerHTML"]); // •ª”z‹àŠzE—˜‘§
+			$bufs["TRNAMT"] = parse_amount($td["innerHTML"]); // åˆ†é…é‡‘é¡ãƒ»åˆ©æ¯
 			
-			$bufs["TRNTYPE"] = ENV_STR_OFX_TRNTYPE_DIV; // ”z“–‹à
-			$bufs["SUBACCTFUND"] = ENV_STR_OFX_CASH; // Œ»‹à
+			$bufs["TRNTYPE"] = ENV_STR_OFX_TRNTYPE_DIV; // é…å½“é‡‘
+			$bufs["SUBACCTFUND"] = ENV_STR_OFX_CASH; // ç¾é‡‘
 			array_push($banks, $bufs);
 			$bufs = array();
 			break;
 		
-		// û‰v•ª”ziÄ“Š‘j
+		// åç›Šåˆ†é…ï¼ˆå†æŠ•è³‡ï¼‰
 		case "s1110-t3-o1":
 		case "s1110-t3-e1":
-			$bufs["SECNAME"] = mb_convert_string(trim(strip_tags($td["innerHTML"]))); // ¤•i–¼
+			$bufs["SECNAME"] = trim(strip_tags($td["innerHTML"])); // å•†å“å
 			break;
 		case "s1110-t3-o8":
 		case "s1110-t3-e8":
-			$bufs["DTTRADE"] = parse_date($td["innerHTML"]); // –ñ’è“ú
+			$bufs["DTTRADE"] = parse_date($td["innerHTML"]); // ç´„å®šæ—¥
 			break;
 		case "s1110-t3-o3":
 		case "s1110-t3-e3":
-			$memo = trim(strip_tags($td["innerHTML"])); // ”õl
+			$memo = trim(strip_tags($td["innerHTML"])); // å‚™è€ƒ
 			if($memo != "") $memo = ENV_CHR_CONCATENATOR . $memo;
-			$bufs["MEMO"] = mb_convert_string(ENV_STR_ASSET_REINVESTMENT . $memo); // Ä“Š‘
+			$bufs["MEMO"] = ENV_STR_ASSET_REINVESTMENT . $memo; // å†æŠ•è³‡
 			break;
 		case "s1110-t3-o4":
 		case "s1110-t3-e4":
-			$bufs["UNITS"] = parse_amount($td["innerHTML"]); // w“ü”—Ê
+			$bufs["UNITS"] = parse_amount($td["innerHTML"]); // è³¼å…¥æ•°é‡
 			break;
 		case "s1110-t3-o5":
 		case "s1110-t3-e5":
-			$bufs["UNITPRICE"] = parse_amount($td["innerHTML"]); // w“ü’P‰¿
+			$bufs["UNITPRICE"] = parse_amount($td["innerHTML"]); // è³¼å…¥å˜ä¾¡
 			break;
 		case "s1110-t3-o6":
 		case "s1110-t3-e6":
-			$bufs["TOTAL"] = (string)(-1 * (double)parse_amount($td["innerHTML"])); // w“ü‹àŠz
+			$bufs["TOTAL"] = (string)(-1 * (double)parse_amount($td["innerHTML"])); // è³¼å…¥é‡‘é¡
 			break;
 		case "s1110-t3-o7":
 		case "s1110-t3-e7":
-			if(trim(strip_tags($td["innerHTML"])) == "–ñ’èÏ") {
-				$bufs["CATEGORY"] = ENV_STR_OFX_FUND; // ‚·‚×‚Ä‚ğ“Š‘M‘õ‚ÆŒ©‚È‚·
-				$bufs["SUBACCTSEC"] = ENV_STR_OFX_CASH; // Œ»‹à
-				$bufs["SUBACCTFUND"] = ENV_STR_OFX_CASH; // Œ»‹à
-				$bufs["BUYTYPE"] = ENV_STR_OFX_BUY; // ”ƒ•t
+			if(trim(strip_tags($td["innerHTML"])) == "ç´„å®šæ¸ˆ") {
+				$bufs["CATEGORY"] = ENV_STR_OFX_FUND; // ã™ã¹ã¦ã‚’æŠ•è³‡ä¿¡è¨—ã¨è¦‹ãªã™
+				$bufs["SUBACCTSEC"] = ENV_STR_OFX_CASH; // ç¾é‡‘
+				$bufs["SUBACCTFUND"] = ENV_STR_OFX_CASH; // ç¾é‡‘
+				$bufs["BUYTYPE"] = ENV_STR_OFX_BUY; // è²·ä»˜
 				if((double)$bufs["UNITS"] != 0 && (double)$bufs["MKTVAL"] != 0) {
 					$bufs["UNITPRICE"] = (string)round((double)$bufs["UNITPRICE"] / round((double)$bufs["UNITS"] * (double)$bufs["UNITPRICE"] / (double)$bufs["MKTVAL"]), 4);
 					array_push($exchanges, $bufs);
@@ -311,103 +311,103 @@ if(strpos($body, "ƒVƒXƒeƒ€ƒƒ“ƒeƒiƒ“ƒX’†") !== false || strpos($body, "ƒVƒXƒeƒ€ƒ
 			$bufs = array();
 			break;
 		
-		// ‹’oiŒ»‹àj
+		// æ‹ å‡ºï¼ˆç¾é‡‘ï¼‰
 		case "s1070-t1-d2":
-			$cd_date = parse_date($td["innerHTML"]); // ‹’o“ú
+			$cd_date = parse_date($td["innerHTML"]); // æ‹ å‡ºæ—¥
 			break;
 		case "s1070-t1-h3":
-			if($td["innerHTML"] != "‹’o“ú" && strpos($td["innerHTML"], "{") === false) $bufs["NAME"] = mb_convert_string(str_replace(array("i‚Pj", "i‚Qj", "Šz"), array("", "", ""), trim(strip_tags($td["innerHTML"])))); // ‹’o“à–ó
+			if($td["innerHTML"] != "æ‹ å‡ºæ—¥" && strpos($td["innerHTML"], "ï¼‹") === false) $bufs["NAME"] = str_replace(array("ï¼ˆï¼‘ï¼‰", "ï¼ˆï¼’ï¼‰", "é¡"), array("", "", ""), trim(strip_tags($td["innerHTML"]))); // æ‹ å‡ºå†…è¨³
 			break;
 		case "s1070-t1-d3":
 			if($bufs["NAME"] != "") {
-				$bufs["TRNAMT"] = parse_amount($td["innerHTML"]); // Š|‹àŠz
+				$bufs["TRNAMT"] = parse_amount($td["innerHTML"]); // æ›é‡‘é¡
 				
 				$bufs["DTPOSTED"] = $cd_date;
-				$bufs["MEMO"] = mb_convert_string(ENV_STR_ASSET_CONTRIBUTION);
+				$bufs["MEMO"] = ENV_STR_ASSET_CONTRIBUTION;
 				$bufs["TRNTYPE"] = ENV_STR_OFX_TRNTYPE_OTHER;
-				$bufs["SUBACCTFUND"] = ENV_STR_OFX_CASH; // Œ»‹à
+				$bufs["SUBACCTFUND"] = ENV_STR_OFX_CASH; // ç¾é‡‘
 				array_push($banks, $bufs);
 				$bufs = array();
 			}
 			break;
 		
-		// ‹’oi“Š‘j
+		// æ‹ å‡ºï¼ˆæŠ•è³‡ï¼‰
 		case "s1070-t2-o1":
 		case "s1070-t2-e1":
-			$bufs["SECNAME"] = mb_convert_string(trim(strip_tags($td["innerHTML"]))); // ¤•i–¼
+			$bufs["SECNAME"] = trim(strip_tags($td["innerHTML"])); // å•†å“å
 			break;
 		case "s1070-t2-o8":
 		case "s1070-t2-e8":
-			$bufs["DTTRADE"] = parse_date($td["innerHTML"]); // –ñ’è“ú
+			$bufs["DTTRADE"] = parse_date($td["innerHTML"]); // ç´„å®šæ—¥
 			break;
 		case "s1070-t2-o3":
 		case "s1070-t2-e3":
-			$memo = trim(strip_tags($td["innerHTML"])); // ”õl
+			$memo = trim(strip_tags($td["innerHTML"])); // å‚™è€ƒ
 			if($memo != "") $memo = ENV_CHR_CONCATENATOR . $memo;
-			$bufs["MEMO"] = mb_convert_string(ENV_STR_ASSET_CONTRIBUTION . $memo); // ‹’o
+			$bufs["MEMO"] = ENV_STR_ASSET_CONTRIBUTION . $memo; // æ‹ å‡º
 			break;
 		case "s1070-t2-o4":
 		case "s1070-t2-e4":
-			$bufs["TOTAL"] = (string)(-1 * (double)parse_amount($td["innerHTML"])); // w“ü‹àŠz
+			$bufs["TOTAL"] = (string)(-1 * (double)parse_amount($td["innerHTML"])); // è³¼å…¥é‡‘é¡
 			break;
 		case "s1070-t2-o5":
 		case "s1070-t2-e5":
-			$bufs["UNITPRICE"] = parse_amount($td["innerHTML"]); // w“ü’P‰¿
+			$bufs["UNITPRICE"] = parse_amount($td["innerHTML"]); // è³¼å…¥å˜ä¾¡
 			break;
 		case "s1070-t2-o6":
 		case "s1070-t2-e6":
-			$bufs["UNITS"] = parse_amount($td["innerHTML"]); // w“ü”—Ê
+			$bufs["UNITS"] = parse_amount($td["innerHTML"]); // è³¼å…¥æ•°é‡
 			break;
 			
 		case "s1070-t2-o7":
 		case "s1070-t2-e7":
-			if(trim(strip_tags($td["innerHTML"])) == "–ñ’èÏ") {
-				$bufs["CATEGORY"] = ENV_STR_OFX_FUND; // “Š‘M‘õ
-				$bufs["SUBACCTSEC"] = ENV_STR_OFX_CASH; // Œ»‹à
-				$bufs["SUBACCTFUND"] = ENV_STR_OFX_CASH; // Œ»‹à
+			if(trim(strip_tags($td["innerHTML"])) == "ç´„å®šæ¸ˆ") {
+				$bufs["CATEGORY"] = ENV_STR_OFX_FUND; // æŠ•è³‡ä¿¡è¨—
+				$bufs["SUBACCTSEC"] = ENV_STR_OFX_CASH; // ç¾é‡‘
+				$bufs["SUBACCTFUND"] = ENV_STR_OFX_CASH; // ç¾é‡‘
 				$bufs["UNIQUEIDTYPE"] = $settings["code"];
-				$bufs["BUYTYPE"] = ENV_STR_OFX_BUY; // ”ƒ•t
+				$bufs["BUYTYPE"] = ENV_STR_OFX_BUY; // è²·ä»˜
 				$bufs["UNITPRICE"] = (string)round((double)$bufs["UNITPRICE"] / round((double)$bufs["UNITS"] * (double)$bufs["UNITPRICE"] / (double)$bufs["TOTAL"] * -1), 4);
 				array_push($exchanges, $bufs);
 			}
 			$bufs = array();
 			break;
 		
-		// ‘Y”„‹pi“Š‘j
+		// è³‡ç”£å£²å´ï¼ˆæŠ•è³‡ï¼‰
 		case "s1080-t2-o1":
 		case "s1080-t2-e1":
-			$bufs["SECNAME"] = mb_convert_string(trim(strip_tags($td["innerHTML"]))); // ¤•i–¼
+			$bufs["SECNAME"] = trim(strip_tags($td["innerHTML"])); // å•†å“å
 			break;
 		case "s1080-t2-o8":
 		case "s1080-t2-e8":
-			$bufs["DTTRADE"] = parse_date($td["innerHTML"]); // –ñ’è“ú
+			$bufs["DTTRADE"] = parse_date($td["innerHTML"]); // ç´„å®šæ—¥
 			break;
 		case "s1080-t2-o3":
 		case "s1080-t2-e3":
-			$memo = trim(strip_tags($td["innerHTML"])); // ”õl
-			$bufs["MEMO"] = mb_convert_string(ENV_STR_ASSET_SELL); // ‘Y”„‹p
+			$memo = trim(strip_tags($td["innerHTML"])); // å‚™è€ƒ
+			$bufs["MEMO"] = ENV_STR_ASSET_SELL; // è³‡ç”£å£²å´
 			break;
 		case "s1080-t2-o6":
 		case "s1080-t2-e6":
-			$bufs["TOTAL"] = (string)((double)parse_amount($td["innerHTML"])); // ”„‹p‹àŠz
+			$bufs["TOTAL"] = (string)((double)parse_amount($td["innerHTML"])); // å£²å´é‡‘é¡
 			break;
 		case "s1080-t2-o5":
 		case "s1080-t2-e5":
-			$bufs["UNITPRICE"] = parse_amount($td["innerHTML"]); // ”„‹p’P‰¿
+			$bufs["UNITPRICE"] = parse_amount($td["innerHTML"]); // å£²å´å˜ä¾¡
 			break;
 		case "s1080-t2-o4":
 		case "s1080-t2-e4":
-			$bufs["UNITS"] = (string)(-1 * (double)parse_amount($td["innerHTML"])); // ”„‹p”—Ê
+			$bufs["UNITS"] = (string)(-1 * (double)parse_amount($td["innerHTML"])); // å£²å´æ•°é‡
 			break;
 			
 		case "s1080-t2-o7":
 		case "s1080-t2-e7":
-			if(trim(strip_tags($td["innerHTML"])) == "–ñ’èÏ") {
-				$bufs["CATEGORY"] = ENV_STR_OFX_FUND; // “Š‘M‘õ
-				$bufs["SUBACCTSEC"] = ENV_STR_OFX_CASH; // Œ»‹à
-				$bufs["SUBACCTFUND"] = ENV_STR_OFX_CASH; // Œ»‹à
+			if(trim(strip_tags($td["innerHTML"])) == "ç´„å®šæ¸ˆ") {
+				$bufs["CATEGORY"] = ENV_STR_OFX_FUND; // æŠ•è³‡ä¿¡è¨—
+				$bufs["SUBACCTSEC"] = ENV_STR_OFX_CASH; // ç¾é‡‘
+				$bufs["SUBACCTFUND"] = ENV_STR_OFX_CASH; // ç¾é‡‘
 				$bufs["UNIQUEIDTYPE"] = $settings["code"];
-				$bufs["BUYTYPE"] = ENV_STR_OFX_SELL; // ”„•t
+				$bufs["BUYTYPE"] = ENV_STR_OFX_SELL; // å£²ä»˜
 				$bufs["UNITPRICE"] = (string)round((double)$bufs["UNITPRICE"] / round((double)$bufs["UNITS"] * (double)$bufs["UNITPRICE"] / (double)$bufs["TOTAL"] * -1), 4);
 				array_push($exchanges, $bufs);
 				array_push($securities, $bufs);
@@ -415,21 +415,21 @@ if(strpos($body, "ƒVƒXƒeƒ€ƒƒ“ƒeƒiƒ“ƒX’†") !== false || strpos($body, "ƒVƒXƒeƒ€ƒ
 			$bufs = array();
 			break;
 		
-		// x•¥iŒ»‹àj
+		// æ”¯æ‰•ï¼ˆç¾é‡‘ï¼‰
 		case "s1820-t2-d2":
-			$bufs["NAME"] = mb_convert_string($td["innerHTML"]); // æˆø–—R
+			$bufs["NAME"] = $td["innerHTML"]; // å–å¼•äº‹ç”±
 			break;
 		case "s1820-t3-d2":
 			if($bufs["NAME"] != "") {
-				$bufs["TRNAMT"] = "-" . parse_amount($td["innerHTML"]); // x•¥Šz
+				$bufs["TRNAMT"] = "-" . parse_amount($td["innerHTML"]); // æ”¯æ‰•é¡
 				
-				$bufs["MEMO"] = mb_convert_string(ENV_STR_ASSET_PAYMENT);
+				$bufs["MEMO"] = ENV_STR_ASSET_PAYMENT;
 				$bufs["TRNTYPE"] = ENV_STR_OFX_TRNTYPE_OTHER;
-				$bufs["SUBACCTFUND"] = ENV_STR_OFX_CASH; // Œ»‹à
+				$bufs["SUBACCTFUND"] = ENV_STR_OFX_CASH; // ç¾é‡‘
 			}
 			break;
 		case "s1820-t4-d2":
-			$cd_date = parse_date(trim($td["innerHTML"])); // x•¥—\’è“ú
+			$cd_date = parse_date(trim($td["innerHTML"])); // æ”¯æ‰•äºˆå®šæ—¥
 			if($bufs["NAME"] != "") {
 				$bufs["DTPOSTED"] = $cd_date;
 				array_push($banks, $bufs);
@@ -444,10 +444,10 @@ if(strpos($body, "ƒVƒXƒeƒ€ƒƒ“ƒeƒiƒ“ƒX’†") !== false || strpos($body, "ƒVƒXƒeƒ€ƒ
 		$body = $body_old;
 	}
 	
-	// ÀsŠÔiƒ^ƒCƒ€ƒAƒEƒgj‚ğÄİ’è‚·‚é
+	// å®Ÿè¡Œæ™‚é–“ï¼ˆã‚¿ã‚¤ãƒ ã‚¢ã‚¦ãƒˆï¼‰ã‚’å†è¨­å®šã™ã‚‹
 	@set_time_limit(ENV_NUM_TIMEOUT);
 	
-	// ƒvƒ‰ƒ“î•ñÆ‰ï‰æ–Ê‚ğæ“¾‚·‚é
+	// ãƒ—ãƒ©ãƒ³æƒ…å ±ç…§ä¼šç”»é¢ã‚’å–å¾—ã™ã‚‹
 	$forms = parse_tag($body, "form");
 	foreach($forms as $form) if($form["name"] == "W37S1130_Head") {
 		$inputs = parse_tag($form["innerHTML"], "input");
@@ -465,22 +465,22 @@ if(strpos($body, "ƒVƒXƒeƒ€ƒƒ“ƒeƒiƒ“ƒX’†") !== false || strpos($body, "ƒVƒXƒeƒ€ƒ
 	$investments = array();
 	$prefix = "";
 	
-	// tdƒ^ƒO‚ğƒp[ƒX‚·‚é
-	$tds = parse_tag($body, "td", true); // Ä‹A“I‚Éæ“¾‚·‚é
+	// tdã‚¿ã‚°ã‚’ãƒ‘ãƒ¼ã‚¹ã™ã‚‹
+	$tds = parse_tag($body, "td", true); // å†å¸°çš„ã«å–å¾—ã™ã‚‹
 	foreach($tds as $td) switch($td["class"]) {
 	case "s0000-t3-d1":
-		if($acctname == "") $acctname = mb_convert_string(ENV_CHR_CONCATENATOR . trim(strip_tags($td["innerHTML"]))); // ƒvƒ‰ƒ“–¼
+		if($acctname == "") $acctname = ENV_CHR_CONCATENATOR . trim(strip_tags($td["innerHTML"])); // ãƒ—ãƒ©ãƒ³å
 		break;
 	case "s0000-t3-d2":
-		if($prefix == "") $prefix = trim(strip_tags($td["innerHTML"])); // ƒvƒ‰ƒ“”Ô†
+		if($prefix == "") $prefix = trim(strip_tags($td["innerHTML"])); // ãƒ—ãƒ©ãƒ³ç•ªå·
 		break;
 	case "s1130-t3-o1":
 	case "s1130-t3-e1":
-		$uniqueid = $prefix . trim(strip_tags($td["innerHTML"])); // ¤•iƒR[ƒh
+		$uniqueid = $prefix . trim(strip_tags($td["innerHTML"])); // å•†å“ã‚³ãƒ¼ãƒ‰
 		break;
 	case "s1130-t3-o2":
 	case "s1130-t3-e2":
-		$secname = mb_convert_string(trim(strip_tags($td["innerHTML"]))); // ¤•i–¼
+		$secname = trim(strip_tags($td["innerHTML"])); // å•†å“å
 		$investments[$uniqueid] = $secname;
 		break;
 	
@@ -488,10 +488,10 @@ if(strpos($body, "ƒVƒXƒeƒ€ƒƒ“ƒeƒiƒ“ƒX’†") !== false || strpos($body, "ƒVƒXƒeƒ€ƒ
 		break;
 	}
 	
-	// ÀsŠÔiƒ^ƒCƒ€ƒAƒEƒgj‚ğÄİ’è‚·‚é
+	// å®Ÿè¡Œæ™‚é–“ï¼ˆã‚¿ã‚¤ãƒ ã‚¢ã‚¦ãƒˆï¼‰ã‚’å†è¨­å®šã™ã‚‹
 	@set_time_limit(ENV_NUM_TIMEOUT);
 	
-	// ƒƒOƒAƒEƒg‚·‚é
+	// ãƒ­ã‚°ã‚¢ã‚¦ãƒˆã™ã‚‹
 	$forms = parse_tag($body, "form");
 	foreach($forms as $form) if($form["name"] == "W37S0020_Head") {
 		$inputs = parse_tag($form["innerHTML"], "input");
@@ -506,7 +506,7 @@ if(strpos($body, "ƒVƒXƒeƒ€ƒƒ“ƒeƒiƒ“ƒX’†") !== false || strpos($body, "ƒVƒXƒeƒ€ƒ
 		break;
 	}
 	
-	// INVTRANLISTi“Š‘j
+	// INVTRANLISTï¼ˆæŠ•è³‡ï¼‰
 	$invtranlist = "";
 	$invtranlist .= "<DTSTART>" . ENV_STR_DATE_PASTDAY . ENV_STR_OFX_TZ . "</DTSTART>";
 	$invtranlist .= "<DTEND>" . ENV_STR_DATE_TODAY . ENV_STR_OFX_TZ . "</DTEND>";
@@ -550,7 +550,7 @@ if(strpos($body, "ƒVƒXƒeƒ€ƒƒ“ƒeƒiƒ“ƒX’†") !== false || strpos($body, "ƒVƒXƒeƒ€ƒ
 	$cd_date = "";
 	$cd_num = 0;
 	
-	// INVTRANLISTiŒ»‹àj
+	// INVTRANLISTï¼ˆç¾é‡‘ï¼‰
 	foreach($banks as $bank) {
 		if($bank["DTPOSTED"] == $cd_date) $cd_num++; else $cd_num = 0;
 		$fitid = $bank["DTPOSTED"] . "0000000" . sprintf("%05d", $cd_num);
@@ -586,7 +586,7 @@ if(strpos($body, "ƒVƒXƒeƒ€ƒƒ“ƒeƒiƒ“ƒX’†") !== false || strpos($body, "ƒVƒXƒeƒ€ƒ
 		$seclist .= "</SECINFO></" . $security["CATEGORY"] . "INFO>";
 		$seclist .= "\r\n";
 		
-		if($security["MEMO"] == mb_convert_string(ENV_STR_ASSET_SELL)) continue;
+		if($security["MEMO"] == ENV_STR_ASSET_SELL) continue;
 		
 		$invposlist .= "<POS" . $security["CATEGORY"] . "><INVPOS>";
 		$invposlist .= "<SECID><UNIQUEID>" . $uniqueid . "</UNIQUEID><UNIQUEIDTYPE>" . $security["UNIQUEIDTYPE"] . "</UNIQUEIDTYPE></SECID>";
@@ -670,7 +670,7 @@ return $resp;
 
 function nrkn_http11($method, $uris, $query = "", $cookie = "") {
 	$ret = "INVALID HOST";
-	if(preg_match("/\.nrkn\.co\.jp$/", $uris["host"]) > 0) $ret = http11(strtoupper($method), $uris["scheme"], $uris["host"], 0, $uris["path"], $query, "", $cookie, true, ENV_PRODUCT_UA . " Windows NT"); // ƒƒOƒCƒ“‚ÉUser-Agent‚ğƒ`ƒFƒbƒN‚³‚ê‚é
+	if(preg_match("/\.nrkn\.co\.jp$/", $uris["host"]) > 0) $ret = http11(strtoupper($method), $uris["scheme"], $uris["host"], 0, $uris["path"], $query, "", $cookie, true, ENV_PRODUCT_UA . " Windows NT"); // ãƒ­ã‚°ã‚¤ãƒ³æ™‚ã«User-Agentã‚’ãƒã‚§ãƒƒã‚¯ã•ã‚Œã‚‹
 	return explode("\r\n\r\n", $ret, 2);
 }
 
