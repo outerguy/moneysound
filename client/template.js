@@ -8,6 +8,7 @@ Dual-licensed under the Apache License 2.0 and Beatrek Origin License.
 
 // グローバル変数・定数を定義する
 var debug = "<!--[debug]-->";
+var fprefix = "MoneySound_";
 var ver = "<!--[family]-->.<!--[purse]-->";
 var ofxhead = "<!--[ofxhead]-->";
 var pdftext = "<!--[pdftext]-->";
@@ -1535,7 +1536,7 @@ function fnc_ofx_all() {
 		
 		// ダウンロード用データを生成する
 		ofx = new Blob([str]);
-		filename = "MoneySound_" + timestamp + ".ofx";
+		filename = fprefix + timestamp + ".ofx";
 		
 		// データをダウンロードする
 		if(f == false) {
@@ -1649,7 +1650,7 @@ function fnc_csv() {
 		logons = local_current();
 		auths = dom_get_storage(logons["localid"], logons["localpass"]).split("\r\n");
 		timestamp = timestamp_get();
-		total = dom_get_id("total").firstChild.nodeValue.replace(/,/g, "");
+		total = dom_get_id("num_total").firstChild.nodeValue.replace(/,/g, "");
 		
 		// CSVファイルの文字エンコーディングを取得する
 		csvencoding = dom_get_storage(logons["localid"] + ":csvencoding", logons["localpass"]);
@@ -1812,7 +1813,7 @@ function fnc_csv() {
 				csv = new Blob([buf_blob]);
 				break;
 			}
-			filename = "MoneySound_" + timestamp + ".csv";
+			filename = fprefix + timestamp + ".csv";
 			
 			if(self.window.navigator.msSaveOrOpenBlob) {
 				self.window.navigator.msSaveOrOpenBlob(csv, filename);
@@ -1939,7 +1940,7 @@ function fnc_pdf() {
 		
 		// ダウンロード用データを生成する
 		pdf = new Blob([str]);
-		filename = "MoneySound_" + timestamp + ".pdf";
+		filename = fprefix + timestamp + ".pdf";
 		
 		// データをダウンロードする
 		if(self.window.navigator.msSaveOrOpenBlob) {
@@ -1990,7 +1991,7 @@ function fnc_list_all(lists) {
 	}
 	
 	// 口座一覧を更新する
-	account_total_update();
+	num_total_update();
 	
 	return;
 }
@@ -2811,14 +2812,14 @@ function auths_sort(auths) {
 }
 
 // 合計の金額を更新する
-function account_total_update() {
+function num_total_update() {
 	var total = 0;
 	var tag_table = dom_get_tag("table")[0];
 	var tds = tag_table.getElementsByTagName("td");
 	var i;
 	
 	for(i = 0; i < tds.length; i++) if(tds[i].className == "balance" && tds[i].firstChild.nodeValue != "") total += parseInt(tds[i].firstChild.nodeValue.replace(/,/g, ""), 10);
-	dom_get_id("total").firstChild.nodeValue = to_amount(total);
+	dom_get_id("num_total").firstChild.nodeValue = to_amount(total);
 	
 	return;
 }
