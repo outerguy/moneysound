@@ -24,9 +24,9 @@ aside {
 	position: fixed;
 	top: 0px;
 	left: 0px;
-	z-index: 1000;
 	width: 100%;
 	height: 100%;
+	z-index: 1000;
 }
 form#modal {
 	position: fixed;
@@ -105,26 +105,17 @@ th, td {
 	text-indent: 1px;
 	letter-spacing: 1px;
 }
-td.fi {
-	text-align: left;
-}
-td.accttype {
+td.fi, td.accttype, th.control, td.control {
 	text-align: left;
 }
 td.balance {
 	text-align: right;
 }
-td.status {
-	text-align: center;
-}
-td.timestamp {
+td.status, td.timestamp {
 	text-align: center;
 }
 pre {
 	word-wrap: break-word;
-}
-.control {
-	text-align: left;
 }
 .pending, .pending .btn:disabled {
 	cursor: wait;
