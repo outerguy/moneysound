@@ -119,7 +119,7 @@ if($sid > 0) {
 	// セッションを引き継ぐ
 	$resp["status"] = ENV_NUM_STATUS_ADDITION;
 	$resp["aid"] = "authCode";
-	$resp["addition"] = $imgsrc;
+	$resp["additional"] = $imgsrc;
 	$resp["sid"] = $sid;
 	$resp["sesscookie"] = sess_encode(implode("\t", array($cookie, ENV_STR_SESSION_PADDING)));
 	$resp["accesskey"] = sess_encode(implode("\t", array((string)$sid, $method, $uris["scheme"] . "://" . $uris["host"] . $uris["path"], $query, $svid, ENV_STR_SESSION_PADDING)));
@@ -129,7 +129,7 @@ if($sid > 0) {
 	$mfachallengetrnrs .= "<MFACHALLENGERS>";
 	$mfachallengetrnrs .= "<MFACHALLENGE>";
 	$mfachallengetrnrs .= "<MFAPHRASEID>" . $resp["aid"] . "</MFAPHRASEID>";
-	$mfachallengetrnrs .= "<MFAPHRASELABEL>" . $resp["addition"] . "</MFAPHRASELABEL>";
+	$mfachallengetrnrs .= "<MFAPHRASELABEL>" . $resp["additional"] . "</MFAPHRASELABEL>";
 	$mfachallengetrnrs .= "</MFACHALLENGE>";
 	$mfachallengetrnrs .= "</MFACHALLENGERS>";
 	$mfachallengetrnrs .= "</MFACHALLENGETRNRS>";
