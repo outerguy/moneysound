@@ -88,6 +88,7 @@ for(fi in fiids) if(typeof filists[fiids[fi]["type"]] != "undefined") filists[fi
 
 // ロード機能
 function fnc_load() {
+	var fnc_btns = [fnc_logon, fnc_logoff, fnc_register, fnc_erase, fnc_debug, fnc_option, fnc_version, fnc_update_all, fnc_cancel, fnc_ofx_all, fnc_create, fnc_output];
 	var tag_nav = dom_get_tag("nav")[0];
 	var tag_as = dom_get_tag("a");
 	var tag_p;
@@ -102,18 +103,7 @@ function fnc_load() {
 	}
 	
 	// ボタンに機能を割り当てる
-	with(dom_get_id("btn_logon")) onclick = fnc_logon;
-	with(dom_get_id("btn_logoff")) onclick = fnc_logoff;
-	with(dom_get_id("btn_register")) onclick = fnc_register;
-	with(dom_get_id("btn_erase")) onclick = fnc_erase;
-	with(dom_get_id("btn_debug")) onclick = fnc_debug;
-	with(dom_get_id("btn_option")) onclick = fnc_option;
-	with(dom_get_id("btn_version")) onclick = fnc_version;
-	with(dom_get_id("btn_update_all")) onclick = fnc_update_all;
-	with(dom_get_id("btn_cancel")) onclick = fnc_cancel;
-	with(dom_get_id("btn_ofx_all")) onclick = fnc_ofx_all;
-	with(dom_get_id("btn_create")) onclick = fnc_create;
-	with(dom_get_id("btn_output")) onclick = fnc_output;
+	for(i = 0; i < fnc_btns.length; i++) with(dom_get_id("btn" + fnc_btns[i].toString().replace(/^[^_]+(_[a-z_]+)[\w\W]+$/g, "$1"))) onclick = fnc_btns[i];
 	
 	// リンク先を設定する
 	for(i = 0; i < tag_as.length; i++) tag_as[i].target = "link";
