@@ -1,5 +1,4 @@
 /*
-MoneySound
 template.js: 画面・機能を制御する
 Copyright (C) 2014-2015 OFFICE OUTERGUY. All rights reserved.
 mailto:contact@beatrek.com
@@ -8,8 +7,8 @@ Dual-licensed under the Apache License 2.0 and Beatrek Origin License.
 
 // グローバル変数・定数を定義する
 var debug = "<!--[debug]-->";
-var fprefix = "MoneySound_";
-var ver = "<!--[family]-->.<!--[purse]-->";
+var fprefix = "<!--[family]-->_";
+var ver = "<!--[client]-->.<!--[server]-->";
 var ofxhead = "<!--[ofxhead]-->";
 var pdftext = "<!--[pdftext]-->";
 var fiids = "<!--[filist]-->";
@@ -1463,7 +1462,7 @@ function fnc_ofx_all() {
 		tag_fi = merge.createElement("FI");
 		
 		tag_org = merge.createElement("ORG");
-		tag_org.appendChild(merge.createTextNode("MoneySound/" + ver));
+		tag_org.appendChild(merge.createTextNode("<!--[family]-->/" + ver));
 		tag_fi.appendChild(tag_org);
 		tag_sonrs.appendChild(tag_fi);
 		

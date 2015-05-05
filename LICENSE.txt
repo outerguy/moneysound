@@ -1,7 +1,7 @@
 マネーサウンドは、GNU AFFERO GENERAL PUBLIC LICENSE Version 3、および
 Beatrek Origin Licenseのデュアルライセンスに基づき提供いたします。
 
-ライセンスの詳細については、LICENSE_GNU_AGPLv3.txt、およびLICENSE_BOL.txtを
+ライセンスの詳細については、./LICENSE_GNU_AGPLv3.txt、および./LICENSE_BOL.txtを
 ご参照ください。
 
 
@@ -10,7 +10,7 @@ Beatrek Origin Licenseのデュアルライセンスに基づき提供いたし�
 上記ファイルは、GNU AFFERO GENERAL PUBLIC LICENSE Version 3、および
 Beatrek Origin Licenseのデュアルライセンスに基づき提供いたします。
 
-ライセンスの詳細については、LICENSE_GNU_AGPLv3.txt、およびLICENSE_BOL.txtを
+ライセンスの詳細については、./LICENSE_GNU_AGPLv3.txt、および./LICENSE_BOL.txtを
 ご参照ください。
 
 
@@ -19,17 +19,17 @@ Beatrek Origin Licenseのデュアルライセンスに基づき提供いたし�
 上記ファイルは、Apache License Version 2.0、およびBeatrek Origin Licenseの
 デュアルライセンスに基づき提供いたします。
 
-ライセンスの詳細については、LICENSE_ALv2.txt、およびLICENSE_BOL.txtをご参照
+ライセンスの詳細については、./LICENSE_ALv2.txt、および./LICENSE_BOL.txtをご参照
 ください。
 
 
-./common.*, ./common/*.*, ./index.php, ./php*.ini, ./start_php.bat:
+./common.*, ./common/*.*, ./index.*, ./README.txt, ./php*.ini, ./start_php.bat:
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 上記ファイルは、GNU All-Permissive License、およびBeatrek Origin Licenseの
 デュアルライセンスに基づき提供いたします。
 
-ライセンスの詳細については、LICENSE_GNU_APL.txt、およびLICENSE_BOL.txtをご参照
-ください。
+ライセンスの詳細については、./LICENSE_GNU_APL.txt、および./LICENSE_BOL.txtを
+ご参照ください。
 
 
 ./cryptojs.js:

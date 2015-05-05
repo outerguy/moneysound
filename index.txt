@@ -1,0 +1,172 @@
+PHP関数インデックス
+
+■(boolean)env_dlog((string)$html, (string)$tag)
+【説明】
+ENV_BOOL_DEBUGがtrueの場合、デバッグログを出力する。
+
+■(array)get_fi_settings((string)$fiid = "") {
+【説明】
+XMLファイルより$fiidセクションの定義を取得する。
+
+■(string)mb_htmlspecialchars((string)$str)
+【説明】
+特殊文字をXHTMLエンティティーを変換する。
+
+■(string)sess_encode((string)$str)
+【説明】
+$strよりセッション保持用文字列を作成する。
+
+■(string)sess_decode((string)$str)
+【説明】
+セッション保持用文字列（$str）より元データを取得する。
+
+■(string)mb_convert_uniqueid((string)$str)
+【説明】
+$strより32バイトの一意な文字列を生成する。
+
+■(string)mb_convert_uniquename((string)$str)
+【説明】
+文字列を正規化する。
+
+■(string)mb_convert_string((string)$str)
+【説明】
+文字エンコーディングをShift_JISからUTF-8へと変換する。
+
+■class ofxDOM
+Copyright (C) 2012-2015 Hiromu Takahashi All Rights Reserved.
+mailto:hiromu2000@hotmail.com
+
+■(string)parse_amount((string)$str)
+【説明】
+金額をパースする。
+
+■(string)parse_date((string)$str)
+【説明】
+日付をパースする。
+
+■(string)parse_param((string)$str)
+【説明】
+フォーム経由で送受信されるパラメータをパースする。
+※urlencode()やurldecode()で変換されない文字列も変換する。
+
+■(array)parse_tag((string)$html, (string)$tag, (boolean)$recursive)
+【説明】
+指定された開始タグから終了タグまでのHTML、およびタグの属性を取得する。
+$recursiveがtrueの場合、タグの入れ子内部も再帰的に取得する。
+【例】
+$html = "<select name=\"abc\" class=\"x\"><option value=\"0\" selected=\"selected\">0</option><option value=\"1\">1</option></select>" . "<SELECT NAME=\"def\" CLASS=\"Y\"><OPTION value=\"AAA\" selected>aaa</OPTION><option value=\"bbb\">BBB</option></select><br>";
+$tag = "select";
+parse_tag($html, $tag) = array(2) {
+  [0]=>
+  array(3) {
+    ["name"]=>
+    string(3) "abc"
+    ["class"]=>
+    string(1) "x"
+    ["innerHTML"]=>
+    string(76) "<option value="0" selected="selected">0</option><option value="1">1</option>"
+  }
+  [1]=>
+  array(3) {
+    ["name"]=>
+    string(3) "def"
+    ["class"]=>
+    string(1) "Y"
+    ["innerHTML"]=>
+    string(73) "<OPTION value="AAA" selected>aaa</OPTION><option value="bbb">BBB</option>"
+  }
+}
+
+■(array)parse_tag_attributes((string)$html, (string)$tag)
+【説明】
+指定されたタグの属性を取得する。
+【例】
+$html = "<input type=\"text\" name=\"abc\" value=\"\" />" . "<Input type=HIDDEN NAME='def'value=\"xyz\">";
+$tag = "input";
+parse_tag_attributes($html, $tag) = array(2) {
+  [0]=>
+  array(3) {
+    ["type"]=>
+    string(4) "text"
+    ["name"]=>
+    string(3) "abc"
+    ["value"]=>
+    string(0) ""
+  }
+  [1]=>
+  array(3) {
+    ["type"]=>
+    string(6) "HIDDEN"
+    ["name"]=>
+    string(3) "def"
+    ["value"]=>
+    string(3) "xyz"
+  }
+}
+
+■(integer)parse_tag_search((array)$tags, (string)$key, (string)$value)
+【説明】
+指定されたタグ配列より属性が一致（$key=$value）するタグの配列番号を取得する。
+【例】
+$tags = array();
+$tags[0] = array("type" => "text", "name" => "abc", "value" => "", "innerHTML" => "");
+$tags[1] = array("type" => "hidden", "name" => "def", "value" => "xyz", "innerHTML" => "");
+$key = "name";
+$value = "def";
+parse_tag_search($tags, $key, $value) = int(1)
+
+■(array)parse_header((string)$http, (string)$head)
+【説明】
+$headに一致するHTTPヘッダーの配列を取得する。
+
+■(array)parse_uri((string)$uri_next, (array)$uris = array())
+【説明】
+$uri_nextを$urisからの絶対・相対パスURIとしてパースする。
+PHPの標準関数parse_url()と異なり、クエリーは"query"ではなく、"path"に含めて返却する。
+【例】
+$uri_next = "../global.htm?lang=en";
+$uris = array();
+$uris["scheme"] = "http";
+$uris["host"] = "www.example.com";
+$uris["path"] = "/japan/index.htm";
+parse_uri($uri_next, $uris) = array(3) {
+  ["scheme"]=>
+  string(4) "http"
+  ["host"]=>
+  string(15) "www.example.com"
+  ["path"]=>
+  string(19) "/global.htm?lang=en"
+}
+
+■(array)parse_csv((string)$csv, (string)$delimiter = ",", (string)$enclosure = "\"")
+【説明】
+CSV形式のデータをパースする。
+
+■(string)http11((string)$method, (string)$protocol, (string)$host, (integer)$port = 0, (string)$page = "/", (string)$query = "", (string)$basic = "", (string)$cookie = "", (boolean)$autoconv = true, (string)$ua = ENV_PRODUCT_UA, (string)$fr = "", (string)$referer = "")
+【説明】
+HTTP/1.1プロトコルでアクセスする。
+
+■(string)http11_fread_blocking((resource)$fp, (integer)$len)
+【説明】
+Chunkedのデータをfreadで読み込みする際、指定サイズ未満しか取得できない場合があるのを改善する。
+
+■(string)update_cookie((array)$memories, (array)$heads, (string)$cookie)
+【説明】
+$memoriesに存在するキーを$headsより探し、$cookieの値を更新する。
+
+■(string)convert_ofx((string)$ofx)
+【説明】
+OFX 1.0.2からOFX 2.1.1へと整形する。
+
+■(string)generate_ofx((string)$status, (string)$str = ENV_STR_OFX_NODATA, (string)$cook = "", (string)$akey = "")
+【説明】
+テンプレートよりOFX 2.1.1を生成する。
+
+■(string)generate_html((string)$settings, (array)$resp)
+【説明】
+テンプレートよりHTMLを生成する。
+
+■(string)get_http_status((integer)$code)
+【説明】
+$codeに合致するHTTP/1.1ステータスコードの文字列を取得する。
+
