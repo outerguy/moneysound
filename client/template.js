@@ -37,14 +37,43 @@ for(fi in fiids) if(typeof filists[fiids[fi]["type"]] != "undefined") filists[fi
 		// 起動時にロード機能を呼び出す
 		body.onload = fnc_load;
 		
-		// Escキーに中止ボタンを割り当てる
-		onkeydown = function(e) {
+		// Enterキー・Escキーに機能を割り当てる
+		onkeydown = function(evt) {
 			var ret = true;
 			
-			if(typeof e == "undefined") e = event;
-			if(e != null && e.keyCode == 27 && xhr != null && xhr.readyState != 4) {
-				dom_get_id("btn_cancel").click();
+			if(typeof evt == "undefined") evt = event;
+			if(evt != null) switch(evt.keyCode) {
+			case 13:
+				// Enterキーの場合
+				if(dom_get_id("modal") != null && dom_get_id("modalok") != null && dom_get_id("modalok").disabled == false) {
+					// OKボタンを割り当てる
+					dom_get_id("modal").onsubmit();
+				} else {
+					// フォーカスのあるボタンを押下する
+					with(activeElement) {
+						try {
+							onclick();
+						} catch(e) {
+							click();
+						}
+						blur();
+					}
+				}
 				ret = false;
+				break;
+			case 27:
+				// Escキーの場合
+				if(dom_get_id("modal") != null) {
+					// キャンセルボタンを割り当てる
+					dom_get_id("modal").onreset();
+				} else {
+					// 中止ボタンを割り当てる
+					dom_get_id("btn_cancel").click();
+				}
+				ret = false;
+				break;
+			default:
+				break;
 			}
 			
 			return ret;
@@ -73,18 +102,18 @@ function fnc_load() {
 	}
 	
 	// ボタンに機能を割り当てる
-	with(dom_get_id("btn_logon")) onclick = onkeypress = fnc_logon;
-	with(dom_get_id("btn_logoff")) onclick = onkeypress = fnc_logoff;
-	with(dom_get_id("btn_register")) onclick = onkeypress = fnc_register;
-	with(dom_get_id("btn_erase")) onclick = onkeypress = fnc_erase;
-	with(dom_get_id("btn_debug")) onclick = onkeypress = fnc_debug;
-	with(dom_get_id("btn_option")) onclick = onkeypress = fnc_option;
-	with(dom_get_id("btn_version")) onclick = onkeypress = fnc_version;
-	with(dom_get_id("btn_update_all")) onclick = onkeypress = fnc_update_all;
-	with(dom_get_id("btn_cancel")) onclick = onkeypress = fnc_cancel;
-	with(dom_get_id("btn_ofx_all")) onclick = onkeypress = fnc_ofx_all;
-	with(dom_get_id("btn_create")) onclick = onkeypress = fnc_create;
-	with(dom_get_id("btn_output")) onclick = onkeypress = fnc_output;
+	with(dom_get_id("btn_logon")) onclick = fnc_logon;
+	with(dom_get_id("btn_logoff")) onclick = fnc_logoff;
+	with(dom_get_id("btn_register")) onclick = fnc_register;
+	with(dom_get_id("btn_erase")) onclick = fnc_erase;
+	with(dom_get_id("btn_debug")) onclick = fnc_debug;
+	with(dom_get_id("btn_option")) onclick = fnc_option;
+	with(dom_get_id("btn_version")) onclick = fnc_version;
+	with(dom_get_id("btn_update_all")) onclick = fnc_update_all;
+	with(dom_get_id("btn_cancel")) onclick = fnc_cancel;
+	with(dom_get_id("btn_ofx_all")) onclick = fnc_ofx_all;
+	with(dom_get_id("btn_create")) onclick = fnc_create;
+	with(dom_get_id("btn_output")) onclick = fnc_output;
 	
 	// リンク先を設定する
 	for(i = 0; i < tag_as.length; i++) tag_as[i].target = "link";
@@ -407,7 +436,7 @@ function fnc_erase() {
 		cdf.appendChild(tag_p);
 		
 		tag_p = dom_create_tag("p");
-		tag_p.appendChild(dom_create_tag("input", { "type": "checkbox", "name": "confirm", "id": "confirm", "value": "", "onclick": "form_empty_check();", "onkeydown": "this.onclick();" }));
+		tag_p.appendChild(dom_create_tag("input", { "type": "checkbox", "name": "confirm", "id": "confirm", "value": "", "onclick": "form_empty_check();" }));
 		tag_label = dom_create_tag("label", { "for": "confirm" });
 		tag_label.appendChild(dom_create_text("抹消する（元に戻せません）"));
 		tag_p.appendChild(tag_label);
@@ -2121,11 +2150,11 @@ function fnc_list(list) {
 				
 				// 操作
 				tag_td = dom_create_tag("td", { "rowspan": banks.length.toString(), "class": "control" });
-				tag_td.appendChild(dom_create_tag("input", { "type": "button", "value": "更新", "class": "btn", "onclick": "fnc_update(\"" + settings["rowid"] + "\");", "onkeypress": "this.onclick();" }));
-				tag_td.appendChild(dom_create_tag("input", { "type": "button", "value": "明細", "class": "btn", "onclick": "fnc_detail(\"" + settings["rowid"] + "\");", "onkeypress": "this.onclick();" }));
-				tag_td.appendChild(dom_create_tag("input", { "type": "button", "value": "OFX", "class": "btn", "onclick": "fnc_ofx(\"" + settings["rowid"] + "\");", "onkeypress": "this.onclick();" }));
-				tag_td.appendChild(dom_create_tag("input", { "type": "button", "value": "変更", "class": "btn", "onclick": "fnc_modify(\"" + settings["rowid"] + "\");", "onkeypress": "this.onclick();" }));
-				tag_td.appendChild(dom_create_tag("input", { "type": "button", "value": "削除", "class": "btn", "onclick": "fnc_delete(\"" + settings["rowid"] + "\");", "onkeypress": "this.onclick();" }));
+				tag_td.appendChild(dom_create_tag("input", { "type": "button", "value": "更新", "class": "btn", "onclick": "fnc_update(\"" + settings["rowid"] + "\");" }));
+				tag_td.appendChild(dom_create_tag("input", { "type": "button", "value": "明細", "class": "btn", "onclick": "fnc_detail(\"" + settings["rowid"] + "\");" }));
+				tag_td.appendChild(dom_create_tag("input", { "type": "button", "value": "OFX", "class": "btn", "onclick": "fnc_ofx(\"" + settings["rowid"] + "\");" }));
+				tag_td.appendChild(dom_create_tag("input", { "type": "button", "value": "変更", "class": "btn", "onclick": "fnc_modify(\"" + settings["rowid"] + "\");" }));
+				tag_td.appendChild(dom_create_tag("input", { "type": "button", "value": "削除", "class": "btn", "onclick": "fnc_delete(\"" + settings["rowid"] + "\");" }));
 				tag_tr.appendChild(tag_td);
 			}
 			
@@ -2179,11 +2208,11 @@ function fnc_list(list) {
 				
 				// 操作
 				tag_td = dom_create_tag("td", { "rowspan": banks.length.toString(), "class": "control" });
-				tag_td.appendChild(dom_create_tag("input", { "type": "button", "value": "更新", "class": "btn", "onclick": "fnc_update(\"" + settings["rowid"] + "\");", "onkeypress": "this.onclick();" }));
-				tag_td.appendChild(dom_create_tag("input", { "type": "button", "value": "明細", "class": "btn", "onclick": "fnc_detail(\"" + settings["rowid"] + "\");", "onkeypress": "this.onclick();" }));
-				tag_td.appendChild(dom_create_tag("input", { "type": "button", "value": "OFX", "class": "btn", "onclick": "fnc_ofx(\"" + settings["rowid"] + "\");", "onkeypress": "this.onclick();" }));
-				tag_td.appendChild(dom_create_tag("input", { "type": "button", "value": "変更", "class": "btn", "onclick": "fnc_modify(\"" + settings["rowid"] + "\");", "onkeypress": "this.onclick();" }));
-				tag_td.appendChild(dom_create_tag("input", { "type": "button", "value": "削除", "class": "btn", "onclick": "fnc_delete(\"" + settings["rowid"] + "\");", "onkeypress": "this.onclick();" }));
+				tag_td.appendChild(dom_create_tag("input", { "type": "button", "value": "更新", "class": "btn", "onclick": "fnc_update(\"" + settings["rowid"] + "\");" }));
+				tag_td.appendChild(dom_create_tag("input", { "type": "button", "value": "明細", "class": "btn", "onclick": "fnc_detail(\"" + settings["rowid"] + "\");" }));
+				tag_td.appendChild(dom_create_tag("input", { "type": "button", "value": "OFX", "class": "btn", "onclick": "fnc_ofx(\"" + settings["rowid"] + "\");" }));
+				tag_td.appendChild(dom_create_tag("input", { "type": "button", "value": "変更", "class": "btn", "onclick": "fnc_modify(\"" + settings["rowid"] + "\");" }));
+				tag_td.appendChild(dom_create_tag("input", { "type": "button", "value": "削除", "class": "btn", "onclick": "fnc_delete(\"" + settings["rowid"] + "\");" }));
 				tag_tr.appendChild(tag_td);
 			}
 			
@@ -2239,11 +2268,11 @@ function fnc_list(list) {
 				
 				// 操作
 				tag_td = dom_create_tag("td", { "rowspan": (investments.length + 1).toString(), "class": "control" });
-				tag_td.appendChild(dom_create_tag("input", { "type": "button", "value": "更新", "class": "btn", "onclick": "fnc_update(\"" + settings["rowid"] + "\");", "onkeypress": "this.onclick();" }));
-				tag_td.appendChild(dom_create_tag("input", { "type": "button", "value": "明細", "class": "btn", "onclick": "fnc_detail(\"" + settings["rowid"] + "\");", "onkeypress": "this.onclick();" }));
-				tag_td.appendChild(dom_create_tag("input", { "type": "button", "value": "OFX", "class": "btn", "onclick": "fnc_ofx(\"" + settings["rowid"] + "\");", "onkeypress": "this.onclick();" }));
-				tag_td.appendChild(dom_create_tag("input", { "type": "button", "value": "変更", "class": "btn", "onclick": "fnc_modify(\"" + settings["rowid"] + "\");", "onkeypress": "this.onclick();" }));
-				tag_td.appendChild(dom_create_tag("input", { "type": "button", "value": "削除", "class": "btn", "onclick": "fnc_delete(\"" + settings["rowid"] + "\");", "onkeypress": "this.onclick();" }));
+				tag_td.appendChild(dom_create_tag("input", { "type": "button", "value": "更新", "class": "btn", "onclick": "fnc_update(\"" + settings["rowid"] + "\");" }));
+				tag_td.appendChild(dom_create_tag("input", { "type": "button", "value": "明細", "class": "btn", "onclick": "fnc_detail(\"" + settings["rowid"] + "\");" }));
+				tag_td.appendChild(dom_create_tag("input", { "type": "button", "value": "OFX", "class": "btn", "onclick": "fnc_ofx(\"" + settings["rowid"] + "\");" }));
+				tag_td.appendChild(dom_create_tag("input", { "type": "button", "value": "変更", "class": "btn", "onclick": "fnc_modify(\"" + settings["rowid"] + "\");" }));
+				tag_td.appendChild(dom_create_tag("input", { "type": "button", "value": "削除", "class": "btn", "onclick": "fnc_delete(\"" + settings["rowid"] + "\");" }));
 				tag_tr.appendChild(tag_td);
 			}
 			
@@ -2354,19 +2383,19 @@ function fnc_list(list) {
 		
 		// 操作
 		tag_td = dom_create_tag("td", { "class": "control" });
-		tag_td.appendChild(dom_create_tag("input", { "type": "button", "value": "更新", "class": "btn", "onclick": "fnc_update(\"" + settings["rowid"] + "\");", "onkeypress": "this.onclick();" }));
+		tag_td.appendChild(dom_create_tag("input", { "type": "button", "value": "更新", "class": "btn", "onclick": "fnc_update(\"" + settings["rowid"] + "\");" }));
 		if(status != "200" && parser != null) {
-			tag_td.appendChild(dom_create_tag("input", { "type": "button", "value": "明細", "class": "btn", "disabled": "true", "onclick": "fnc_detail(\"" + settings["rowid"] + "\");", "onkeypress": "this.onclick();" }));
+			tag_td.appendChild(dom_create_tag("input", { "type": "button", "value": "明細", "class": "btn", "disabled": "true", "onclick": "fnc_detail(\"" + settings["rowid"] + "\");" }));
 		} else {
-			tag_td.appendChild(dom_create_tag("input", { "type": "button", "value": "明細", "class": "btn", "onclick": "fnc_detail(\"" + settings["rowid"] + "\");", "onkeypress": "this.onclick();" }));
+			tag_td.appendChild(dom_create_tag("input", { "type": "button", "value": "明細", "class": "btn", "onclick": "fnc_detail(\"" + settings["rowid"] + "\");" }));
 		}
 		if(status != "200" && parser != null && debug == false) {
-			tag_td.appendChild(dom_create_tag("input", { "type": "button", "value": "OFX", "class": "btn", "disabled": "true", "onclick": "fnc_ofx(\"" + settings["rowid"] + "\");", "onkeypress": "this.onclick();" }));
+			tag_td.appendChild(dom_create_tag("input", { "type": "button", "value": "OFX", "class": "btn", "disabled": "true", "onclick": "fnc_ofx(\"" + settings["rowid"] + "\");" }));
 		} else {
-			tag_td.appendChild(dom_create_tag("input", { "type": "button", "value": "OFX", "class": "btn", "onclick": "fnc_ofx(\"" + settings["rowid"] + "\");", "onkeypress": "this.onclick();" }));
+			tag_td.appendChild(dom_create_tag("input", { "type": "button", "value": "OFX", "class": "btn", "onclick": "fnc_ofx(\"" + settings["rowid"] + "\");" }));
 		}
-		tag_td.appendChild(dom_create_tag("input", { "type": "button", "value": "変更", "class": "btn", "onclick": "fnc_modify(\"" + settings["rowid"] + "\");", "onkeypress": "this.onclick();" }));
-		tag_td.appendChild(dom_create_tag("input", { "type": "button", "value": "削除", "class": "btn", "onclick": "fnc_delete(\"" + settings["rowid"] + "\");", "onkeypress": "this.onclick();" }));
+		tag_td.appendChild(dom_create_tag("input", { "type": "button", "value": "変更", "class": "btn", "onclick": "fnc_modify(\"" + settings["rowid"] + "\");" }));
+		tag_td.appendChild(dom_create_tag("input", { "type": "button", "value": "削除", "class": "btn", "onclick": "fnc_delete(\"" + settings["rowid"] + "\");" }));
 		tag_tr.appendChild(tag_td);
 		
 		tag_tbody.appendChild(tag_tr);
@@ -2443,27 +2472,6 @@ function modal_show(mhead, mbody, showcancel, focusto) {
 		};
 		
 		with(self.document) {
-			// EnterキーにOKボタンを、Escキーにキャンセルボタンを割り当てる
-			onkeydown = function(e) {
-				var ret = true;
-				
-				if(typeof e == "undefined") e = event;
-				if(e != null && tag_form != null) switch(e.keyCode) {
-				case 13:
-					if(dom_get_id("modalok").disabled == false) tag_form.onsubmit();
-					ret = false;
-					break;
-				case 27:
-					tag_form.onreset();
-					ret = false;
-					break;
-				default:
-					break;
-				}
-				
-				return ret;
-			};
-			
 			// ダイアログのタイトル部分のドロップを制御する
 			onmouseup = function() {
 				pw = false;
@@ -2503,13 +2511,7 @@ function modal_show(mhead, mbody, showcancel, focusto) {
 			focus();
 			if(tagName == "input") select();
 		} else {
-			// Mobile SafariでOKボタンを押下できない場合がある問題を改善する
-			fnc = function() {
-				dom_get_id("modalok").focus();
-				
-				return;
-			};
-			self.window.setTimeout(fnc, 1);
+			dom_get_id("modalok").focus();
 		}
 		
 		// オーバーレイを生成する
