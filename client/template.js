@@ -2643,12 +2643,12 @@ function dom_del_storage(key, pass) {
 	
 	if(typeof pass == "string") {
 		// ローカルストレージの場合
-		with(self.window.localStorage) if(pass == "*") {
+		with(self.window) if(pass == "*") {
 			// passが「*」の場合、すべてのデータを削除する
-			for(i = length - 1; i >= 0; i--) if(key(i).indexOf(key) == 0) removeItem(localStorage.key(i));
+			for(i = localStorage.length - 1; i >= 0; i--) if(localStorage.key(i).indexOf(key) == 0) localStorage.removeItem(localStorage.key(i));
 		} else {
 			// それ以外の場合、該当するデータを削除する
-			removeItem(key);
+			localStorage.removeItem(key);
 		}
 	} else {
 		// セッションストレージの場合、データをそのまま削除する
