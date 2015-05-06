@@ -770,6 +770,7 @@ function fnc_modify(rowid) {
 	var lists = new Array();
 	var auths = new Array();
 	var auth = fnc_getauth(rowid);
+	var inactive = false;
 	var fiid;
 	var tag_p;
 	var inputs, settings;
@@ -785,30 +786,35 @@ function fnc_modify(rowid) {
 		}
 		
 		fiid = rowid.split("=")[1];
-		// 入力項目を設定する
-		inputs = fiids[fiid]["form"].split("|");
-		for(i = 0; i < inputs.length; i++) {
-			lists = fiids[fiid][inputs[i]].split("|", 2);
-			
-			tag_p = dom_create_tag("p", { "class": "label" });
-			tag_p.appendChild(dom_create_text(lists[0]));
-			cdf.appendChild(tag_p);
+		if(typeof fiids[fiid]["form"] == "undefined") {
+			// 未定義の金融機関の場合、スキップする
+			inactive = true;
+		} else {
+			// 入力項目を設定する
+			inputs = fiids[fiid]["form"].split("|");
+			for(i = 0; i < inputs.length; i++) {
+				lists = fiids[fiid][inputs[i]].split("|", 2);
+				
+				tag_p = dom_create_tag("p", { "class": "label" });
+				tag_p.appendChild(dom_create_text(lists[0]));
+				cdf.appendChild(tag_p);
+				
+				tag_p = dom_create_tag("p");
+				tag_p.appendChild(dom_create_tag("input", { "type": lists[1], "name": inputs[i], "id": inputs[i], "value": (typeof auths[inputs[i]] == "string"? auths[inputs[i]]: "") , "class": "ipt", "onkeyup": "form_empty_check();", "onblur": "this.onkeyup();" }));
+				cdf.appendChild(tag_p);
+			}
 			
 			tag_p = dom_create_tag("p");
-			tag_p.appendChild(dom_create_tag("input", { "type": lists[1], "name": inputs[i], "id": inputs[i], "value": (typeof auths[inputs[i]] == "string"? auths[inputs[i]]: "") , "class": "ipt", "onkeyup": "form_empty_check();", "onblur": "this.onkeyup();" }));
+			tag_p.appendChild(dom_create_tag("input", { "type": "hidden", "name": "fiid", "id": "fiid", "value": fiid }));
+			if(typeof auth == "string") tag_p.appendChild(dom_create_tag("input", { "type": "hidden", "name": "auth", "id": "auth", "value": auth }));
 			cdf.appendChild(tag_p);
+			
+			// ダイアログを開く
+			modal_show(fiids[fiid]["name"], cdf, true, inputs[0]);
+			
+			// 変更画面の未入力項目をチェックする
+			form_empty_check();
 		}
-		
-		tag_p = dom_create_tag("p");
-		tag_p.appendChild(dom_create_tag("input", { "type": "hidden", "name": "fiid", "id": "fiid", "value": fiid }));
-		if(typeof auth == "string") tag_p.appendChild(dom_create_tag("input", { "type": "hidden", "name": "auth", "id": "auth", "value": auth }));
-		cdf.appendChild(tag_p);
-		
-		// ダイアログを開く
-		modal_show(fiids[fiid]["name"], cdf, true, inputs[0]);
-		
-		// 変更画面の未入力項目をチェックする
-		form_empty_check();
 	} else {
 		// 認証情報を生成する
 		fiid = dom_get_id("fiid").value;
@@ -873,6 +879,7 @@ function fnc_update(rowid, additional) {
 	var auths = auth.split("\t");
 	var tag_html = dom_get_tag("html")[0];
 	var querys = new Array();
+	var inactive = false;
 	var token = "";
 	var fiid;
 	var query, status;
@@ -890,147 +897,156 @@ function fnc_update(rowid, additional) {
 				k = "fiid";
 			}
 			
-			// 認証情報を展開する
-			if(i == 0 || fiids[fiid]["form"].indexOf(k) != -1) querys.push(k + "=" + encodeURIComponent(l));
-			if(k == "status") status = l;
-			if(k == "token") token = l;
+			if(typeof fiids[fiid]["form"] == "undefined") {
+				// 未定義の金融機関の場合、スキップする
+				inactive = true;
+			} else {
+				// 認証情報を展開する
+				if(i == 0 || fiids[fiid]["form"].indexOf(k) != -1) querys.push(k + "=" + encodeURIComponent(l));
+				if(k == "status") status = l;
+				if(k == "token") token = l;
+			}
 		}
 	}
 	
-	if(status == "202" && typeof additional == "undefined") {
-		// 追加認証の場合、追加認証機能を呼び出す
-		fnc_update_additional(auth);
+	if(inactive == true) {
+		get_all = -1;
 	} else {
-		// 認証情報を結合・分離する
-		if(token != "") querys.push("X-Token=" + token);
-		if(typeof additional != "undefined") querys.push(additional);
-		query = querys.join("&");
-		querys[0] = m + "=" + fiid;
-		if(typeof additional != "undefined") querys.pop();
-		if(token != "") querys.pop();
-		
-		if(chkenv_xmlhttprequest() == true) xhr = new XMLHttpRequest();
-		if(xhr != null) with(xhr) {
-			onreadystatechange = function() {
-				var tag_html = dom_get_tag("html")[0];
-				var tag_table = dom_get_tag("table")[0];
-				var logons, ofx, inputs, query;
-				var i;
-				
-				if(xhr != null && xhr.readyState == 4) {
-					var logons = local_current();
+		if(status == "202" && typeof additional == "undefined") {
+			// 追加認証の場合、追加認証機能を呼び出す
+			fnc_update_additional(auth);
+		} else {
+			// 認証情報を結合・分離する
+			if(token != "") querys.push("X-Token=" + token);
+			if(typeof additional != "undefined") querys.push(additional);
+			query = querys.join("&");
+			querys[0] = m + "=" + fiid;
+			if(typeof additional != "undefined") querys.pop();
+			if(token != "") querys.pop();
+			
+			if(chkenv_xmlhttprequest() == true) xhr = new XMLHttpRequest();
+			if(xhr != null) with(xhr) {
+				onreadystatechange = function() {
+					var tag_html = dom_get_tag("html")[0];
+					var tag_table = dom_get_tag("table")[0];
+					var logons, ofx, inputs, query;
+					var i;
 					
-					if(xhr.status != 0 && xhr.status != 204) {
-						// OFXを設定する
-						ofx = xhr.responseText;
-						dom_set_storage(logons["localid"] + ":" + querys[0], xhr.responseText, logons["localpass"]);
-					}
-					
-					// 変更・削除・更新・明細・OFXボタンの押下を許可する
-					inputs = tag_table.getElementsByTagName("input");
-					for(i = 0; i < inputs.length; i++) switch(inputs[i].value) {
-					case "変更":
-					case "削除":
-					case "更新":
-					case "明細":
-					case "OFX":
-						inputs[i].disabled = false;
-						break;
-					default:
-						break;
-					}
-					
-					// ログオフボタンの押下を許可する
-					dom_get_id("btn_logoff").disabled = false;
-					
-					// デバッグ情報ボタンの押下を許可する
-					dom_get_id("btn_debug").disabled = false;
-					
-					// 設定ボタンの押下を許可する
-					dom_get_id("btn_option").disabled = false;
-					
-					// バージョン情報ボタンの押下を許可する
-					dom_get_id("btn_version").disabled = false;
-					
-					// 中止ボタンの押下を禁止する
-					dom_get_id("btn_cancel").disabled = true;
-					
-					// 追加ボタンの押下を許可する
-					dom_get_id("btn_create").disabled = false;
-					
-					// 出力ボタンの押下を許可する
-					dom_get_id("btn_output").disabled = false;
-					
-					tag_html.className = "";
-					dom_get_id(auths[0]).className = "";
-					
-					// 口座一覧の項目を更新する
-					if(xhr.status != 0) {
-						querys.push("status=" + xhr.status.toString());
-						querys.push("timestamp=" + timestamp_get());
+					if(xhr != null && xhr.readyState == 4) {
+						var logons = local_current();
 						
-						if(xhr.getResponseHeader("X-Token") != null && xhr.getResponseHeader("X-Token") != "") token = xhr.getResponseHeader("X-Token");
-						if(token != null && token != "") {
-							i = token.indexOf(",");
-							if(i != -1) token = token.substring(0, i);
-							querys.push("token=" + token);
+						if(xhr.status != 0 && xhr.status != 204) {
+							// OFXを設定する
+							ofx = xhr.responseText;
+							dom_set_storage(logons["localid"] + ":" + querys[0], xhr.responseText, logons["localpass"]);
 						}
 						
-						query = decodeURIComponent(querys.join("\t"));
+						// 変更・削除・更新・明細・OFXボタンの押下を許可する
+						inputs = tag_table.getElementsByTagName("input");
+						for(i = 0; i < inputs.length; i++) switch(inputs[i].value) {
+						case "変更":
+						case "削除":
+						case "更新":
+						case "明細":
+						case "OFX":
+							inputs[i].disabled = false;
+							break;
+						default:
+							break;
+						}
 						
-						logoninfo_update(query, auth);
-					} else {
-						fnc_initialize();
+						// ログオフボタンの押下を許可する
+						dom_get_id("btn_logoff").disabled = false;
+						
+						// デバッグ情報ボタンの押下を許可する
+						dom_get_id("btn_debug").disabled = false;
+						
+						// 設定ボタンの押下を許可する
+						dom_get_id("btn_option").disabled = false;
+						
+						// バージョン情報ボタンの押下を許可する
+						dom_get_id("btn_version").disabled = false;
+						
+						// 中止ボタンの押下を禁止する
+						dom_get_id("btn_cancel").disabled = true;
+						
+						// 追加ボタンの押下を許可する
+						dom_get_id("btn_create").disabled = false;
+						
+						// 出力ボタンの押下を許可する
+						dom_get_id("btn_output").disabled = false;
+						
+						tag_html.className = "";
+						dom_get_id(auths[0]).className = "";
+						
+						// 口座一覧の項目を更新する
+						if(xhr.status != 0) {
+							querys.push("status=" + xhr.status.toString());
+							querys.push("timestamp=" + timestamp_get());
+							
+							if(xhr.getResponseHeader("X-Token") != null && xhr.getResponseHeader("X-Token") != "") token = xhr.getResponseHeader("X-Token");
+							if(token != null && token != "") {
+								i = token.indexOf(",");
+								if(i != -1) token = token.substring(0, i);
+								querys.push("token=" + token);
+							}
+							
+							query = decodeURIComponent(querys.join("\t"));
+							
+							logoninfo_update(query, auth);
+						} else {
+							fnc_initialize();
+						}
+						
+						// すべて更新機能を実行中の場合
+						if(get_all != -1) fnc_update_all(auths[0]);
 					}
 					
-					// すべて更新機能を実行中の場合
-					if(get_all != -1) fnc_update_all(auths[0]);
-				}
-				
-				return;
-			};
-			open("POST", "./server.php?fiid=" + fiid, true);
-			setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-			send(query);
+					return;
+				};
+				open("POST", "./server.php?fiid=" + fiid, true);
+				setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+				send(query);
+			}
+			
+			// 変更・削除・更新・明細・OFXボタンの押下を禁止する
+			inputs = tag_html.getElementsByTagName("input");
+			for(i = 0; i < inputs.length; i++) switch(inputs[i].value) {
+			case "変更":
+			case "削除":
+			case "更新":
+			case "明細":
+			case "OFX":
+				inputs[i].disabled = true;
+				break;
+			default:
+				break;
+			}
+			
+			// ログオフボタンの押下を禁止する
+			dom_get_id("btn_logoff").disabled = true;
+			
+			// デバッグ情報ボタンの押下を禁止する
+			dom_get_id("btn_debug").disabled = true;
+			
+			// 設定ボタンの押下を許可する
+			dom_get_id("btn_option").disabled = true;
+			
+			// バージョン情報ボタンの押下を禁止する
+			dom_get_id("btn_version").disabled = true;
+			
+			// 中止ボタンの押下を許可する
+			dom_get_id("btn_cancel").disabled = false;
+			
+			// 追加ボタンの押下を禁止する
+			dom_get_id("btn_create").disabled = true;
+			
+			// 出力ボタンの押下を禁止する
+			dom_get_id("btn_output").disabled = true;
+			
+			tag_html.className = "pending";
+			dom_get_id(auths[0]).className = "pending";
 		}
-		
-		// 変更・削除・更新・明細・OFXボタンの押下を禁止する
-		inputs = tag_html.getElementsByTagName("input");
-		for(i = 0; i < inputs.length; i++) switch(inputs[i].value) {
-		case "変更":
-		case "削除":
-		case "更新":
-		case "明細":
-		case "OFX":
-			inputs[i].disabled = true;
-			break;
-		default:
-			break;
-		}
-		
-		// ログオフボタンの押下を禁止する
-		dom_get_id("btn_logoff").disabled = true;
-		
-		// デバッグ情報ボタンの押下を禁止する
-		dom_get_id("btn_debug").disabled = true;
-		
-		// 設定ボタンの押下を許可する
-		dom_get_id("btn_option").disabled = true;
-		
-		// バージョン情報ボタンの押下を禁止する
-		dom_get_id("btn_version").disabled = true;
-		
-		// 中止ボタンの押下を許可する
-		dom_get_id("btn_cancel").disabled = false;
-		
-		// 追加ボタンの押下を禁止する
-		dom_get_id("btn_create").disabled = true;
-		
-		// 出力ボタンの押下を禁止する
-		dom_get_id("btn_output").disabled = true;
-		
-		tag_html.className = "pending";
-		dom_get_id(auths[0]).className = "pending";
 	}
 	
 	return;
@@ -2044,6 +2060,7 @@ function fnc_list(list) {
 	var ofx = null;
 	var parser = null;
 	var broken = false;
+	var inactive = false;
 	var group = "";
 	var caption = "";
 	var status = "";
@@ -2088,6 +2105,7 @@ function fnc_list(list) {
 		fiids[settings["fiid"]] = new Array();
 		fiids[settings["fiid"]]["name"] = settings["fiid"];
 		fiids[settings["fiid"]]["home"] = "about:blank";
+		inactive = true;
 	}
 	
 	// OFXよりデータを抽出する
