@@ -142,6 +142,7 @@ function fnc_initialize() {
 			// 表題を設定する
 			tag_caption.firstChild.nodeValue = "ログオンしてください";
 			
+			// 各ボタンを有効・無効に設定する
 			btn_disableds = { "btn_logon": false, "btn_logoff": true, "btn_register": false, "btn_erase": false, "btn_debug": true, "btn_option": true, "btn_version": false, "btn_update_all": true, "btn_cancel": true, "btn_ofx_all": true, "btn_create": true, "btn_output": true };
 			for(i in btn_disableds) dom_get_id(i).disabled = btn_disableds[i];
 			
@@ -151,6 +152,7 @@ function fnc_initialize() {
 			// 表題を設定する
 			tag_caption.firstChild.nodeValue = logons["localid"];
 			
+			// 各ボタンを有効・無効に設定する
 			btn_disableds = { "btn_logon": true, "btn_logoff": false, "btn_register": true, "btn_erase": true, "btn_debug": false, "btn_option": false, "btn_version": false, "btn_update_all": true, "btn_cancel": true, "btn_ofx_all": true, "btn_create": false, "btn_output": true };
 			for(i in btn_disableds) dom_get_id(i).disabled = btn_disableds[i];
 			
@@ -895,6 +897,7 @@ function fnc_update(rowid, additional) {
 							break;
 						}
 						
+						// 各ボタンを有効・無効に設定する
 						for(i in btn_disableds) dom_get_id(i).disabled = btn_disableds[i];
 						
 						tag_html.className = "";
@@ -944,6 +947,7 @@ function fnc_update(rowid, additional) {
 				break;
 			}
 			
+			// 各ボタンを有効・無効に設定する
 			for(i in btn_disableds) dom_get_id(i).disabled = btn_disableds[i];
 			
 			tag_html.className = "pending";
@@ -1939,6 +1943,7 @@ function fnc_list_all(lists) {
 	
 	// 行を追加した場合
 	if(f == true) {
+		// 各ボタンを有効・無効に設定する
 		for(i in btn_disableds) dom_get_id(i).disabled = btn_disableds[i];
 	}
 	
