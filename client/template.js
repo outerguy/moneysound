@@ -46,17 +46,16 @@ for(fi in fiids) if(typeof filists[fiids[fi]["type"]] != "undefined") filists[fi
 			case 13:
 				// Enterキーの場合
 				if(dom_get_id("modal") != null && dom_get_id("modalok") != null && dom_get_id("modalok").disabled == false) {
-					// OKボタンを割り当てる
+					// モーダルウィンドウを表示している場合、OKボタンを割り当てる
 					dom_get_id("modal").onsubmit();
 				} else {
-					// フォーカスのあるボタンを押下する
+					// それ以外の場合、フォーカスのあるボタンを押下する
 					with(activeElement) {
 						try {
 							onclick();
 						} catch(e) {
 							click();
 						}
-						blur();
 					}
 				}
 				ret = false;
@@ -64,10 +63,10 @@ for(fi in fiids) if(typeof filists[fiids[fi]["type"]] != "undefined") filists[fi
 			case 27:
 				// Escキーの場合
 				if(dom_get_id("modal") != null) {
-					// キャンセルボタンを割り当てる
+					// モーダルウィンドウを表示している場合、キャンセルボタンを割り当てる
 					dom_get_id("modal").onreset();
 				} else {
-					// 中止ボタンを割り当てる
+					// それ以外の場合、中止ボタンを割り当てる
 					dom_get_id("btn_cancel").click();
 				}
 				ret = false;
@@ -99,6 +98,8 @@ function fnc_load() {
 		tag_p = dom_create_tag("p", { "class": "ac", "style": "padding: 0.5em; font-weight: bold; color: #FFFFFF; background: #FF0000;" });
 		tag_p.appendChild(dom_create_text("【警告】開発者向け（デバッグ）機能が有効のため、認証情報を含む詳細な記録が残ります。開発者以外の方は、操作しないでください。または、開発者へご相談ください。"));
 		tag_nav.parentNode.insertBefore(tag_p, tag_nav);
+		
+		// デバッグ情報ボタンを表示する
 		dom_get_id("btn_debug").className = "btn";
 	}
 	
@@ -118,6 +119,7 @@ function fnc_load() {
 function fnc_initialize() {
 	var tag_table = dom_get_tag("table")[0];
 	var tag_caption = dom_get_tag("caption")[0];
+	var btn_disableds;
 	var tag_p;
 	var logons, lists;
 	var ofxbutton, inputs;
@@ -137,84 +139,20 @@ function fnc_initialize() {
 			// ログオン情報を削除する
 			for(i in logons) dom_del_storage(i);
 			
+			// 表題を設定する
 			tag_caption.firstChild.nodeValue = "ログオンしてください";
 			
-			// ログオンボタンの押下を許可する
-			dom_get_id("btn_logon").disabled = false;
-			
-			// ログオフボタンの押下を禁止する
-			dom_get_id("btn_logoff").disabled = true;
-			
-			// 登録ボタンの押下を許可する
-			dom_get_id("btn_register").disabled = false;
-			
-			// 抹消ボタンの押下を許可する
-			dom_get_id("btn_erase").disabled = false;
-			
-			// デバッグ情報ボタンの押下を禁止する
-			dom_get_id("btn_debug").disabled = true;
-			
-			// 設定ボタンの押下を禁止する
-			dom_get_id("btn_option").disabled = true;
-			
-			// バージョン情報ボタンの押下を許可する
-			dom_get_id("btn_version").disabled = false;
-			
-			// すべて更新ボタンの押下を許可する
-			dom_get_id("btn_update_all").disabled = true;
-			
-			// 中止ボタンの押下を禁止する
-			dom_get_id("btn_cancel").disabled = true;
-			
-			// OFX（結合）ボタンの押下を禁止する
-			dom_get_id("btn_ofx_all").disabled = true;
-			
-			// 追加ボタンの押下を禁止する
-			dom_get_id("btn_create").disabled = true;
-			
-			// 出力ボタンの押下を禁止する
-			dom_get_id("btn_output").disabled = true;
+			btn_disableds = { "btn_logon": false, "btn_logoff": true, "btn_register": false, "btn_erase": false, "btn_debug": true, "btn_option": true, "btn_version": false, "btn_update_all": true, "btn_cancel": true, "btn_ofx_all": true, "btn_create": true, "btn_output": true };
+			for(i in btn_disableds) dom_get_id(i).disabled = btn_disableds[i];
 			
 			lists = "";
 			break;
 		default:
+			// 表題を設定する
 			tag_caption.firstChild.nodeValue = logons["localid"];
 			
-			// ログオンボタンの押下を禁止する
-			dom_get_id("btn_logon").disabled = true;
-			
-			// ログオフボタンの押下を許可する
-			dom_get_id("btn_logoff").disabled = false;
-			
-			// 登録ボタンの押下を禁止する
-			dom_get_id("btn_register").disabled = true;
-			
-			// 抹消ボタンの押下を禁止する
-			dom_get_id("btn_erase").disabled = true;
-			
-			// デバッグ情報ボタンの押下を許可する
-			dom_get_id("btn_debug").disabled = false;
-			
-			// 設定ボタンの押下を許可する
-			dom_get_id("btn_option").disabled = false;
-			
-			// バージョン情報ボタンの押下を許可する
-			dom_get_id("btn_version").disabled = false;
-			
-			// すべて更新ボタンの押下を禁止する
-			dom_get_id("btn_update_all").disabled = true;
-			
-			// 中止ボタンの押下を禁止する
-			dom_get_id("btn_cancel").disabled = true;
-			
-			// OFX（結合）ボタンの押下を禁止する
-			dom_get_id("btn_ofx_all").disabled = true;
-			
-			// 追加ボタンの押下を許可する
-			dom_get_id("btn_create").disabled = false;
-			
-			// 出力ボタンの押下を禁止する
-			dom_get_id("btn_output").disabled = true;
+			btn_disableds = { "btn_logon": true, "btn_logoff": false, "btn_register": true, "btn_erase": true, "btn_debug": false, "btn_option": false, "btn_version": false, "btn_update_all": true, "btn_cancel": true, "btn_ofx_all": true, "btn_create": false, "btn_output": true };
+			for(i in btn_disableds) dom_get_id(i).disabled = btn_disableds[i];
 			
 			break;
 		}
@@ -881,6 +819,7 @@ function fnc_update(rowid, additional) {
 	var querys = new Array();
 	var inactive = false;
 	var token = "";
+	var btn_disableds = { "btn_logoff": true, "btn_debug": true, "btn_option": true, "btn_version": true, "btn_cancel": false, "btn_create": true, "btn_output": true };
 	var fiid;
 	var query, status;
 	var inputs;
@@ -929,6 +868,7 @@ function fnc_update(rowid, additional) {
 				onreadystatechange = function() {
 					var tag_html = dom_get_tag("html")[0];
 					var tag_table = dom_get_tag("table")[0];
+					var btn_disableds = { "btn_logoff": false, "btn_debug": false, "btn_option": false, "btn_version": false, "btn_cancel": true, "btn_create": false, "btn_output": false };
 					var logons, ofx, inputs, query;
 					var i;
 					
@@ -955,26 +895,7 @@ function fnc_update(rowid, additional) {
 							break;
 						}
 						
-						// ログオフボタンの押下を許可する
-						dom_get_id("btn_logoff").disabled = false;
-						
-						// デバッグ情報ボタンの押下を許可する
-						dom_get_id("btn_debug").disabled = false;
-						
-						// 設定ボタンの押下を許可する
-						dom_get_id("btn_option").disabled = false;
-						
-						// バージョン情報ボタンの押下を許可する
-						dom_get_id("btn_version").disabled = false;
-						
-						// 中止ボタンの押下を禁止する
-						dom_get_id("btn_cancel").disabled = true;
-						
-						// 追加ボタンの押下を許可する
-						dom_get_id("btn_create").disabled = false;
-						
-						// 出力ボタンの押下を許可する
-						dom_get_id("btn_output").disabled = false;
+						for(i in btn_disableds) dom_get_id(i).disabled = btn_disableds[i];
 						
 						tag_html.className = "";
 						dom_get_id(auths[0]).className = "";
@@ -1023,26 +944,7 @@ function fnc_update(rowid, additional) {
 				break;
 			}
 			
-			// ログオフボタンの押下を禁止する
-			dom_get_id("btn_logoff").disabled = true;
-			
-			// デバッグ情報ボタンの押下を禁止する
-			dom_get_id("btn_debug").disabled = true;
-			
-			// 設定ボタンの押下を許可する
-			dom_get_id("btn_option").disabled = true;
-			
-			// バージョン情報ボタンの押下を禁止する
-			dom_get_id("btn_version").disabled = true;
-			
-			// 中止ボタンの押下を許可する
-			dom_get_id("btn_cancel").disabled = false;
-			
-			// 追加ボタンの押下を禁止する
-			dom_get_id("btn_create").disabled = true;
-			
-			// 出力ボタンの押下を禁止する
-			dom_get_id("btn_output").disabled = true;
+			for(i in btn_disableds) dom_get_id(i).disabled = btn_disableds[i];
 			
 			tag_html.className = "pending";
 			dom_get_id(auths[0]).className = "pending";
@@ -1168,7 +1070,7 @@ function fnc_cancel() {
 	get_all = -1;
 	xhr.abort();
 	
-	// 中止ボタンの押下を禁止する
+	// 中止ボタンを無効に設定する
 	dom_get_id("btn_cancel").disabled = true;
 	
 	return;
@@ -2022,6 +1924,7 @@ function fnc_list_all(lists) {
 	var tag_table = dom_get_tag("table")[0];
 	var tag_tbodys = tag_table.getElementsByTagName("tbody");
 	var f = false;
+	var btn_disableds = { "btn_update_all": false, "btn_ofx_all": false, "btn_output": false };
 	var i;
 	
 	// 一覧からすべての行を取り除く
@@ -2036,14 +1939,7 @@ function fnc_list_all(lists) {
 	
 	// 行を追加した場合
 	if(f == true) {
-		// すべて更新ボタンの押下を許可する
-		dom_get_id("btn_update_all").disabled = false;
-		
-		// OFX（結合）ボタンの押下を許可する
-		dom_get_id("btn_ofx_all").disabled = false;
-		
-		// 出力ボタンの押下を許可する
-		dom_get_id("btn_output").disabled = false;
+		for(i in btn_disableds) dom_get_id(i).disabled = btn_disableds[i];
 	}
 	
 	// 口座一覧を更新する
