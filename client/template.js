@@ -37,12 +37,21 @@ for(fi in fiids) if(typeof filists[fiids[fi]["type"]] != "undefined") filists[fi
 		// 起動時にロード機能を呼び出す
 		body.onload = fnc_load;
 		
-		// Enterキー・Escキーに機能を割り当てる
+		// 各キーに機能を割り当てる
 		onkeydown = function(evt) {
 			var ret = true;
+			var scroll = 10;
 			
 			if(typeof evt == "undefined") evt = event;
 			if(evt != null) switch(evt.keyCode) {
+			case 8:
+				// BackSpaceキーの場合
+				if(dom_get_id("modal") != null && evt.ctrlKey == true) {
+					// モーダルウィンドウを表示していてCtrlキーが押下されている場合、モーダルウィンドウを中央に移動する
+					modal_resize();
+					ret = false;
+				}
+				break;
 			case 13:
 				// Enterキーの場合
 				if(dom_get_id("modal") != null && dom_get_id("modalok") != null && dom_get_id("modalok").disabled == false) {
@@ -70,6 +79,38 @@ for(fi in fiids) if(typeof filists[fiids[fi]["type"]] != "undefined") filists[fi
 					dom_get_id("btn_cancel").click();
 				}
 				ret = false;
+				break;
+			case 37:
+				// ←キーの場合
+				if(dom_get_id("modal") != null && evt.ctrlKey == true) {
+					// モーダルウィンドウを表示していてCtrlキーが押下されている場合、モーダルウィンドウを移動する
+					with(dom_get_id("modal").style) left = (parseInt(left.replace("px", "")) - scroll).toString() + "px";
+					ret = false;
+				}
+				break;
+			case 38:
+				// ↑キーの場合
+				if(dom_get_id("modal") != null && evt.ctrlKey == true) {
+					// モーダルウィンドウを表示していてCtrlキーが押下されている場合、モーダルウィンドウを移動する
+					with(dom_get_id("modal").style) top = (parseInt(top.replace("px", "")) - scroll).toString() + "px";
+					ret = false;
+				}
+				break;
+			case 39:
+				// →キーの場合
+				if(dom_get_id("modal") != null && evt.ctrlKey == true) {
+					// モーダルウィンドウを表示していてCtrlキーが押下されている場合、モーダルウィンドウを移動する
+					with(dom_get_id("modal").style) left = (parseInt(left.replace("px", "")) + scroll).toString() + "px";
+					ret = false;
+				}
+				break;
+			case 40:
+				// ↓キーの場合
+				if(dom_get_id("modal") != null && evt.ctrlKey == true) {
+					// モーダルウィンドウを表示していてCtrlキーが押下されている場合、モーダルウィンドウを移動する
+					with(dom_get_id("modal").style) top = (parseInt(top.replace("px", "")) + scroll).toString() + "px";
+					ret = false;
+				}
 				break;
 			default:
 				break;
