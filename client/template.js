@@ -145,7 +145,7 @@ function fnc_load() {
 	}
 	
 	// ボタンに機能を割り当てる
-	for(i = 0; i < fnc_btns.length; i++) with(dom_get_id("btn" + fnc_btns[i].toString().replace(/^[^_]+(_[a-z_]+)[\w\W]+$/g, "$1"))) onclick = fnc_btns[i];
+	for(i = 0; i < fnc_btns.length; i++) with(dom_get_id("btn" + fnc_btns[i].toString().replace(/^[^_]+(_[a-z_]+)[\w\W]+$/m, "$1"))) onclick = fnc_btns[i];
 	
 	// リンク先を設定する
 	for(i = 0; i < tag_as.length; i++) tag_as[i].target = "link";
@@ -179,26 +179,27 @@ function fnc_initialize() {
 		case "":
 			// ログオン情報を削除する
 			for(i in logons) dom_del_storage(i);
+			lists = "";
 			
 			// 表題を設定する
 			tag_caption.firstChild.nodeValue = "ログオンしてください";
 			
-			// 各ボタンを有効・無効に設定する
+			// 各ボタンの有効・無効を指定する
 			btn_disableds = { "btn_logon": false, "btn_logoff": true, "btn_register": false, "btn_erase": false, "btn_debug": true, "btn_option": true, "btn_version": false, "btn_update_all": true, "btn_cancel": true, "btn_ofx_all": true, "btn_create": true, "btn_output": true };
-			for(i in btn_disableds) dom_get_id(i).disabled = btn_disableds[i];
 			
-			lists = "";
 			break;
 		default:
 			// 表題を設定する
 			tag_caption.firstChild.nodeValue = logons["localid"];
 			
-			// 各ボタンを有効・無効に設定する
+			// 各ボタンの有効・無効を指定する
 			btn_disableds = { "btn_logon": true, "btn_logoff": false, "btn_register": true, "btn_erase": true, "btn_debug": false, "btn_option": false, "btn_version": false, "btn_update_all": true, "btn_cancel": true, "btn_ofx_all": true, "btn_create": false, "btn_output": true };
-			for(i in btn_disableds) dom_get_id(i).disabled = btn_disableds[i];
 			
 			break;
 		}
+		
+		// 各ボタンを有効・無効に設定する
+		for(i in btn_disableds) dom_get_id(i).disabled = btn_disableds[i];
 		
 		fnc_option_change();
 		
@@ -228,6 +229,7 @@ function fnc_logon() {
 	var f = false;
 	var tag_p;
 	var inputs, dec;
+	var us, ps;
 	var i, j;
 	
 	if(dom_get_id("modal") == null) {
@@ -276,21 +278,24 @@ function fnc_logon() {
 			for(i = 0; i < inputs.length; i++) auths.push(dom_get_id(inputs[i]).id + "=" + dom_get_id(inputs[i]).value);
 			modal_hide();
 			
+			us = auths[1].split("=", 2);
+			ps = auths[2].split("=", 2);
+			
 			// 暗号化データを取得する
-			dec = dom_get_storage(auths[1].split("=", 2)[1], auths[2].split("=", 2)[1]);
+			dec = dom_get_storage(us[1], ps[1]);
 			switch(dec) {
 			case null:
 				// 暗号化データが存在しない場合、エラー画面を表示する
-				modal_show("エラー", "正しい" + fiids[fiid][auths[1].split("=", 2)[0]].split("|", 2)[0] + "を入力してください。", false);
+				modal_show("エラー", "正しい" + fiids[fiid][us[0]].split("|", 2)[0] + "を入力してください。", false);
 				break;
 			case "":
 				// 正しく復号できない場合、エラー画面を表示する
-				modal_show("エラー", "正しい" + fiids[fiid][auths[2].split("=", 2)[0]].split("|", 2)[0] + "を入力してください。", false);
+				modal_show("エラー", "正しい" + fiids[fiid][ps[0]].split("|", 2)[0] + "を入力してください。", false);
 				break;
 			default:
 				// ログオン情報を設定する
-				dom_set_storage(auths[1].split("=", 2)[0], auths[1].split("=", 2)[1]);
-				dom_set_storage(auths[2].split("=", 2)[0], auths[2].split("=", 2)[1]);
+				dom_set_storage(us[0], us[1]);
+				dom_set_storage(ps[0], ps[1]);
 				
 				// 初期化機能を呼び出す
 				fnc_initialize();
@@ -324,6 +329,7 @@ function fnc_register() {
 	var auths = new Array();
 	var tag_p;
 	var inputs;
+	var us, ps;
 	var i;
 	
 	if(dom_get_id("modal") == null) {
@@ -364,15 +370,18 @@ function fnc_register() {
 			for(i = 0; i < inputs.length; i++) auths.push(dom_get_id(inputs[i]).id + "=" + dom_get_id(inputs[i]).value);
 			modal_hide();
 			
-			switch(dom_get_storage(auths[1].split("=", 2)[1], auths[2].split("=", 2)[1])) {
+			us = auths[1].split("=", 2);
+			ps = auths[2].split("=", 2);
+			
+			switch(dom_get_storage(us[1], ps[1])) {
 			case null:
 				// ログオン情報を設定する
-				dom_set_storage(auths[1].split("=", 2)[1], "", auths[2].split("=", 2)[1]);
-				modal_showonly("完了", auths[1].split("=", 2)[1] + "を登録しました。ログオンしてください。", false);
+				dom_set_storage(us[1], "", ps[1]);
+				modal_showonly("完了", us[1] + "を登録しました。ログオンしてください。", false);
 				break;
 			case "":
 			default:
-				modal_show("エラー", auths[1].split("=", 2)[1] + "は既に存在しています。", false);
+				modal_show("エラー", us[1] + "は既に存在しています。", false);
 				break;
 			}
 		}
