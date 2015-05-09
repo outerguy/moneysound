@@ -259,7 +259,7 @@ function fnc_logon() {
 		tag_p.appendChild(dom_create_tag("input", { "type": "hidden", "name": "fiid", "id": "fiid", "value": fiid }));
 		cdf.appendChild(tag_p);
 		
-		// ダイアログを開く
+		// モーダルウィンドウを開く
 		modal_show(fiids[fiid]["name"], cdf, true, inputs[0]);
 		
 		// ログオン画面の未入力項目をチェックする
@@ -351,7 +351,7 @@ function fnc_register() {
 		tag_p.appendChild(dom_create_tag("input", { "type": "hidden", "name": "fiid", "id": "fiid", "value": fiid }));
 		cdf.appendChild(tag_p);
 		
-		// ダイアログを開く
+		// モーダルウィンドウを開く
 		modal_show(fiids[fiid]["name"], cdf, true, inputs[0]);
 		
 		// 登録画面の未入力項目をチェックする
@@ -426,7 +426,7 @@ function fnc_erase() {
 		tag_p.appendChild(dom_create_tag("input", { "type": "hidden", "name": "fiid", "id": "fiid", "value": fiid }));
 		cdf.appendChild(tag_p);
 		
-		// ダイアログを開く
+		// モーダルウィンドウを開く
 		modal_show(fiids[fiid]["name"], cdf, true, input);
 		
 		// 抹消画面の未入力項目をチェックする
@@ -472,7 +472,7 @@ function fnc_debug() {
 	tag_div.appendChild(tag_pre);
 	cdf.appendChild(tag_div);
 	
-	// ダイアログを開く
+	// モーダルウィンドウを開く
 	modal_showonly("デバッグ情報", cdf, false);
 	
 	return;
@@ -549,7 +549,7 @@ function fnc_option() {
 		tag_p.appendChild(tag_select);
 		cdf.appendChild(tag_p);
 		
-		// ダイアログを開く
+		// モーダルウィンドウを開く
 		modal_show("設定", cdf, true, "theme");
 	} else {
 		// コールバックの場合
@@ -557,7 +557,7 @@ function fnc_option() {
 		csvencoding = dom_get_id("csvencoding")[dom_get_id("csvencoding").selectedIndex].value;
 		ofxbutton = dom_get_id("ofxbutton")[dom_get_id("ofxbutton").selectedIndex].value;
 		
-		// ダイアログを閉じる
+		// モーダルウィンドウを閉じる
 		modal_hide();
 		
 		// CSVファイルの文字エンコーディングを設定する
@@ -670,10 +670,10 @@ function fnc_version() {
 			}
 		}
 		
-		// ダイアログを開く
+		// モーダルウィンドウを開く
 		modal_show("バージョン情報", cdf, false);
 	} else {
-		// ダイアログを閉じる
+		// モーダルウィンドウを閉じる
 		modal_hide();
 	}
 	
@@ -713,7 +713,7 @@ function fnc_create() {
 		tag_p.appendChild(tag_select);
 		cdf.appendChild(tag_p);
 		
-		// ダイアログを開く
+		// モーダルウィンドウを開く
 		modal_show("追加", cdf, true, "ficat");
 		
 		// 分類リストの先頭を選択する
@@ -722,7 +722,7 @@ function fnc_create() {
 		// コールバックの場合
 		fiid = dom_get_id("fiid").options[dom_get_id("fiid").selectedIndex].value;
 		
-		// ダイアログを閉じる
+		// モーダルウィンドウを閉じる
 		modal_hide();
 		
 		// 変更画面を表示する
@@ -799,7 +799,7 @@ function fnc_modify(rowid) {
 			if(typeof auth == "string") tag_p.appendChild(dom_create_tag("input", { "type": "hidden", "name": "auth", "id": "auth", "value": auth }));
 			cdf.appendChild(tag_p);
 			
-			// ダイアログを開く
+			// モーダルウィンドウを開く
 			modal_show(fiids[fiid]["name"], cdf, true, inputs[0]);
 			
 			// 変更画面の未入力項目をチェックする
@@ -849,7 +849,7 @@ function fnc_delete(rowid) {
 		tag_p.appendChild(dom_create_tag("input", { "type": "hidden", "name": "auth", "id": "auth", "value": auth }));
 		cdf.appendChild(tag_p);
 		
-		// ダイアログを開く
+		// モーダルウィンドウを開く
 		modal_show("削除", cdf, true, "modalcancel");
 	} else {
 		if(typeof auth != "string") auth = dom_get_id("auth").value;
@@ -1094,7 +1094,7 @@ function fnc_update_additional(auth) {
 			cdf.appendChild(tag_p);
 		}
 		
-		// ダイアログを開く
+		// モーダルウィンドウを開く
 		modal_show("追加認証", cdf, true, (inputs[1] != "hidden"? mfaphraseid: "modalok"));
 		
 		// 追加認証画面の未入力項目をチェックする
@@ -1334,14 +1334,14 @@ function fnc_detail(rowid) {
 						cdf.appendChild(tag_div);
 					}
 					
-					// ダイアログを開く
+					// モーダルウィンドウを開く
 					modal_show("明細", cdf, false, "acct");
 					
 					fnc_detail_change();
 				}
 			}
 		} else {
-			// ダイアログを閉じる
+			// モーダルウィンドウを閉じる
 			modal_hide();
 		}
 	}
@@ -1602,13 +1602,13 @@ function fnc_output() {
 		tag_p.appendChild(tag_select);
 		cdf.appendChild(tag_p);
 		
-		// ダイアログを開く
+		// モーダルウィンドウを開く
 		modal_show("出力", cdf, true, "format");
 	} else {
 		// コールバックの場合
 		output = dom_get_id("format").options[dom_get_id("format").selectedIndex].value;
 		
-		// ダイアログを閉じる
+		// モーダルウィンドウを閉じる
 		modal_hide();
 		
 		switch(output) {
@@ -1625,7 +1625,7 @@ function fnc_output() {
 			fnc_pdf();
 			break;
 		case "LPT":
-			// ブラウザーの印刷ダイアログを呼び出す
+			// ブラウザーの印刷モーダルウィンドウを呼び出す
 			self.window.print();
 			break;
 		default:
@@ -2413,7 +2413,7 @@ function modal_show(mhead, mbody, showcancel, focusto) {
 		tag_article.appendChild(tag_form);
 		tag_body.appendChild(tag_article);
 		
-		// ダイアログのタイトル部分のドラッグ＆ドロップを許可する
+		// モーダルウィンドウのタイトル部分のドラッグ＆ドロップを許可する
 		tag_h3.onmousedown = function(e) {
 			var target;
 			
@@ -2431,14 +2431,7 @@ function modal_show(mhead, mbody, showcancel, focusto) {
 		};
 		
 		with(self.document) {
-			// ダイアログのタイトル部分のドロップを制御する
-			onmouseup = function() {
-				pw = false;
-				
-				return;
-			};
-			
-			// ダイアログのタイトル部分のドラッグを制御する
+			// モーダルウィンドウのタイトル部分のドラッグを制御する
 			onmousemove = function(e) {
 				if(typeof e == "undefined") e = self.window.event;
 				
@@ -2447,6 +2440,12 @@ function modal_show(mhead, mbody, showcancel, focusto) {
 					top = e.clientY - py + "px";
 				}
 				
+				return;
+			};
+			
+			// モーダルウィンドウのタイトル部分のドロップを制御する
+			onmouseup = function() {
+				if(pw == true) pw = false;
 				return;
 			};
 		}
@@ -2490,7 +2489,7 @@ function modal_show(mhead, mbody, showcancel, focusto) {
 // モーダルウィンドウを開く（呼び出し元機能に戻らない）
 function modal_showonly(mhead, mbody, showcancel, focusto) {
 	if(dom_get_id("modal") == null) {
-		// ダイアログを開く
+		// モーダルウィンドウを開く
 		modal_show(mhead, mbody, showcancel, focusto);
 	} else {
 		// コールバックの場合
@@ -2553,6 +2552,18 @@ function modal_hide() {
 		
 		// オーバーレイの背景を処理する
 		for(i in tag_bgs) tag_bgs[i].className = "";
+		
+		with(self.document) {
+			// モーダルウィンドウのタイトル部分のドラッグを制御する
+			onmousemove = function() {
+				return;
+			};
+			
+			// モーダルウィンドウのタイトル部分のドロップを制御する
+			onmouseup = function() {
+				return;
+			};
+		}
 		
 		// ウィンドウサイズが変更された場合、何もしない
 		self.window.onresize = null;
