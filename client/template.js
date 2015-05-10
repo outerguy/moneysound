@@ -20,7 +20,7 @@ var fi;
 
 var ficats = { "BANK": "銀行", "CREDITCARD": "クレジットカード", "INVSTMT": "証券", "PREPAID": "前払式帳票" };
 var themes = { "standard.css": "標準（スマートフォン対応）", "modern.css": "Modern", "aero.css": "Aero", "luna.css": "Luna", "flat.css": "Flat", "aqua.css": "Aqua", "light.css": "Light", "precious.css": "プレシャス" };
-var outputs = { "OFX": "OFXファイルの結合ダウンロード", "CSV": "CSVファイルのダウンロード", "PDF": "PDFファイルのダウンロード", "LPT": "口座一覧の印刷" };
+var outputs = { "OFX": "OFXファイルの結合ダウンロード", "CSV": "CSVファイルのダウンロード", "PDF": "PDFファイルのダウンロード", "LPT": "口座一覧の印刷", "EXP": "口座情報のエクスポート" };
 var ofxbuttons = { "T": "する", "F": "しない（出力ボタンの操作に追加する）" };
 var csvencodings = { "SJIS": "Shift_JIS", "UTFB": "UTF-8（BOMあり）", "UTF8": "UTF-8（BOMなし）" };
 
@@ -328,7 +328,7 @@ function fnc_register() {
 	var cdf = document.createDocumentFragment();
 	var auths = new Array();
 	var tag_p;
-	var inputs;
+	var inputs, txt, dec;
 	var us, ps;
 	var i;
 	
@@ -344,6 +344,29 @@ function fnc_register() {
 			
 			tag_p = dom_create_tag("p");
 			tag_p.appendChild(dom_create_tag("input", { "type": lists[1], "name": inputs[i], "id": inputs[i], "class": "ipt", "onkeyup": "form_empty_check();", "onblur": "this.onkeyup();" }));
+			cdf.appendChild(tag_p);
+		}
+		
+		tag_p = dom_create_tag("p", { "class": "label" });
+		tag_p.appendChild(dom_create_text("口座情報のインポート（オプション）"));
+		cdf.appendChild(tag_p);
+		
+		if(chkenv_import() == true) {
+			// ファイルアップロードを表示する
+			tag_p = dom_create_tag("p");
+			tag_input = dom_create_tag("input", { "type": "file", "name": "enc", "id": "enc", "accept": "text/plain", "class": "ipt", "onchange": "with(new FileReader()) { readAsText(this.files[0]); onload = function(e) { dom_get_id(\"txt\").value = e.target.result; } }" });
+			tag_p.appendChild(tag_input);
+			cdf.appendChild(tag_p);
+			
+			tag_p = dom_create_tag("p");
+			tag_input = dom_create_tag("input", { "type": "hidden", "name": "txt", "id": "txt", "class": "ipt" });
+			tag_p.appendChild(tag_input);
+			cdf.appendChild(tag_p);
+		} else {
+			// テキストボックスを表示する
+			tag_p = dom_create_tag("p");
+			tag_input = dom_create_tag("input", { "type": "text", "name": "txt", "id": "txt", "class": "ipt" });
+			tag_p.appendChild(tag_input);
 			cdf.appendChild(tag_p);
 		}
 		
@@ -364,6 +387,7 @@ function fnc_register() {
 			fnc_register();
 		} else {
 			// ログオン情報を生成する
+			txt = dom_get_id("txt").value;
 			fiid = dom_get_id("fiid").value;
 			inputs = fiids[fiid]["form"].split("|");
 			auths.push("=" + fiid);
@@ -373,16 +397,32 @@ function fnc_register() {
 			us = auths[1].split("=", 2);
 			ps = auths[2].split("=", 2);
 			
-			switch(dom_get_storage(us[1], ps[1])) {
-			case null:
-				// ログオン情報を設定する
-				dom_set_storage(us[1], "", ps[1]);
-				modal_showonly("完了", us[1] + "を登録しました。ログオンしてください。", false);
-				break;
-			case "":
-			default:
-				modal_show("エラー", us[1] + "は既に存在しています。", false);
-				break;
+			// 口座情報を復号する
+			try {
+				dec = CryptoJS.AES.decrypt(txt.split(",")[1], ps[1]);
+				if(dec != "") {
+					dec = (dec.toString().substring(0, (ps[1] + "\t").length * 2) == CryptoJS.enc.Utf8.parse(ps[1] + "\t")? dec.toString(CryptoJS.enc.Utf8): "");
+					dec = (dec == ""? "": dec.substring((ps[1] + "\t").length));
+				}
+			} catch(e) {
+				dec = "";
+			}
+			
+			if(txt != "" && dec == "") {
+				// 口座情報が指定されていて、かつ復号結果が空の場合、エラーを表示する
+				modal_show("エラー", "口座情報が正しくないか、または" + fiids["logon"][fiids["logon"]["form"].split("|")[1]].split("|")[0] + "が一致しません。", false);
+			} else {
+				switch(dom_get_storage(us[1], ps[1])) {
+				case null:
+					// ログオン情報を設定する
+					dom_set_storage(us[1], dec, ps[1]);
+					modal_showonly("完了", us[1] + "を登録しました。ログオンしてください。", false);
+					break;
+				case "":
+				default:
+					modal_show("エラー", us[1] + "は既に存在しています。", false);
+					break;
+				}
 			}
 		}
 	}
@@ -649,7 +689,7 @@ function fnc_version() {
 		tag_p.appendChild(dom_create_text("Copyright (c) 2013-2015 polygon planet"));
 		cdf.appendChild(tag_p);
 		
-		if(chkenv_xmlhttprequest() == false || chkenv_webstorage() == false || chkenv_domparser() == false || chkenv_xmlserializer() == false || chkenv_blob() == false || chkenv_createobjecturl() == false || chkenv_arraybuffer() == false) {
+		if(chkenv_xmlhttprequest() == false || chkenv_webstorage() == false || chkenv_domparser() == false || chkenv_xmlserializer() == false || chkenv_blob() == false || chkenv_createobjecturl() == false || chkenv_arraybuffer() == false || chkenv_filereader() == false) {
 			tag_p = dom_create_tag("p", { "class": "label" });
 			tag_p.appendChild(dom_create_text("ご利用のブラウザーが対応していない機能"));
 			cdf.appendChild(tag_p);
@@ -662,6 +702,7 @@ function fnc_version() {
 				if(chkenv_blob() == false) push("Blob");
 				if(chkenv_createobjecturl() == false) push("createObjectURL");
 				if(chkenv_arraybuffer() == false) push("ArrayBuffer");
+				if(chkenv_filereader() == false) push("FileReader");
 				if(length > 0) {
 					tag_p = dom_create_tag("p");
 					tag_p.appendChild(dom_create_text(join(" ")));
@@ -863,6 +904,96 @@ function fnc_delete(rowid) {
 	return;
 }
 
+// 出力機能
+function fnc_output() {
+	var logons = local_current();
+	var cdf = document.createDocumentFragment();
+	var tag_p, tag_select, tag_option;
+	var output;
+	var ofxbutton;
+	var i;
+	
+	if(dom_get_id("modal") == null) {
+		// 操作リストを生成する
+		tag_p = dom_create_tag("p", { "class": "label" });
+		tag_p.appendChild(dom_create_text("操作"));
+		cdf.appendChild(tag_p);
+		
+		// OFXボタンの表示を取得する
+		ofxbutton = dom_get_storage(logons["localid"] + ":ofxbutton", logons["localpass"]);
+		if(ofxbutton == null) for(i in ofxbuttons) {
+			ofxbutton = i;
+			break;
+		}
+		
+		tag_p = dom_create_tag("p");
+		tag_select = dom_create_tag("select", { "name": "ficat", "id": "format", "class": "ipt" });
+		for(i in outputs) {
+			// OFXボタンが表示されている場合、OFX結合ダウンロード機能を取り除く
+			if(i == "OFX" && ofxbutton != "F") continue;
+			tag_option = dom_create_tag("option", { "value": i });
+			tag_option.appendChild(dom_create_text(outputs[i]));
+			tag_select.appendChild(tag_option);
+		}
+		tag_p.appendChild(tag_select);
+		cdf.appendChild(tag_p);
+		
+		// モーダルウィンドウを開く
+		modal_show("出力", cdf, true, "format");
+	} else {
+		// コールバックの場合
+		output = dom_get_id("format").options[dom_get_id("format").selectedIndex].value;
+		
+		// モーダルウィンドウを閉じる
+		modal_hide();
+		
+		switch(output) {
+		case "OFX":
+			// OFX結合ダウンロード機能を呼び出す
+			fnc_ofx_all();
+			break;
+		case "CSV":
+			// CSVダウンロード機能を呼び出す
+			fnc_csv();
+			break;
+		case "PDF":
+			// PDFダウンロード機能を呼び出す
+			fnc_pdf();
+			break;
+		case "LPT":
+			// ブラウザーの印刷モーダルウィンドウを呼び出す
+			self.window.print();
+			break;
+		case "EXP":
+			// 口座情報エクスポート機能を呼び出す
+			fnc_export();
+			break;
+		default:
+			break;
+		}
+	}
+	
+	return;
+}
+
+// すべて更新機能
+function fnc_update_all(auth) {
+	var logons = local_current();
+	var auths = dom_get_storage(logons["localid"], logons["localpass"]).split("\r\n");
+	var rowid = (typeof auth != "string" || auth.indexOf("=") == -1? 0: parseInt(auth.substring(0, auth.indexOf("=")), 10) + 1);
+	var settings;
+	
+	if(typeof auths[rowid] != "undefined") {
+		settings = auth_parse(auths[rowid]);
+		get_all = rowid;
+		fnc_update(settings["rowid"]);
+	} else {
+		get_all = -1;
+	}
+	
+	return;
+}
+
 // 更新機能
 function fnc_update(rowid, additional) {
 	var auth = fnc_getauth(rowid);
@@ -1008,25 +1139,7 @@ function fnc_update(rowid, additional) {
 	return;
 }
 
-// すべて更新機能
-function fnc_update_all(auth) {
-	var logons = local_current();
-	var auths = dom_get_storage(logons["localid"], logons["localpass"]).split("\r\n");
-	var rowid = (typeof auth != "string" || auth.indexOf("=") == -1? 0: parseInt(auth.substring(0, auth.indexOf("=")), 10) + 1);
-	var settings;
-	
-	if(typeof auths[rowid] != "undefined") {
-		settings = auth_parse(auths[rowid]);
-		get_all = rowid;
-		fnc_update(settings["rowid"]);
-	} else {
-		get_all = -1;
-	}
-	
-	return;
-}
-
-// 追加認証画面を表示する
+// 追加認証機能
 function fnc_update_additional(auth) {
 	var cdf = document.createDocumentFragment();
 	var auths = new Array();
@@ -1365,41 +1478,6 @@ function fnc_detail_change() {
 	return;
 }
 
-// OFXダウンロード機能
-function fnc_ofx(rowid) {
-	var auth = fnc_getauth(rowid);
-	var logons = local_current();
-	var settings = auth_parse(auth);
-	var tag_section = dom_get_tag("section")[0];
-	var ofx = null;
-	var tag_a;
-	var filename, url;
-	
-	if(chkenv_ofx() == false) {
-		modal_showonly("警告", "ご利用のブラウザーは、OFXファイルのダウンロードに対応していません。", false);
-	} else {
-		// ダウンロード用データを生成する
-		ofx = new Blob([dom_get_storage(logons["localid"] + ":" + settings["rowid"], logons["localpass"])]);
-		
-		filename = settings["fiid"] + (settings["keyvalues"]["timestamp"] != ""? "_" + settings["keyvalues"]["timestamp"]: "") + ".ofx";
-		
-		// データをダウンロードする
-		if(self.window.navigator.msSaveOrOpenBlob) {
-			self.window.navigator.msSaveOrOpenBlob(ofx, filename);
-		} else {
-			url = self.window.URL || self.window.webkitURL;
-			tag_a = dom_create_tag("a", { "href": url.createObjectURL(ofx), "id": "download", "type": "application/x-ofx", "download": filename });
-			tag_a.appendChild(dom_create_text("ダウンロード"));
-			tag_section.appendChild(tag_a);
-			dom_get_id("download").click();
-			tag_section.removeChild(tag_a);
-		}
-		ofx = null;
-	}
-	
-	return;
-}
-
 // OFX結合ダウンロード機能
 function fnc_ofx_all() {
 	var parser = null;
@@ -1568,69 +1646,36 @@ function fnc_ofx_all() {
 	return;
 }
 
-// 出力機能
-function fnc_output() {
+// OFXダウンロード機能
+function fnc_ofx(rowid) {
+	var auth = fnc_getauth(rowid);
 	var logons = local_current();
-	var cdf = document.createDocumentFragment();
-	var tag_p, tag_select, tag_option;
-	var output;
-	var ofxbutton;
-	var i;
+	var settings = auth_parse(auth);
+	var tag_section = dom_get_tag("section")[0];
+	var ofx = null;
+	var tag_a;
+	var filename, url;
 	
-	if(dom_get_id("modal") == null) {
-		// 操作リストを生成する
-		tag_p = dom_create_tag("p", { "class": "label" });
-		tag_p.appendChild(dom_create_text("操作"));
-		cdf.appendChild(tag_p);
-		
-		// OFXボタンの表示を取得する
-		ofxbutton = dom_get_storage(logons["localid"] + ":ofxbutton", logons["localpass"]);
-		if(ofxbutton == null) for(i in ofxbuttons) {
-			ofxbutton = i;
-			break;
-		}
-		
-		tag_p = dom_create_tag("p");
-		tag_select = dom_create_tag("select", { "name": "ficat", "id": "format", "class": "ipt" });
-		for(i in outputs) {
-			// OFXボタンが表示されている場合、OFX結合ダウンロード機能を取り除く
-			if(i == "OFX" && ofxbutton != "F") continue;
-			tag_option = dom_create_tag("option", { "value": i });
-			tag_option.appendChild(dom_create_text(outputs[i]));
-			tag_select.appendChild(tag_option);
-		}
-		tag_p.appendChild(tag_select);
-		cdf.appendChild(tag_p);
-		
-		// モーダルウィンドウを開く
-		modal_show("出力", cdf, true, "format");
+	if(chkenv_export() == false) {
+		modal_showonly("警告", "ご利用のブラウザーは、OFXファイルのダウンロードに対応していません。", false);
 	} else {
-		// コールバックの場合
-		output = dom_get_id("format").options[dom_get_id("format").selectedIndex].value;
+		// ダウンロード用データを生成する
+		ofx = new Blob([dom_get_storage(logons["localid"] + ":" + settings["rowid"], logons["localpass"])]);
 		
-		// モーダルウィンドウを閉じる
-		modal_hide();
+		filename = settings["fiid"] + (settings["keyvalues"]["timestamp"] != ""? "_" + settings["keyvalues"]["timestamp"]: "") + ".ofx";
 		
-		switch(output) {
-		case "OFX":
-			// OFX結合ダウンロード機能を呼び出す
-			fnc_ofx_all();
-			break;
-		case "CSV":
-			// CSVダウンロード機能を呼び出す
-			fnc_csv();
-			break;
-		case "PDF":
-			// PDFダウンロード機能を呼び出す
-			fnc_pdf();
-			break;
-		case "LPT":
-			// ブラウザーの印刷モーダルウィンドウを呼び出す
-			self.window.print();
-			break;
-		default:
-			break;
+		// データをダウンロードする
+		if(self.window.navigator.msSaveOrOpenBlob) {
+			self.window.navigator.msSaveOrOpenBlob(ofx, filename);
+		} else {
+			url = self.window.URL || self.window.webkitURL;
+			tag_a = dom_create_tag("a", { "href": url.createObjectURL(ofx), "id": "download", "type": "application/x-ofx", "download": filename });
+			tag_a.appendChild(dom_create_text("ダウンロード"));
+			tag_section.appendChild(tag_a);
+			dom_get_id("download").click();
+			tag_section.removeChild(tag_a);
 		}
+		ofx = null;
 	}
 	
 	return;
@@ -1967,6 +2012,68 @@ function fnc_pdf() {
 			tag_section.removeChild(tag_a);
 		}
 		pdf = null;
+	}
+	
+	return;
+}
+
+// 口座情報エクスポート機能
+function fnc_export() {
+	var logons = local_current();
+	var auth = dom_get_storage(logons["localid"], logons["localpass"]);
+	var cdf = document.createDocumentFragment();
+	var txt = null;
+	var tag_section = dom_get_tag("section")[0];
+	var tag_p, tag_input;
+	var pass;
+	
+	if(chkenv_export() == false) {
+		modal_showonly("警告", "ご利用のブラウザーは、口座情報のエクスポートに対応していません。", false);
+	} else {
+		if(dom_get_id("modal") == null) {
+			// 操作リストを生成する
+			tag_p = dom_create_tag("p", { "class": "label" });
+			tag_p.appendChild(dom_create_text(fiids["logon"][fiids["logon"]["form"].split("|")[1]].split("|")[0] + "の変更（オプション）"));
+			cdf.appendChild(tag_p);
+			
+			tag_p = dom_create_tag("p");
+			tag_input = dom_create_tag("input", { "type": "password", "name": "pass", "id": "pass", "value": logons["localpass"], "class": "ipt", "onkeyup": "form_empty_check();" });
+			tag_p.appendChild(tag_input);
+			cdf.appendChild(tag_p);
+			
+			tag_p = dom_create_tag("p");
+			tag_input = dom_create_tag("input", { "type": "hidden", "name": "auth", "id": "auth", "value": auth.replace(/\r\n/gm, "\n"), "class": "ipt" });
+			tag_p.appendChild(tag_input);
+			cdf.appendChild(tag_p);
+			
+			// モーダルウィンドウを開く
+			modal_show("口座情報のエクスポート", cdf, true, "pass");
+		} else {
+			// コールバックの場合
+			pass = dom_get_id("pass").value;
+			auth = dom_get_id("auth").value.replace(/\n/gm, "\r\n");
+			
+			// モーダルウィンドウを閉じる
+			modal_hide();
+			
+			// ダウンロード用データを生成する
+			txt = new Blob(["data:application/octet-stream;ver=" + ver + ";base64," + CryptoJS.AES.encrypt((pass + "\t" + auth.replace(/\t?(status|timestamp)\=[^\t\r\n]+/gm, "") + "\r\n").toString(CryptoJS.enc.Utf8), pass).toString()]);
+			
+			filename = fprefix + logons["localid"] + ".txt";
+			
+			// データをダウンロードする
+			if(self.window.navigator.msSaveOrOpenBlob) {
+				self.window.navigator.msSaveOrOpenBlob(txt, filename);
+			} else {
+				url = self.window.URL || self.window.webkitURL;
+				tag_a = dom_create_tag("a", { "href": url.createObjectURL(txt), "id": "download", "type": "text/plain", "download": filename });
+				tag_a.appendChild(dom_create_text("ダウンロード"));
+				tag_section.appendChild(tag_a);
+				dom_get_id("download").click();
+				tag_section.removeChild(tag_a);
+			}
+			txt = null;
+		}
 	}
 	
 	return;
@@ -2862,8 +2969,6 @@ function form_empty_check() {
 		// OKボタンの押下を制御する（未入力項目がある場合、OKボタンの押下を禁止する）
 		dom_get_id("modalok").disabled = f;
 	} else {
-		// それ以外の場合
-		
 		// 入力項目を取得する
 		inputs = dom_get_id("modal").getElementsByTagName("input");
 		for(i = 0; i < inputs.length; i++) with(inputs[i]) if(type != "hidden" && value == "") {
@@ -2984,13 +3089,23 @@ function chkenv_createobjecturl() {
 	return ((self.window.URL || self.window.webkitURL) && ((self.window.URL || self.window.webkitURL).createObjectURL || self.window.navigator.msSaveOrOpenBlob)? true: false);
 }
 
+// JavaScriptの実装状況をチェックする（FileReader）
+function chkenv_filereader() {
+	return (self.window.File && self.window.FileReader? true: false);
+}
+
 // JavaScriptの実装状況をチェックする（実行）
 function chkenv_run() {
 	return chkenv_xmlhttprequest() && chkenv_webstorage() && chkenv_parser();
 }
 
-// JavaScriptの実装状況をチェックする（OFXダウンロード機能）
-function chkenv_ofx() {
+// JavaScriptの実装状況をチェックする（登録機能）
+function chkenv_import() {
+	return chkenv_blob() && chkenv_filereader();
+}
+
+// JavaScriptの実装状況をチェックする（OFXダウンロード機能・口座情報エクスポート機能）
+function chkenv_export() {
 	return chkenv_blob() && chkenv_createobjecturl();
 }
 
