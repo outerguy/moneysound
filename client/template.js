@@ -1480,10 +1480,9 @@ function fnc_ofx_all() {
 	var current = null;
 	var f = false;
 	var tag_section = dom_get_tag("section")[0];
-	var logons, auths, timestamp, settings, filename, str, ofx;
+	var logons, auths, timestamp, settings, filename, url, str, ofx;
 	var tag_ofx, tag_signonmsgsrsv1, tag_sonrs, tag_status, tag_code, tag_severity, tag_dtserver, tag_language, tag_fi, tag_org, tag_bankmsgsrsv1, tag_creditcardmsgsrsv1, tag_invstmtmsgsrsv1, tag_seclistmsgsrsv1, tag_stmttrnrss, tag_seclist, tag_ccstmttrnrss, tag_invstmttrnrss, tag_seclists, tag_seclisttrnrs, tag_trnuid;
 	var tag_a;
-	var url;
 	var i, j, k;
 	
 	if(chkenv_ofx_all() == false) {
@@ -1615,10 +1614,10 @@ function fnc_ofx_all() {
 		
 		str = ofxhead + serializer.serializeToString(merge);
 		
+		filename = fprefix + timestamp + ".ofx";
+		
 		// ダウンロード用データを生成する
 		ofx = new Blob([str]);
-		
-		filename = fprefix + timestamp + ".ofx";
 		
 		// データをダウンロードする
 		if(f == false) {
@@ -1653,10 +1652,10 @@ function fnc_ofx(rowid) {
 	if(chkenv_export() == false) {
 		modal_showonly("警告", "ご利用のブラウザーは、OFXファイルのダウンロードに対応していません。", false);
 	} else {
+		filename = settings["fiid"] + (settings["keyvalues"]["timestamp"] != ""? "_" + settings["keyvalues"]["timestamp"]: "") + ".ofx";
+		
 		// ダウンロード用データを生成する
 		ofx = new Blob([dom_get_storage(logons["localid"] + ":" + settings["rowid"], logons["localpass"])]);
-		
-		filename = settings["fiid"] + (settings["keyvalues"]["timestamp"] != ""? "_" + settings["keyvalues"]["timestamp"]: "") + ".ofx";
 		
 		// データをダウンロードする
 		if(self.window.navigator.msSaveOrOpenBlob) {
@@ -1989,10 +1988,10 @@ function fnc_pdf() {
 		str = str.replace("<!--[content]-->", pdflength + pdfstream);
 		str = str.replace("<!--[xref]-->", str.indexOf("xref").toString());
 		
+		filename = fprefix + timestamp + ".pdf";
+		
 		// ダウンロード用データを生成する
 		pdf = new Blob([str]);
-		
-		filename = fprefix + timestamp + ".pdf";
 		
 		// データをダウンロードする
 		if(self.window.navigator.msSaveOrOpenBlob) {
@@ -2019,41 +2018,57 @@ function fnc_export() {
 	var txt = null;
 	var tag_section = dom_get_tag("section")[0];
 	var tag_p, tag_input;
+	var filename, url;
 	var pass;
+	var enc;
 	
-	if(chkenv_export() == false) {
-		modal_showonly("警告", "ご利用のブラウザーは、口座情報のエクスポートに対応していません。", false);
+	if(dom_get_id("modal") == null) {
+		tag_p = dom_create_tag("p", { "class": "label" });
+		tag_p.appendChild(dom_create_text(fiids["logon"][fiids["logon"]["form"].split("|")[1]].split("|")[0] + "の変更（オプション）"));
+		cdf.appendChild(tag_p);
+		
+		tag_p = dom_create_tag("p");
+		tag_input = dom_create_tag("input", { "type": "password", "name": "pass", "id": "pass", "value": logons["localpass"], "class": "ipt", "onkeyup": "form_empty_check();" });
+		tag_p.appendChild(tag_input);
+		cdf.appendChild(tag_p);
+		
+		tag_p = dom_create_tag("p");
+		tag_input = dom_create_tag("input", { "type": "hidden", "name": "auth", "id": "auth", "value": auth.replace(/\r\n/gm, "\n"), "class": "ipt" });
+		tag_p.appendChild(tag_input);
+		cdf.appendChild(tag_p);
+		
+		// モーダルウィンドウを開く
+		modal_show("口座情報のエクスポート", cdf, true, "pass");
 	} else {
-		if(dom_get_id("modal") == null) {
-			// 操作リストを生成する
+		// コールバックの場合
+		pass = dom_get_id("pass").value;
+		auth = dom_get_id("auth").value.replace(/\n/gm, "\r\n");
+		
+		// モーダルウィンドウを閉じる
+		modal_hide();
+		
+		enc = "data:application/octet-stream;ver=" + ver + ";base64," + CryptoJS.AES.encrypt((pass + "\t" + auth.replace(/\t?(status|timestamp)\=[^\t\r\n]+/gm, "") + "\r\n").toString(CryptoJS.enc.Utf8), pass).toString();
+		
+		filename = fprefix + logons["localid"] + ".txt";
+		
+		if(chkenv_export() == false) {
+			tag_p = dom_create_tag("p");
+			tag_p.appendChild(dom_create_text("以下のデータをコピー&amp;ペーストし、保存してください。"));
+			cdf.appendChild(tag_p);
+			
 			tag_p = dom_create_tag("p", { "class": "label" });
-			tag_p.appendChild(dom_create_text(fiids["logon"][fiids["logon"]["form"].split("|")[1]].split("|")[0] + "の変更（オプション）"));
+			tag_p.appendChild(dom_create_text("口座情報"));
 			cdf.appendChild(tag_p);
 			
 			tag_p = dom_create_tag("p");
-			tag_input = dom_create_tag("input", { "type": "password", "name": "pass", "id": "pass", "value": logons["localpass"], "class": "ipt", "onkeyup": "form_empty_check();" });
+			tag_input = dom_create_tag("input", { "type": "text", "name": "enc", "id": "enc", "value": enc, "class": "ipt", "readonly": "readonly" });
 			tag_p.appendChild(tag_input);
 			cdf.appendChild(tag_p);
 			
-			tag_p = dom_create_tag("p");
-			tag_input = dom_create_tag("input", { "type": "hidden", "name": "auth", "id": "auth", "value": auth.replace(/\r\n/gm, "\n"), "class": "ipt" });
-			tag_p.appendChild(tag_input);
-			cdf.appendChild(tag_p);
-			
-			// モーダルウィンドウを開く
-			modal_show("口座情報のエクスポート", cdf, true, "pass");
+			modal_showonly("口座情報のエクスポート", cdf, false, "enc");
 		} else {
-			// コールバックの場合
-			pass = dom_get_id("pass").value;
-			auth = dom_get_id("auth").value.replace(/\n/gm, "\r\n");
-			
-			// モーダルウィンドウを閉じる
-			modal_hide();
-			
 			// ダウンロード用データを生成する
-			txt = new Blob(["data:application/octet-stream;ver=" + ver + ";base64," + CryptoJS.AES.encrypt((pass + "\t" + auth.replace(/\t?(status|timestamp)\=[^\t\r\n]+/gm, "") + "\r\n").toString(CryptoJS.enc.Utf8), pass).toString()]);
-			
-			filename = fprefix + logons["localid"] + ".txt";
+			txt = new Blob([enc]);
 			
 			// データをダウンロードする
 			if(self.window.navigator.msSaveOrOpenBlob) {
