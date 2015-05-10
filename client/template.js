@@ -38,15 +38,15 @@ for(fi in fiids) if(typeof filists[fiids[fi]["type"]] != "undefined") filists[fi
 		body.onload = fnc_load;
 		
 		// 各キーに機能を割り当てる
-		onkeydown = function(evt) {
+		onkeydown = function(e) {
 			var ret = true;
 			var scroll = 10;
 			
-			if(typeof evt == "undefined") evt = event;
-			if(evt != null) switch(evt.keyCode) {
+			if(typeof e == "undefined") e = self.window.event;
+			if(e != null) switch(e.keyCode) {
 			case 8:
 				// BackSpaceキーの場合
-				if(dom_get_id("modal") != null && evt.ctrlKey == true) {
+				if(dom_get_id("modal") != null && e.ctrlKey == true) {
 					// モーダルウィンドウを表示していてCtrlキーが押下されている場合、モーダルウィンドウを中央に移動する
 					modal_resize();
 					ret = false;
@@ -82,7 +82,7 @@ for(fi in fiids) if(typeof filists[fiids[fi]["type"]] != "undefined") filists[fi
 				break;
 			case 37:
 				// ←キーの場合
-				if(dom_get_id("modal") != null && evt.ctrlKey == true) {
+				if(dom_get_id("modal") != null && e.ctrlKey == true) {
 					// モーダルウィンドウを表示していてCtrlキーが押下されている場合、モーダルウィンドウを移動する
 					with(dom_get_id("modal").style) left = (parseInt(left.replace("px", "")) - scroll).toString() + "px";
 					ret = false;
@@ -90,7 +90,7 @@ for(fi in fiids) if(typeof filists[fiids[fi]["type"]] != "undefined") filists[fi
 				break;
 			case 38:
 				// ↑キーの場合
-				if(dom_get_id("modal") != null && evt.ctrlKey == true) {
+				if(dom_get_id("modal") != null && e.ctrlKey == true) {
 					// モーダルウィンドウを表示していてCtrlキーが押下されている場合、モーダルウィンドウを移動する
 					with(dom_get_id("modal").style) top = (parseInt(top.replace("px", "")) - scroll).toString() + "px";
 					ret = false;
@@ -98,7 +98,7 @@ for(fi in fiids) if(typeof filists[fiids[fi]["type"]] != "undefined") filists[fi
 				break;
 			case 39:
 				// →キーの場合
-				if(dom_get_id("modal") != null && evt.ctrlKey == true) {
+				if(dom_get_id("modal") != null && e.ctrlKey == true) {
 					// モーダルウィンドウを表示していてCtrlキーが押下されている場合、モーダルウィンドウを移動する
 					with(dom_get_id("modal").style) left = (parseInt(left.replace("px", "")) + scroll).toString() + "px";
 					ret = false;
@@ -106,7 +106,7 @@ for(fi in fiids) if(typeof filists[fiids[fi]["type"]] != "undefined") filists[fi
 				break;
 			case 40:
 				// ↓キーの場合
-				if(dom_get_id("modal") != null && evt.ctrlKey == true) {
+				if(dom_get_id("modal") != null && e.ctrlKey == true) {
 					// モーダルウィンドウを表示していてCtrlキーが押下されている場合、モーダルウィンドウを移動する
 					with(dom_get_id("modal").style) top = (parseInt(top.replace("px", "")) + scroll).toString() + "px";
 					ret = false;
@@ -2431,7 +2431,7 @@ function modal_show(mhead, mbody, showcancel, focusto) {
 		};
 		
 		with(self.document) {
-			// モーダルウィンドウのタイトル部分のドラッグを制御する
+			// モーダルウィンドウがドラッグされた場合、移動する
 			onmousemove = function(e) {
 				if(typeof e == "undefined") e = self.window.event;
 				
@@ -2443,7 +2443,7 @@ function modal_show(mhead, mbody, showcancel, focusto) {
 				return;
 			};
 			
-			// モーダルウィンドウのタイトル部分のドロップを制御する
+			// モーダルウィンドウがドロップされた場合、移動を禁止する
 			onmouseup = function() {
 				if(pw == true) pw = false;
 				return;
@@ -2554,15 +2554,11 @@ function modal_hide() {
 		for(i in tag_bgs) tag_bgs[i].className = "";
 		
 		with(self.document) {
-			// モーダルウィンドウのタイトル部分のドラッグを制御する
-			onmousemove = function() {
-				return;
-			};
+			// モーダルウィンドウがドラッグされた場合、何もしない
+			onmousemove = null;
 			
-			// モーダルウィンドウのタイトル部分のドロップを制御する
-			onmouseup = function() {
-				return;
-			};
+			// モーダルウィンドウがドロップされた場合、何もしない
+			onmouseup = null;
 		}
 		
 		// ウィンドウサイズが変更された場合、何もしない
