@@ -638,8 +638,11 @@ function fnc_version() {
 	var title = dom_get_tag("title")[0].firstChild.nodeValue;
 	var img_icon = "data:image/gif;base64,R0lGODlhIAAgAPIAAP///wCZ/xqg+0Wy+2G9+5HR/Lnh/Pv8/SH5BAEAAAAALAAAAAAgACAAAAOVCArR/jC6taS9r+JtFf8Q4wykIAnkADrEcRRS4RKrY7jmI7hGPbqwh+yg8jVuh1xgd+gZGwOgY1h8BpAmptO6lA6V3GFAyn0AXeWlYI1srtfPtms+39bk9PrzzXbz01dNgHwCNwaEcXmKdit4i3t8hohphoAQlRcUHhyYEZqaGwMEVRmfoEampj6pqjWsrR+vrLGyCwkAOw==";
 	var img_wsofx = "data:image/gif;base64,R0lGODlhWAAfAPQAAAAAAAAAAAUFBQ0NDRwcHDMzM0BAQFNTUwGdNGlpaf8A/xilRgCczyOoUROh0TKuWoKCgiWp1TKr1k68c5ubm0u637KysnfH44bPn8DAwKnj7MPm0tPt3c/s9uXp5/Pz8yH5BAEAAAoALAAAAABYAB8AAAX+oCKOZGmeaKqubOuOCPLOdG0r8a3vfE4HCiDwFCjyhjyY7BdsBpHIptD4hA6LWFunYvKRJB2VUCqCjsZX55jsnG0ZjO6SBAenstVoes1X+19vDA4XciYaEXVhJn1EZHtlfmkuFXCDIhwTDRsiPhsPD5sKh3WLbVRVZ1NXp1SrLnAMdqINMZoxnjELGCKBcUltwElwiLGKGrQxybq8lIJwv8BRwnGjxSLHubsKgZbPKBkQ4RAZ0DbeosSyGtrchCLnJBQEWFgEFCT0+UUQ9AcjBVgE3GPhLVQ1We0uvfNFIkERAfQgBkiQSl+WA/TIUXg48ZUDTqCupWtmSQEmBBz+FCAqwc8iPQhlXFIZgKWAgnlFCLxwpwBZSHSV3J1EsMDDtRI0AwgYMJDCAIkDYhZJIE6ciJZFAGKxcAMbgp/ehi5DsRHLQBEW6N3LmEJrPn87MCRbyCnGgw8qHOY04ZYi228SsQwgd2OoD2/JEGhKgbEIXBKNAxjIU8CAZcsl9CoNcJaGWLlLECPAgGyxCQNYHo/QPFmmtCpLbXyuSxcHylm1Qo2IrFpE5NYyS0TeN2O2ktoxUl4rrVuzzhJ981CtSiJtPgGEWzwgqo3EYV/JS5BWPKJskc7Wz+fJbgJnvskuPHQvcaz2WBMYNuAVkXRp06dFRLUeClhJthln5ShmAI8LBboE04AmZBDYZDgtxR4NHUggizdbRKBbXhwFNFVFAVwoglvYKZBeAL3NcFAHcCTUgjz62IMPFiaa15EIqJm1QzWwCMLTC+CIY2JVJhYZDktGJlFNSQlG+YsGQ0pp5ZVYJhECADs=";
+	var fnc_chkenvs = [chkenv_xmlhttprequest, chkenv_webstorage, chkenv_domparser, chkenv_xmlserializer, chkenv_blob, chkenv_createobjecturl, chkenv_arraybuffer, chkenv_filereader];
+	var f = true;
 	var unsupports = new Array();
 	var tag_p, tag_a, tag_img, tag_hr;
+	var i;
 	
 	if(dom_get_id("modal") == null) {
 		// 表示項目を設定する
@@ -689,25 +692,16 @@ function fnc_version() {
 		tag_p.appendChild(dom_create_text("Copyright (c) 2013-2015 polygon planet"));
 		cdf.appendChild(tag_p);
 		
-		if(chkenv_xmlhttprequest() == false || chkenv_webstorage() == false || chkenv_domparser() == false || chkenv_xmlserializer() == false || chkenv_blob() == false || chkenv_createobjecturl() == false || chkenv_arraybuffer() == false || chkenv_filereader() == false) {
-			tag_p = dom_create_tag("p", { "class": "label" });
-			tag_p.appendChild(dom_create_text("ご利用のブラウザーが対応していない機能"));
-			cdf.appendChild(tag_p);
-			
-			with(unsupports) {
-				if(chkenv_xmlhttprequest() == false) push("XMLHttpRequest");
-				if(chkenv_webstorage() == false) push("WebStorage");
-				if(chkenv_domparser() == false) push("DOMParser");
-				if(chkenv_xmlserializer() == false) push("XMLSerializer");
-				if(chkenv_blob() == false) push("Blob");
-				if(chkenv_createobjecturl() == false) push("createObjectURL");
-				if(chkenv_arraybuffer() == false) push("ArrayBuffer");
-				if(chkenv_filereader() == false) push("FileReader");
-				if(length > 0) {
-					tag_p = dom_create_tag("p");
-					tag_p.appendChild(dom_create_text(join(" ")));
-					cdf.appendChild(tag_p);
-				}
+		with(unsupports) {
+			for(i = 0; i < fnc_chkenvs.length; i++) if(fnc_chkenvs[i]() == false) push(fnc_chkenvs[i].toString().replace(/^[^_]+_([a-z_]+)[\w\W]+$/m, "$1"));
+			if(length > 0) {
+				tag_p = dom_create_tag("p", { "class": "label" });
+				tag_p.appendChild(dom_create_text("ご利用のブラウザーが対応していない機能"));
+				cdf.appendChild(tag_p);
+				
+				tag_p = dom_create_tag("p");
+				tag_p.appendChild(dom_create_text(join(" ")));
+				cdf.appendChild(tag_p);
 			}
 		}
 		
