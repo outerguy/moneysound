@@ -2552,8 +2552,8 @@ function modal_show(mhead, mbody, showcancel, focusto) {
 				if(typeof e == "undefined") e = self.window.event;
 				
 				if(pw == true) with(tag_h3.parentNode.style) {
-					left = e.clientX - px + "px";
-					top = e.clientY - py + "px";
+					left = (e.clientX - px).toString() + "px";
+					top = (e.clientY - py).toString() + "px";
 				}
 				
 				return;
