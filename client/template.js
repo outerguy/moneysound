@@ -354,7 +354,7 @@ function fnc_register() {
 		if(chkenv_import() == true) {
 			// ファイルアップロードを表示する
 			tag_p = dom_create_tag("p");
-			tag_input = dom_create_tag("input", { "type": "file", "name": "enc", "id": "enc", "accept": "text/plain", "class": "ipt", "onchange": "with(new FileReader()) { readAsText(this.files[0]); onload = function(e) { dom_get_id(\"txt\").value = e.target.result; } }" });
+			tag_input = dom_create_tag("input", { "type": "file", "name": "enc", "id": "enc", "accept": "text/plain", "class": "ipt", "onchange": "with(new FileReader()) { readAsText(this.files[0]); onload = function() { dom_get_id(\"txt\").value = this.result; }; }" });
 			tag_p.appendChild(tag_input);
 			cdf.appendChild(tag_p);
 			
@@ -955,8 +955,8 @@ function fnc_output() {
 			fnc_pdf();
 			break;
 		case "LPT":
-			// ブラウザーの印刷モーダルウィンドウを呼び出す
-			self.window.print();
+			// 口座一覧印刷機能を呼び出す
+			fnc_print();
 			break;
 		case "EXP":
 			// 口座情報エクスポート機能を呼び出す
@@ -2010,6 +2010,14 @@ function fnc_pdf() {
 	return;
 }
 
+// 口座一覧印刷機能
+function fnc_print() {
+	// ブラウザーの印刷モーダルウィンドウを呼び出す
+	self.window.print();
+	
+	return;
+}
+
 // 口座情報エクスポート機能
 function fnc_export() {
 	var logons = local_current();
@@ -2061,7 +2069,7 @@ function fnc_export() {
 			cdf.appendChild(tag_p);
 			
 			tag_p = dom_create_tag("p");
-			tag_input = dom_create_tag("input", { "type": "text", "name": "enc", "id": "enc", "value": enc, "class": "ipt", "readonly": "readonly" });
+			tag_input = dom_create_tag("input", { "type": "text", "name": "enc", "id": "enc", "value": enc, "readonly": "readonly", "class": "ipt", "onfocus": "this.select();" });
 			tag_p.appendChild(tag_input);
 			cdf.appendChild(tag_p);
 			
@@ -3083,11 +3091,6 @@ function chkenv_xmlserializer() {
 	return (typeof XMLSerializer != "undefined" && XMLSerializer && typeof (new XMLSerializer).serializeToString == "function"? true: false);
 }
 
-// JavaScriptの実装状況をチェックする（OFX処理）
-function chkenv_parser() {
-	return chkenv_domparser() && chkenv_xmlserializer();
-}
-
 // JavaScriptの実装状況をチェックする（CSV処理）
 function chkenv_arraybuffer() {
 	return (typeof ArrayBuffer == "function" && ArrayBuffer && typeof Uint8Array == "function" && Uint8Array? true: false);
@@ -3101,6 +3104,11 @@ function chkenv_createobjecturl() {
 // JavaScriptの実装状況をチェックする（FileReader）
 function chkenv_filereader() {
 	return (self.window.File && self.window.FileReader? true: false);
+}
+
+// JavaScriptの実装状況をチェックする（OFX処理）
+function chkenv_parser() {
+	return chkenv_domparser() && chkenv_xmlserializer();
 }
 
 // JavaScriptの実装状況をチェックする（実行）
