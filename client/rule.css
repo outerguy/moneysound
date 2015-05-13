@@ -11,7 +11,7 @@ body {
 nav p, footer p {
 	text-align: center;
 }
-h1, caption, footer p {
+header, caption, footer {
 	cursor: default;
 }
 h2 {
