@@ -18,16 +18,19 @@ var pw = false;
 var px, py;
 var fi;
 
+// 各リストを定義する
 var ficats = { "BANK": "銀行", "CREDITCARD": "クレジットカード", "INVSTMT": "証券", "PREPAID": "前払式帳票" };
 var themes = { "standard.css": "標準（スマートフォン対応）", "modern.css": "Modern", "aero.css": "Aero", "luna.css": "Luna", "flat.css": "Flat", "aqua.css": "Aqua", "light.css": "Light", "precious.css": "プレシャス" };
 var outputs = { "OFX": "OFXファイルの結合ダウンロード", "CSV": "CSVファイルのダウンロード", "PDF": "PDFファイルのダウンロード", "LPT": "口座一覧の印刷", "EXP": "口座情報のエクスポート" };
 var ofxbuttons = { "T": "する", "F": "しない（出力ボタンの操作に追加する）" };
 var csvencodings = { "SJIS": "Shift_JIS", "UTFB": "UTF-8（BOMあり）", "UTF8": "UTF-8（BOMなし）" };
 
+// ログオン・登録・抹消機能の認証情報を追加する
 fiids["logon"] = { "type": "LOCAL", "name": "ログオン", "form": "localid|localpass", "localid": "ローカルID|text", "localpass": "ローカルパスワード|password" };
 fiids["register"] = { "type": "LOCAL", "name": "登録", "form": "localid|localpass", "localid": "ローカルID|text", "localpass": "ローカルパスワード|password" };
 fiids["erase"] = { "type": "LOCAL", "name": "抹消", "form": "localid", "localid": "ローカルID|text" };
 
+// 分類毎に金融機関リストを生成する
 var filists = new Array();
 for(fi in ficats) filists[fi] = new Array();
 for(fi in fiids) if(typeof filists[fiids[fi]["type"]] != "undefined") filists[fiids[fi]["type"]][fi] = fiids[fi];
@@ -201,7 +204,15 @@ function fnc_initialize() {
 		// 各ボタンを有効・無効に設定する
 		for(i in btn_disableds) dom_get_id(i).disabled = btn_disableds[i];
 		
-		fnc_option_change();
+		// 画面のテーマよりCSSを選択する
+		var css = dom_get_storage(logons["localid"] + ":theme", logons["localpass"]);
+		if(css == null || css == "") for(i in themes) {
+			css = i;
+			break;
+		}
+		
+		// CSSを制御する
+		with(dom_get_id("css_theme")) href = href.substring(0, href.lastIndexOf("/") + 1) + css;
 		
 		// OFXボタンの表示を取得する
 		ofxbutton = dom_get_storage(logons["localid"] + ":ofxbutton", logons["localpass"]);
@@ -600,34 +611,18 @@ function fnc_option() {
 		// モーダルウィンドウを閉じる
 		modal_hide();
 		
-		// CSVファイルの文字エンコーディングを設定する
-		dom_set_storage(logons["localid"] + ":csvencoding", csvencoding, logons["localpass"]);
+		// 画面のテーマを設定する
+		dom_set_storage(logons["localid"] + ":theme", css, logons["localpass"]);
 		
 		// OFXボタンの表示を設定する
 		dom_set_storage(logons["localid"] + ":ofxbutton", ofxbutton, logons["localpass"]);
 		
-		// 画面のテーマを設定する
-		dom_set_storage(logons["localid"] + ":theme", css, logons["localpass"]);
+		// CSVファイルの文字エンコーディングを設定する
+		dom_set_storage(logons["localid"] + ":csvencoding", csvencoding, logons["localpass"]);
 		
 		// 初期化機能を呼び出す
 		fnc_initialize();
 	}
-	
-	return;
-}
-
-// 設定を変更する
-function fnc_option_change() {
-	var logons = local_current();
-	var css = dom_get_storage(logons["localid"] + ":theme", logons["localpass"]);
-	var i;
-	
-	// 画面のテーマよりCSSファイルを選択する
-	if(css == null || css == "") for(i in themes) {
-		css = i;
-		break;
-	}
-	with(dom_get_id("css_theme")) href = href.substring(0, href.lastIndexOf("/") + 1) + css;
 	
 	return;
 }
@@ -1548,8 +1543,7 @@ function fnc_ofx_all() {
 				try {
 					current = parser.parseFromString(str, "text/xml");
 				} catch(e) {
-					// 何もしない
-					void(0);
+					void(e);
 				}
 				
 				// 銀行・前払式帳票
@@ -1719,8 +1713,7 @@ function fnc_csv() {
 				try {
 					current = parser.parseFromString(str, "text/xml");
 				} catch(e) {
-					// 何もしない
-					void(0);
+					void(e);
 				}
 				
 				// 銀行・前払式帳票
