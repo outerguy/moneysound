@@ -47,16 +47,14 @@ for(fi in fiids) if(typeof filists[fiids[fi]["type"]] != "undefined") filists[fi
 			
 			if(typeof e == "undefined") e = self.window.event;
 			if(e != null) switch(e.keyCode) {
-			case 8:
-				// BackSpaceキーの場合
+			case 8: // BackSpaceキー
 				if(dom_get_id("modal") != null && e.ctrlKey == true) {
 					// モーダルウィンドウを表示していてCtrlキーが押下されている場合、モーダルウィンドウを中央に移動する
 					modal_resize();
 					ret = false;
 				}
 				break;
-			case 13:
-				// Enterキーの場合
+			case 13: // Enterキー
 				if(dom_get_id("modal") != null && dom_get_id("modalok") != null && dom_get_id("modalok").disabled == false) {
 					// モーダルウィンドウを表示している場合、OKボタンを割り当てる
 					dom_get_id("modal").onsubmit();
@@ -72,8 +70,7 @@ for(fi in fiids) if(typeof filists[fiids[fi]["type"]] != "undefined") filists[fi
 				}
 				ret = false;
 				break;
-			case 27:
-				// Escキーの場合
+			case 27: // Escキー
 				if(dom_get_id("modal") != null) {
 					// モーダルウィンドウを表示している場合、キャンセルボタンを割り当てる
 					dom_get_id("modal").onreset();
@@ -83,32 +80,28 @@ for(fi in fiids) if(typeof filists[fiids[fi]["type"]] != "undefined") filists[fi
 				}
 				ret = false;
 				break;
-			case 37:
-				// ←キーの場合
+			case 37: // ←キー
 				if(dom_get_id("modal") != null && e.ctrlKey == true) {
 					// モーダルウィンドウを表示していてCtrlキーが押下されている場合、モーダルウィンドウを移動する
 					with(dom_get_id("modal").style) left = (parseInt(left.replace("px", "")) - scroll).toString() + "px";
 					ret = false;
 				}
 				break;
-			case 38:
-				// ↑キーの場合
+			case 38: // ↑キー
 				if(dom_get_id("modal") != null && e.ctrlKey == true) {
 					// モーダルウィンドウを表示していてCtrlキーが押下されている場合、モーダルウィンドウを移動する
 					with(dom_get_id("modal").style) top = (parseInt(top.replace("px", "")) - scroll).toString() + "px";
 					ret = false;
 				}
 				break;
-			case 39:
-				// →キーの場合
+			case 39: // →キー
 				if(dom_get_id("modal") != null && e.ctrlKey == true) {
 					// モーダルウィンドウを表示していてCtrlキーが押下されている場合、モーダルウィンドウを移動する
 					with(dom_get_id("modal").style) left = (parseInt(left.replace("px", "")) + scroll).toString() + "px";
 					ret = false;
 				}
 				break;
-			case 40:
-				// ↓キーの場合
+			case 40: // ↓キー
 				if(dom_get_id("modal") != null && e.ctrlKey == true) {
 					// モーダルウィンドウを表示していてCtrlキーが押下されている場合、モーダルウィンドウを移動する
 					with(dom_get_id("modal").style) top = (parseInt(top.replace("px", "")) + scroll).toString() + "px";
@@ -273,7 +266,7 @@ function fnc_logon() {
 		// モーダルウィンドウを開く
 		modal_show(fiids[fiid]["name"], cdf, true, inputs[0]);
 		
-		// ログオン画面の未入力項目をチェックする
+		// 未入力項目をチェックする
 		form_empty_check();
 	} else {
 		// コールバックの場合
@@ -388,7 +381,7 @@ function fnc_register() {
 		// モーダルウィンドウを開く
 		modal_show(fiids[fiid]["name"], cdf, true, inputs[0]);
 		
-		// 登録画面の未入力項目をチェックする
+		// 未入力項目をチェックする
 		form_empty_check();
 	} else {
 		// コールバックの場合
@@ -480,7 +473,7 @@ function fnc_erase() {
 		// モーダルウィンドウを開く
 		modal_show(fiids[fiid]["name"], cdf, true, input);
 		
-		// 抹消画面の未入力項目をチェックする
+		// 未入力項目をチェックする
 		form_empty_check();
 	} else {
 		// コールバックの場合
@@ -832,7 +825,7 @@ function fnc_modify(rowid) {
 			// モーダルウィンドウを開く
 			modal_show(fiids[fiid]["name"], cdf, true, inputs[0]);
 			
-			// 変更画面の未入力項目をチェックする
+			// 未入力項目をチェックする
 			form_empty_check();
 		}
 	} else {
@@ -1199,7 +1192,7 @@ function fnc_update_additional(auth) {
 		// モーダルウィンドウを開く
 		modal_show("追加認証", cdf, true, (inputs[1] != "hidden"? mfaphraseid: "modalok"));
 		
-		// 追加認証画面の未入力項目をチェックする
+		// 未入力項目をチェックする
 		form_empty_check();
 	} else {
 		// コールバックの場合
@@ -2029,7 +2022,7 @@ function fnc_export() {
 		cdf.appendChild(tag_p);
 		
 		tag_p = dom_create_tag("p");
-		tag_input = dom_create_tag("input", { "type": "password", "name": "pass", "id": "pass", "value": logons["localpass"], "class": "ipt", "onkeyup": "form_empty_check();" });
+		tag_input = dom_create_tag("input", { "type": "password", "name": "pass", "id": "pass", "value": logons["localpass"], "class": "ipt", "onkeyup": "form_empty_check();", "onblur": "this.onkeyup();" });
 		tag_p.appendChild(tag_input);
 		cdf.appendChild(tag_p);
 		
@@ -2957,7 +2950,7 @@ function local_current() {
 	return rets;
 }
 
-// 画面の未入力項目をチェックする
+// モーダルウィンドウの未入力項目をチェックする
 function form_empty_check() {
 	var f = false;
 	var fiid, inputs;
@@ -3135,11 +3128,13 @@ function chkenv_pdf() {
 }
 
 // DOMよりタグに合致するエレメントを取得する
-function dom_get_tag(name) {
+function dom_get_tag(name, from) {
 	var obj = null;
 	
-	with(self.document) if(typeof getElementsByTagName != "undefined") try {
-		if(typeof name == "string") obj = getElementsByTagName(name);
+	if(typeof from != "object") from = self.document;
+	
+	if(typeof self.document.getElementsByTagName != "undefined") try {
+		if(typeof name == "string") obj = from.getElementsByTagName(name);
 	} catch(e) {
 		void(e);
 	}
@@ -3148,11 +3143,13 @@ function dom_get_tag(name) {
 }
 
 // DOMよりIDに合致するエレメントを取得する
-function dom_get_id(name) {
+function dom_get_id(name, from) {
 	var obj = null;
 	
-	with(self.document) if(typeof getElementById != "undefined") try {
-		if(typeof name == "string") obj = getElementById(name);
+	if(typeof from != "object") from = self.document;
+	
+	if(typeof self.document.getElementById != "undefined") try {
+		if(typeof name == "string") obj = from.getElementById(name);
 	} catch(e) {
 		void(e);
 	}
