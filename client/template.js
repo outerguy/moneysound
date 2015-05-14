@@ -1484,6 +1484,7 @@ function fnc_ofx_all() {
 	} else {
 		parser = new DOMParser();
 		serializer = new XMLSerializer();
+		
 		merge = parser.parseFromString("<OFX></OFX>", "text/xml");
 		logons = local_current();
 		auths = dom_get_storage(logons["localid"], logons["localpass"]).split("\r\n");
@@ -1674,7 +1675,8 @@ function fnc_csv() {
 	var f = false;
 	var tag_section = dom_get_tag("section")[0];
 	var title = dom_get_tag("title")[0].firstChild.nodeValue;
-	var logons, auths, timestamp, settings, filename, str, csv, total;
+	var logons = local_current();
+	var auths, timestamp, settings, filename, str, csv, total;
 	var tag_stmttrnrss, tag_ccstmttrnrss, tag_invstmttrnrss, tag_stmttrns, tag_secinfos, tag_invposs;
 	var mktginfo, balamt, availcash, dtasof, bankid, branchid, brokerid, acctid, dtposted, name, trnamt, memo, secname, uniqueid, dtpriceasof, mktval;
 	var buf, buf_sjis, buf_blob, buf_view;
@@ -1687,7 +1689,7 @@ function fnc_csv() {
 		modal_showonly("警告", "ご利用のブラウザーは、CSVファイルのダウンロードに対応していません。", false);
 	} else {
 		parser = new DOMParser();
-		logons = local_current();
+		
 		auths = dom_get_storage(logons["localid"], logons["localpass"]).split("\r\n");
 		timestamp = timestamp_get();
 		total = dom_get_id("num_total").firstChild.nodeValue.replace(/,/g, "");
@@ -1725,7 +1727,9 @@ function fnc_csv() {
 					branchid = dom_get_tag("BRANCHID", tag_stmttrnrss[j])[0].firstChild.nodeValue;
 					acctid = dom_get_tag("ACCTID", tag_stmttrnrss[j])[0].firstChild.nodeValue;
 					tag_stmttrns = dom_get_tag("STMTTRN", tag_stmttrnrss[j]);
+					
 					buf += "\"" + mktginfo + "\"," + dtasof.substring(0, 4) + "-" + dtasof.substring(4, 6) + "-" + dtasof.substring(6, 8) + ",\"残高\"," + balamt + ",\"" + bankid + " " + branchid + " " + acctid + "\"\r\n";
+					
 					for(k = 0; k < tag_stmttrns.length; k++) {
 						dtposted = dom_get_tag("DTPOSTED", tag_stmttrns[k])[0].firstChild.nodeValue;
 						name = dom_get_tag("NAME", tag_stmttrns[k])[0].firstChild.nodeValue;
@@ -1735,8 +1739,10 @@ function fnc_csv() {
 						} catch(e) {
 							memo = "";
 						}
+						
 						buf += "," + dtposted.substring(0, 4) + "-" + dtposted.substring(4, 6) + "-" + dtposted.substring(6, 8) + ",\"" + name + "\"," + trnamt + ",\"" + memo + "\"\r\n";
 					}
+					
 					if(tag_stmttrnrss.length > 1 && j < tag_stmttrnrss.length - 1) buf += "\r\n";
 					f = true;
 				}
@@ -1749,7 +1755,9 @@ function fnc_csv() {
 					dtasof = dom_get_tag("DTASOF", tag_ccstmttrnrss[j])[0].firstChild.nodeValue;
 					acctid = dom_get_tag("ACCTID", tag_ccstmttrnrss[j])[0].firstChild.nodeValue;
 					tag_stmttrns = dom_get_tag("STMTTRN", tag_ccstmttrnrss[j]);
+					
 					buf += "\"" + mktginfo + "\"," + dtasof.substring(0, 4) + "-" + dtasof.substring(4, 6) + "-" + dtasof.substring(6, 8) + ",\"残高\"," + balamt + ",\"" + acctid + "\"\r\n";
+					
 					for(k = 0; k < tag_stmttrns.length; k++) {
 						dtposted = dom_get_tag("DTPOSTED", tag_stmttrns[k])[0].firstChild.nodeValue;
 						name = dom_get_tag("NAME", tag_stmttrns[k])[0].firstChild.nodeValue;
@@ -1759,8 +1767,10 @@ function fnc_csv() {
 						} catch(e) {
 							memo = "";
 						}
+						
 						buf += "," + dtposted.substring(0, 4) + "-" + dtposted.substring(4, 6) + "-" + dtposted.substring(6, 8) + ",\"" + name + "\"," + trnamt + ",\"" + memo + "\"\r\n";
 					}
+					
 					if(tag_ccstmttrnrss.length > 1 && j < tag_ccstmttrnrss.length - 1) buf += "\r\n";
 					f = true;
 				}
@@ -1774,7 +1784,9 @@ function fnc_csv() {
 					brokerid = dom_get_tag("BROKERID", tag_invstmttrnrss[j])[0].firstChild.nodeValue;
 					acctid = dom_get_tag("ACCTID", tag_invstmttrnrss[j])[0].firstChild.nodeValue;
 					tag_stmttrns = dom_get_tag("STMTTRN", tag_invstmttrnrss[j]);
+					
 					buf += "\"" + mktginfo + "\"," + dtasof.substring(0, 4) + "-" + dtasof.substring(4, 6) + "-" + dtasof.substring(6, 8) + ",\"残高\"," + availcash + ",\"" + brokerid + " " + acctid + "\"\r\n";
+					
 					for(k = 0; k < tag_stmttrns.length; k++) {
 						dtposted = dom_get_tag("DTPOSTED", tag_stmttrns[k])[0].firstChild.nodeValue;
 						name = dom_get_tag("NAME", tag_stmttrns[k])[0].firstChild.nodeValue;
@@ -1784,8 +1796,10 @@ function fnc_csv() {
 						} catch(e) {
 							memo = "";
 						}
+						
 						buf += "," + dtposted.substring(0, 4) + "-" + dtposted.substring(4, 6) + "-" + dtposted.substring(6, 8) + ",\"" + name + "\"," + trnamt + ",\"" + memo + "\"\r\n";
 					}
+					
 					if(tag_invstmttrnrss.length > 1 && j < tag_invstmttrnrss.length - 1) buf += "\r\n";
 					f = true;
 				}
@@ -1804,6 +1818,7 @@ function fnc_csv() {
 					uniqueid = dom_get_tag("UNIQUEID", tag_invposs[j])[0].firstChild.nodeValue;
 					dtpriceasof = dom_get_tag("DTPRICEASOF", tag_invposs[j])[0].firstChild.nodeValue;
 					mktval = dom_get_tag("MKTVAL", tag_invposs[j])[0].firstChild.nodeValue;
+					
 					buf += "," + dtpriceasof.substring(0, 4) + "-" + dtpriceasof.substring(4, 6) + "-" + dtpriceasof.substring(6, 8) + ",\"" + seclists[uniqueid] + "\"," + mktval + ",\"" + uniqueid + "\"\r\n";
 					f = true;
 				}
@@ -2539,6 +2554,7 @@ function modal_show(mhead, mbody, showcancel, focusto) {
 			// モーダルウィンドウがドロップされた場合、移動を禁止する
 			onmouseup = function() {
 				if(pw == true) pw = false;
+				
 				return;
 			};
 		}
@@ -2726,7 +2742,6 @@ function fnc_getauth(rowid) {
 	var bufs = new Array();
 	var auth = "";
 	var i;
-	var auth = undefined;
 	
 	for(i = 0; i < auths.length; i++) {
 		bufs = auths[i].split("\t");
@@ -2976,13 +2991,13 @@ function form_empty_check() {
 // 関数
 // =========================================================================
 
-// 全角英数字と全角記号の一部を半角文字に変換する
+// 全角英数字と全角記号の一部を半角文字に変換する（UTF-8）
 function str_to_hankaku(str) {
 	var fnc = function(str) {
 		return String.fromCharCode(str.charCodeAt(0) - 0xFEE0);
 	};
 	
-	return str.replace(/[！-～]/g, fnc).replace(/　/g," ");
+	return str.replace(/[！-～]/g, fnc).replace(/　/g, " ");
 }
 
 // 現在時刻をYYYYMMDDHHIISS形式で取得する
@@ -3009,7 +3024,7 @@ function timestamp_get() {
 
 // 金額を3桁カンマ区切り文字に変換する
 function to_amount(src) {
-	var dst = src.toString().replace(",", "");
+	var dst = src.toString().replace(/,/g, "");
 	
 	if(isNaN(Number(dst)) == true) {
 		dst = "";
