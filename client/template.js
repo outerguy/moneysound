@@ -1028,76 +1028,78 @@ function fnc_update(rowid, additional) {
 			if(typeof additional != "undefined") querys.pop();
 			if(token != "") querys.pop();
 			
-			if(chkenv_xmlhttprequest() == true) xhr = new XMLHttpRequest();
-			if(xhr != null) with(xhr) {
-				onreadystatechange = function() {
-					var tag_html = dom_get_tag("html")[0];
-					var tag_table = dom_get_tag("table")[0];
-					var btn_disableds = { "btn_logoff": false, "btn_debug": false, "btn_option": false, "btn_version": false, "btn_cancel": true, "btn_create": false, "btn_output": false };
-					var logons, ofx, inputs, query;
-					var i;
-					
-					if(xhr != null && xhr.readyState == 4) {
-						var logons = local_current();
+			if(chkenv_xmlhttprequest() == true) {
+				xhr = new XMLHttpRequest();
+				with(xhr) {
+					onreadystatechange = function() {
+						var tag_html = dom_get_tag("html")[0];
+						var tag_table = dom_get_tag("table")[0];
+						var btn_disableds = { "btn_logoff": false, "btn_debug": false, "btn_option": false, "btn_version": false, "btn_cancel": true, "btn_create": false, "btn_output": false };
+						var logons, ofx, inputs, query;
+						var i;
 						
-						if(xhr.status != 0 && xhr.status != 204) {
-							// OFXを設定する
-							ofx = xhr.responseText;
-							dom_set_storage(logons["localid"] + ":" + querys[0], xhr.responseText, logons["localpass"]);
-						}
-						
-						// 変更・削除・更新・明細・OFXボタンの押下を許可する
-						inputs = tag_table.getElementsByTagName("input");
-						for(i = 0; i < inputs.length; i++) switch(inputs[i].value) {
-						case "変更":
-						case "削除":
-						case "更新":
-						case "明細":
-						case "OFX":
-							inputs[i].disabled = false;
-							break;
-						default:
-							break;
-						}
-						
-						// 各ボタンを有効・無効に設定する
-						for(i in btn_disableds) dom_get_id(i).disabled = btn_disableds[i];
-						
-						tag_html.className = "";
-						dom_get_id(auths[0]).className = "";
-						
-						// 口座一覧の項目を更新する
-						if(xhr.status != 0) {
-							querys.push("status=" + xhr.status.toString());
-							querys.push("timestamp=" + timestamp_get());
+						if(xhr != null && xhr.readyState == 4) {
+							var logons = local_current();
 							
-							if(xhr.getResponseHeader("X-Token") != null && xhr.getResponseHeader("X-Token") != "") token = xhr.getResponseHeader("X-Token");
-							if(token != null && token != "") {
-								i = token.indexOf(",");
-								if(i != -1) token = token.substring(0, i);
-								querys.push("token=" + token);
+							if(xhr.status != 0 && xhr.status != 204) {
+								// OFXを設定する
+								ofx = xhr.responseText;
+								dom_set_storage(logons["localid"] + ":" + querys[0], xhr.responseText, logons["localpass"]);
 							}
 							
-							query = decodeURIComponent(querys.join("\t"));
+							// 変更・削除・更新・明細・OFXボタンの押下を許可する
+							inputs = dom_get_tag("input", tag_table);
+							for(i = 0; i < inputs.length; i++) switch(inputs[i].value) {
+							case "変更":
+							case "削除":
+							case "更新":
+							case "明細":
+							case "OFX":
+								inputs[i].disabled = false;
+								break;
+							default:
+								break;
+							}
 							
-							logoninfo_update(query, auth);
-						} else {
-							fnc_initialize();
+							// 各ボタンを有効・無効に設定する
+							for(i in btn_disableds) dom_get_id(i).disabled = btn_disableds[i];
+							
+							tag_html.className = "";
+							dom_get_id(auths[0]).className = "";
+							
+							// 口座一覧の項目を更新する
+							if(xhr.status != 0) {
+								querys.push("status=" + xhr.status.toString());
+								querys.push("timestamp=" + timestamp_get());
+								
+								if(xhr.getResponseHeader("X-Token") != null && xhr.getResponseHeader("X-Token") != "") token = xhr.getResponseHeader("X-Token");
+								if(token != null && token != "") {
+									i = token.indexOf(",");
+									if(i != -1) token = token.substring(0, i);
+									querys.push("token=" + token);
+								}
+								
+								query = decodeURIComponent(querys.join("\t"));
+								
+								logoninfo_update(query, auth);
+							} else {
+								fnc_initialize();
+							}
+							
+							// すべて更新機能を実行中の場合
+							if(get_all != -1) fnc_update_all(auths[0]);
 						}
 						
-						// すべて更新機能を実行中の場合
-						if(get_all != -1) fnc_update_all(auths[0]);
-					}
-					
-					return;
-				};
-				open("POST", "./server.php?fiid=" + fiid, true);
-				setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-				send(query);
+						return;
+					};
+					open("POST", "./server.php?fiid=" + fiid, true);
+					setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+					send(query);
+				}
 			}
 			
 			// 変更・削除・更新・明細・OFXボタンの押下を禁止する
-			inputs = tag_html.getElementsByTagName("input");
+			inputs = dom_get_tag("input", tag_html);
 			for(i = 0; i < inputs.length; i++) switch(inputs[i].value) {
 			case "変更":
 			case "削除":
@@ -1139,76 +1141,80 @@ function fnc_update_additional(auth) {
 	var logons, settings, str, inputs, query;
 	var i, j, k, l;
 	
-	if(dom_get_id("modal") == null) {
-		logons = local_current();
-		settings = auth_parse(auth);
-		str = dom_get_storage(logons["localid"] + ":" + settings["rowid"], logons["localpass"]);
-		auths = auth.split("\t");
+	if(chkenv_parser() == false) {
+		modal_showonly("警告", "ご利用のブラウザーは、追加認証に対応していません。", false);
+	} else {
+		parser = new DOMParser();
 		
-		if(chkenv_parser() == true) parser = new DOMParser();
-		
-		switch(str) {
-		case null:
-		case "":
-			break;
-		default:
-			if(parser != null) ofx = parser.parseFromString(str, "text/xml");
-			break;
-		}
-		
-		// 追加認証情報を取得する
-		if(ofx != null) with(ofx) {
-			sesscookie = getElementsByTagName("SESSCOOKIE")[0].firstChild.nodeValue;
-			accesskey = getElementsByTagName("ACCESSKEY")[0].firstChild.nodeValue;
-			mfaphraseid = getElementsByTagName("MFAPHRASEID")[0].firstChild.nodeValue;
-			mfaphraselabel = getElementsByTagName("MFAPHRASELABEL")[0].firstChild.nodeValue;
-		}
-		
-		// 追加認証情報を生成する
-		tag_p = dom_create_tag("p");
-		tag_p.appendChild(dom_create_tag("input", { "type": "hidden", "name": "additional", "id": "auth", "value": auth }));
-		tag_p.appendChild(dom_create_tag("input", { "type": "hidden", "name": "additional", "id": "additional", "value": mfaphraseid }));
-		tag_p.appendChild(dom_create_tag("input", { "type": "hidden", "name": "sesscookie", "id": "sesscookie", "value": sesscookie }));
-		tag_p.appendChild(dom_create_tag("input", { "type": "hidden", "name": "accesskey", "id": "accesskey", "value": accesskey }));
-		cdf.appendChild(tag_p);
-		
-		inputs = fiids[settings["fiid"]]["additional"].split("|");
-		
-		tag_p = dom_create_tag("p");
-		tag_p.appendChild((inputs[2] == "image"? dom_create_tag("img", { "src": mfaphraselabel, "alt": "画像" }): dom_create_text(mfaphraselabel)));
-		cdf.appendChild(tag_p);
-		
-		if(inputs[1] != "hidden") {
-			tag_p = dom_create_tag("p", { "class": "label" });
-			tag_p.appendChild(dom_create_text(inputs[0]));
+		if(dom_get_id("modal") == null) {
+			logons = local_current();
+			settings = auth_parse(auth);
+			str = dom_get_storage(logons["localid"] + ":" + settings["rowid"], logons["localpass"]);
+			auths = auth.split("\t");
+			
+			switch(str) {
+			case null:
+			case "":
+				break;
+			default:
+				if(parser != null) ofx = parser.parseFromString(str, "text/xml");
+				break;
+			}
+			
+			// 追加認証情報を取得する
+			if(ofx != null) {
+				sesscookie = dom_get_tag("SESSCOOKIE", ofx)[0].firstChild.nodeValue;
+				accesskey = dom_get_tag("ACCESSKEY", ofx)[0].firstChild.nodeValue;
+				mfaphraseid = dom_get_tag("MFAPHRASEID", ofx)[0].firstChild.nodeValue;
+				mfaphraselabel = dom_get_tag("MFAPHRASELABEL", ofx)[0].firstChild.nodeValue;
+			}
+			
+			// 追加認証情報を生成する
+			tag_p = dom_create_tag("p");
+			tag_p.appendChild(dom_create_tag("input", { "type": "hidden", "name": "auth", "id": "auth", "value": auth }));
+			tag_p.appendChild(dom_create_tag("input", { "type": "hidden", "name": "additional", "id": "additional", "value": mfaphraseid }));
+			tag_p.appendChild(dom_create_tag("input", { "type": "hidden", "name": "sesscookie", "id": "sesscookie", "value": sesscookie }));
+			tag_p.appendChild(dom_create_tag("input", { "type": "hidden", "name": "accesskey", "id": "accesskey", "value": accesskey }));
 			cdf.appendChild(tag_p);
 			
-			// 入力項目を設定する
+			inputs = fiids[settings["fiid"]]["additional"].split("|");
+			
 			tag_p = dom_create_tag("p");
-			tag_p.appendChild(dom_create_tag("input", { "type": inputs[1], "name": mfaphraseid, "id": mfaphraseid, "class": "ipt", "onkeyup": "form_empty_check();", "onblur": "this.onkeyup();" }));
+			tag_p.appendChild((inputs[2] == "image"? dom_create_tag("img", { "src": mfaphraselabel, "alt": "画像" }): dom_create_text(mfaphraselabel)));
 			cdf.appendChild(tag_p);
+			
+			if(inputs[1] != "hidden") {
+				tag_p = dom_create_tag("p", { "class": "label" });
+				tag_p.appendChild(dom_create_text(inputs[0]));
+				cdf.appendChild(tag_p);
+				
+				// 入力項目を設定する
+				tag_p = dom_create_tag("p");
+				tag_p.appendChild(dom_create_tag("input", { "type": inputs[1], "name": mfaphraseid, "id": mfaphraseid, "class": "ipt", "onkeyup": "form_empty_check();", "onblur": "this.onkeyup();" }));
+				cdf.appendChild(tag_p);
+			}
+			
+			// モーダルウィンドウを開く
+			modal_show("追加認証", cdf, true, (inputs[1] != "hidden"? mfaphraseid: "modalok"));
+			
+			// 未入力項目をチェックする
+			form_empty_check();
+		} else {
+			// コールバックの場合
+			auth = dom_get_id("auth").value;
+			
+			// 追加認証情報を生成する
+			querys.push("sesscookie=" + dom_get_id("sesscookie").value);
+			querys.push("accesskey=" + dom_get_id("accesskey").value);
+			if(dom_get_id(dom_get_id("additional").value) != null) querys.push(dom_get_id("additional").value + "=" + encodeURIComponent(dom_get_id(dom_get_id("additional").value).value));
+			query = querys.join("&");
+			
+			modal_hide();
+			settings = auth_parse(auth);
+			
+			// 更新機能を呼び出す
+			fnc_update(settings["rowid"], query);
 		}
-		
-		// モーダルウィンドウを開く
-		modal_show("追加認証", cdf, true, (inputs[1] != "hidden"? mfaphraseid: "modalok"));
-		
-		// 未入力項目をチェックする
-		form_empty_check();
-	} else {
-		// コールバックの場合
-		auth = dom_get_id("auth").value;
-		
-		// 追加認証情報を生成する
-		querys.push("sesscookie=" + dom_get_id("sesscookie").value);
-		querys.push("accesskey=" + dom_get_id("accesskey").value);
-		if(dom_get_id(dom_get_id("additional").value) != null) querys.push(dom_get_id("additional").value + "=" + encodeURIComponent(dom_get_id(dom_get_id("additional").value).value));
-		query = querys.join("&");
-		
-		modal_hide();
-		settings = auth_parse(auth);
-		
-		// 更新機能を呼び出す
-		fnc_update(settings["rowid"], query);
 	}
 	
 	return;
@@ -1251,11 +1257,11 @@ function fnc_detail(rowid) {
 				current = parser.parseFromString(str, "text/xml");
 				
 				// 証券一覧を生成する
-				tag_seclists = current.getElementsByTagName("SECLIST");
+				tag_seclists = dom_get_tag("SECLIST", current);
 				if(tag_seclists.length > 0) {
-					uniqueidtypes = tag_seclists[0].getElementsByTagName("UNIQUEIDTYPE");
-					uniqueids = tag_seclists[0].getElementsByTagName("UNIQUEID");
-					secnames = tag_seclists[0].getElementsByTagName("SECNAME");
+					uniqueidtypes = dom_get_tag("UNIQUEIDTYPE", tag_seclists[0]);
+					uniqueids = dom_get_tag("UNIQUEID", tag_seclists[0]);
+					secnames = dom_get_tag("SECNAME", tag_seclists[0]);
 					for(i = 0; i < secnames.length; i++) securitys[uniqueidtypes[i].firstChild.nodeValue + " " + uniqueids[i].firstChild.nodeValue] = secnames[i].firstChild.nodeValue;
 				}
 				
@@ -1264,18 +1270,18 @@ function fnc_detail(rowid) {
 				tag_p.appendChild(dom_create_text("口座種目"));
 				cdf.appendChild(tag_p);
 				
-				tag_stmttrnrss = current.getElementsByTagName("STMTTRNRS");
-				if(tag_stmttrnrss.length == 0) tag_stmttrnrss = current.getElementsByTagName("CCSTMTTRNRS");
-				if(tag_stmttrnrss.length == 0) tag_stmttrnrss = current.getElementsByTagName("INVSTMTTRNRS");
+				tag_stmttrnrss = dom_get_tag("STMTTRNRS", current);
+				if(tag_stmttrnrss.length == 0) tag_stmttrnrss = dom_get_tag("CCSTMTTRNRS", current);
+				if(tag_stmttrnrss.length == 0) tag_stmttrnrss = dom_get_tag("INVSTMTTRNRS", current);
 				
 				if(tag_stmttrnrss.length == 0) {
 					modal_showonly("警告", "表示可能な明細がありません。", false);
 				} else {
 					tag_select = dom_create_tag("select", { "id": "acct", "onchange": "fnc_detail_change();" });
 					for(i = 0; i < tag_stmttrnrss.length; i++) {
-						mktginfo = (tag_stmttrnrss[i].getElementsByTagName("MKTGINFO").length == 0? "": tag_stmttrnrss[i].getElementsByTagName("MKTGINFO")[0].firstChild.nodeValue);
+						mktginfo = (dom_get_tag("MKTGINFO", tag_stmttrnrss[i]).length == 0? "": dom_get_tag("MKTGINFO", tag_stmttrnrss[i])[0].firstChild.nodeValue);
 						j = mktginfo.indexOf("　");
-						group = (j == -1? "預金": mktginfo.substring(j + 1)) + " " + tag_stmttrnrss[i].getElementsByTagName("ACCTID")[0].firstChild.nodeValue;
+						group = (j == -1? "預金": mktginfo.substring(j + 1)) + " " + dom_get_tag("ACCTID", tag_stmttrnrss[i])[0].firstChild.nodeValue;
 						
 						tag_option = dom_create_tag("option", { "value": i.toString() });
 						tag_option.appendChild(dom_create_text(str_to_hankaku(group)));
@@ -1306,14 +1312,14 @@ function fnc_detail(rowid) {
 					tag_table.appendChild(tag_thead);
 					
 					for(i = 0; i < tag_stmttrnrss.length; i++) {
-						tag_stmttrns = tag_stmttrnrss[i].getElementsByTagName("STMTTRN");
+						tag_stmttrns = dom_get_tag("STMTTRN", tag_stmttrnrss[i]);
 						tag_tbody = dom_create_tag("tbody", { "id": "acct" + i.toString() });
 						
 						if(tag_stmttrns.length > 0) {
 							for(j = 0; j < tag_stmttrns.length; j++) {
-								dtposted = tag_stmttrns[j].getElementsByTagName("DTPOSTED")[0].firstChild.nodeValue;
-								name = tag_stmttrns[j].getElementsByTagName("NAME")[0].firstChild.nodeValue;
-								trnamt = tag_stmttrns[j].getElementsByTagName("TRNAMT")[0].firstChild.nodeValue;
+								dtposted = dom_get_tag("DTPOSTED", tag_stmttrns[j])[0].firstChild.nodeValue;
+								name = dom_get_tag("NAME", tag_stmttrns[j])[0].firstChild.nodeValue;
+								trnamt = dom_get_tag("TRNAMT", tag_stmttrns[j])[0].firstChild.nodeValue;
 								
 								tag_tr = dom_create_tag("tr");
 								
@@ -1345,9 +1351,9 @@ function fnc_detail(rowid) {
 						
 						
 						// 売買一覧を生成する
-						tag_invtrans = tag_stmttrnrss[i].getElementsByTagName("INVTRAN");
-						tag_secids = tag_stmttrnrss[i].getElementsByTagName("SECID");
-						tag_totals = tag_stmttrnrss[i].getElementsByTagName("TOTAL");
+						tag_invtrans = dom_get_tag("INVTRAN", tag_stmttrnrss[i]);
+						tag_secids = dom_get_tag("SECID", tag_stmttrnrss[i]);
+						tag_totals = dom_get_tag("TOTAL", tag_stmttrnrss[i]);
 						
 						if(tag_invtrans.length > 0) {
 							tag_tbody = dom_create_tag("tbody", { "id": "acct" + tag_stmttrnrss.length.toString() });
@@ -1357,8 +1363,8 @@ function fnc_detail(rowid) {
 							tag_select.appendChild(tag_option);
 							
 							for(j = 0; j < tag_invtrans.length; j++) {
-								dttrade = tag_invtrans[j].getElementsByTagName("DTTRADE")[0].firstChild.nodeValue;
-								security = securitys[tag_secids[j].getElementsByTagName("UNIQUEIDTYPE")[0].firstChild.nodeValue + " " + tag_secids[j].getElementsByTagName("UNIQUEID")[0].firstChild.nodeValue];
+								dttrade = dom_get_tag("DTTRADE", tag_invtrans[j])[0].firstChild.nodeValue;
+								security = securitys[dom_get_tag("UNIQUEIDTYPE", tag_secids[j])[0].firstChild.nodeValue + " " + dom_get_tag("UNIQUEID", tag_secids[j])[0].firstChild.nodeValue];
 								total = tag_totals[j].firstChild.nodeValue;
 								
 								tag_tr = dom_create_tag("tr");
@@ -1383,13 +1389,13 @@ function fnc_detail(rowid) {
 						}
 						
 						// 有価証券残高一覧を生成する
-						tag_invposlists = tag_stmttrnrss[i].getElementsByTagName("INVPOSLIST");
+						tag_invposlists = dom_get_tag("INVPOSLIST", tag_stmttrnrss[i]);
 						
 						if(tag_invposlists.length > 0) {
-							uniqueidtypes = tag_invposlists[0].getElementsByTagName("UNIQUEIDTYPE");
-							uniqueids = tag_invposlists[0].getElementsByTagName("UNIQUEID");
-							dtpriceasofs = tag_invposlists[0].getElementsByTagName("DTPRICEASOF");
-							mktvals = tag_invposlists[0].getElementsByTagName("MKTVAL");
+							uniqueidtypes = dom_get_tag("UNIQUEIDTYPE", tag_invposlists[0]);
+							uniqueids = dom_get_tag("UNIQUEID", tag_invposlists[0]);
+							dtpriceasofs = dom_get_tag("DTPRICEASOF", tag_invposlists[0]);
+							mktvals = dom_get_tag("MKTVAL", tag_invposlists[0]);
 							
 							if(dtpriceasofs.length > 0) {
 								tag_tbody = dom_create_tag("tbody", { "id": "acct" + (tag_stmttrnrss.length + 1).toString() });
@@ -1540,28 +1546,28 @@ function fnc_ofx_all() {
 				}
 				
 				// 銀行・前払式帳票
-				tag_stmttrnrss = (current != null? current.getElementsByTagName("STMTTRNRS"): new Array());
+				tag_stmttrnrss = (current != null? dom_get_tag("STMTTRNRS", current): new Array());
 				for(j = 0; j < tag_stmttrnrss.length; j++) {
 					tag_bankmsgsrsv1.appendChild(tag_stmttrnrss[j].cloneNode(true));
 					f = true;
 				}
 				
 				// クレジットカード
-				tag_ccstmttrnrss = (current != null? current.getElementsByTagName("CCSTMTTRNRS"): new Array());
+				tag_ccstmttrnrss = (current != null? dom_get_tag("CCSTMTTRNRS", current): new Array());
 				for(j = 0; j < tag_ccstmttrnrss.length; j++) {
 					tag_creditcardmsgsrsv1.appendChild(tag_ccstmttrnrss[j].cloneNode(true));
 					f = true;
 				}
 				
 				// 証券
-				tag_invstmttrnrss = (current != null? current.getElementsByTagName("INVSTMTTRNRS"): new Array());
+				tag_invstmttrnrss = (current != null? dom_get_tag("INVSTMTTRNRS", current): new Array());
 				for(j = 0; j < tag_invstmttrnrss.length; j++) {
 					tag_invstmtmsgsrsv1.appendChild(tag_invstmttrnrss[j].cloneNode(true));
 					f = true;
 				}
 				
 				// 証券
-				tag_seclists = (current != null? current.getElementsByTagName("SECLIST"): new Array());
+				tag_seclists = (current != null? dom_get_tag("SECLIST", current): new Array());
 				for(j = 0; j < tag_seclists.length; j++) for(k = 0; k < tag_seclists[j].childNodes.length; k++) if(tag_seclists[j].childNodes[k].nodeType == 1) tag_seclist.appendChild(tag_seclists[j].childNodes[k].cloneNode(true));
 			}
 		}
@@ -1710,28 +1716,24 @@ function fnc_csv() {
 				}
 				
 				// 銀行・前払式帳票
-				tag_stmttrnrss = (current != null? current.getElementsByTagName("STMTTRNRS"): new Array());
+				tag_stmttrnrss = (current != null? dom_get_tag("STMTTRNRS", current): new Array());
 				for(j = 0; j < tag_stmttrnrss.length; j++) {
-					with(tag_stmttrnrss[j]) {
-						mktginfo = getElementsByTagName("MKTGINFO")[0].firstChild.nodeValue;
-						balamt = getElementsByTagName("BALAMT")[0].firstChild.nodeValue;
-						dtasof = getElementsByTagName("DTASOF")[0].firstChild.nodeValue;
-						bankid = getElementsByTagName("BANKID")[0].firstChild.nodeValue;
-						branchid = getElementsByTagName("BRANCHID")[0].firstChild.nodeValue;
-						acctid = getElementsByTagName("ACCTID")[0].firstChild.nodeValue;
-						tag_stmttrns = getElementsByTagName("STMTTRN");
-					}
+					mktginfo = dom_get_tag("MKTGINFO", tag_stmttrnrss[j])[0].firstChild.nodeValue;
+					balamt = dom_get_tag("BALAMT", tag_stmttrnrss[j])[0].firstChild.nodeValue;
+					dtasof = dom_get_tag("DTASOF", tag_stmttrnrss[j])[0].firstChild.nodeValue;
+					bankid = dom_get_tag("BANKID", tag_stmttrnrss[j])[0].firstChild.nodeValue;
+					branchid = dom_get_tag("BRANCHID", tag_stmttrnrss[j])[0].firstChild.nodeValue;
+					acctid = dom_get_tag("ACCTID", tag_stmttrnrss[j])[0].firstChild.nodeValue;
+					tag_stmttrns = dom_get_tag("STMTTRN", tag_stmttrnrss[j]);
 					buf += "\"" + mktginfo + "\"," + dtasof.substring(0, 4) + "-" + dtasof.substring(4, 6) + "-" + dtasof.substring(6, 8) + ",\"残高\"," + balamt + ",\"" + bankid + " " + branchid + " " + acctid + "\"\r\n";
 					for(k = 0; k < tag_stmttrns.length; k++) {
-						with(tag_stmttrns[k]) {
-							dtposted = getElementsByTagName("DTPOSTED")[0].firstChild.nodeValue;
-							name = getElementsByTagName("NAME")[0].firstChild.nodeValue;
-							trnamt = getElementsByTagName("TRNAMT")[0].firstChild.nodeValue;
-							try {
-								memo = getElementsByTagName("MEMO")[0].firstChild.nodeValue;
-							} catch(e) {
-								memo = "";
-							}
+						dtposted = dom_get_tag("DTPOSTED", tag_stmttrns[k])[0].firstChild.nodeValue;
+						name = dom_get_tag("NAME", tag_stmttrns[k])[0].firstChild.nodeValue;
+						trnamt = dom_get_tag("TRNAMT", tag_stmttrns[k])[0].firstChild.nodeValue;
+						try {
+							memo = dom_get_tag("MEMO", tag_stmttrns[k])[0].firstChild.nodeValue;
+						} catch(e) {
+							memo = "";
 						}
 						buf += "," + dtposted.substring(0, 4) + "-" + dtposted.substring(4, 6) + "-" + dtposted.substring(6, 8) + ",\"" + name + "\"," + trnamt + ",\"" + memo + "\"\r\n";
 					}
@@ -1740,26 +1742,22 @@ function fnc_csv() {
 				}
 				
 				// クレジットカード
-				tag_ccstmttrnrss = (current != null? current.getElementsByTagName("CCSTMTTRNRS"): new Array());
+				tag_ccstmttrnrss = (current != null? dom_get_tag("CCSTMTTRNRS", current): new Array());
 				for(j = 0; j < tag_ccstmttrnrss.length; j++) {
-					with(tag_ccstmttrnrss[j]) {
-						mktginfo = getElementsByTagName("MKTGINFO")[0].firstChild.nodeValue;
-						balamt = getElementsByTagName("BALAMT")[0].firstChild.nodeValue;
-						dtasof = getElementsByTagName("DTASOF")[0].firstChild.nodeValue;
-						acctid = getElementsByTagName("ACCTID")[0].firstChild.nodeValue;
-						tag_stmttrns = getElementsByTagName("STMTTRN");
-					}
+					mktginfo = dom_get_tag("MKTGINFO", tag_ccstmttrnrss[j])[0].firstChild.nodeValue;
+					balamt = dom_get_tag("BALAMT", tag_ccstmttrnrss[j])[0].firstChild.nodeValue;
+					dtasof = dom_get_tag("DTASOF", tag_ccstmttrnrss[j])[0].firstChild.nodeValue;
+					acctid = dom_get_tag("ACCTID", tag_ccstmttrnrss[j])[0].firstChild.nodeValue;
+					tag_stmttrns = dom_get_tag("STMTTRN", tag_ccstmttrnrss[j]);
 					buf += "\"" + mktginfo + "\"," + dtasof.substring(0, 4) + "-" + dtasof.substring(4, 6) + "-" + dtasof.substring(6, 8) + ",\"残高\"," + balamt + ",\"" + acctid + "\"\r\n";
 					for(k = 0; k < tag_stmttrns.length; k++) {
-						with(tag_stmttrns[k]) {
-							dtposted = getElementsByTagName("DTPOSTED")[0].firstChild.nodeValue;
-							name = getElementsByTagName("NAME")[0].firstChild.nodeValue;
-							trnamt = getElementsByTagName("TRNAMT")[0].firstChild.nodeValue;
-							try {
-								memo = getElementsByTagName("MEMO")[0].firstChild.nodeValue;
-							} catch(e) {
-								memo = "";
-							}
+						dtposted = dom_get_tag("DTPOSTED", tag_stmttrns[k])[0].firstChild.nodeValue;
+						name = dom_get_tag("NAME", tag_stmttrns[k])[0].firstChild.nodeValue;
+						trnamt = dom_get_tag("TRNAMT", tag_stmttrns[k])[0].firstChild.nodeValue;
+						try {
+							memo = dom_get_tag("MEMO", tag_stmttrns[k])[0].firstChild.nodeValue;
+						} catch(e) {
+							memo = "";
 						}
 						buf += "," + dtposted.substring(0, 4) + "-" + dtposted.substring(4, 6) + "-" + dtposted.substring(6, 8) + ",\"" + name + "\"," + trnamt + ",\"" + memo + "\"\r\n";
 					}
@@ -1768,27 +1766,23 @@ function fnc_csv() {
 				}
 				
 				// 証券
-				tag_invstmttrnrss = (current != null? current.getElementsByTagName("INVSTMTTRNRS"): new Array());
+				tag_invstmttrnrss = (current != null? dom_get_tag("INVSTMTTRNRS", current): new Array());
 				for(j = 0; j < tag_invstmttrnrss.length; j++) {
-					with(tag_invstmttrnrss[j]) {
-						mktginfo = getElementsByTagName("MKTGINFO")[0].firstChild.nodeValue;
-						availcash = getElementsByTagName("AVAILCASH")[0].firstChild.nodeValue;
-						dtasof = getElementsByTagName("DTASOF")[0].firstChild.nodeValue;
-						brokerid = getElementsByTagName("BROKERID")[0].firstChild.nodeValue;
-						acctid = getElementsByTagName("ACCTID")[0].firstChild.nodeValue;
-						tag_stmttrns = getElementsByTagName("STMTTRN");
-					}
+					mktginfo = dom_get_tag("MKTGINFO", tag_invstmttrnrss[j])[0].firstChild.nodeValue;
+					availcash = dom_get_tag("AVAILCASH", tag_invstmttrnrss[j])[0].firstChild.nodeValue;
+					dtasof = dom_get_tag("DTASOF", tag_invstmttrnrss[j])[0].firstChild.nodeValue;
+					brokerid = dom_get_tag("BROKERID", tag_invstmttrnrss[j])[0].firstChild.nodeValue;
+					acctid = dom_get_tag("ACCTID", tag_invstmttrnrss[j])[0].firstChild.nodeValue;
+					tag_stmttrns = dom_get_tag("STMTTRN", tag_invstmttrnrss[j]);
 					buf += "\"" + mktginfo + "\"," + dtasof.substring(0, 4) + "-" + dtasof.substring(4, 6) + "-" + dtasof.substring(6, 8) + ",\"残高\"," + availcash + ",\"" + brokerid + " " + acctid + "\"\r\n";
 					for(k = 0; k < tag_stmttrns.length; k++) {
-						with(tag_stmttrns[k]) {
-							dtposted = getElementsByTagName("DTPOSTED")[0].firstChild.nodeValue;
-							name = getElementsByTagName("NAME")[0].firstChild.nodeValue;
-							trnamt = getElementsByTagName("TRNAMT")[0].firstChild.nodeValue;
-							try {
-								memo = getElementsByTagName("MEMO")[0].firstChild.nodeValue;
-							} catch(e) {
-								memo = "";
-							}
+						dtposted = dom_get_tag("DTPOSTED", tag_stmttrns[k])[0].firstChild.nodeValue;
+						name = dom_get_tag("NAME", tag_stmttrns[k])[0].firstChild.nodeValue;
+						trnamt = dom_get_tag("TRNAMT", tag_stmttrns[k])[0].firstChild.nodeValue;
+						try {
+							memo = dom_get_tag("MEMO", tag_stmttrns[k])[0].firstChild.nodeValue;
+						} catch(e) {
+							memo = "";
 						}
 						buf += "," + dtposted.substring(0, 4) + "-" + dtposted.substring(4, 6) + "-" + dtposted.substring(6, 8) + ",\"" + name + "\"," + trnamt + ",\"" + memo + "\"\r\n";
 					}
@@ -1798,23 +1792,19 @@ function fnc_csv() {
 				
 				// 証券
 				seclists = new Array();
-				tag_secinfos = (current != null? current.getElementsByTagName("SECINFO"): new Array());
+				tag_secinfos = (current != null? dom_get_tag("SECINFO", current): new Array());
 				for(j = 0; j < tag_secinfos.length; j++) {
-					with(tag_secinfos[j]) {
-						secname = getElementsByTagName("SECNAME")[0].firstChild.nodeValue;
-						uniqueid = getElementsByTagName("UNIQUEID")[0].firstChild.nodeValue;
-					}
+					secname = dom_get_tag("SECNAME", tag_secinfos[j])[0].firstChild.nodeValue;
+					uniqueid = dom_get_tag("UNIQUEID", tag_secinfos[j])[0].firstChild.nodeValue;
 					seclists[uniqueid] = secname;
 				}
 				
-				tag_invposs = (current != null? current.getElementsByTagName("INVPOS"): new Array());
+				tag_invposs = (current != null? dom_get_tag("INVPOS", current): new Array());
 				for(j = 0; j < tag_invposs.length; j++) {
-					with(tag_invposs[j]) {
-						uniqueid = getElementsByTagName("UNIQUEID")[0].firstChild.nodeValue;
-						dtpriceasof = getElementsByTagName("DTPRICEASOF")[0].firstChild.nodeValue;
-						mktval = getElementsByTagName("MKTVAL")[0].firstChild.nodeValue;
-						buf += "," + dtpriceasof.substring(0, 4) + "-" + dtpriceasof.substring(4, 6) + "-" + dtpriceasof.substring(6, 8) + ",\"" + seclists[uniqueid] + "\"," + mktval + ",\"" + uniqueid + "\"\r\n";
-					}
+					uniqueid = dom_get_tag("UNIQUEID", tag_invposs[j])[0].firstChild.nodeValue;
+					dtpriceasof = dom_get_tag("DTPRICEASOF", tag_invposs[j])[0].firstChild.nodeValue;
+					mktval = dom_get_tag("MKTVAL", tag_invposs[j])[0].firstChild.nodeValue;
+					buf += "," + dtpriceasof.substring(0, 4) + "-" + dtpriceasof.substring(4, 6) + "-" + dtpriceasof.substring(6, 8) + ",\"" + seclists[uniqueid] + "\"," + mktval + ",\"" + uniqueid + "\"\r\n";
 					f = true;
 				}
 				
@@ -1904,7 +1894,7 @@ function fnc_pdf() {
 		pdfobj += "q\r\n1.5 w\r\n1 0 0 1 57 742 cm\r\n0 0 0 rg\r\n0 0 m\r\n480 0 l\r\n480 2.5 l\r\n0 2.5 l\r\nf\r\nQ\r\n";
 		pdfobj += "q\r\n0.5 w\r\n1 0 0 1 57 714.5 cm\r\n0 0 0 rg\r\n0 0 m\r\n480 0 l\r\nS\r\nQ\r\n";
 		
-		tag_tr = tag_thead.getElementsByTagName("tr")[0];
+		tag_tr = dom_get_tag("tr", tag_thead)[0];
 		pdfstr += "1 0 0 1 102.5 725 Tm\r\n<" + get_binary_sjis(tag_tr.childNodes[0].firstChild.nodeValue) + "> Tj\r\n"; // 金融機関（全角12文字以内）
 		pdfstr += "1 0 0 1 270 725 Tm\r\n<" + get_binary_sjis(tag_tr.childNodes[1].firstChild.nodeValue) + "> Tj\r\n"; // 口座種目（全角18文字以内）
 		pdfstr += "1 0 0 1 421 725 Tm\r\n<" + get_binary_sjis(tag_tr.childNodes[2].firstChild.nodeValue) + "> Tj\r\n"; // 残高（半角13文字以内）
@@ -1912,7 +1902,7 @@ function fnc_pdf() {
 		
 		// 表ボディー部を生成する
 		for(i = 0; i < tag_tbodys.length; i++) {
-			tag_tr = tag_tbodys[i].getElementsByTagName("tr");
+			tag_tr = dom_get_tag("tr", tag_tbodys[i]);
 			
 			// 行数が50を超える場合、生成を打ち切る
 			row += tag_tr.length;
@@ -1957,7 +1947,7 @@ function fnc_pdf() {
 		pdfobj += "q\r\n0.5 w\r\n1 0 0 1 57 " + (y - 0.5).toString() + " cm\r\n0 0 0 rg\r\n0 0 m\r\n480 0 l\r\nS\r\nQ\r\n";
 		pdfobj += "q\r\n0.5 w\r\n1 0 0 1 57 " + (y - 28).toString() + " cm\r\n0 0 0 rg\r\n0 0 m\r\n480 0 l\r\nS\r\nQ\r\n";
 		
-		tag_tr = tag_tfoot.getElementsByTagName("tr")[0];
+		tag_tr = dom_get_tag("tr", tag_tfoot)[0];
 		pdfstr += "1 0 0 1 197 " + (y - 18).toString() + " Tm\r\n<" + get_binary_sjis(tag_tr.childNodes[1].firstChild.nodeValue) + "> Tj\r\n"; // 合計
 		
 		// 残高合計を出力する
@@ -2086,7 +2076,7 @@ function fnc_export() {
 function fnc_list_all(lists) {
 	var logons = local_current();
 	var tag_table = dom_get_tag("table")[0];
-	var tag_tbodys = tag_table.getElementsByTagName("tbody");
+	var tag_tbodys = dom_get_tag("tbody", tag_table);
 	var f = false;
 	var btn_disableds = { "btn_update_all": false, "btn_ofx_all": false, "btn_output": false };
 	var i;
@@ -2172,19 +2162,16 @@ function fnc_list(list) {
 	// OFXよりデータを抽出する
 	try {
 		// 銀行・前払式帳票
-		banks = (ofx != null? ofx.getElementsByTagName("STMTTRNRS"): new Array());
+		banks = (ofx != null? dom_get_tag("STMTTRNRS", ofx): new Array());
 		for(i = 0; i < banks.length; i++) {
-			with(banks[i]) {
-				balamt = parseInt(getElementsByTagName("BALAMT")[0].firstChild.nodeValue, 10);
-				mktginfo = (getElementsByTagName("MKTGINFO").length == 0? "": getElementsByTagName("MKTGINFO")[0].firstChild.nodeValue);
-				bankacctfrom = getElementsByTagName("BANKACCTFROM")[0];
-			}
-			with(bankacctfrom) {
-				bankid = getElementsByTagName("BANKID")[0].firstChild.nodeValue;
-				branchid = getElementsByTagName("BRANCHID")[0].firstChild.nodeValue;
-				acctid = getElementsByTagName("ACCTID")[0].firstChild.nodeValue;
-				accttype = getElementsByTagName("ACCTTYPE")[0].firstChild.nodeValue;
-			}
+			balamt = parseInt(dom_get_tag("BALAMT", banks[i])[0].firstChild.nodeValue, 10);
+			mktginfo = (dom_get_tag("MKTGINFO", banks[i]).length == 0? "": dom_get_tag("MKTGINFO", banks[i])[0].firstChild.nodeValue);
+			bankacctfrom = dom_get_tag("BANKACCTFROM", banks[i])[0];
+			
+			bankid = dom_get_tag("BANKID", bankacctfrom)[0].firstChild.nodeValue;
+			branchid = dom_get_tag("BRANCHID", bankacctfrom)[0].firstChild.nodeValue;
+			acctid = dom_get_tag("ACCTID", bankacctfrom)[0].firstChild.nodeValue;
+			accttype = dom_get_tag("ACCTTYPE", bankacctfrom)[0].firstChild.nodeValue;
 			
 			j = mktginfo.indexOf("　");
 			group = (j == -1? "預金": mktginfo.substring(j + 1));
@@ -2231,22 +2218,21 @@ function fnc_list(list) {
 		}
 		
 		// クレジットカード
-		creditcards = (ofx != null? ofx.getElementsByTagName("CCSTMTTRNRS"): new Array());
+		creditcards = (ofx != null? dom_get_tag("CCSTMTTRNRS", ofx): new Array());
 		for(i = 0; i < creditcards.length; i++) {
-			with(creditcards[i]) {
-				balamt = parseInt(getElementsByTagName("BALAMT")[0].firstChild.nodeValue, 10);
-				mktginfo = (getElementsByTagName("MKTGINFO").length == 0? "": getElementsByTagName("MKTGINFO")[0].firstChild.nodeValue);
-				ccacctfrom = getElementsByTagName("CCACCTFROM")[0];
-			}
-			acctid = ccacctfrom.getElementsByTagName("ACCTID")[0].firstChild.nodeValue;
+			balamt = parseInt(dom_get_tag("BALAMT", creditcards[i])[0].firstChild.nodeValue, 10);
+			mktginfo = (dom_get_tag("MKTGINFO", creditcards[i]).length == 0? "": dom_get_tag("MKTGINFO", creditcards[i])[0].firstChild.nodeValue);
+			ccacctfrom = dom_get_tag("CCACCTFROM", creditcards[i])[0];
+			
+			acctid = dom_get_tag("ACCTID", ccacctfrom)[0].firstChild.nodeValue;
 			
 			j = mktginfo.indexOf("　");
 			group = (j == -1? "預金": mktginfo.substring(j + 1));
 			
 			// 明細の最終行がクレジットカード支払請求、かつ支払日が未到来の場合、残高より該当金額を差し引く
-			stmttrns = creditcards[i].getElementsByTagName("STMTTRN");
+			stmttrns = dom_get_tag("STMTTRN", creditcards[i]);
 			stmttrn = stmttrns[stmttrns.length - 1];
-			if(stmttrn.getElementsByTagName("NAME")[0].firstChild.nodeValue == fiids[settings["fiid"]]["name"] && stmttrn.getElementsByTagName("DTPOSTED")[0].firstChild.nodeValue.substring(0, 8) > timestamp_get().substring(0, 8)) balamt -= parseInt(stmttrn.getElementsByTagName("TRNAMT")[0].firstChild.nodeValue, 10);
+			if(dom_get_tag("NAME", stmttrn)[0].firstChild.nodeValue == fiids[settings["fiid"]]["name"] && dom_get_tag("DTPOSTED", stmttrn)[0].firstChild.nodeValue.substring(0, 8) > timestamp_get().substring(0, 8)) balamt -= parseInt(dom_get_tag("TRNAMT", stmttrn)[0].firstChild.nodeValue, 10);
 			
 			tag_tr = dom_create_tag("tr");
 			
@@ -2289,23 +2275,20 @@ function fnc_list(list) {
 		}
 		
 		// 証券
-		investments = (ofx != null? ofx.getElementsByTagName("INVSTMTTRNRS"): new Array());
+		investments = (ofx != null? dom_get_tag("INVSTMTTRNRS", ofx): new Array());
 		for(i = 0; i < investments.length; i++) {
-			with(investments[i]) {
-				marginbalance = parseInt(investments[i].getElementsByTagName("MARGINBALANCE")[0].firstChild.nodeValue, 10);
-				// mktginfo = (getElementsByTagName("MKTGINFO").length == 0? "": getElementsByTagName("MKTGINFO")[0].firstChild.nodeValue);
-				invacctfrom = getElementsByTagName("INVACCTFROM")[0];
-			}
-			with(invacctfrom) {
-				brokerid = getElementsByTagName("BROKERID")[0].firstChild.nodeValue;
-				acctid = getElementsByTagName("ACCTID")[0].firstChild.nodeValue;
-			}
+			marginbalance = parseInt(dom_get_tag("MARGINBALANCE", investments[i])[0].firstChild.nodeValue, 10);
+			// mktginfo = (dom_get_tag("MKTGINFO", investments[i]).length == 0? "": dom_get_tag("MKTGINFO", investments[i])[0].firstChild.nodeValue);
+			invacctfrom = dom_get_tag("INVACCTFROM", investments[i])[0];
+			
+			brokerid = dom_get_tag("BROKERID", invacctfrom)[0].firstChild.nodeValue;
+			acctid = dom_get_tag("ACCTID", invacctfrom)[0].firstChild.nodeValue;
 			
 			group = "預金";
 			
 			mktval = 0;
-			invposlist = investments[i].getElementsByTagName("INVPOSLIST")[0];
-			mktvals = invposlist.getElementsByTagName("MKTVAL");
+			invposlist = dom_get_tag("INVPOSLIST", investments[i])[0];
+			mktvals = dom_get_tag("MKTVAL", invposlist);
 			for(j = 0; j < mktvals.length; j++) mktval += parseInt(mktvals[j].firstChild.nodeValue, 10);
 			
 			tag_tr = dom_create_tag("tr");
@@ -2478,7 +2461,7 @@ function fnc_list(list) {
 	}
 	
 	// OFXボタンの表示を制御する
-	inputs = tag_tbody.getElementsByTagName("input");
+	inputs = dom_get_tag("input", tag_tbody);
 	for(i = 0; i < inputs.length; i++) with(inputs[i]) if(value == "OFX") style.display = (ofxbutton == "T"? "inline": "none");
 	
 	return tag_tbody;
@@ -2927,7 +2910,7 @@ function auths_sort(auths) {
 
 // 合計の金額を更新する
 function num_total_update() {
-	var tag_tds = dom_get_tag("table")[0].getElementsByTagName("td");
+	var tag_tds = dom_get_tag("td", dom_get_tag("table")[0]);
 	var total = 0;
 	var i;
 	
@@ -2973,7 +2956,7 @@ function form_empty_check() {
 		dom_get_id("modalok").disabled = f;
 	} else {
 		// 入力項目を取得する
-		inputs = dom_get_id("modal").getElementsByTagName("input");
+		inputs = dom_get_tag("input", dom_get_id("modal"));
 		for(i = 0; i < inputs.length; i++) with(inputs[i]) if(type != "hidden" && value == "") {
 			// 未入力の場合
 			f = true;
