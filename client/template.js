@@ -76,7 +76,7 @@ for(fi in fiids) if(typeof filists[fiids[fi]["type"]] != "undefined") filists[fi
 					dom_get_id("modal").onreset();
 				} else {
 					// それ以外の場合、中止ボタンを割り当てる
-					dom_get_id("btn_cancel").click();
+					dom_get_id("btn_cancel").onclick();
 				}
 				ret = false;
 				break;
