@@ -8,14 +8,8 @@ body {
 	overflow-y: scroll;
 	font-size: 85%;
 }
-nav p, footer p {
-	text-align: center;
-}
 header, caption, footer {
 	cursor: default;
-}
-h2 {
-	display: none;
 }
 header, nav, section, footer, article {
 	display: block;
@@ -27,6 +21,49 @@ aside {
 	width: 100%;
 	height: 100%;
 	z-index: 1000;
+}
+nav p, footer p {
+	text-align: center;
+}
+h2 {
+	display: none;
+}
+table {
+	border-collapse: collapse;
+	border-spacing: 0px;
+	empty-cells: show;
+	caption-side: top;
+	word-wrap: break-word;
+}
+thead, tfoot {
+	line-height: 200%;
+}
+tbody {
+	line-height: 120%;
+}
+th, td {
+	padding: 2px;
+	margin: 0px;
+	text-indent: 1px;
+	letter-spacing: 1px;
+}
+td.fi, td.accttype, th.control, td.control {
+	text-align: left;
+}
+td.balance {
+	text-align: right;
+}
+td.status, td.timestamp {
+	text-align: center;
+}
+pre {
+	word-wrap: break-word;
+}
+a {
+	cursor: pointer;
+}
+a img {
+	border: 0px;
 }
 form#modal {
 	position: fixed;
@@ -86,45 +123,8 @@ table#detail td {
 	overflow: hidden;
 	text-overflow: ellipsis;
 }
-table {
-	border-collapse: collapse;
-	border-spacing: 0px;
-	empty-cells: show;
-	caption-side: top;
-	word-wrap: break-word;
-}
-thead, tfoot {
-	line-height: 200%;
-}
-tbody {
-	line-height: 120%;
-}
-th, td {
-	padding: 2px;
-	margin: 0px;
-	text-indent: 1px;
-	letter-spacing: 1px;
-}
-td.fi, td.accttype, th.control, td.control {
-	text-align: left;
-}
-td.balance {
-	text-align: right;
-}
-td.status, td.timestamp {
-	text-align: center;
-}
-pre {
-	word-wrap: break-word;
-}
 .pending, .pending .btn:disabled {
 	cursor: wait;
-}
-a img {
-	border: 0px;
-}
-a {
-	cursor: pointer;
 }
 .btn {
 	font-size: 85%;
