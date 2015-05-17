@@ -13,9 +13,8 @@
 	nav, footer {
 		margin: 20px 0px 20px 0px;
 	}
-	footer p a {
+	footer ul li a {
 		font-size: 90%;
-		margin: 0px 0.25em 0px 0.25em;
 	}
 	aside {
 		color: inherit;

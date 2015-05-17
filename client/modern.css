@@ -21,14 +21,14 @@
 		line-height: 100%;
 		text-align: left;
 	}
-	footer p a {
+	footer ul li a {
 		margin: 0px 0.2em 0px 0.2em;
 	}
-	footer p a:link, footer p a:visited {
+	footer ul li a:link, footer ul li a:visited {
 		color: #FFFFFF;
 		background: transparent;
 	}
-	footer p a:hover, footer p a:active {
+	footer ul li a:hover, footer ul li a:active {
 		color: #CC3333;
 		background: transparent;
 	}
