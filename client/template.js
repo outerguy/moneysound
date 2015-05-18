@@ -132,7 +132,7 @@ function fnc_load() {
 	
 	// デバッグ機能が有効の場合、警告を表示する
 	if(debug != false) {
-		tag_p = dom_create_tag("p", { "class": "ac", "style": "padding: 0.5em; font-weight: bold; color: #FFFFFF; background: #FF0000;" });
+		tag_p = dom_create_tag("p", { "style": "padding: 0.5em; font-weight: bold; color: #FFFFFF; background: #FF0000; text-align: center;" });
 		tag_p.appendChild(dom_create_text("【警告】開発者向け（デバッグ）機能が有効のため、認証情報を含む詳細な記録が残ります。開発者以外の方は、操作しないでください。または、開発者へご相談ください。"));
 		tag_nav.parentNode.insertBefore(tag_p, tag_nav);
 		
@@ -1323,15 +1323,15 @@ function fnc_detail(rowid) {
 								
 								tag_tr = dom_create_tag("tr");
 								
-								tag_td = dom_create_tag("td", { "class": "ac" });
+								tag_td = dom_create_tag("td", { "class": "dt" });
 								tag_td.appendChild(dom_create_text(parseInt(dtposted.substring(4, 6), 10).toString() + "/" + parseInt(dtposted.substring(6, 8), 10).toString()));
 								tag_tr.appendChild(tag_td);
 								
-								tag_td = dom_create_tag("td");
+								tag_td = dom_create_tag("td", { "class": "note" });
 								tag_td.appendChild(dom_create_text(str_to_hankaku(name)));
 								tag_tr.appendChild(tag_td);
 								
-								tag_td = dom_create_tag("td", { "class": "ar" });
+								tag_td = dom_create_tag("td", { "class": "amt" });
 								tag_td.appendChild(dom_create_text(to_amount(trnamt)));
 								tag_tr.appendChild(tag_td);
 								
@@ -1340,7 +1340,7 @@ function fnc_detail(rowid) {
 						} else {
 							tag_tr = dom_create_tag("tr");
 							
-							tag_td = dom_create_tag("td", { "colspan": "3", "class": "ac" } );
+							tag_td = dom_create_tag("td", { "colspan": "3", "class": "dt" } );
 							tag_td.appendChild(dom_create_text("明細がありません。"));
 							tag_tr.appendChild(tag_td);
 							
@@ -1369,15 +1369,15 @@ function fnc_detail(rowid) {
 								
 								tag_tr = dom_create_tag("tr");
 								
-								tag_td = dom_create_tag("td", { "class": "ac" });
+								tag_td = dom_create_tag("td", { "class": "dt" });
 								tag_td.appendChild(dom_create_text(parseInt(dttrade.substring(4, 6), 10).toString() + "/" + parseInt(dttrade.substring(6, 8), 10).toString()));
 								tag_tr.appendChild(tag_td);
 								
-								tag_td = dom_create_tag("td");
+								tag_td = dom_create_tag("td", { "class": "note" });
 								tag_td.appendChild(dom_create_text(str_to_hankaku((parseInt(total, 10) < 0? "買付": "売付") + " " + security)));
 								tag_tr.appendChild(tag_td);
 								
-								tag_td = dom_create_tag("td", { "class": "ar" });
+								tag_td = dom_create_tag("td", { "class": "amt" });
 								tag_td.appendChild(dom_create_text(to_amount(Math.abs(total))));
 								tag_tr.appendChild(tag_td);
 								
@@ -1411,15 +1411,15 @@ function fnc_detail(rowid) {
 									
 									tag_tr = dom_create_tag("tr");
 									
-									tag_td = dom_create_tag("td", { "class": "ac" });
+									tag_td = dom_create_tag("td", { "class": "dt" });
 									tag_td.appendChild(dom_create_text(parseInt(dtpriceasof.substring(4, 6), 10).toString() + "/" + parseInt(dtpriceasof.substring(6, 8), 10).toString()));
 									tag_tr.appendChild(tag_td);
 									
-									tag_td = dom_create_tag("td");
+									tag_td = dom_create_tag("td", { "class": "note" });
 									tag_td.appendChild(dom_create_text(str_to_hankaku(name)));
 									tag_tr.appendChild(tag_td);
 									
-									tag_td = dom_create_tag("td", { "class": "ar" });
+									tag_td = dom_create_tag("td", { "class": "amt" });
 									tag_td.appendChild(dom_create_text(to_amount(mktval)));
 									tag_tr.appendChild(tag_td);
 									

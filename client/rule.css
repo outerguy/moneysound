@@ -123,6 +123,15 @@ table#detail th.note {
 table#detail th.amt {
 	width: 120px;
 }
+table#detail td.dt {
+	text-align: center;
+}
+table#detail td.note {
+	text-align: left;
+}
+table#detail td.amt {
+	text-align: right;
+}
 table#detail td {
 	overflow: hidden;
 	text-overflow: ellipsis;
@@ -149,15 +158,6 @@ table#detail td {
 .ipt {
 	width: 320px;
 }
-.al {
-	text-align: left;
-}
-.ac {
-	text-align: center;
-}
-.ar {
-	text-align: right;
-}
 .none {
 	display: none;
 }
@@ -169,11 +169,11 @@ table#detail td {
 		color: #000000;
 		background: #FFFFFF;
 	}
-	nav, footer {
-		display: none;
-	}
 	header {
 		display: block;
+	}
+	nav, footer {
+		display: none;
 	}
 	h1 {
 		padding: 0px;
