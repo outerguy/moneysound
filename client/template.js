@@ -169,12 +169,12 @@ function fnc_initialize() {
 		tag_table.parentNode.replaceChild(tag_p, tag_table);
 	} else {
 		logons = local_current();
-		lists = dom_get_storage(logons["localid"], logons["localpass"]);
+		lists = storage_get(logons["localid"], logons["localpass"]);
 		switch(lists) {
 		case null:
 		case "":
 			// ログオン情報を削除する
-			for(i in logons) dom_del_storage(i);
+			for(i in logons) storage_delete(i);
 			lists = "";
 			
 			// 表題を設定する
@@ -198,7 +198,7 @@ function fnc_initialize() {
 		for(i in btn_disableds) dom_get_id(i).disabled = btn_disableds[i];
 		
 		// 画面のテーマよりCSSを選択する
-		var css = dom_get_storage(logons["localid"] + ":theme", logons["localpass"]);
+		var css = storage_get(logons["localid"] + ":theme", logons["localpass"]);
 		if(css == null || css == "") for(i in themes) {
 			css = i;
 			break;
@@ -208,7 +208,7 @@ function fnc_initialize() {
 		with(dom_get_id("css_theme")) href = href.substring(0, href.lastIndexOf("/") + 1) + css;
 		
 		// OFXボタンの表示を取得する
-		ofxbutton = dom_get_storage(logons["localid"] + ":ofxbutton", logons["localpass"]);
+		ofxbutton = storage_get(logons["localid"] + ":ofxbutton", logons["localpass"]);
 		if(ofxbutton == null) for(i in ofxbuttons) {
 			ofxbutton = i;
 			break;
@@ -286,7 +286,7 @@ function fnc_logon() {
 			ps = auths[2].split("=", 2);
 			
 			// 暗号化データを取得する
-			dec = dom_get_storage(us[1], ps[1]);
+			dec = storage_get(us[1], ps[1]);
 			switch(dec) {
 			case null:
 				// 暗号化データが存在しない場合、エラー画面を表示する
@@ -298,8 +298,8 @@ function fnc_logon() {
 				break;
 			default:
 				// ログオン情報を設定する
-				dom_set_storage(us[0], us[1]);
-				dom_set_storage(ps[0], ps[1]);
+				storage_set(us[0], us[1]);
+				storage_set(ps[0], ps[1]);
 				
 				// 初期化機能を呼び出す
 				fnc_initialize();
@@ -318,7 +318,7 @@ function fnc_logoff() {
 	var i;
 	
 	// ログオン情報を削除する
-	for(i in logons) dom_del_storage(i);
+	for(i in logons) storage_delete(i);
 	
 	// 初期化機能を呼び出す
 	fnc_initialize();
@@ -416,10 +416,10 @@ function fnc_register() {
 				// 口座情報が指定されていて、かつ復号結果が空の場合、エラーを表示する
 				modal_show("エラー", "口座情報が正しくないか、または" + fiids["logon"][fiids["logon"]["form"].split("|")[1]].split("|")[0] + "が一致しません。", false);
 			} else {
-				switch(dom_get_storage(us[1], ps[1])) {
+				switch(storage_get(us[1], ps[1])) {
 				case null:
 					// ログオン情報を設定する
-					dom_set_storage(us[1], dec, ps[1]);
+					storage_set(us[1], dec, ps[1]);
 					modal_showonly("完了", us[1] + "を登録しました。ログオンしてください。", false);
 					break;
 				case "":
@@ -487,14 +487,14 @@ function fnc_erase() {
 			input = fiids[fiid]["form"].split("|")[0];
 			key = dom_get_id(input).value;
 			modal_hide();
-			switch(dom_get_storage(key, "")) {
+			switch(storage_get(key, "")) {
 			case null:
 				modal_show("エラー", key + "は存在しません。", false);
 				break;
 			case "":
 			default:
 				// ログオン情報、およびOFXを削除する
-				dom_del_storage(key, "*");
+				storage_delete(key, "*");
 				modal_showonly("完了", key + "を抹消しました。", false);
 				break;
 			}
@@ -507,7 +507,7 @@ function fnc_erase() {
 // デバッグ情報機能
 function fnc_debug() {
 	var logons = local_current();
-	var auth = dom_get_storage(logons["localid"], logons["localpass"]);
+	var auth = storage_get(logons["localid"], logons["localpass"]);
 	var cdf = document.createDocumentFragment();
 	var tag_div = dom_create_tag("div", { "id": "details" });
 	var tag_pre = dom_create_tag("pre");
@@ -531,14 +531,14 @@ function fnc_option() {
 	var i;
 	
 	// OFXボタンの表示を取得する
-	ofxbutton = dom_get_storage(logons["localid"] + ":ofxbutton", logons["localpass"]);
+	ofxbutton = storage_get(logons["localid"] + ":ofxbutton", logons["localpass"]);
 	if(ofxbutton == null) for(i in ofxbuttons) {
 		ofxbutton = i;
 		break;
 	}
 	
 	// CSVファイルの文字エンコーディングを取得する
-	csvencoding = dom_get_storage(logons["localid"] + ":csvencoding", logons["localpass"]);
+	csvencoding = storage_get(logons["localid"] + ":csvencoding", logons["localpass"]);
 	if(csvencoding == null) for(i in csvencodings) {
 		csvencoding = i;
 		break;
@@ -605,13 +605,13 @@ function fnc_option() {
 		modal_hide();
 		
 		// 画面のテーマを設定する
-		dom_set_storage(logons["localid"] + ":theme", css, logons["localpass"]);
+		storage_set(logons["localid"] + ":theme", css, logons["localpass"]);
 		
 		// OFXボタンの表示を設定する
-		dom_set_storage(logons["localid"] + ":ofxbutton", ofxbutton, logons["localpass"]);
+		storage_set(logons["localid"] + ":ofxbutton", ofxbutton, logons["localpass"]);
 		
 		// CSVファイルの文字エンコーディングを設定する
-		dom_set_storage(logons["localid"] + ":csvencoding", csvencoding, logons["localpass"]);
+		storage_set(logons["localid"] + ":csvencoding", csvencoding, logons["localpass"]);
 		
 		// 初期化機能を呼び出す
 		fnc_initialize();
@@ -782,7 +782,7 @@ function fnc_modify(rowid) {
 	var cdf = document.createDocumentFragment();
 	var lists = new Array();
 	var auths = new Array();
-	var auth = fnc_getauth(rowid);
+	var auth = auth_get(rowid);
 	var inactive = false;
 	var fiid;
 	var tag_p;
@@ -841,7 +841,7 @@ function fnc_modify(rowid) {
 			settings = auth_parse(auth);
 			if(settings["rownum"] != -1) {
 				// OFXを削除する
-				dom_del_storage(logons["localid"] + ":" + settings["rowid"], logons["localpass"]);
+				storage_delete(logons["localid"] + ":" + settings["rowid"], logons["localpass"]);
 				// 認証情報を更新する
 				logoninfo_update(auths.join("\t"), auth);
 			} else {
@@ -865,7 +865,7 @@ function fnc_delete(rowid) {
 	var tag_p;
 	
 	if(dom_get_id("auth") == null) {
-		auth = fnc_getauth(rowid);
+		auth = auth_get(rowid);
 		fiid = rowid.split("=")[1];
 		tag_p = dom_create_tag("p");
 		tag_p.appendChild(dom_create_text(fiids[fiid]["name"] + "を削除します。"));
@@ -902,7 +902,7 @@ function fnc_output() {
 		cdf.appendChild(tag_p);
 		
 		// OFXボタンの表示を取得する
-		ofxbutton = dom_get_storage(logons["localid"] + ":ofxbutton", logons["localpass"]);
+		ofxbutton = storage_get(logons["localid"] + ":ofxbutton", logons["localpass"]);
 		if(ofxbutton == null) for(i in ofxbuttons) {
 			ofxbutton = i;
 			break;
@@ -961,7 +961,7 @@ function fnc_output() {
 // すべて更新機能
 function fnc_update_all(auth) {
 	var logons = local_current();
-	var auths = dom_get_storage(logons["localid"], logons["localpass"]).split("\r\n");
+	var auths = storage_get(logons["localid"], logons["localpass"]).split("\r\n");
 	var rowid = (typeof auth != "string" || auth.indexOf("=") == -1? 0: parseInt(auth.substring(0, auth.indexOf("=")), 10) + 1);
 	var settings;
 	
@@ -978,7 +978,7 @@ function fnc_update_all(auth) {
 
 // 更新機能
 function fnc_update(rowid, additional) {
-	var auth = fnc_getauth(rowid);
+	var auth = auth_get(rowid);
 	var auths = auth.split("\t");
 	var tag_html = dom_get_tag("html")[0];
 	var querys = new Array();
@@ -1044,7 +1044,7 @@ function fnc_update(rowid, additional) {
 							if(xhr.status != 0 && xhr.status != 204) {
 								// OFXを設定する
 								ofx = xhr.responseText;
-								dom_set_storage(logons["localid"] + ":" + querys[0], xhr.responseText, logons["localpass"]);
+								storage_set(logons["localid"] + ":" + querys[0], xhr.responseText, logons["localpass"]);
 							}
 							
 							// 変更・削除・更新・明細・OFXボタンの押下を許可する
@@ -1149,7 +1149,7 @@ function fnc_update_additional(auth) {
 		if(dom_get_id("modal") == null) {
 			logons = local_current();
 			settings = auth_parse(auth);
-			str = dom_get_storage(logons["localid"] + ":" + settings["rowid"], logons["localpass"]);
+			str = storage_get(logons["localid"] + ":" + settings["rowid"], logons["localpass"]);
 			auths = auth.split("\t");
 			
 			switch(str) {
@@ -1248,11 +1248,11 @@ function fnc_detail(rowid) {
 		parser = new DOMParser();
 		
 		if(dom_get_id("modal") == null) {
-			auth = fnc_getauth(rowid);
+			auth = auth_get(rowid);
 			logons = local_current();
 			settings = auth_parse(auth);
 			
-			str = dom_get_storage(logons["localid"] + ":" + settings["rowid"], logons["localpass"]);
+			str = storage_get(logons["localid"] + ":" + settings["rowid"], logons["localpass"]);
 			if(str != null && str != "") {
 				current = parser.parseFromString(str, "text/xml");
 				
@@ -1487,7 +1487,7 @@ function fnc_ofx_all() {
 		
 		merge = parser.parseFromString("<OFX></OFX>", "text/xml");
 		logons = local_current();
-		auths = dom_get_storage(logons["localid"], logons["localpass"]).split("\r\n");
+		auths = storage_get(logons["localid"], logons["localpass"]).split("\r\n");
 		timestamp = timestamp_get();
 		
 		// 結合先を初期化する
@@ -1538,7 +1538,7 @@ function fnc_ofx_all() {
 		for(i = 0; i < auths.length; i++) {
 			settings = auth_parse(auths[i]);
 			
-			str = dom_get_storage(logons["localid"] + ":" + settings["rowid"], logons["localpass"]);
+			str = storage_get(logons["localid"] + ":" + settings["rowid"], logons["localpass"]);
 			if(str != null && str != "") {
 				try {
 					current = parser.parseFromString(str, "text/xml");
@@ -1635,7 +1635,7 @@ function fnc_ofx_all() {
 
 // OFXダウンロード機能
 function fnc_ofx(rowid) {
-	var auth = fnc_getauth(rowid);
+	var auth = auth_get(rowid);
 	var logons = local_current();
 	var settings = auth_parse(auth);
 	var tag_section = dom_get_tag("section")[0];
@@ -1649,7 +1649,7 @@ function fnc_ofx(rowid) {
 		filename = settings["fiid"] + (settings["keyvalues"]["timestamp"] != ""? "_" + settings["keyvalues"]["timestamp"]: "") + ".ofx";
 		
 		// ダウンロード用データを生成する
-		ofx = new Blob([dom_get_storage(logons["localid"] + ":" + settings["rowid"], logons["localpass"])]);
+		ofx = new Blob([storage_get(logons["localid"] + ":" + settings["rowid"], logons["localpass"])]);
 		
 		// データをダウンロードする
 		if(self.window.navigator.msSaveOrOpenBlob) {
@@ -1690,12 +1690,12 @@ function fnc_csv() {
 	} else {
 		parser = new DOMParser();
 		
-		auths = dom_get_storage(logons["localid"], logons["localpass"]).split("\r\n");
+		auths = storage_get(logons["localid"], logons["localpass"]).split("\r\n");
 		timestamp = timestamp_get();
 		total = dom_get_id("num_total").firstChild.nodeValue.replace(/,/g, "");
 		
 		// CSVファイルの文字エンコーディングを取得する
-		csvencoding = dom_get_storage(logons["localid"] + ":csvencoding", logons["localpass"]);
+		csvencoding = storage_get(logons["localid"] + ":csvencoding", logons["localpass"]);
 		if(csvencoding == null) for(i in csvencodings) {
 			csvencoding = i;
 			break;
@@ -1709,7 +1709,7 @@ function fnc_csv() {
 		for(i = 0; i < auths.length; i++) {
 			settings = auth_parse(auths[i]);
 			
-			str = dom_get_storage(logons["localid"] + ":" + settings["rowid"], logons["localpass"]);
+			str = storage_get(logons["localid"] + ":" + settings["rowid"], logons["localpass"]);
 			if(str != null && str != "") {
 				try {
 					current = parser.parseFromString(str, "text/xml");
@@ -1873,7 +1873,7 @@ function fnc_csv() {
 // PDFダウンロード機能
 function fnc_pdf() {
 	var logons = local_current();
-	var auth = dom_get_storage(logons["localid"], logons["localpass"]);
+	var auth = storage_get(logons["localid"], logons["localpass"]);
 	var timestamp = timestamp_get();
 	var pdf = null;
 	var str = pdftext;
@@ -2012,7 +2012,7 @@ function fnc_print() {
 // 口座情報エクスポート機能
 function fnc_export() {
 	var logons = local_current();
-	var auth = dom_get_storage(logons["localid"], logons["localpass"]);
+	var auth = storage_get(logons["localid"], logons["localpass"]);
 	var cdf = document.createDocumentFragment();
 	var txt = null;
 	var tag_section = dom_get_tag("section")[0];
@@ -2122,7 +2122,7 @@ function fnc_list_all(lists) {
 function fnc_list(list) {
 	var logons = local_current();
 	var settings = auth_parse(list);
-	var str = dom_get_storage(logons["localid"] + ":" + settings["rowid"], logons["localpass"]);
+	var str = storage_get(logons["localid"] + ":" + settings["rowid"], logons["localpass"]);
 	var ofx = null;
 	var parser = null;
 	var broken = false;
@@ -2469,7 +2469,7 @@ function fnc_list(list) {
 	}
 	
 	// OFXボタンの表示を取得する
-	ofxbutton = dom_get_storage(logons["localid"] + ":ofxbutton", logons["localpass"]);
+	ofxbutton = storage_get(logons["localid"] + ":ofxbutton", logons["localpass"]);
 	if(ofxbutton == null) for(i in ofxbuttons) {
 		ofxbutton = i;
 		break;
@@ -2678,7 +2678,7 @@ function modal_hide() {
 }
 
 // データを取得する
-function dom_get_storage(key, pass) {
+function storage_get(key, pass) {
 	var enc, dec;
 	
 	with(self.window) if(typeof pass == "string") {
@@ -2702,7 +2702,7 @@ function dom_get_storage(key, pass) {
 }
 
 // データを設定する
-function dom_set_storage(key, value, pass) {
+function storage_set(key, value, pass) {
 	with(self.window) if(typeof pass == "string") {
 		// ローカルストレージの場合、データを暗号化する
 		localStorage.setItem(key, CryptoJS.AES.encrypt(((pass + "\t") + (value != ""? value: "\r\n")).toString(CryptoJS.enc.Utf8), pass));
@@ -2715,7 +2715,7 @@ function dom_set_storage(key, value, pass) {
 }
 
 // データを削除する
-function dom_del_storage(key, pass) {
+function storage_delete(key, pass) {
 	var i;
 	
 	if(typeof pass == "string") {
@@ -2736,9 +2736,9 @@ function dom_del_storage(key, pass) {
 }
 
 // 認証情報を取得する
-function fnc_getauth(rowid) {
+function auth_get(rowid) {
 	var logons = local_current();
-	var auths = dom_get_storage(logons["localid"], logons["localpass"]).split("\r\n");
+	var auths = storage_get(logons["localid"], logons["localpass"]).split("\r\n");
 	var bufs = new Array();
 	var auth = "";
 	var i;
@@ -2791,75 +2791,6 @@ function auth_parse(auth) {
 	return rets;
 }
 
-// ログオン情報を追加する
-function logoninfo_add(auth) {
-	var logons = local_current();
-	var lists = new Array();
-	var settings;
-	var enc;
-	
-	// ログオン情報を追加する
-	enc = dom_get_storage(logons["localid"], logons["localpass"]);
-	lists = enc.split("\r\n");
-	lists.push(auth);
-	lists = auths_sort(lists);
-	
-	// ログオン情報を記憶する
-	dom_set_storage(logons["localid"], lists.join("\r\n"), logons["localpass"]);
-	
-	fnc_list_all(lists);
-	
-	return;
-}
-
-// ログオン情報を更新する
-function logoninfo_update(to, from) {
-	var logons = local_current();
-	var lists = new Array();
-	var enc;
-	
-	// ログオン情報を更新する
-	enc = dom_get_storage(logons["localid"], logons["localpass"]);
-	if(from != null && from.length != 0 && enc.indexOf(from) != -1) {
-		enc = enc.replace(from, to);
-		lists = enc.split("\r\n");
-	}
-	lists = auths_sort(lists);
-	
-	// ログオン情報を設定する
-	dom_set_storage(logons["localid"], lists.join("\r\n"), logons["localpass"]);
-	
-	fnc_list_all(lists);
-	
-	return;
-}
-
-// ログオン情報を削除する
-function logoninfo_delete(auth) {
-	var logons = local_current();
-	var lists = new Array();
-	var settings = auth_parse(auth);
-	var enc;
-	
-	// ログオン情報を削除する
-	enc = dom_get_storage(logons["localid"], logons["localpass"]);
-	if(enc.indexOf(auth) != -1) {
-		enc = enc.replace(auth, "");
-		lists = enc.split("\r\n");
-		
-		// OFXを削除する
-		dom_del_storage(logons["localid"] + ":" + settings["rowid"], logons["localpass"]);
-	}
-	lists = auths_sort(lists);
-	
-	// ログオン情報を記憶する
-	dom_set_storage(logons["localid"], lists.join("\r\n"), logons["localpass"]);
-	
-	fnc_list_all(lists);
-	
-	return;
-}
-
 // 認証情報をソートする
 function auths_sort(auths) {
 	var logons = local_current();
@@ -2896,11 +2827,11 @@ function auths_sort(auths) {
 				rowid = settings["rowid"].replace(settings["rownum"].toString(), k.toString());
 				// alert("+" + rowid + ":" + settings["rowid"]);
 				
-				ofx = dom_get_storage(logons["localid"] + ":" + rowid, logons["localpass"]);
+				ofx = storage_get(logons["localid"] + ":" + rowid, logons["localpass"]);
 				if(ofx != null && ofx != "") {
 					// OFXを削除・登録する
-					dom_set_storage(logons["localid"] + ":" + settings["rowid"], ofx, logons["localpass"]);
-					dom_del_storage(logons["localid"] + ":" + rowid, logons["localpass"]);
+					storage_set(logons["localid"] + ":" + settings["rowid"], ofx, logons["localpass"]);
+					storage_delete(logons["localid"] + ":" + rowid, logons["localpass"]);
 				}
 			}
 		} else {
@@ -2910,17 +2841,86 @@ function auths_sort(auths) {
 				rowid = settings["rowid"].replace(settings["rownum"].toString(), (k == 0? k + 1: k).toString());
 				// alert("-" + rowid + ":" + settings["rowid"]);
 				
-				ofx = dom_get_storage(logons["localid"] + ":" + rowid, logons["localpass"]);
+				ofx = storage_get(logons["localid"] + ":" + rowid, logons["localpass"]);
 				if(ofx != null && ofx != "") {
 					// OFXを削除・登録する
-					dom_set_storage(logons["localid"] + ":" + settings["rowid"], ofx, logons["localpass"]);
-					dom_del_storage(logons["localid"] + ":" + rowid, logons["localpass"]);
+					storage_set(logons["localid"] + ":" + settings["rowid"], ofx, logons["localpass"]);
+					storage_delete(logons["localid"] + ":" + rowid, logons["localpass"]);
 				}
 			}
 		}
 	}
 	
 	return rets;
+}
+
+// ログオン情報を追加する
+function logoninfo_add(auth) {
+	var logons = local_current();
+	var lists = new Array();
+	var settings;
+	var enc;
+	
+	// ログオン情報を追加する
+	enc = storage_get(logons["localid"], logons["localpass"]);
+	lists = enc.split("\r\n");
+	lists.push(auth);
+	lists = auths_sort(lists);
+	
+	// ログオン情報を記憶する
+	storage_set(logons["localid"], lists.join("\r\n"), logons["localpass"]);
+	
+	fnc_list_all(lists);
+	
+	return;
+}
+
+// ログオン情報を更新する
+function logoninfo_update(to, from) {
+	var logons = local_current();
+	var lists = new Array();
+	var enc;
+	
+	// ログオン情報を更新する
+	enc = storage_get(logons["localid"], logons["localpass"]);
+	if(from != null && from.length != 0 && enc.indexOf(from) != -1) {
+		enc = enc.replace(from, to);
+		lists = enc.split("\r\n");
+	}
+	lists = auths_sort(lists);
+	
+	// ログオン情報を設定する
+	storage_set(logons["localid"], lists.join("\r\n"), logons["localpass"]);
+	
+	fnc_list_all(lists);
+	
+	return;
+}
+
+// ログオン情報を削除する
+function logoninfo_delete(auth) {
+	var logons = local_current();
+	var lists = new Array();
+	var settings = auth_parse(auth);
+	var enc;
+	
+	// ログオン情報を削除する
+	enc = storage_get(logons["localid"], logons["localpass"]);
+	if(enc.indexOf(auth) != -1) {
+		enc = enc.replace(auth, "");
+		lists = enc.split("\r\n");
+		
+		// OFXを削除する
+		storage_delete(logons["localid"] + ":" + settings["rowid"], logons["localpass"]);
+	}
+	lists = auths_sort(lists);
+	
+	// ログオン情報を記憶する
+	storage_set(logons["localid"], lists.join("\r\n"), logons["localpass"]);
+	
+	fnc_list_all(lists);
+	
+	return;
 }
 
 // 合計の金額を更新する
@@ -2943,7 +2943,7 @@ function local_current() {
 	var rets = new Array();
 	var i;
 	
-	for(i = 0; i < inputs.length; i++) rets[inputs[i]] = dom_get_storage(inputs[i]);
+	for(i = 0; i < inputs.length; i++) rets[inputs[i]] = storage_get(inputs[i]);
 	
 	return rets;
 }
