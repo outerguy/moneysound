@@ -40,6 +40,7 @@ function get_fi_settings($fiid = "") {
 		$settings[$id]["home"] = mb_htmlspecialchars((string)$fi->home);
 		if(isset($fi["code"]) == true) $settings[$id]["code"] = mb_htmlspecialchars((string)$fi["code"]);
 		if(isset($fi->additional) == true) $settings[$id]["additional"] = mb_htmlspecialchars(implode("|", array((string)$fi->additional, (string)$fi->additional["input"], (string)$fi->additional["type"])));
+		if(isset($fi->help) == true) $settings[$id]["help"] = preg_replace("/^<help>[\r\n]*([\w\W]*?)<\/help>[\r\n]*$/", "\\1", $fi->help->asXML());
 		
 		$inputs = array();
 		foreach($fi->form->input as $input) {

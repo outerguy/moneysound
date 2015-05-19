@@ -10,6 +10,19 @@
 <input id="PASSWD_LoginPwdInput" type="password">ログインパスワード</input>
 </form>
 <additional input="text" type="text">合言葉（全角文字）</additional>
+<help>
+<h3>普通預金</h3>
+<ul>
+<li>前々月1日から本日までの明細を取得します。</li>
+<li>口座が複数存在する場合、すべての口座の明細を取得します。</li>
+<li>口座名称を<code>&lt;MKTGINFO&gt;</code>として出力します。</li>
+</ul>
+<h3>追加認証</h3>
+<ul>
+<li>ログイン時、本人確認のためリスクベース認証を求められる場合があります。</li>
+<li>金融機関に予め登録した合言葉を<strong>2回</strong>、全角文字で入力してください。</li>
+</ul>
+</help>
 </fi>
 
 <fi id="btmu" code="0005">
@@ -24,6 +37,19 @@
 <itemlist>
 <item id="getbranchid">http://sasp.mapion.co.jp/b/bk_mufg/attr/?q=</item>
 </itemlist>
+<help>
+<h3>円普通預金</h3>
+<ul>
+<li>前月1日から本日までの明細を取得します。</li>
+<li>口座が複数存在する場合、すべての口座の明細を取得します。</li>
+<li>口座名称を<code>&lt;MKTGINFO&gt;</code>として出力します。</li>
+</ul>
+<h3>追加認証</h3>
+<ul>
+<li>ログイン時、本人確認のためリスクベース認証を求められる場合があります。</li>
+<li>金融機関からのメールを受信し、本文に記載されているワンタイムパスワードを入力してください。</li>
+</ul>
+</help>
 </fi>
 
 <fi id="smbc" code="0009">
@@ -37,6 +63,14 @@
 <itemlist>
 <item id="getbranchid">http://www.e-map.ne.jp/pc/zdcemaphttp.cgi?enc=EUC&amp;zdccnt=7&amp;target=http%3A%2F%2Fwww.e-map.ne.jp%2Fpc%2Fsearch.htm%3Fcid%3Dsmbcbank%26type%3DShopW%26col%3DFREE_SRCH%26keyword%3D</item>
 </itemlist>
+<help>
+<h3>普通預金</h3>
+<ul>
+<li>前月1日から本日までの明細を取得します。</li>
+<li>口座が複数存在する場合、すべての口座の明細を取得します。</li>
+<li>口座名称を<code>&lt;MKTGINFO&gt;</code>として出力します。</li>
+</ul>
+</help>
 </fi>
 
 <fi id="netbk" code="0038">
@@ -47,6 +81,26 @@
 <input id="userName" type="text">ユーザーネーム</input>
 <input id="loginPwdSet" type="password">WEBログインパスワード</input>
 </form>
+<help>
+<h3>共通</h3>
+<ul>
+<li>前月1日から本日までの明細を取得します。</li>
+<li>口座名称を<code>&lt;MKTGINFO&gt;</code>として出力します。</li>
+</ul>
+<h3>円普通預金</h3>
+<ul>
+<li>口座番号の末尾が<strong>-01</strong>です。</li>
+</ul>
+<h3>SBIハイブリッド預金</h3>
+<ul>
+<li>口座番号の末尾が<strong>-00</strong>です。</li>
+</ul>
+<h3>目的別預金</h3>
+<ul>
+<li>口座番号の末尾が<strong>-XX</strong>（XXは02～99）です。</li>
+<li>口座が複数存在する場合、すべての口座の明細を取得します。</li>
+</ul>
+</help>
 </fi>
 
 <fi id="jpbank" code="9900">
@@ -58,6 +112,19 @@
 <input id="loginPassword" type="password">ログインパスワード</input>
 </form>
 <additional input="text" type="text">合言葉（全角文字）</additional>
+<help>
+<h3>普通預金、貯蓄預金、当座預金</h3>
+<ul>
+<li>前月1日から本日までの明細を取得します。</li>
+<li>口座が複数存在する場合、最初の口座の明細を取得します。</li>
+<li>口座名称を<code>&lt;MKTGINFO&gt;</code>として出力します。</li>
+</ul>
+<h3>追加認証</h3>
+<ul>
+<li>ログイン時、本人確認のためリスクベース認証を求められる場合があります。</li>
+<li>金融機関に予め登録した合言葉を<strong>2回</strong>、全角文字で入力してください。</li>
+</ul>
+</help>
 </fi>
 
 <fi id="mufgcard">
@@ -72,6 +139,17 @@
 <itemlist>
 <item id="brand">0011</item>
 </itemlist>
+<help>
+<h3>共通</h3>
+<ul>
+<li>最新月の確定済み明細を取得します。</li>
+<li>未確定明細を取得します。</li>
+</ul>
+<h3>追加認証</h3>
+<ul>
+<li>ログイン時、生年月（西暦）を6桁の数字で入力してください。</li>
+</ul>
+</help>
 </fi>
 
 <fi id="dccard">
@@ -86,6 +164,19 @@
 <itemlist>
 <item id="brand">0012</item>
 </itemlist>
+<help>
+<h3>共通</h3>
+<ul>
+<li>最新月の確定済み明細を取得します。</li>
+<li>カードが複数存在する場合、すべてのカードの明細を取得します。</li>
+<li>支払請求金額は、支払請求日に「DCカード」という名称で、明細に追加します。</li>
+<li>カード名称を<code>&lt;MKTGINFO&gt;</code>として出力します。</li>
+</ul>
+<h3>追加認証</h3>
+<ul>
+<li>ログイン時、生年月（西暦）を6桁の数字で入力してください。</li>
+</ul>
+</help>
 </fi>
 
 <fi id="smbccard">
@@ -96,6 +187,16 @@
 <input id="userid" type="text">ID</input>
 <input id="password" type="password">パスワード</input>
 </form>
+<help>
+<h3>共通</h3>
+<ul>
+<li>最新月の確定済み明細を取得します。</li>
+<li>支払請求金額は、支払請求日に「三井住友カード」という名称で、明細に追加します。</li>
+<li>最新月の確定済み明細が0件の場合、支払請求日に「三井住友カード」という名称で、0円の明細を追加します。</li>
+<li>カード名称を<code>&lt;MKTGINFO&gt;</code>として出力します。</li>
+<li>IDまたはパスワードが無効となっている場合、「情報取得エラー」を表示します。</li>
+</ul>
+</help>
 </fi>
 
 <fi id="saisoncard">
@@ -107,6 +208,23 @@
 <input id="inputPassword" type="password">パスワード</input>
 </form>
 <additional input="text" type="text">秘密の答え</additional>
+<help>
+<h3>共通</h3>
+<ul>
+<li>最新月の確定済み明細を取得します。</li>
+<li>カードが複数存在する場合、最初のカードの明細を取得します。</li>
+<li>「IDおまとめ設定」には対応していません。そのため、個々のNetアンサーIDでログインしてください。</li>
+<li>支払請求金額は、支払請求日に「セゾンカード」という名称で、明細に追加します。</li>
+<li>最新月の確定済み明細が0件の場合、支払請求日に「セゾンカード」という名称で、0円の明細を追加します。このとき、支払請求日は各月4日に固定されており、実際の請求日と異なる場合があります。</li>
+<li>カード名称を<code>&lt;MKTGINFO&gt;</code>として出力します。</li>
+</ul>
+<h3>追加認証</h3>
+<ul>
+<li>ログイン時、本人確認のため秘密の質問によるご本人様確認を求められる場合があります。</li>
+<li>金融機関に予め登録した秘密の答えを入力してください。</li>
+<li>なお、「秘密の質問対象サービス一覧」の「任意グループ」には、「設定なし」、または「ログイン（全サービス）」を選択してください。「個別設定」には対応していません。</li>
+</ul>
+</help>
 </fi>
 
 <fi id="jaccscard">
@@ -117,6 +235,14 @@
 <input id="IUSERID" type="text">ユーザID</input>
 <input id="IPASSWORD" type="password">パスワード</input>
 </form>
+<help>
+<h3>共通</h3>
+<ul>
+<li>最新月の確定済み明細を取得します。</li>
+<li>未確定明細を取得します。</li>
+<li>カード名称を<code>&lt;MKTGINFO&gt;</code>として出力します。</li>
+</ul>
+</help>
 </fi>
 
 <fi id="viewcard">
@@ -127,6 +253,17 @@
 <input id="id" type="text">サービスID</input>
 <input id="pass" type="password">パスワード</input>
 </form>
+<help>
+<h3>共通</h3>
+<ul>
+<li>最新月の確定済み明細を取得します。</li>
+<li>カードが複数存在する場合、すべてのカードの明細を取得します。</li>
+<li>「ショッピングリボ弁済金」の日付は、「お支払日」に設定します。</li>
+<li>支払請求金額は、支払請求日に「ビューカード」という名称で、明細に追加します。</li>
+<li>最新月の確定済み明細が0件の場合、支払請求日に「ビューカード」という名称で、0円の明細を追加します。このとき、支払請求日は各月4日に固定されており、実際の請求日と異なる場合があります。</li>
+<li>カード名称を<code>&lt;MKTGINFO&gt;</code>として出力します。</li>
+</ul>
+</help>
 </fi>
 
 <fi id="surugavisacard">
@@ -138,6 +275,13 @@
 <input id="telPin" type="password">電話用パスワード</input>
 <input id="webPin" type="password">インターネット用パスワード</input>
 </form>
+<help>
+<h3>共通</h3>
+<ul>
+<li>参照可能なすべての月の確定済み明細を取得します。</li>
+<li>カード名称を<code>&lt;MKTGINFO&gt;</code>として出力します。</li>
+</ul>
+</help>
 </fi>
 
 <fi id="sbisec" code="0988">
@@ -148,6 +292,37 @@
 <input id="user_id" type="text">ユーザーネーム</input>
 <input id="user_password" type="password">パスワード</input>
 </form>
+<help>
+<h3>共通</h3>
+<ul>
+<li>前月1日から本日までの明細（最大10,000件）を取得します。</li>
+<li>口座名称を<code>&lt;MKTGINFO&gt;</code>として出力します。</li>
+</ul>
+<h3>国内株式（現物）</h3>
+<ul>
+<li>銘柄コード、銘柄名称、保有株数、現在値、評価額、損益額を取得します。</li>
+<li>売買履歴を取得します。</li>
+<li>損益額を<code>&lt;POSSTOCK&gt;</code>の<code>&lt;MEMO&gt;</code>として出力します。</li>
+</ul>
+<h3>投資信託</h3>
+<ul>
+<li>ファンド名、保有口数、基準価額、評価額、損益額を取得します。</li>
+<li>売買履歴を取得します。</li>
+<li>損益額を<code>&lt;POSMF&gt;</code>の<code>&lt;MEMO&gt;</code>として出力します。</li>
+</ul>
+<h3>債券</h3>
+<ul>
+<li>銘柄、保有額面、買付単価、約定金額、利率、償還日を取得します。</li>
+<li>損益額を<code>&lt;POSDEBT&gt;</code>の<code>&lt;MEMO&gt;</code>として出力します。</li>
+</ul>
+<h3>預り金</h3>
+<ul>
+<li>入出金明細を取得します。</li>
+<li>現在の残高を取得します。</li>
+<li>現金残高等（合計）を<code>&lt;MARGINBALANCE&gt;</code>として出力します。</li>
+<li>買付余力（3営業日後）を<code>&lt;AVAILCASH&gt;</code>として出力します。</li>
+</ul>
+</help>
 </fi>
 
 <fi id="kabucom" code="KABUCOM">
@@ -158,6 +333,29 @@
 <input id="SsLogonUser" type="text">口座番号</input>
 <input id="SsLogonPassword" type="password">パスワード</input>
 </form>
+<help>
+<h3>共通</h3>
+<ul>
+<li>口座名称を<code>&lt;MKTGINFO&gt;</code>として出力します。</li>
+</ul>
+<h3>国内株式（現物）</h3>
+<ul>
+<li>銘柄コード、銘柄名称、保有株数、現在値、評価額、損益額を取得します。</li>
+<li>売買履歴を取得します。</li>
+<li>損益額を<code>&lt;POSSTOCK&gt;</code>の<code>&lt;MEMO&gt;</code>として出力します。</li>
+</ul>
+<h3>投資信託</h3>
+<ul>
+<li>ファンド名、保有口数、基準価額、評価額、損益額を取得します。</li>
+<li>売買履歴を取得します。</li>
+<li>損益額を<code>&lt;POSMF&gt;</code>の<code>&lt;MEMO&gt;</code>として出力します。</li>
+</ul>
+<h3>お預り金</h3>
+<ul>
+<li>入出金明細を取得します。</li>
+<li>現在の残高は取得しません。</li>
+</ul>
+</help>
 </fi>
 
 <fi id="nrkn" code="NRKN">
@@ -168,6 +366,27 @@
 <input id="userId" type="text">ユーザーID</input>
 <input id="password" type="password">暗証番号（パスワード）</input>
 </form>
+<help>
+<h3>共通</h3>
+<ul>
+<li>プラン名を<code>&lt;MKTGINFO&gt;</code>として出力します。</li>
+</ul>
+<h3>投資信託</h3>
+<ul>
+<li>ファンド名、保有口数、基準価額、評価額、損益額を取得します。</li>
+<li>拠出、収益分配・満期継続、資産売却、支払履歴を取得します。</li>
+<li>損益額を<code>&lt;POSMF&gt;</code>の<code>&lt;MEMO&gt;</code>として出力します。</li>
+</ul>
+<h3>投資信託以外の商品</h3>
+<ul>
+<li>投資信託として取得します。</li>
+</ul>
+<h3>現金</h3>
+<ul>
+<li>入出金明細を取得します。</li>
+<li>現金残高を<code>&lt;MARGINBALANCE&gt;</code>・<code>&lt;AVAILCASH&gt;</code>として出力します。</li>
+</ul>
+</help>
 </fi>
 
 <fi id="mobilesuica" code="MSUICA">
@@ -179,6 +398,20 @@
 <input id="Password" type="password">Suicaパスワード</input>
 </form>
 <additional input="text" type="image">画像認証</additional>
+<help>
+<h3>共通</h3>
+<ul>
+<li>SF（電子マネー）の残高・入出金履歴を取得します。</li>
+<li>前日から26週間前までの明細を取得します。</li>
+<li>SuicaID番号を口座番号として取得します。</li>
+<li>口座名称を<code>&lt;MKTGINFO&gt;</code>として出力します。</li>
+</ul>
+<h3>追加認証</h3>
+<ul>
+<li>ログイン時、本人確認のため画像認証によるご本人様確認を求められる場合があります。</li>
+<li>画像に記載されている英数字を入力してください。</li>
+</ul>
+</help>
 </fi>
 
 <fi id="nanaco" code="NANACO">
@@ -189,6 +422,16 @@
 <input id="XCID" type="text">nanaco番号</input>
 <input id="LOGIN_PWD" type="password">会員メニュー用パスワード</input>
 </form>
+<help>
+<h3>共通</h3>
+<ul>
+<li>nanacoマネーの残高・入出金履歴を取得します。</li>
+<li>センターお預り分の残高・入出金履歴は取得しません。</li>
+<li>前日から3か月分前までの明細を取得します。</li>
+<li>nanaco番号を口座番号として取得します。</li>
+<li>口座名称を<code>&lt;MKTGINFO&gt;</code>として出力します。</li>
+</ul>
+</help>
 </fi>
 
 <fi id="chocom" code="CHOCOM">
@@ -200,6 +443,15 @@
 <input id="TELEPHONE" type="tel">ログイン用電話番号</input>
 <input id="PASSWORD" type="password">パスワード</input>
 </form>
+<help>
+<h3>共通</h3>
+<ul>
+<li>前月1日から本日までの明細を取得します。</li>
+<li>貯金箱番号を支店番号として取得します。</li>
+<li>.Com-ID（ハイフンを除く）を口座番号として取得します。</li>
+<li>口座名称を<code>&lt;MKTGINFO&gt;</code>として出力します。</li>
+</ul>
+</help>
 </fi>
 
 <fi id="esaifu" code="ESAIFU">
@@ -211,6 +463,21 @@
 <input id="password" type="password">口座パスワード</input>
 </form>
 <additional input="text" type="image">画像認証</additional>
+<help>
+<h3>共通</h3>
+<ul>
+<li>e-さいふ口座（eマネー）の入出金履歴を取得します。</li>
+<li>各バーチャルカードの入出金履歴は取得しません。</li>
+<li>前月1日から本日までの明細を取得します。</li>
+<li>口座IDを口座番号として取得します。</li>
+<li>口座名称を<code>&lt;MKTGINFO&gt;</code>として出力します。</li>
+</ul>
+<h3>追加認証</h3>
+<ul>
+<li>ログイン時、本人確認のため画像認証によるご本人様確認を求められる場合があります。</li>
+<li>画像に記載されている英数字を入力してください。</li>
+</ul>
+</help>
 </fi>
 
 <fi id="smcprepaide" code="SMCPPE">
@@ -222,6 +489,21 @@
 <input id="loginPassword" type="password">パスワード</input>
 </form>
 <additional input="text" type="image">画像認証</additional>
+<help>
+<h3>共通</h3>
+<ul>
+<li>各バーチャルカードの入出金履歴を取得します。</li>
+<li>登録済みのバーチャルカードが複数存在する場合、すべてのバーチャルカードの明細を取得します。</li>
+<li>前月1日から本日までの明細を取得します。</li>
+<li>カード番号を口座番号として取得します。</li>
+<li>口座名称を<code>&lt;MKTGINFO&gt;</code>として出力します。</li>
+</ul>
+<h3>追加認証</h3>
+<ul>
+<li>ログイン時、本人確認のため画像認証によるご本人様確認を求められる場合があります。</li>
+<li>画像に記載されている英数字を入力してください。</li>
+</ul>
+</help>
 </fi>
 
 <fi id="auwallet" code="AUWALLET">
@@ -233,6 +515,20 @@
 <input id="loginAuonePwd" type="password">パスワード</input>
 </form>
 <additional input="hidden" type="text">続行</additional>
+<help>
+<h3>共通</h3>
+<ul>
+<li>前月1日から本日までの明細を取得します。</li>
+<li>管理番号を口座番号として取得します。</li>
+<li>口座名称を<code>&lt;MKTGINFO&gt;</code>として出力します。</li>
+<li>ご利用開始のお手続きが済んでいない場合、「情報取得エラー」を表示します。</li>
+</ul>
+<h3>追加認証</h3>
+<ul>
+<li>ログイン時、本人確認のため画像認証によるご本人様確認を求められる場合があります。</li>
+<li>画面の指示に従って操作してください。</li>
+</ul>
+</help>
 </fi>
 
 </filist>
