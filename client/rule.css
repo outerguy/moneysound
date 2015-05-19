@@ -29,7 +29,7 @@ footer ul li {
 	display: inline;
 	padding: 0px 0.25em 0px 0.25em;
 }
-h2 {
+section h2, footer h2 {
 	display: none;
 }
 table {
@@ -59,6 +59,9 @@ td.balance {
 }
 td.status, td.timestamp {
 	text-align: center;
+}
+code {
+	font-family: monospace;
 }
 pre {
 	word-wrap: break-word;
@@ -109,6 +112,22 @@ div#details {
 	max-height: 192px;
 	overflow-x: hidden;
 	overflow-y: scroll;
+}
+div#details h2 {
+	margin: 0px 0px 1em 0px;
+	font-size: 100%;
+}
+div#details h3 {
+	margin: 1em 0px 0px 0px;
+	font-size: 100%;
+}
+div#details h3:after {
+	content: ":";
+}
+div#details ul {
+	margin: 0px 0px 0px 2em;
+	padding: 0px;
+	font-size: 100%;
 }
 table#detail {
 	table-layout: fixed;

@@ -2171,6 +2171,7 @@ function fnc_list(list) {
 		fiids[settings["fiid"]] = new Array();
 		fiids[settings["fiid"]]["name"] = settings["fiid"];
 		fiids[settings["fiid"]]["home"] = "about:blank";
+		fiids[settings["fiid"]]["help"] = "";
 		inactive = true;
 	}
 	
@@ -2196,7 +2197,7 @@ function fnc_list(list) {
 			// 金融機関名称
 			if(i == 0) {
 				tag_td = dom_create_tag("td", { "rowspan": banks.length.toString(), "class": "fi" });
-				tag_a = dom_create_tag("a", { "href": fiids[settings["fiid"]]["home"], "target": settings["fiid"] });
+				tag_a = dom_create_tag("a", { "href": "javascript: void(0);", "onclick": "fnc_help(\"" + settings["fiid"] + "\");" });
 				tag_a.appendChild(dom_create_text(fiids[settings["fiid"]]["name"]));
 				tag_td.appendChild(tag_a);
 				tag_tr.appendChild(tag_td);
@@ -2254,7 +2255,7 @@ function fnc_list(list) {
 			// 金融機関名称
 			if(i == 0) {
 				tag_td = dom_create_tag("td", { "rowspan": creditcards.length.toString(), "class": "fi" });
-				tag_a = dom_create_tag("a", { "href": fiids[settings["fiid"]]["home"], "target": settings["fiid"] });
+				tag_a = dom_create_tag("a", { "href": "javascript: void(0);", "onclick": "fnc_help(\"" + settings["fiid"] + "\");" });
 				tag_a.appendChild(dom_create_text(fiids[settings["fiid"]]["name"]));
 				tag_td.appendChild(tag_a);
 				tag_tr.appendChild(tag_td);
@@ -2293,7 +2294,6 @@ function fnc_list(list) {
 		investments = (ofx != null? dom_get_tag("INVSTMTTRNRS", ofx): new Array());
 		for(i = 0; i < investments.length; i++) {
 			marginbalance = parseInt(dom_get_tag("MARGINBALANCE", investments[i])[0].firstChild.nodeValue, 10);
-			// mktginfo = (dom_get_tag("MKTGINFO", investments[i]).length == 0? "": dom_get_tag("MKTGINFO", investments[i])[0].firstChild.nodeValue);
 			invacctfrom = dom_get_tag("INVACCTFROM", investments[i])[0];
 			
 			brokerid = dom_get_tag("BROKERID", invacctfrom)[0].firstChild.nodeValue;
@@ -2311,7 +2311,7 @@ function fnc_list(list) {
 			// 金融機関名称
 			if(i == 0) {
 				tag_td = dom_create_tag("td", { "rowspan": (investments.length + 1).toString(), "class": "fi" });
-				tag_a = dom_create_tag("a", { "href": fiids[settings["fiid"]]["home"], "target": settings["fiid"] });
+				tag_a = dom_create_tag("a", { "href": "javascript: void(0);", "onclick": "fnc_help(\"" + settings["fiid"] + "\");" });
 				tag_a.appendChild(dom_create_text(fiids[settings["fiid"]]["name"]));
 				tag_td.appendChild(tag_a);
 				tag_tr.appendChild(tag_td);
@@ -2424,7 +2424,7 @@ function fnc_list(list) {
 		
 		// 金融機関名称
 		tag_td = dom_create_tag("td", { "rowspan": "1", "class": "fi" });
-		tag_a = dom_create_tag("a", { "href": fiids[settings["fiid"]]["home"], "target": settings["fiid"] });
+		tag_a = dom_create_tag("a", { "href": "javascript: void(0);", "onclick": "fnc_help(\"" + settings["fiid"] + "\");" });
 		tag_a.appendChild(dom_create_text(fiids[settings["fiid"]]["name"]));
 		tag_td.appendChild(tag_a);
 		tag_tr.appendChild(tag_td);
@@ -2480,6 +2480,25 @@ function fnc_list(list) {
 	for(i = 0; i < inputs.length; i++) with(inputs[i]) if(value == "OFX") style.display = (ofxbutton == "T"? "inline": "none");
 	
 	return tag_tbody;
+}
+
+// ヘルプ機能
+function fnc_help(fiid) {
+	var cdf = document.createDocumentFragment();
+	var tag_div = dom_create_tag("div", { "id": "details" });
+	var tag_h2 = dom_create_tag("h2");
+	var tag_a = dom_create_tag("a", { "href": fiids[fiid]["home"], "target": fiid });
+	
+	tag_a.appendChild(dom_create_text(fiids[fiid]["name"] + "のホームページを表示"));
+	tag_h2.appendChild(tag_a);
+	tag_div.innerHTML = fiids[fiid]["help"];
+	tag_div.insertBefore(tag_h2, tag_div.firstChild);
+	cdf.appendChild(tag_div);
+	
+	// モーダルウィンドウを開く
+	modal_showonly("ヘルプ", cdf, false);
+	
+	return;
 }
 
 
