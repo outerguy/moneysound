@@ -49,16 +49,11 @@ function get_fi_settings($fiid = "") {
 		}
 		$settings[$id]["form"] = implode("|", $inputs);
 		
-		if(isset($fi->itemlist) == true) foreach($fi->itemlist->item as $item) {
-			$settings[$id][(string)$item["id"]] = mb_htmlspecialchars((string)$item);
-		}
+		if(isset($fi->itemlist) == true) foreach($fi->itemlist->item as $item) $settings[$id][(string)$item["id"]] = mb_htmlspecialchars((string)$item);
 	}
 	
-	if($fiid != "") {
-		if(isset($settings[$fiid]) == true) $ret = $settings[$fiid];
-	} else {
-		$ret = $settings;
-	}
+	$ret = ($fiid != "" && isset($settings[$fiid]) == true? $settings[$fiid]: $settings);
+	
 	return $ret;
 }
 
