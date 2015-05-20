@@ -110,7 +110,7 @@ div#modalfoot {
 	text-align: right;
 }
 div#help {
-	margin: 10px 0px 0px 0px;
+	margin: 0px;
 	max-height: 192px;
 	overflow: auto;
 }
