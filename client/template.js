@@ -2166,14 +2166,16 @@ function fnc_list(list) {
 		break;
 	}
 	
-	// 未定義の金融機関の場合、fiidを表示する
-	if(fiids[settings["fiid"]] == undefined) {
+	// 金融機関が未定義の場合、fiidを表示する
+	if(typeof fiids[settings["fiid"]] == "undefined") {
 		fiids[settings["fiid"]] = new Array();
 		fiids[settings["fiid"]]["name"] = settings["fiid"];
 		fiids[settings["fiid"]]["home"] = "about:blank";
-		fiids[settings["fiid"]]["help"] = "";
 		inactive = true;
 	}
+	
+	// ヘルプが未定義の場合、固定文字列を表示する
+	if(typeof fiids[settings["fiid"]]["help"] == "undefined") fiids[settings["fiid"]]["help"] = "ヘルプはありません。";
 	
 	// OFXよりデータを抽出する
 	try {
@@ -2485,7 +2487,7 @@ function fnc_list(list) {
 // ヘルプ機能
 function fnc_help(fiid) {
 	var cdf = document.createDocumentFragment();
-	var tag_div = dom_create_tag("div", { "id": "details" });
+	var tag_div = dom_create_tag("div", { "id": "help" });
 	var tag_h2 = dom_create_tag("h2");
 	var tag_a = dom_create_tag("a", { "href": fiids[fiid]["home"], "target": fiid });
 	
