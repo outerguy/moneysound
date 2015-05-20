@@ -32,6 +32,18 @@ footer ul li {
 section h2, footer h2 {
 	display: none;
 }
+code {
+	font-family: monospace;
+}
+pre {
+	word-wrap: break-word;
+}
+a {
+	cursor: pointer;
+}
+a img {
+	border: 0px;
+}
 table {
 	border-collapse: collapse;
 	border-spacing: 0px;
@@ -60,17 +72,8 @@ td.balance {
 td.status, td.timestamp {
 	text-align: center;
 }
-code {
-	font-family: monospace;
-}
-pre {
-	word-wrap: break-word;
-}
-a {
-	cursor: pointer;
-}
-a img {
-	border: 0px;
+td a {
+	cursor: help;
 }
 form#modal {
 	position: fixed;

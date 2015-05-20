@@ -2197,7 +2197,7 @@ function fnc_list(list) {
 			// 金融機関名称
 			if(i == 0) {
 				tag_td = dom_create_tag("td", { "rowspan": banks.length.toString(), "class": "fi" });
-				tag_a = dom_create_tag("a", { "href": "javascript: void(0);", "onclick": "fnc_help(\"" + settings["fiid"] + "\");" });
+				tag_a = dom_create_tag("a", { "href": "javascript: void(0);", "title": "ヘルプ", "onclick": "fnc_help(\"" + settings["fiid"] + "\");" });
 				tag_a.appendChild(dom_create_text(fiids[settings["fiid"]]["name"]));
 				tag_td.appendChild(tag_a);
 				tag_tr.appendChild(tag_td);
@@ -2255,7 +2255,7 @@ function fnc_list(list) {
 			// 金融機関名称
 			if(i == 0) {
 				tag_td = dom_create_tag("td", { "rowspan": creditcards.length.toString(), "class": "fi" });
-				tag_a = dom_create_tag("a", { "href": "javascript: void(0);", "onclick": "fnc_help(\"" + settings["fiid"] + "\");" });
+				tag_a = dom_create_tag("a", { "href": "javascript: void(0);", "title": "ヘルプ", "onclick": "fnc_help(\"" + settings["fiid"] + "\");" });
 				tag_a.appendChild(dom_create_text(fiids[settings["fiid"]]["name"]));
 				tag_td.appendChild(tag_a);
 				tag_tr.appendChild(tag_td);
@@ -2311,7 +2311,7 @@ function fnc_list(list) {
 			// 金融機関名称
 			if(i == 0) {
 				tag_td = dom_create_tag("td", { "rowspan": (investments.length + 1).toString(), "class": "fi" });
-				tag_a = dom_create_tag("a", { "href": "javascript: void(0);", "onclick": "fnc_help(\"" + settings["fiid"] + "\");" });
+				tag_a = dom_create_tag("a", { "href": "javascript: void(0);", "title": "ヘルプ", "onclick": "fnc_help(\"" + settings["fiid"] + "\");" });
 				tag_a.appendChild(dom_create_text(fiids[settings["fiid"]]["name"]));
 				tag_td.appendChild(tag_a);
 				tag_tr.appendChild(tag_td);
@@ -2424,7 +2424,7 @@ function fnc_list(list) {
 		
 		// 金融機関名称
 		tag_td = dom_create_tag("td", { "rowspan": "1", "class": "fi" });
-		tag_a = dom_create_tag("a", { "href": "javascript: void(0);", "onclick": "fnc_help(\"" + settings["fiid"] + "\");" });
+		tag_a = dom_create_tag("a", { "href": "javascript: void(0);", "title": "ヘルプ", "onclick": "fnc_help(\"" + settings["fiid"] + "\");" });
 		tag_a.appendChild(dom_create_text(fiids[settings["fiid"]]["name"]));
 		tag_td.appendChild(tag_a);
 		tag_tr.appendChild(tag_td);
