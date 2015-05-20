@@ -243,9 +243,9 @@ if($sid > 0) {
 		if(count($tds) > 2) $account["acctid"] = trim(strip_tags($tds[2]["innerHTML"]));
 	}
 	
-	// 利用明細照会画面を取得する
+	// お買い物履歴照会画面を取得する
 	$as = parse_tag($body, "a");
-	foreach($as as $a) if(trim(strip_tags($a["innerHTML"])) == "利用明細照会") {
+	foreach($as as $a) if(trim(strip_tags($a["innerHTML"])) == "お買い物履歴照会") {
 		$method = "GET";
 		$uris = parse_uri($a["href"], $uris);
 		$query = "";
