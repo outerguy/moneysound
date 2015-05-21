@@ -232,6 +232,7 @@ if(strpos($body, "現在サービス停止中") !== false || strpos($body, "メ�
 		$resp["cookie"] = $cookie;
 		$resp["head"] = $head;
 		$resp["body"] = $body;
+		$resp["ofx"] = generate_ofx($resp["status"]);
 	} else {
 		// 最新の請求月を取得する（お支払日は10日であると仮定する）
 		$selects = parse_tag($body, "select");
