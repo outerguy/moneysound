@@ -382,6 +382,36 @@
 </help>
 </fi>
 
+<fi id="jist" code="JIS&amp;T">
+<type>INVSTMT</type>
+<name>日本インベスター・ソリューション・アンド・テクノロジー</name>
+<home>http://www.jis-t.co.jp/</home>
+<form>
+<input id="ACCOUNT" type="text">加入者口座番号</input>
+<input id="PASS" type="password">インターネットパスワード</input>
+</form>
+<help>
+<h3>共通</h3>
+<ul>
+<li>プラン名を<code>&lt;MKTGINFO&gt;</code>として出力します。</li>
+</ul>
+<h3>投資信託</h3>
+<ul>
+<li>ファンド名、保有口数、基準価額、評価額を取得します。</li>
+<li>入金、購入、払込、出金、売却、払戻、返戻、解約、再投資履歴を取得します。</li>
+</ul>
+<h3>投資信託以外の商品</h3>
+<ul>
+<li>投資信託として取得します。</li>
+</ul>
+<h3>現金</h3>
+<ul>
+<li>入出金明細を取得します。</li>
+<li>現金残高を<code>&lt;MARGINBALANCE&gt;</code>・<code>&lt;AVAILCASH&gt;</code>として出力します。</li>
+</ul>
+</help>
+</fi>
+
 <fi id="mobilesuica" code="MSUICA">
 <type>PREPAID</type>
 <name>モバイルSuica</name>
