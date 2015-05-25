@@ -2134,7 +2134,7 @@ function fnc_list(list) {
 	var tag_tbody, tag_tr, tag_td, tag_a;
 	var banks, creditcards, investments;
 	var balamt, mktginfo, bankacctfrom, bankid, branchid, acctid, accttype, ccacctfrom, stmttrns, stmttrn, marginbalance, invacctfrom, brokerid, acctid, mktval, invposlist, mktvals;
-	var ofxbutton, inputs;
+	var ofxbutton, inputs, disabled;
 	var i, j;
 	
 	if(chkenv_parser() == true) parser = new DOMParser();
@@ -2453,16 +2453,10 @@ function fnc_list(list) {
 		// 操作
 		tag_td = dom_create_tag("td", { "class": "control" });
 		tag_td.appendChild(dom_create_tag("input", { "type": "button", "value": "更新", "class": "btn", "onclick": "fnc_update(\"" + settings["rowid"] + "\");" }));
-		if(status != "200" && parser != null) {
-			tag_td.appendChild(dom_create_tag("input", { "type": "button", "value": "明細", "class": "btn", "disabled": "true", "onclick": "fnc_detail(\"" + settings["rowid"] + "\");" }));
-		} else {
-			tag_td.appendChild(dom_create_tag("input", { "type": "button", "value": "明細", "class": "btn", "onclick": "fnc_detail(\"" + settings["rowid"] + "\");" }));
-		}
-		if(status != "200" && parser != null && debug == false) {
-			tag_td.appendChild(dom_create_tag("input", { "type": "button", "value": "OFX", "class": "btn", "disabled": "true", "onclick": "fnc_ofx(\"" + settings["rowid"] + "\");" }));
-		} else {
-			tag_td.appendChild(dom_create_tag("input", { "type": "button", "value": "OFX", "class": "btn", "onclick": "fnc_ofx(\"" + settings["rowid"] + "\");" }));
-		}
+		disabled = (status != "200" && parser != null? "true": "false");
+		tag_td.appendChild(dom_create_tag("input", { "type": "button", "value": "明細", "class": "btn", "disabled": disabled, "onclick": "fnc_detail(\"" + settings["rowid"] + "\");" }));
+		disabled = (status != "200" && parser != null && debug == false? "true": "false");
+		tag_td.appendChild(dom_create_tag("input", { "type": "button", "value": "OFX", "class": "btn", "disabled": disabled, "onclick": "fnc_ofx(\"" + settings["rowid"] + "\");" }));
 		tag_td.appendChild(dom_create_tag("input", { "type": "button", "value": "変更", "class": "btn", "onclick": "fnc_modify(\"" + settings["rowid"] + "\");" }));
 		tag_td.appendChild(dom_create_tag("input", { "type": "button", "value": "削除", "class": "btn", "onclick": "fnc_delete(\"" + settings["rowid"] + "\");" }));
 		tag_tr.appendChild(tag_td);
