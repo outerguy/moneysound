@@ -299,7 +299,11 @@ if(strpos($body, "システムメンテナンス中") !== false) { // 要検討
 			
 			// 精算金額を取得する
 			$bufs["TOTAL"] = parse_amount(strip_tags($tds[3]["innerHTML"]));
-			if($bufs["TOTAL"] == "0") $bufs["TOTAL"] = (string)((integer)$bufs["UNITS"] * (double)$bufs["UNITPRICE"]);
+			if($bufs["TOTAL"] == "0") $bufs["TOTAL"] = (string)round((integer)$bufs["UNITS"] * (double)$bufs["UNITPRICE"], 0);
+			
+			// 約定単価を再補正する
+			$bufs["UNITPRICECALC"] = sprintf("%.4f", (integer)$bufs["TOTAL"] / (integer)$bufs["UNITS"]);
+			if($bufs["UNITPRICE"] != substr($bufs["UNITPRICECALC"], 0, strlen($bufs["UNITPRICE"]))) $bufs["UNITPRICE"] = $bufs["UNITPRICECALC"];
 			
 			$bufs["SUBACCTSEC"] = ENV_STR_OFX_CASH; // 現金
 			$bufs["SUBACCTFUND"] = ENV_STR_OFX_CASH; // 現金
