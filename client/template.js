@@ -2485,7 +2485,7 @@ function fnc_help(fiid) {
 	var tag_h2 = dom_create_tag("h2");
 	var tag_a = dom_create_tag("a", { "href": fiids[fiid]["home"], "target": fiid });
 	
-	tag_a.appendChild(dom_create_text(fiids[fiid]["name"] + "のホームページを表示"));
+	tag_a.appendChild(dom_create_text(fiids[fiid]["name"] + "のサイト"));
 	tag_h2.appendChild(tag_a);
 	tag_div.innerHTML = fiids[fiid]["help"];
 	tag_div.insertBefore(tag_h2, tag_div.firstChild);
