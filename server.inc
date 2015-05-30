@@ -11,7 +11,7 @@ mailto:hiromu2000@hotmail.com
 Licensed under the GNU AGPLv3.
 */
 
-define("ENV_BOOL_PENDING_DETAIL", true); // （クレジットカードの）未確定明細を出力するか否か
+define("ENV_BOOL_PENDING_DETAIL", false); // （クレジットカードの）未確定明細を出力するか否か
 define("ENV_BOOL_ADD_RISKBASE", true); // リスクベース認証成功時、金融機関に接続情報を登録するか否か
 
 define("ENV_NUM_HTTP11_SIZE_BUF", 1024);
