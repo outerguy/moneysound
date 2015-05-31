@@ -1047,13 +1047,12 @@ function fnc_update(rowid, additional) {
 								storage_set(logons["localid"] + ":" + querys[0], xhr.responseText, logons["localpass"]);
 							}
 							
-							// 変更・削除・更新・明細・OFXボタンの押下を許可する
+							// 変更・削除・更新・OFXボタンの押下を許可する
 							inputs = dom_get_tag("input", tag_table);
 							for(i = 0; i < inputs.length; i++) switch(inputs[i].value) {
 							case "変更":
 							case "削除":
 							case "更新":
-							case "明細":
 							case "OFX":
 								inputs[i].disabled = false;
 								break;
@@ -1098,13 +1097,12 @@ function fnc_update(rowid, additional) {
 				}
 			}
 			
-			// 変更・削除・更新・明細・OFXボタンの押下を禁止する
+			// 変更・削除・更新・OFXボタンの押下を禁止する
 			inputs = dom_get_tag("input", tag_html);
 			for(i = 0; i < inputs.length; i++) switch(inputs[i].value) {
 			case "変更":
 			case "削除":
 			case "更新":
-			case "明細":
 			case "OFX":
 				inputs[i].disabled = true;
 				break;
