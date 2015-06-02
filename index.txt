@@ -124,18 +124,18 @@ $headに一致するHTTPヘッダーの配列を取得する。
 $uri_nextを$urisからの絶対・相対パスURIとしてパースする。
 PHPの標準関数parse_url()と異なり、クエリーは"query"ではなく、"path"に含めて返却する。
 【例】
-$uri_next = "../global.htm?lang=en";
+$uri_next = "../global.html?lang=en";
 $uris = array();
 $uris["scheme"] = "http";
 $uris["host"] = "www.example.com";
-$uris["path"] = "/japan/index.htm";
+$uris["path"] = "/japan/index.html";
 parse_uri($uri_next, $uris) = array(3) {
   ["scheme"]=>
   string(4) "http"
   ["host"]=>
   string(15) "www.example.com"
   ["path"]=>
-  string(19) "/global.htm?lang=en"
+  string(19) "/global.html?lang=en"
 }
 
 ■(array)parse_csv((string)$csv, (string)$delimiter = ",", (string)$enclosure = "\"")
