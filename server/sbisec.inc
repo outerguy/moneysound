@@ -581,6 +581,8 @@ if(strpos($body, "ログイン後の全てのサービスを停止") !== false) 
 				
 				// 税を取得する
 				$ct_taxes = (integer)$line[11];
+				
+				// 売・買を判定する
 				if(strpos($line[4], ENV_STR_ASSET_STOCK_SELL) !== false) {
 					$ct_buytype = ENV_STR_OFX_SELL;
 					$ct_units = -1;
@@ -633,32 +635,39 @@ if(strpos($body, "ログイン後の全てのサービスを停止") !== false) 
 					}
 				}
 				
-				// 単価を取得する
-				$ct_unitprice = round((integer)$line[9] / 10000, 4);
-				
 				// 手数料を取得する
-				$ct_commission = round((integer)$line[8] * $ct_unitprice - (integer)$line[13], 4);
+				$ct_commission = (integer)$line[10];
 				
 				// 税を取得する
-				$ct_taxes = "";
-				if(strpos($line[4], ENV_STR_ASSET_FUND_SELL) !== false || strpos($line[4], ENV_STR_ASSET_FUND_SELL) !== false) {
+				$ct_taxes = (integer)$line[11];
+				
+				// 解約・買取・買付・分配金再投資を判定する
+				if(strpos($line[4], ENV_STR_ASSET_FUND_SELL) !== false || strpos($line[4], ENV_STR_ASSET_FUND_PURCHASE) !== false) {
 					$ct_buytype = ENV_STR_OFX_SELL;
 					$ct_units = -1;
 					$ct_total = 1;
 				} else if(strpos($line[4], ENV_STR_ASSET_FUND_BUY) !== false) {
-					$ct_buytype = (strpos($line[4], ENV_STR_ASSET_FUND_DIV) !== false? ENV_STR_OFX_REINVEST: ENV_STR_OFX_BUY);
+					$ct_buytype = ENV_STR_OFX_BUY;
+					$ct_units = 1;
+					$ct_total = -1;
+				} else if(strpos($line[4], ENV_STR_ASSET_FUND_DIV) !== false) {
+					$ct_buytype = ENV_STR_OFX_REINVEST;
 					$ct_units = 1;
 					$ct_total = -1;
 				} else {
 					// 何もしない
+					$ct_units = 0;
+					$ct_total = 0;
 				}
 				
 				// 数量を取得する
 				$ct_units *= (integer)$line[8];
 				
 				// 金額を取得する
-				// マイナス値の手数料は許容されないため、金額に上乗せして調整する
-				$ct_total *= ((integer)$line[13] + $ct_commission);
+				$ct_total *= (integer)$line[13];
+				
+				// 単価を取得する
+				$ct_unitprice = sprintf("%.6f", (abs($ct_total) - $ct_commission - $ct_taxes) / abs($ct_units));
 			} else {
 				$ct_category = "";
 				
@@ -688,7 +697,7 @@ if(strpos($body, "ログイン後の全てのサービスを停止") !== false) 
 			$ct["UNITS"] = (string)$ct_units;
 			$ct["UNITPRICE"] = (string)$ct_unitprice;
 			// OFX仕様上、COMMISSION、FEES、TAXESはマイナス値を許容しない
-			// $ct["COMMISSION"] = (string)abs($ct_commission);
+			$ct["COMMISSION"] = (string)abs($ct_commission);
 			$ct["FEES"] = (string)abs($ct_fees);
 			$ct["TAXES"] = (string)abs($ct_taxes);
 			$ct["TOTAL"] = (string)$ct_total;
@@ -716,8 +725,8 @@ if(strpos($body, "ログイン後の全てのサービスを停止") !== false) 
 		$invtranlist .= "<SUBACCTSEC>" . $ct["SUBACCTSEC"] . "</SUBACCTSEC>";
 		$invtranlist .= "<UNITS>" . $ct["UNITS"] . "</UNITS>";
 		$invtranlist .= "<UNITPRICE>" . $ct["UNITPRICE"] . "</UNITPRICE>";
-		// マイナス値の手数料は許容されないため、金額に上乗せして調整する
-		// $invtranlist .= "<COMMISSION>" . $ct["COMMISSION"] . "</COMMISSION>";
+		$invtranlist .= "<COMMISSION>" . $ct["COMMISSION"] . "</COMMISSION>";
+		$invtranlist .= "<TAXES>" . $ct["TAXES"] . "</TAXES>";
 		$invtranlist .= "</" . $ct["BUYTYPE"] . ">";
 		$invtranlist .= "\r\n";
 	} else {
@@ -735,8 +744,8 @@ if(strpos($body, "ログイン後の全てのサービスを停止") !== false) 
 			$invtranlist .= "<FEES>" . $ct["FEES"] . "</FEES>";
 			break;
 		case ENV_STR_OFX_FUND:
-			// マイナス値の手数料は許容されないため、金額に上乗せして調整する
-			// $invtranlist .= "<COMMISSION>" . $ct["COMMISSION"] . "</COMMISSION>";
+			$invtranlist .= "<COMMISSION>" . $ct["COMMISSION"] . "</COMMISSION>";
+			$invtranlist .= "<TAXES>" . $ct["TAXES"] . "</TAXES>";
 			break;
 		case ENV_STR_OFX_CASH:
 		default:
