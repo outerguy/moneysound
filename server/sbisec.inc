@@ -543,7 +543,7 @@ if(strpos($body, "ログイン後の全てのサービスを停止") !== false) 
 		
 		if(count($line) == 14 && $line[0] != "約定日") {
 			// 種別、銘柄、売買を取得する
-			if(substr($line[4], 0, strlen(ENV_STR_ASSET_STOCK_NAME)) == ENV_STR_ASSET_STOCK_NAME) { // 株式
+			if(strpos($line[4], ENV_STR_ASSET_STOCK_NAME) !== false) { // 株式
 				$ct_category = ENV_STR_OFX_STOCK;
 				$ct_uniqueid = $line[2];
 				$ct_secname = "";
@@ -581,18 +581,16 @@ if(strpos($body, "ログイン後の全てのサービスを停止") !== false) 
 				
 				// 税を取得する
 				$ct_taxes = (integer)$line[11];
-				switch(substr($line[4], 8, 2)) {
-				case ENV_STR_ASSET_STOCK_SELL:
+				if(strpos($line[4], ENV_STR_ASSET_STOCK_SELL) !== false) {
 					$ct_buytype = ENV_STR_OFX_SELL;
 					$ct_units = -1;
 					$ct_total = 1;
-					break;
-				case ENV_STR_ASSET_STOCK_BUY:
-				default:
+				} else if(strpos($line[4], ENV_STR_ASSET_STOCK_BUY) !== false) {
 					$ct_buytype = ENV_STR_OFX_BUY;
 					$ct_units = 1;
 					$ct_total = -1;
-					break;
+				} else {
+					// 何もしない
 				}
 				
 				// 数量を取得する
@@ -600,7 +598,7 @@ if(strpos($body, "ログイン後の全てのサービスを停止") !== false) 
 				
 				// 金額を取得する
 				$ct_total *= (integer)$line[13];
-			} else if(substr($line[4], 0, strlen(ENV_STR_ASSET_FUND_NAME)) == ENV_STR_ASSET_FUND_NAME || substr($line[4], 0, strlen(ENV_STR_ASSET_FUND_DIV)) == ENV_STR_ASSET_FUND_DIV) { // 投信、分配金再投資
+			} else if(strpos($line[4], ENV_STR_ASSET_FUND_NAME) !== false  || strpos($line[4], ENV_STR_ASSET_FUND_DIV) !== false) { // 投信、分配金再投資
 				$ct_category = ENV_STR_OFX_FUND;
 				
 				// 銘柄一覧より名前を取得する
@@ -643,19 +641,16 @@ if(strpos($body, "ログイン後の全てのサービスを停止") !== false) 
 				
 				// 税を取得する
 				$ct_taxes = "";
-				switch(substr($line[4], 8, 4)) {
-				case ENV_STR_ASSET_FUND_SELL:
-				case ENV_STR_ASSET_FUND_PURCHASE:
+				if(strpos($line[4], ENV_STR_ASSET_FUND_SELL) !== false || strpos($line[4], ENV_STR_ASSET_FUND_SELL) !== false) {
 					$ct_buytype = ENV_STR_OFX_SELL;
 					$ct_units = -1;
 					$ct_total = 1;
-					break;
-				case ENV_STR_ASSET_FUND_BUY:
-				default:
-					$ct_buytype = (substr($line[4], 0, strlen(ENV_STR_ASSET_FUND_DIV)) == ENV_STR_ASSET_FUND_DIV? ENV_STR_OFX_REINVEST: ENV_STR_OFX_BUY);
+				} else if(strpos($line[4], ENV_STR_ASSET_FUND_BUY) !== false) {
+					$ct_buytype = (strpos($line[4], ENV_STR_ASSET_FUND_DIV) !== false? ENV_STR_OFX_REINVEST: ENV_STR_OFX_BUY);
 					$ct_units = 1;
 					$ct_total = -1;
-					break;
+				} else {
+					// 何もしない
 				}
 				
 				// 数量を取得する
