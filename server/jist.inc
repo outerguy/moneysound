@@ -302,7 +302,7 @@ if(strpos($body, "システムメンテナンス中") !== false) { // 要検討
 			if($bufs["TOTAL"] == "0") $bufs["TOTAL"] = (string)round((integer)$bufs["UNITS"] * (double)$bufs["UNITPRICE"], 0);
 			
 			// 約定単価を再補正する
-			$bufs["UNITPRICECALC"] = sprintf("%.4f", (integer)$bufs["TOTAL"] / (integer)$bufs["UNITS"]);
+			$bufs["UNITPRICECALC"] = sprintf("%.6f", (integer)$bufs["TOTAL"] / (integer)$bufs["UNITS"]);
 			if($bufs["UNITPRICE"] != substr($bufs["UNITPRICECALC"], 0, strlen($bufs["UNITPRICE"]))) $bufs["UNITPRICE"] = $bufs["UNITPRICECALC"];
 			
 			$bufs["SUBACCTSEC"] = ENV_STR_OFX_CASH; // 現金
