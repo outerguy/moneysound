@@ -487,6 +487,7 @@ function fnc_erase() {
 			input = fiids[fiid]["form"].split("|")[0];
 			key = dom_get_id(input).value;
 			modal_hide();
+			
 			switch(storage_get(key, "")) {
 			case null:
 				modal_show("エラー", key + "は存在しません。", false);
@@ -1206,8 +1207,8 @@ function fnc_update_additional(auth) {
 			querys.push("accesskey=" + dom_get_id("accesskey").value);
 			if(dom_get_id(dom_get_id("additional").value) != null) querys.push(dom_get_id("additional").value + "=" + encodeURIComponent(dom_get_id(dom_get_id("additional").value).value));
 			query = querys.join("&");
-			
 			modal_hide();
+			
 			settings = auth_parse(auth);
 			
 			// 更新機能を呼び出す
