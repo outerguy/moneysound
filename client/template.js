@@ -396,6 +396,8 @@ function fnc_register() {
 			inputs = fiids[fiid]["form"].split("|");
 			auths.push("=" + fiid);
 			for(i = 0; i < inputs.length; i++) auths.push(dom_get_id(inputs[i]).id + "=" + dom_get_id(inputs[i]).value);
+			
+			// モーダルウィンドウを閉じる
 			modal_hide();
 			
 			us = auths[1].split("=", 2);
@@ -486,6 +488,8 @@ function fnc_erase() {
 			fiid = dom_get_id("fiid").value;
 			input = fiids[fiid]["form"].split("|")[0];
 			key = dom_get_id(input).value;
+			
+			// モーダルウィンドウを閉じる
 			modal_hide();
 			
 			switch(storage_get(key, "")) {
@@ -836,6 +840,8 @@ function fnc_modify(rowid) {
 		inputs = fiids[fiid]["form"].split("|");
 		auths.push("=" + fiid);
 		for(i = 0; i < inputs.length; i++) auths.push(dom_get_id(inputs[i]).id + "=" + dom_get_id(inputs[i]).value);
+		
+		// モーダルウィンドウを閉じる
 		modal_hide();
 		
 		if(auth != null) {
@@ -876,9 +882,10 @@ function fnc_delete(rowid) {
 		// モーダルウィンドウを開く
 		modal_show("削除", cdf, true, "modalcancel");
 	} else {
+		// コールバックの場合
 		if(typeof auth != "string") auth = dom_get_id("auth").value;
 		
-		// コールバックの場合
+		// モーダルウィンドウを閉じる
 		modal_hide();
 		
 		logoninfo_delete(auth);
@@ -1207,6 +1214,8 @@ function fnc_update_additional(auth) {
 			querys.push("accesskey=" + dom_get_id("accesskey").value);
 			if(dom_get_id(dom_get_id("additional").value) != null) querys.push(dom_get_id("additional").value + "=" + encodeURIComponent(dom_get_id(dom_get_id("additional").value).value));
 			query = querys.join("&");
+			
+			// モーダルウィンドウを閉じる
 			modal_hide();
 			
 			settings = auth_parse(auth);
@@ -2615,7 +2624,7 @@ function modal_showonly(mhead, mbody, showcancel, focusto) {
 		// モーダルウィンドウを開く
 		modal_show(mhead, mbody, showcancel, focusto);
 	} else {
-		// コールバックの場合
+		// コールバックの場合、モーダルウィンドウを閉じる
 		modal_hide();
 	}
 	
