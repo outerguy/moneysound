@@ -5,32 +5,30 @@ mailto:contact@beatrek.com
 Dual-licensed under the Apache License 2.0 and Beatrek Origin License.
 */
 
-// グローバル変数・定数を定義する
+// 変数を定義する
 var debug = "<!--[debug]-->";
 var fprefix = "<!--[family]-->_";
 var ver = "<!--[client]-->.<!--[server]-->";
 var ofxhead = "<!--[ofxhead]-->";
 var pdftext = "<!--[pdftext]-->";
-var fiids = "<!--[filist]-->";
 var get_all = -1;
 var xhr = null;
 var pw = false;
 var px, py;
 var fi;
 
-// 各リストを定義する
+// 連想配列を定義する
 var ficats = { "BANK": "銀行", "CREDITCARD": "クレジットカード", "INVSTMT": "証券", "PREPAID": "前払式帳票" };
 var themes = { "standard.css": "標準（スマートフォン対応）", "modern.css": "Modern", "aero.css": "Aero", "luna.css": "Luna", "flat.css": "Flat", "aqua.css": "Aqua", "light.css": "Light", "precious.css": "プレシャス" };
 var outputs = { "OFX": "OFXファイルの結合ダウンロード", "CSV": "CSVファイルのダウンロード", "PDF": "PDFファイルのダウンロード", "LPT": "口座一覧の印刷", "EXP": "口座情報のエクスポート" };
 var ofxbuttons = { "T": "する", "F": "しない（出力ボタンの操作に追加する）" };
 var csvencodings = { "SJIS": "Shift_JIS", "UTFB": "UTF-8（BOMあり）", "UTF8": "UTF-8（BOMなし）" };
-
-// ログオン・登録・抹消機能の認証情報を追加する
+var fiids = "<!--[filist]-->";
 fiids["logon"] = { "type": "LOCAL", "name": "ログオン", "form": "localid|localpass", "localid": "ローカルID|text", "localpass": "ローカルパスワード|password" };
 fiids["register"] = { "type": "LOCAL", "name": "登録", "form": "localid|localpass", "localid": "ローカルID|text", "localpass": "ローカルパスワード|password" };
 fiids["erase"] = { "type": "LOCAL", "name": "抹消", "form": "localid", "localid": "ローカルID|text" };
 
-// 分類毎に金融機関リストを生成する
+// 分類毎に金融機関の連想配列を生成する
 var filists = new Array();
 for(fi in ficats) filists[fi] = new Array();
 for(fi in fiids) if(typeof filists[fiids[fi]["type"]] != "undefined") filists[fiids[fi]["type"]][fi] = fiids[fi];
