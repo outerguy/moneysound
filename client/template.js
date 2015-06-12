@@ -38,7 +38,7 @@ for(fi in fiids) if(typeof filists[fiids[fi]["type"]] != "undefined") filists[fi
 		// 起動時にロード機能を呼び出す
 		body.onload = fnc_load;
 		
-		// 各キーに機能を割り当てる
+		// キーに機能を割り当てる
 		onkeydown = function(e) {
 			var ret = true;
 			var scroll = 10;
@@ -128,8 +128,9 @@ function fnc_load() {
 	var tag_p;
 	var i;
 	
-	// デバッグ機能が有効の場合、警告を表示する
+	// デバッグ機能が有効の場合
 	if(debug != false) {
+		// 警告を表示する
 		tag_p = dom_create_tag("p", { "style": "padding: 0.5em; font-weight: bold; color: #FFFFFF; background: #FF0000; text-align: center;" });
 		tag_p.appendChild(dom_create_text("【警告】開発者向け（デバッグ）機能が有効のため、認証情報を含む詳細な記録が残ります。開発者以外の方は、操作しないでください。または、開発者へご相談ください。"));
 		tag_nav.parentNode.insertBefore(tag_p, tag_nav);
@@ -178,7 +179,7 @@ function fnc_initialize() {
 			// 表題を設定する
 			tag_caption.firstChild.nodeValue = "ログオンしてください";
 			
-			// 各ボタンの有効・無効を指定する
+			// ボタンの有効・無効を指定する
 			btn_disableds = { "btn_logon": false, "btn_logoff": true, "btn_register": false, "btn_erase": false, "btn_debug": true, "btn_option": true, "btn_version": false, "btn_update_all": true, "btn_cancel": true, "btn_ofx_all": true, "btn_create": true, "btn_output": true };
 			
 			break;
@@ -186,13 +187,13 @@ function fnc_initialize() {
 			// 表題を設定する
 			tag_caption.firstChild.nodeValue = logons["localid"];
 			
-			// 各ボタンの有効・無効を指定する
+			// ボタンの有効・無効を指定する
 			btn_disableds = { "btn_logon": true, "btn_logoff": false, "btn_register": true, "btn_erase": true, "btn_debug": false, "btn_option": false, "btn_version": false, "btn_update_all": true, "btn_cancel": true, "btn_ofx_all": true, "btn_create": false, "btn_output": true };
 			
 			break;
 		}
 		
-		// 各ボタンを有効・無効に設定する
+		// ボタンを有効・無効に設定する
 		for(i in btn_disableds) dom_get_id(i).disabled = btn_disableds[i];
 		
 		// 画面のテーマよりCSSを選択する
@@ -1066,7 +1067,7 @@ function fnc_update(rowid, additional) {
 								break;
 							}
 							
-							// 各ボタンを有効・無効に設定する
+							// ボタンを有効・無効に設定する
 							for(i in btn_disableds) dom_get_id(i).disabled = btn_disableds[i];
 							
 							tag_html.className = "";
@@ -1116,7 +1117,7 @@ function fnc_update(rowid, additional) {
 				break;
 			}
 			
-			// 各ボタンを有効・無効に設定する
+			// ボタンを有効・無効に設定する
 			for(i in btn_disableds) dom_get_id(i).disabled = btn_disableds[i];
 			
 			tag_html.className = "pending";
@@ -2114,7 +2115,7 @@ function fnc_list_all(lists) {
 	
 	// 行を追加した場合
 	if(f == true) {
-		// 各ボタンを有効・無効に設定する
+		// ボタンを有効・無効に設定する
 		for(i in btn_disableds) dom_get_id(i).disabled = btn_disableds[i];
 	}
 	
@@ -2560,7 +2561,7 @@ function modal_show(mhead, mbody, showcancel, focusto) {
 		};
 		
 		with(self.document) {
-			// モーダルウィンドウがドラッグされた場合、移動する
+			// モーダルウィンドウがドラッグされた場合、移動を許可する
 			onmousemove = function(e) {
 				if(typeof e == "undefined") e = self.window.event;
 				
