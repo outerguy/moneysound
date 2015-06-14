@@ -285,6 +285,7 @@ if(strpos($body, "システムメンテナンス中") !== false) { // 要検討
 			
 			// 約定数量を取得する
 			$bufs["UNITS"] = parse_amount(strip_tags($tds[0]["innerHTML"]));
+			if($bufs["UNITS"] == "0") $bufs["UNITS"] = "1";
 			
 			// 約定単価を取得する
 			$bufs["UNITPRICE"] = parse_amount(strip_tags($tds[1]["innerHTML"]));
