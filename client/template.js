@@ -125,14 +125,16 @@ function fnc_load() {
 	var fnc_btns = [fnc_logon, fnc_logoff, fnc_register, fnc_erase, fnc_debug, fnc_option, fnc_version, fnc_update_all, fnc_cancel, fnc_ofx_all, fnc_create, fnc_output];
 	var tag_nav = dom_get_tag("nav")[0];
 	var tag_as = dom_get_tag("a");
-	var tag_p;
+	var tag_p, tag_strong;
 	var i;
 	
 	// デバッグ機能が有効の場合
 	if(debug != false) {
 		// 警告を表示する
-		tag_p = dom_create_tag("p", { "style": "padding: 0.5em; font-weight: bold; color: #FFFFFF; background: #FF0000; text-align: center;" });
-		tag_p.appendChild(dom_create_text("【警告】開発者向け（デバッグ）機能が有効のため、認証情報を含む詳細な記録が残ります。開発者以外の方は、操作しないでください。または、開発者へご相談ください。"));
+		tag_p = dom_create_tag("p", { "style": "padding: 0.5em; color: #FFFFFF; background: #FF0000; text-align: center;" });
+		tag_strong = dom_create_tag("strong");
+		tag_strong.appendChild(dom_create_text("【警告】開発者向け（デバッグ）機能が有効のため、認証情報を含む詳細な記録が残ります。開発者以外の方は、操作しないでください。または、開発者へご相談ください。"));
+		tag_p.appendChild(tag_strong);
 		tag_nav.parentNode.insertBefore(tag_p, tag_nav);
 		
 		// デバッグ情報ボタンを表示する
