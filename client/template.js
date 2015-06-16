@@ -761,7 +761,7 @@ function fnc_create() {
 	return;
 }
 
-// 分類を変更した場合に金融機関リストを更新する
+// 分類を変更した場合、金融機関リストを更新する
 function fnc_create_change(cat) {
 	var lists = filists[(typeof cat == "undefined"? dom_get_id("ficat")[dom_get_id("ficat").selectedIndex].value: cat)];
 	var i;
@@ -2115,11 +2115,8 @@ function fnc_list_all(lists) {
 		f = true;
 	}
 	
-	// 行を追加した場合
-	if(f == true) {
-		// ボタンを有効・無効に設定する
-		for(i in btn_disableds) dom_get_id(i).disabled = btn_disableds[i];
-	}
+	// 行を追加した場合、ボタンを有効・無効に設定する
+	if(f == true) for(i in btn_disableds) dom_get_id(i).disabled = btn_disableds[i];
 	
 	// 口座一覧を更新する
 	num_total_update();
