@@ -21,7 +21,7 @@ $method = "GET";
 $uris = parse_uri($settings["home"]);
 $query = "";
 $cookie = "";
-list($head, $body) = smbc_http11($method, $uris, $query, $cookie, false); // 文字コードを変換しない
+list($head, $body) = smbc_http11($method, $uris, $query, $cookie);
 
 // ログイン画面を取得する
 $as = parse_tag($body, "a");
@@ -464,9 +464,9 @@ if(strpos($body, "システムメンテナンスのため") !== false) {
 return $resp;
 
 // HTTP/1.1
-function smbc_http11($method, $uris, $query = "", $cookie = "", $autoconv = true) {
+function smbc_http11($method, $uris, $query = "", $cookie = "") {
 	$ret = "INVALID HOST";
-	if(preg_match("/\.smbc\.co\.jp$/", $uris["host"]) > 0) $ret = http11(strtoupper($method), $uris["scheme"], $uris["host"], 0, $uris["path"], $query, "", $cookie, $autoconv);
+	if(preg_match("/\.smbc\.co\.jp$/", $uris["host"]) > 0) $ret = http11(strtoupper($method), $uris["scheme"], $uris["host"], 0, $uris["path"], $query, "", $cookie);
 	return explode("\r\n\r\n", $ret, 2);
 }
 
