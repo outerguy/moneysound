@@ -230,10 +230,10 @@ function fnc_logon() {
 	var fiid = "logon";
 	var cdf = document.createDocumentFragment();
 	var auths = new Array();
-	var lists = new Array();
 	var f = false;
 	var tag_p;
-	var inputs, dec;
+	var lists, inputs;
+	var dec;
 	var us, ps;
 	var i, j;
 	
@@ -441,7 +441,6 @@ function fnc_register() {
 function fnc_erase() {
 	var fiid = "erase";
 	var cdf = document.createDocumentFragment();
-	var auths = new Array();
 	var tag_p, tag_label;
 	var input, key;
 	
@@ -786,13 +785,12 @@ function fnc_create_change(cat) {
 function fnc_modify(rowid) {
 	var logons = local_current();
 	var cdf = document.createDocumentFragment();
-	var lists = new Array();
 	var auths = new Array();
 	var auth = auth_get(rowid);
 	var inactive = false;
+	var lists, inputs, settings;
 	var fiid;
 	var tag_p;
-	var inputs, settings;
 	var i, j;
 	
 	if(dom_get_id("modal") == null) {
@@ -1133,7 +1131,6 @@ function fnc_update(rowid, additional) {
 // 追加認証機能
 function fnc_update_additional(auth) {
 	var cdf = document.createDocumentFragment();
-	var auths = new Array();
 	var querys = new Array();
 	var group = "";
 	var status = "";
@@ -1144,6 +1141,7 @@ function fnc_update_additional(auth) {
 	var mfaphraselabel = "";
 	var ofx = null;
 	var parser = null;
+	var auths;
 	var tag_p;
 	var logons, settings, str, inputs, query;
 	var i, j, k, l;
@@ -2760,8 +2758,8 @@ function storage_delete(key, pass) {
 function auth_get(rowid) {
 	var logons = local_current();
 	var auths = storage_get(logons["localid"], logons["localpass"]).split("\r\n");
-	var bufs = new Array();
 	var auth = "";
+	var bufs;
 	var i;
 	
 	for(i = 0; i < auths.length; i++) {
@@ -2782,7 +2780,7 @@ function auth_parse(auth) {
 	var rowid = "";
 	var fiid = "";
 	var keyvalues = new Array();
-	var lists = new Array();
+	var lists;
 	var i, j;
 	
 	// rownum、rowid、fiidを切り出す
@@ -2878,7 +2876,7 @@ function auths_sort(auths) {
 // ログオン情報を追加する
 function logoninfo_add(auth) {
 	var logons = local_current();
-	var lists = new Array();
+	var lists;
 	var settings;
 	var enc;
 	
@@ -3213,9 +3211,9 @@ function dom_create_tag(name, attrs) {
 function dom_convert_escape(str) {
 	var ret = "";
 	var buf = "";
+	var hcs = { "amp": String.fromCharCode(0x26), "quot": String.fromCharCode(0x22), "lt": String.fromCharCode(0x3C), "gt": String.fromCharCode(0x3E), "nbsp": String.fromCharCode(0xA0), "copy": String.fromCharCode(0xA9), "reg": String.fromCharCode(0xAE) };
 	var fnc;
 	var i;
-	var hcs = { "amp": String.fromCharCode(0x26), "quot": String.fromCharCode(0x22), "lt": String.fromCharCode(0x3C), "gt": String.fromCharCode(0x3E), "nbsp": String.fromCharCode(0xA0), "copy": String.fromCharCode(0xA9), "reg": String.fromCharCode(0xAE) };
 	
 	if(str.indexOf(String.fromCharCode(0x26)) == -1) {
 		ret = str;
