@@ -57,12 +57,12 @@
 		margin: 0px;
 		color: #FFFFFF;
 		background: transparent;
-		font-weight: bold;
 		text-shadow: 1px 1px 1px #001188;
 		text-align: left;
+		text-indent: 2px;
+		font-weight: bold;
 		font-size: 85%;
 		line-height: 120%;
-		text-indent: 2px;
 		letter-spacing: 2px;
 	}
 	div#modalbody {
