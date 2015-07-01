@@ -9,6 +9,7 @@ Licensed under the GNU AGPLv3.
 // ログイン情報を取得する
 $user = $ofxforms["userName"];
 $pass = $ofxforms["loginPwdSet"];
+$token = urldecode($ofxforms["X-Token"]);
 
 $resp = array();
 
@@ -19,7 +20,7 @@ $resp = array();
 $method = "GET";
 $uris = parse_uri($settings["home"]);
 $query = "";
-$cookie = "";
+$cookie = (ENV_BOOL_ADD_RISKBASE == true && $token != ""? $token: "");
 list($head, $body) = netbk_http11($method, $uris, $query, $cookie);
 
 // リダイレクトする
@@ -293,6 +294,11 @@ if(strpos($body, "現在この取引はお取扱いできません") !== false) 
 		break;
 	}
 	
+	if(ENV_BOOL_ADD_RISKBASE == true) {
+		// 次回ログイン時に2段階認証を行わない
+		$resp["token"] = netbk_get_token("termvalue", $cookie);
+	}
+	
 	// OFXファイルを出力する
 	$resp["status"] = ENV_NUM_STATUS_SUCCESS;
 	if(strpos($bankmsgsrsv1, "<BANKTRANLIST>") === false) {
@@ -313,7 +319,22 @@ function netbk_http11($method, $uris, $query = "", $cookie = "") {
 }
 
 function netbk_update_cookie($head, $cookie) {
-	return update_cookie(array("JSESSIONID"), parse_header($head, "set-cookie"), $cookie);
+	return update_cookie(array("JSESSIONID", "termvalue"), parse_header($head, "set-cookie"), $cookie);
+}
+
+function netbk_get_token($name, $cookie) {
+	$ret = "";
+	
+	$kvs = explode(";", $cookie);
+	foreach($kvs as $kv) {
+		list($k, $v) = explode("=", $kv, 2);
+		$k = trim($k);
+		if($k == $name) {
+			$ret = $k . "=" . trim($v);
+			break;
+		}
+	}
+	return $ret;
 }
 
 function netbk_parse_csv($str, $account) {
