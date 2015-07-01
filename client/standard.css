@@ -135,6 +135,7 @@
 		background: transparent;
 	}
 	.btn {
+		min-width: 4em;
 		border: 0px;
 		border-radius: 5px;
 		padding: 10px;
@@ -168,6 +169,6 @@
 		margin: 0px 0px 0px 8px;
 	}
 	input, select {
-		font-size: 110%;
+		font-size: 135%;
 	}
 }
