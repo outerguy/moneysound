@@ -12,6 +12,6 @@ define("ENV_FILE_TEMPLATE_HTML", "template.html");
 define("ENV_FILE_TEMPLATE_JS", "template.js");
 define("ENV_FILE_TEMPLATE_PDF", "pdf.dat");
 
-define("ENV_PRODUCT_CLIENT_VERSION", "5.4");
+define("ENV_PRODUCT_CLIENT_VERSION", "5.5");
 
 ?>

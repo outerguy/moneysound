@@ -1898,11 +1898,12 @@ function fnc_pdf() {
 	var tag_tr;
 	var y = 714;
 	var r = 0;
-	var fi = 12;
-	var ai = 19;
-	var row, val;
+	var fil = 12;
+	var ail = 19;
+	var val;
 	var filename, url;
-	var i, j, k;
+	var i, j, k, l;
+	var row1, row2, row3;
 	
 	if(chkenv_pdf() == false) {
 		modal_showonly("警告", "ご利用のブラウザーは、PDFファイルのダウンロードに対応していません。", false);
@@ -1931,49 +1932,67 @@ function fnc_pdf() {
 			tag_tr = dom_get_tag("tr", tag_tbodys[i]);
 			
 			// 行数を計算する
-			row = Math.max(tag_tr.length, Math.ceil(tag_tr[0].childNodes[0].firstChild.firstChild.nodeValue.length / fi));
+			row1 = Math.max(tag_tr.length, Math.ceil(tag_tr[0].childNodes[0].firstChild.firstChild.nodeValue.length / fil));
 			k = 0;
 			for(j = tag_tr.length - 1; j >= 0; j--) {
-				k += Math.ceil(tag_tr[tag_tr.length - j - 1].childNodes[(j == tag_tr.length - 1? 1: 0)].firstChild.nodeValue.length / ai);
+				k += Math.ceil(tag_tr[tag_tr.length - j - 1].childNodes[(j == tag_tr.length - 1? 1: 0)].firstChild.nodeValue.length / ail);
 			}
-			row = Math.max(row, k);
+			row1 = Math.max(row1, k);
 			
-			// 行数が50を超える場合、生成を打ち切る
-			r += row;
+			// 総行数が50を超える場合、生成を打ち切る
+			r += row1;
 			if(r > 50) break;
 			
 			// 行を繰り下げる
-			y -= 12 * row;
+			y -= 12 * row1;
 			
 			// 偶数行を着色する
-			if(i % 2 == 0) pdfobj += "q\r\n1 0 0 1 57 " + y.toString() + " cm\r\n0.8 0.933 1 rg\r\n0 0 m\r\n480 0 l\r\n480 " + (12 * row).toString() + " l\r\n0 " + (12 * row).toString() + " l\r\nf\r\nQ\r\n";
+			if(i % 2 == 0) pdfobj += "q\r\n1 0 0 1 57 " + y.toString() + " cm\r\n0.8 0.933 1 rg\r\n0 0 m\r\n480 0 l\r\n480 " + (12 * row1).toString() + " l\r\n0 " + (12 * row1).toString() + " l\r\nf\r\nQ\r\n";
 			
 			// 金融機関を出力する
 			val = tag_tr[0].childNodes[0].firstChild.firstChild.nodeValue;
-			for(j = row - 1; j >= 0; j--) {
-				pdfstr += "1 0 0 1 60 " + (y + 2 + fi * j).toString() + " Tm\r\n<" + get_binary_sjis(val.substring((row - 1 - j) * fi, (row - 1 - j) * fi + fi)) + "> Tj\r\n";
+			for(j = row1 - 1; j >= 0; j--) {
+				pdfstr += "1 0 0 1 60 " + (y + 2 + fil * j).toString() + " Tm\r\n<" + get_binary_sjis(val.substring((row1 - j - 1) * fil, (row1 - j - 1) * fil + fil)) + "> Tj\r\n";
 			}
 			
-			// 口座種目を出力する
+			// 口座種目の行数を計算する
+			row3 = 0;
+			var buf = "";
 			for(j = tag_tr.length - 1; j >= 0; j--) {
 				val = tag_tr[tag_tr.length - j - 1].childNodes[(j == tag_tr.length - 1? 1: 0)].firstChild.nodeValue;
-				for(k = 0; k < row; k++) {
-					pdfstr += "1 0 0 1 197 " + (y + 2 + 12 * (k - (tag_tr.length - j - 1))).toString() + " Tm\r\n<" + get_binary_sjis(val.substring((row - k - 1) * ai, (row - k - 1) * ai + ai)) + "> Tj\r\n";
+				row2 = Math.ceil(val.length / ail);
+				for(k = row2 - 1; k >= 0; k--) {
+					row3++;
+				}
+			}
+			row3 = Math.max(row1, row3);
+			
+			// 口座種目を出力する
+			l = row3;
+			for(j = tag_tr.length - 1; j >= 0; j--) {
+				val = tag_tr[tag_tr.length - j - 1].childNodes[(j == tag_tr.length - 1? 1: 0)].firstChild.nodeValue;
+				row2 = Math.ceil(val.length / ail);
+				for(k = row2 - 1; k >= 0; k--) {
+					pdfstr += "1 0 0 1 197 " + (y + 2 + 12 * (l - 1)).toString() + " Tm\r\n<" + get_binary_sjis(val.substring((row2 - k - 1) * ail, (row2 - k - 1) * ail + ail)) + "> Tj\r\n";
+					l--;
 				}
 			}
 			
 			if(tag_tr[0].childNodes[1].colSpan == 1) {
+				l = row3;
 				// 残高を出力する
 				for(j = tag_tr.length - 1; j >= 0; j--) {
+					val = tag_tr[tag_tr.length - j - 1].childNodes[(j == tag_tr.length - 1? 1: 0)].firstChild.nodeValue;
+					row2 = Math.ceil(val.length / ail);
 					val = tag_tr[tag_tr.length - j - 1].childNodes[(j == tag_tr.length - 1? 2: 1)].firstChild.nodeValue;
-					while(val.length < 11) val = " " + val;
-					pdfstr += "1 0 0 1 407 " + (y + 2 + 12 * (row - (tag_tr.length - j))).toString() + " Tm\r\n<" + get_binary_sjis(val) + "> Tj\r\n";
+					pdfstr += "1 0 0 1 " + (407 + 5.25 * (11 - val.length)).toString() + " " + (y + 2 + 12 * (l - 1)).toString() + " Tm\r\n<" + get_binary_sjis(val) + "> Tj\r\n";
+					l -= row2;
 				}
 				
 				// 更新日時を出力する
 				val = tag_tr[0].childNodes[3].firstChild.nodeValue;
 				while(val.length < 11) val = " " + val;
-				pdfstr += "1 0 0 1 476 " + (y + 2 + 12 * (row - 1)).toString() + " Tm\r\n<" + get_binary_sjis(val) + "> Tj\r\n";
+				pdfstr += "1 0 0 1 476 " + (y + 2 + 12 * (row1 - 1)).toString() + " Tm\r\n<" + get_binary_sjis(val) + "> Tj\r\n";
 			}
 		}
 		
