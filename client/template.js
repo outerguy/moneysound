@@ -1915,17 +1915,21 @@ function fnc_pdf() {
 	var timestamp = timestamp_get();
 	var pdf = null;
 	var str = pdftext;
+	var content = "";
+	var reference = "";
+	var pagestream = " ";
 	var pdflength = "<<\r\n/Length <!--[length]-->\r\n>>\r\n";
 	var pdfstream = "stream\r\n<!--[stream]-->endstream\r\n";
-	var pdfobj = "";
-	var pdfstr = "";
 	var tag_thead = dom_get_tag("thead")[0];
 	var tag_tfoot = dom_get_tag("tfoot")[0];
 	var tag_section = dom_get_tag("section")[0];
 	var tag_h1 = dom_get_tag("h1")[0];
 	var tag_tbodys = dom_get_tag("tbody");
 	var tag_tr;
-	var y = 714;
+	var objnum = 8;
+	var pagecount = 1;
+	var pyl = 714; // ページ先頭の高さ（変更不能）
+	var ffl = 90; // 改ページの高さ（変更不能）
 	var cpt = 10.5; // 文字ポイント（変更不能）
 	var cwl = cpt / 2; // 文字幅（変更不能）
 	var chl = cpt + 1.5; // 文字高（変更不能）
@@ -1933,9 +1937,10 @@ function fnc_pdf() {
 	var ail = 19; // 表内の口座種目の折り返し文字数（変更不能）
 	var mbl = 11; // 表内の残高の折り返し文字数（変更不能）
 	var udl = 11; // 表内の更新日時の折り返し文字数（変更不能）
-	var ldl, val, buf;
+	var ldl, buf1, buf2;
 	var filename, url;
-	var i, j, k, l;
+	var tocobj, pdfobj, pdfchar, pdfdraw;
+	var i, j, k, l, y;
 	var row1, row2, row3;
 	var pdfrowpitch;
 	
@@ -1950,113 +1955,146 @@ function fnc_pdf() {
 		}
 		ldl = parseInt(pdfrowpitch, 10);
 		
-		pdfstr += "BT\r\n";
+		str = str.replace("<!--[datetime]-->", timestamp);
 		
-		// タイトル部を生成する
-		pdfstr += "/F1 18 Tf\r\n";
-		pdfstr += "1 0 0 1 60 772 Tm\r\n<" + get_binary_sjis(tag_h1.firstChild.nodeValue) + "> Tj\r\n"; // マネーサウンド
-		pdfstr += "/F1 10.5 Tf\r\n";
-		pdfstr += "1 0 0 1 60 754 Tm\r\n<" + get_binary_sjis(logons["localid"]) + "> Tj\r\n"; // ローカルID
-		pdfstr += "/F1 " + cpt.toString() + " Tf\r\n";
-		
-		// 表ヘッダー部を生成する
-		pdfobj += "q\r\n1.5 w\r\n1 0 0 1 57 742 cm\r\n0 0 0 rg\r\n0 0 m\r\n480 0 l\r\n480 2.5 l\r\n0 2.5 l\r\nf\r\nQ\r\n";
-		pdfobj += "q\r\n0.5 w\r\n1 0 0 1 57 714.5 cm\r\n0 0 0 rg\r\n0 0 m\r\n480 0 l\r\nS\r\nQ\r\n";
-		
-		tag_tr = dom_get_tag("tr", tag_thead)[0];
-		pdfstr += "1 0 0 1 102.5 725 Tm\r\n<" + get_binary_sjis(tag_tr.childNodes[0].firstChild.nodeValue) + "> Tj\r\n"; // 金融機関
-		pdfstr += "1 0 0 1 275 725 Tm\r\n<" + get_binary_sjis(tag_tr.childNodes[1].firstChild.nodeValue) + "> Tj\r\n"; // 口座種目
-		pdfstr += "1 0 0 1 425 725 Tm\r\n<" + get_binary_sjis(tag_tr.childNodes[2].firstChild.nodeValue) + "> Tj\r\n"; // 残高
-		pdfstr += "1 0 0 1 484 725 Tm\r\n<" + get_binary_sjis(tag_tr.childNodes[3].firstChild.nodeValue) + "> Tj\r\n"; // 更新日時
-		
-		// 表ボディー部を生成する
-		for(i = 0; i < tag_tbodys.length; i++) {
-			tag_tr = dom_get_tag("tr", tag_tbodys[i]);
+		i = 0;
+		do {
+			y = pyl;
+			pagestream += objnum.toString() + " 0 R ";
+			tocobj = fnc_pdf_toc(objnum++);
+			pdfobj = fnc_pdf_pdf(objnum++);
 			
-			// 行数を計算する
-			row1 = Math.max(tag_tr.length, Math.ceil(tag_tr[0].childNodes[0].firstChild.firstChild.nodeValue.length / fil));
-			k = 0;
-			for(j = tag_tr.length - 1; j >= 0; j--) {
-				k += Math.ceil(tag_tr[tag_tr.length - j - 1].childNodes[(j == tag_tr.length - 1? 1: 0)].firstChild.nodeValue.length / ail);
-			}
-			row1 = Math.max(row1, k);
-			l = row1 * pdfrowpitch;
+			pdfchar = fnc_pdf_char(tag_h1.firstChild.nodeValue, logons["localid"], cpt, tag_thead);
+			pdfdraw = fnc_pdf_draw();
 			
-			// ページ溢れの場合、生成を打ち切る
-			if(y < 90 + l) break;
-			
-			// 行を繰り下げる
-			y -= l;
-			
-			// 偶数行を着色する
-			if(i % 2 == 0) pdfobj += "q\r\n1 0 0 1 57 " + y.toString() + " cm\r\n0.8 0.933 1 rg\r\n0 0 m\r\n480 0 l\r\n480 " + l.toString() + " l\r\n0 " + l.toString() + " l\r\nf\r\nQ\r\n";
-			
-			// 金融機関を出力する
-			val = tag_tr[0].childNodes[0].firstChild.firstChild.nodeValue;
-			for(j = row1 - 1; j >= 0; j--) {
-				buf = val.substring((row1 - j - 1) * fil, (row1 - j - 1) * fil + fil);
-				if(buf == "") continue;
-				pdfstr += "1 0 0 1 60 " + (y + 2 + pdfrowpitch * j + (pdfrowpitch - chl) / 2).toString() + " Tm\r\n<" + get_binary_sjis(buf) + "> Tj\r\n";
-			}
-			
-			// 口座種目の行数を計算する
-			row3 = 0;
-			for(j = tag_tr.length - 1; j >= 0; j--) {
-				val = tag_tr[tag_tr.length - j - 1].childNodes[(j == tag_tr.length - 1? 1: 0)].firstChild.nodeValue;
-				row2 = Math.ceil(val.length / ail);
-				for(k = row2 - 1; k >= 0; k--) {
-					row3++;
-				}
-			}
-			row3 = Math.max(row1, row3);
-			
-			// 口座種目を出力する
-			l = row3;
-			for(j = tag_tr.length - 1; j >= 0; j--) {
-				buf = tag_tr[tag_tr.length - j - 1].childNodes[(j == tag_tr.length - 1? 1: 0)].firstChild.nodeValue;
-				row2 = Math.ceil(val.length / ail);
-				for(k = row2 - 1; k >= 0; k--) {
-					val = buf.substring((row2 - k - 1) * ail, (row2 - k - 1) * ail + ail);
-					pdfstr += "1 0 0 1 197 " + (y + 2 + pdfrowpitch * (l - 1) + (pdfrowpitch - chl) / 2).toString() + " Tm\r\n<" + get_binary_sjis(val) + "> Tj\r\n";
-					l--;
-				}
-			}
-			
-			if(tag_tr[0].childNodes[1].colSpan == 1) {
-				l = row3;
-				// 残高を出力する
+			while(y >= ffl && i < tag_tbodys.length) {
+				// 表ボディー部を生成する
+				tag_tr = dom_get_tag("tr", tag_tbodys[i]);
+				
+				// 行数を計算する
+				row1 = Math.max(tag_tr.length, Math.ceil(tag_tr[0].childNodes[0].firstChild.firstChild.nodeValue.length / fil));
+				k = 0;
 				for(j = tag_tr.length - 1; j >= 0; j--) {
-					buf = tag_tr[tag_tr.length - j - 1].childNodes[(j == tag_tr.length - 1? 1: 0)].firstChild.nodeValue;
-					row2 = Math.ceil(buf.length / ail);
-					val = tag_tr[tag_tr.length - j - 1].childNodes[(j == tag_tr.length - 1? 2: 1)].firstChild.nodeValue;
-					pdfstr += "1 0 0 1 " + (407 + cwl * (mbl - val.length)).toString() + " " + (y + 2 + pdfrowpitch * (l - 1) + (pdfrowpitch - chl) / 2).toString() + " Tm\r\n<" + get_binary_sjis(val) + "> Tj\r\n";
-					l -= row2;
+					k += Math.ceil(tag_tr[tag_tr.length - j - 1].childNodes[(j == tag_tr.length - 1? 1: 0)].firstChild.nodeValue.length / ail);
+				}
+				row1 = Math.max(row1, k);
+				l = row1 * pdfrowpitch;
+				
+				// 行を繰り下げる
+				y -= l;
+				
+				// 偶数行を着色する
+				if(i % 2 == 0) pdfdraw += "q\r\n1 0 0 1 57 " + y.toString() + " cm\r\n0.8 0.933 1 rg\r\n0 0 m\r\n480 0 l\r\n480 " + l.toString() + " l\r\n0 " + l.toString() + " l\r\nf\r\nQ\r\n";
+				
+				// 金融機関を出力する
+				buf1 = tag_tr[0].childNodes[0].firstChild.firstChild.nodeValue;
+				for(j = row1 - 1; j >= 0; j--) {
+					buf2 = buf1.substring((row1 - j - 1) * fil, (row1 - j - 1) * fil + fil);
+					if(buf2 == "") continue;
+					pdfchar += "1 0 0 1 60 " + (y + 2 + pdfrowpitch * j + (pdfrowpitch - chl) / 2).toString() + " Tm\r\n<" + get_binary_sjis(buf2) + "> Tj\r\n";
 				}
 				
-				// 更新日時を出力する
-				val = tag_tr[0].childNodes[3].firstChild.nodeValue;
-				pdfstr += "1 0 0 1 " + (476 + cwl * (udl - val.length)).toString() + " " + (y + 2 + pdfrowpitch * (row1 - 1) + (pdfrowpitch - chl) / 2).toString() + " Tm\r\n<" + get_binary_sjis(val) + "> Tj\r\n";
+				// 口座種目の行数を計算する
+				row3 = 0;
+				for(j = tag_tr.length - 1; j >= 0; j--) {
+					buf1 = tag_tr[tag_tr.length - j - 1].childNodes[(j == tag_tr.length - 1? 1: 0)].firstChild.nodeValue;
+					row2 = Math.ceil(buf1.length / ail);
+					for(k = row2 - 1; k >= 0; k--) {
+						row3++;
+					}
+				}
+				row3 = Math.max(row1, row3);
+				
+				// 口座種目を出力する
+				l = row3;
+				for(j = tag_tr.length - 1; j >= 0; j--) {
+					buf2 = tag_tr[tag_tr.length - j - 1].childNodes[(j == tag_tr.length - 1? 1: 0)].firstChild.nodeValue;
+					row2 = Math.ceil(buf2.length / ail);
+					for(k = row2 - 1; k >= 0; k--) {
+						buf1 = buf2.substring((row2 - k - 1) * ail, (row2 - k - 1) * ail + ail);
+						pdfchar += "1 0 0 1 197 " + (y + 2 + pdfrowpitch * (l - 1) + (pdfrowpitch - chl) / 2).toString() + " Tm\r\n<" + get_binary_sjis(buf1) + "> Tj\r\n";
+						l--;
+					}
+				}
+				
+				if(tag_tr[0].childNodes[1].colSpan == 1) {
+					l = row3;
+					// 残高を出力する
+					for(j = tag_tr.length - 1; j >= 0; j--) {
+						buf2 = tag_tr[tag_tr.length - j - 1].childNodes[(j == tag_tr.length - 1? 1: 0)].firstChild.nodeValue;
+						row2 = Math.ceil(buf2.length / ail);
+						buf1 = tag_tr[tag_tr.length - j - 1].childNodes[(j == tag_tr.length - 1? 2: 1)].firstChild.nodeValue;
+						pdfchar += "1 0 0 1 " + (407 + cwl * (mbl - buf1.length)).toString() + " " + (y + 2 + pdfrowpitch * (l - 1) + (pdfrowpitch - chl) / 2).toString() + " Tm\r\n<" + get_binary_sjis(buf1) + "> Tj\r\n";
+						l -= row2;
+					}
+					
+					// 更新日時を出力する
+					buf1 = tag_tr[0].childNodes[3].firstChild.nodeValue;
+					pdfchar += "1 0 0 1 " + (476 + cwl * (udl - buf1.length)).toString() + " " + (y + 2 + pdfrowpitch * (row1 - 1) + (pdfrowpitch - chl) / 2).toString() + " Tm\r\n<" + get_binary_sjis(buf1) + "> Tj\r\n";
+				}
+				
+				i++;
 			}
+			
+			// ページ溢れの場合、改ページする
+			if(y < ffl) {
+				// 改ページする
+				pdfchar += "ET\r\n";
+				
+				// 埋め込み文字列を置換する
+				buf1 = pdflength.replace("<!--[length]-->", (pdfdraw.length + pdfchar.length).toString());
+				buf2 = pdfstream.replace("<!--[stream]-->", pdfdraw + pdfchar);
+				
+				pdfobj = pdfobj.replace("<!--[pdfobj]-->", buf1 + buf2);
+				content += tocobj + pdfobj;
+				pagecount++;
+			}
+		} while(i < tag_tbodys.length);
+		
+		// ページ溢れの場合、改ページする
+		if(y < ffl) {
+			y = pyl;
+			pagestream += objnum.toString() + " 0 R ";
+			tocobj = fnc_pdf_toc(objnum++);
+			pdfobj = fnc_pdf_pdf(objnum++);
+			
+			pdfchar = fnc_pdf_char(tag_h1.firstChild.nodeValue, logons["localid"], cpt, tag_thead);
+			pdfdraw = fnc_pdf_draw();
 		}
 		
 		// 表フッター部を生成する
-		pdfobj += "q\r\n0.5 w\r\n1 0 0 1 57 " + (y - 0.5).toString() + " cm\r\n0 0 0 rg\r\n0 0 m\r\n480 0 l\r\nS\r\nQ\r\n";
-		pdfobj += "q\r\n0.5 w\r\n1 0 0 1 57 " + (y - 28).toString() + " cm\r\n0 0 0 rg\r\n0 0 m\r\n480 0 l\r\nS\r\nQ\r\n";
+		pdfdraw += "q\r\n0.5 w\r\n1 0 0 1 57 " + (y - 0.5).toString() + " cm\r\n0 0 0 rg\r\n0 0 m\r\n480 0 l\r\nS\r\nQ\r\n";
+		pdfdraw += "q\r\n0.5 w\r\n1 0 0 1 57 " + (y - 28).toString() + " cm\r\n0 0 0 rg\r\n0 0 m\r\n480 0 l\r\nS\r\nQ\r\n";
 		
 		tag_tr = dom_get_tag("tr", tag_tfoot)[0];
-		pdfstr += "1 0 0 1 197 " + (y - 18).toString() + " Tm\r\n<" + get_binary_sjis(tag_tr.childNodes[1].firstChild.nodeValue) + "> Tj\r\n"; // 合計
+		pdfchar += "1 0 0 1 197 " + (y - 18).toString() + " Tm\r\n<" + get_binary_sjis(tag_tr.childNodes[1].firstChild.nodeValue) + "> Tj\r\n"; // 合計
 		
 		// 残高合計を出力する
-		val = tag_tr.childNodes[2].firstChild.nodeValue;
-		pdfstr += "1 0 0 1 " + (407 + cwl * (11 - val.length)).toString() + " " + (y - 18).toString() + " Tm\r\n<" + get_binary_sjis(val) + "> Tj\r\n";
+		buf1 = tag_tr.childNodes[2].firstChild.nodeValue;
+		pdfchar += "1 0 0 1 " + (407 + cwl * (11 - buf1.length)).toString() + " " + (y - 18).toString() + " Tm\r\n<" + get_binary_sjis(buf1) + "> Tj\r\n";
 		
-		pdfstr += "ET\r\n";
+		pdfchar += "ET\r\n";
 		
 		// 埋め込み文字列を置換する
-		pdflength = pdflength.replace("<!--[length]-->", (pdfobj.length + pdfstr.length).toString());
-		pdfstream = pdfstream.replace("<!--[stream]-->", pdfobj + pdfstr);
-		str = str.replace("<!--[datetime]-->", timestamp);
-		str = str.replace("<!--[content]-->", pdflength + pdfstream);
+		buf1 = pdflength.replace("<!--[length]-->", (pdfdraw.length + pdfchar.length).toString());
+		buf2 = pdfstream.replace("<!--[stream]-->", pdfdraw + pdfchar);
+		
+		pdfobj = pdfobj.replace("<!--[pdfobj]-->", buf1 + buf2);
+		content += tocobj + pdfobj;
+		
+		str = str.replace("<!--[pagestream]-->", pagestream);
+		str = str.replace("<!--[pagecount]-->", pagecount.toString());
+		
+		str = str.replace("<!--[content]-->", content);
+		str = str.replace("<!--[objnum]-->", objnum.toString());
+		
+		for(i = 8; i < objnum; i++) {
+			buf1 = str.indexOf(i.toString() + " 0 obj").toString();
+			while(buf1.length < 10) buf1 = "0" + buf1;
+			reference += buf1 + " 00000 n\r\n";
+		}
+		
+		str = str.replace("<!--[reference]-->", reference);
 		str = str.replace("<!--[xref]-->", str.indexOf("xref").toString());
 		
 		filename = fprefix + timestamp + ".pdf";
@@ -2079,6 +2117,60 @@ function fnc_pdf() {
 	}
 	
 	return;
+}
+
+// pdfcharの初期値（ページヘッダー）を生成する
+function fnc_pdf_char(title, localid, fontsize, tag_thead) {
+	var ret = "";
+	var tag_tr = dom_get_tag("tr", tag_thead)[0];
+	
+	ret += "BT\r\n";
+	
+	ret += "/F1 18 Tf\r\n";
+	ret += "1 0 0 1 60 772 Tm\r\n<" + get_binary_sjis(title) + "> Tj\r\n"; // マネーサウンド
+	ret += "/F1 10.5 Tf\r\n";
+	ret += "1 0 0 1 60 754 Tm\r\n<" + get_binary_sjis(localid) + "> Tj\r\n"; // ローカルID
+	ret += "/F1 " + fontsize.toString() + " Tf\r\n";
+	
+	ret += "1 0 0 1 102.5 725 Tm\r\n<" + get_binary_sjis(tag_tr.childNodes[0].firstChild.nodeValue) + "> Tj\r\n"; // 金融機関
+	ret += "1 0 0 1 275 725 Tm\r\n<" + get_binary_sjis(tag_tr.childNodes[1].firstChild.nodeValue) + "> Tj\r\n"; // 口座種目
+	ret += "1 0 0 1 425 725 Tm\r\n<" + get_binary_sjis(tag_tr.childNodes[2].firstChild.nodeValue) + "> Tj\r\n"; // 残高
+	ret += "1 0 0 1 484 725 Tm\r\n<" + get_binary_sjis(tag_tr.childNodes[3].firstChild.nodeValue) + "> Tj\r\n"; // 更新日時
+	
+	return ret;
+}
+
+// pdfdrawの初期値（ページヘッダー）を生成する
+function fnc_pdf_draw() {
+	var ret = "";
+	ret += "q\r\n1.5 w\r\n1 0 0 1 57 742 cm\r\n0 0 0 rg\r\n0 0 m\r\n480 0 l\r\n480 2.5 l\r\n0 2.5 l\r\nf\r\nQ\r\n";
+	ret += "q\r\n0.5 w\r\n1 0 0 1 57 714.5 cm\r\n0 0 0 rg\r\n0 0 m\r\n480 0 l\r\nS\r\nQ\r\n";
+	return ret;
+}
+
+// tocobjを生成する
+function fnc_pdf_toc(objnum) {
+	var ret = "";
+	ret += "\r\n";
+	ret += objnum.toString() + " 0 obj\r\n";
+	ret += "<<\r\n";
+	ret += "/Type /Page\r\n";
+	ret += "/Parent 7 0 R\r\n";
+	ret += "/Resources 1 0 R\r\n";
+	ret += "/Contents " + (objnum + 1).toString() + " 0 R\r\n";
+	ret += ">>\r\n";
+	ret += "endobj\r\n";
+	
+	return ret;
+}
+
+// pdfobjを生成する
+function fnc_pdf_pdf(objnum) {
+	var ret = "";
+	ret += "\r\n";
+	ret += objnum.toString() + " 0 obj\r\n";
+	ret += "<!--[pdfobj]-->endobj\r\n";
+	return ret;
 }
 
 // 口座一覧印刷機能
