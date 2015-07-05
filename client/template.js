@@ -1900,7 +1900,7 @@ function fnc_pdf() {
 	var r = 0;
 	var fil = 12;
 	var ail = 19;
-	var val;
+	var val, buf;
 	var filename, url;
 	var i, j, k, l;
 	var row1, row2, row3;
@@ -1939,9 +1939,9 @@ function fnc_pdf() {
 			}
 			row1 = Math.max(row1, k);
 			
-			// 総行数が50を超える場合、生成を打ち切る
+			// 総行数が52を超える場合、生成を打ち切る
 			r += row1;
-			if(r > 50) break;
+			if(r > 52) break;
 			
 			// 行を繰り下げる
 			y -= 12 * row1;
@@ -1952,12 +1952,13 @@ function fnc_pdf() {
 			// 金融機関を出力する
 			val = tag_tr[0].childNodes[0].firstChild.firstChild.nodeValue;
 			for(j = row1 - 1; j >= 0; j--) {
-				pdfstr += "1 0 0 1 60 " + (y + 2 + fil * j).toString() + " Tm\r\n<" + get_binary_sjis(val.substring((row1 - j - 1) * fil, (row1 - j - 1) * fil + fil)) + "> Tj\r\n";
+				buf = val.substring((row1 - j - 1) * fil, (row1 - j - 1) * fil + fil);
+				if(buf == "") continue;
+				pdfstr += "1 0 0 1 60 " + (y + 2 + fil * j).toString() + " Tm\r\n<" + get_binary_sjis(buf) + "> Tj\r\n";
 			}
 			
 			// 口座種目の行数を計算する
 			row3 = 0;
-			var buf = "";
 			for(j = tag_tr.length - 1; j >= 0; j--) {
 				val = tag_tr[tag_tr.length - j - 1].childNodes[(j == tag_tr.length - 1? 1: 0)].firstChild.nodeValue;
 				row2 = Math.ceil(val.length / ail);
@@ -1970,10 +1971,11 @@ function fnc_pdf() {
 			// 口座種目を出力する
 			l = row3;
 			for(j = tag_tr.length - 1; j >= 0; j--) {
-				val = tag_tr[tag_tr.length - j - 1].childNodes[(j == tag_tr.length - 1? 1: 0)].firstChild.nodeValue;
+				buf = tag_tr[tag_tr.length - j - 1].childNodes[(j == tag_tr.length - 1? 1: 0)].firstChild.nodeValue;
 				row2 = Math.ceil(val.length / ail);
 				for(k = row2 - 1; k >= 0; k--) {
-					pdfstr += "1 0 0 1 197 " + (y + 2 + 12 * (l - 1)).toString() + " Tm\r\n<" + get_binary_sjis(val.substring((row2 - k - 1) * ail, (row2 - k - 1) * ail + ail)) + "> Tj\r\n";
+					val = buf.substring((row2 - k - 1) * ail, (row2 - k - 1) * ail + ail);
+					pdfstr += "1 0 0 1 197 " + (y + 2 + 12 * (l - 1)).toString() + " Tm\r\n<" + get_binary_sjis(val) + "> Tj\r\n";
 					l--;
 				}
 			}
@@ -1991,8 +1993,7 @@ function fnc_pdf() {
 				
 				// 更新日時を出力する
 				val = tag_tr[0].childNodes[3].firstChild.nodeValue;
-				while(val.length < 11) val = " " + val;
-				pdfstr += "1 0 0 1 476 " + (y + 2 + 12 * (row1 - 1)).toString() + " Tm\r\n<" + get_binary_sjis(val) + "> Tj\r\n";
+				pdfstr += "1 0 0 1 " + (476 + 5.25 * (11 - val.length)).toString() + " " + (y + 2 + 12 * (row1 - 1)).toString() + " Tm\r\n<" + get_binary_sjis(val) + "> Tj\r\n";
 			}
 		}
 		
@@ -2005,8 +2006,7 @@ function fnc_pdf() {
 		
 		// 残高合計を出力する
 		val = tag_tr.childNodes[2].firstChild.nodeValue;
-		while(val.length < 11) val = " " + val;
-		pdfstr += "1 0 0 1 407 " + (y - 18).toString() + " Tm\r\n<" + get_binary_sjis(val) + "> Tj\r\n";
+		pdfstr += "1 0 0 1 " + (407 + 5.25 * (11 - val.length)).toString() + " " + (y - 18).toString() + " Tm\r\n<" + get_binary_sjis(val) + "> Tj\r\n";
 		
 		pdfstr += "ET\r\n";
 		
