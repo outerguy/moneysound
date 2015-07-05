@@ -81,28 +81,28 @@ for(fi in fiids) if(typeof filists[fiids[fi]["type"]] != "undefined") filists[fi
 			case 37: // ←キー
 				if(dom_get_id("modal") != null && e.ctrlKey == true) {
 					// モーダルウィンドウを表示していてCtrlキーが押下されている場合、モーダルウィンドウを移動する
-					with(dom_get_id("modal").style) left = (parseInt(left.replace("px", "")) - scroll).toString() + "px";
+					with(dom_get_id("modal").style) left = (parseInt(left.replace("px", ""), 10) - scroll).toString() + "px";
 					ret = false;
 				}
 				break;
 			case 38: // ↑キー
 				if(dom_get_id("modal") != null && e.ctrlKey == true) {
 					// モーダルウィンドウを表示していてCtrlキーが押下されている場合、モーダルウィンドウを移動する
-					with(dom_get_id("modal").style) top = (parseInt(top.replace("px", "")) - scroll).toString() + "px";
+					with(dom_get_id("modal").style) top = (parseInt(top.replace("px", ""), 10) - scroll).toString() + "px";
 					ret = false;
 				}
 				break;
 			case 39: // →キー
 				if(dom_get_id("modal") != null && e.ctrlKey == true) {
 					// モーダルウィンドウを表示していてCtrlキーが押下されている場合、モーダルウィンドウを移動する
-					with(dom_get_id("modal").style) left = (parseInt(left.replace("px", "")) + scroll).toString() + "px";
+					with(dom_get_id("modal").style) left = (parseInt(left.replace("px", ""), 10) + scroll).toString() + "px";
 					ret = false;
 				}
 				break;
 			case 40: // ↓キー
 				if(dom_get_id("modal") != null && e.ctrlKey == true) {
 					// モーダルウィンドウを表示していてCtrlキーが押下されている場合、モーダルウィンドウを移動する
-					with(dom_get_id("modal").style) top = (parseInt(top.replace("px", "")) + scroll).toString() + "px";
+					with(dom_get_id("modal").style) top = (parseInt(top.replace("px", ""), 10) + scroll).toString() + "px";
 					ret = false;
 				}
 				break;
