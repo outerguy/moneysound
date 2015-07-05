@@ -11,6 +11,7 @@ var fprefix = "<!--[family]-->_";
 var ver = "<!--[client]-->.<!--[server]-->";
 var ofxhead = "<!--[ofxhead]-->";
 var pdftext = "<!--[pdftext]-->";
+var pdfdef = "標準";
 var get_all = -1;
 var xhr = null;
 var pw = false;
@@ -23,6 +24,7 @@ var themes = { "standard.css": "標準（スマートフォン対応）", "moder
 var outputs = { "OFX": "OFXファイルの結合ダウンロード", "CSV": "CSVファイルのダウンロード", "PDF": "PDFファイルのダウンロード", "LPT": "口座一覧の印刷", "EXP": "口座情報のエクスポート" };
 var ofxbuttons = { "T": "する", "F": "しない（出力ボタンの操作に追加する）" };
 var csvencodings = { "SJIS": "Shift_JIS", "UTFB": "UTF-8（BOMあり）", "UTF8": "UTF-8（BOMなし）" };
+var pdfrowpitchs = { "12": "狭い", "15": pdfdef, "18": "広い" };
 var fiids = "<!--[filist]-->";
 fiids["logon"] = { "type": "LOCAL", "name": "ログオン", "form": "localid|localpass", "localid": "ローカルID|text", "localpass": "ローカルパスワード|password" };
 fiids["register"] = { "type": "LOCAL", "name": "登録", "form": "localid|localpass", "localid": "ローカルID|text", "localpass": "ローカルパスワード|password" };
@@ -532,7 +534,7 @@ function fnc_option() {
 	var logons = local_current();
 	var cdf = document.createDocumentFragment();
 	var tag_p, tag_select, tag_option;
-	var css, ofxbutton, csvencoding;
+	var css, ofxbutton, csvencoding, pdfrowpitch;
 	var i;
 	
 	// OFXボタンの表示を取得する
@@ -546,6 +548,13 @@ function fnc_option() {
 	csvencoding = storage_get(logons["localid"] + ":csvencoding", logons["localpass"]);
 	if(csvencoding == null) for(i in csvencodings) {
 		csvencoding = i;
+		break;
+	}
+	
+	// PDFファイルの行ピッチを取得する
+	pdfrowpitch = storage_get(logons["localid"] + ":pdfrowpitch", logons["localpass"]);
+	if(pdfrowpitch == null) for(i in pdfrowpitchs) if(pdfrowpitchs[i] == pdfdef) {
+		pdfrowpitch = i;
 		break;
 	}
 	
@@ -598,13 +607,30 @@ function fnc_option() {
 		tag_p.appendChild(tag_select);
 		cdf.appendChild(tag_p);
 		
+		// PDFファイルの行ピッチを生成する
+		tag_p = dom_create_tag("p", { "class": "label" });
+		tag_p.appendChild(dom_create_text("PDFファイルの行ピッチ"));
+		cdf.appendChild(tag_p);
+		
+		tag_p = dom_create_tag("p");
+		tag_select = dom_create_tag("select", { "name": "pdfrowpitch", "id": "pdfrowpitch", "class": "ipt" });
+		for(i in pdfrowpitchs) {
+			tag_option = dom_create_tag("option", { "value": i });
+			if(i == pdfrowpitch) tag_option["selected"] = "selected";
+			tag_option.appendChild(dom_create_text(pdfrowpitchs[i]));
+			tag_select.appendChild(tag_option);
+		}
+		tag_p.appendChild(tag_select);
+		cdf.appendChild(tag_p);
+		
 		// モーダルウィンドウを開く
 		modal_show("設定", cdf, true, "theme");
 	} else {
 		// コールバックの場合
 		css = dom_get_id("theme")[dom_get_id("theme").selectedIndex].value;
-		csvencoding = dom_get_id("csvencoding")[dom_get_id("csvencoding").selectedIndex].value;
 		ofxbutton = dom_get_id("ofxbutton")[dom_get_id("ofxbutton").selectedIndex].value;
+		csvencoding = dom_get_id("csvencoding")[dom_get_id("csvencoding").selectedIndex].value;
+		pdfrowpitch = dom_get_id("pdfrowpitch")[dom_get_id("pdfrowpitch").selectedIndex].value;
 		
 		// モーダルウィンドウを閉じる
 		modal_hide();
@@ -617,6 +643,9 @@ function fnc_option() {
 		
 		// CSVファイルの文字エンコーディングを設定する
 		storage_set(logons["localid"] + ":csvencoding", csvencoding, logons["localpass"]);
+		
+		// PDFファイルの行ピッチを設定する
+		storage_set(logons["localid"] + ":pdfrowpitch", pdfrowpitch, logons["localpass"]);
 		
 		// 初期化機能を呼び出す
 		fnc_initialize();
@@ -1904,15 +1933,22 @@ function fnc_pdf() {
 	var ail = 19; // 表内の口座種目の折り返し文字数（変更不能）
 	var mbl = 11; // 表内の残高の折り返し文字数（変更不能）
 	var udl = 11; // 表内の更新日時の折り返し文字数（変更不能）
-	var lfl = 15; // 表内の行の高さ（変更可能）
-	var val, buf;
+	var ldl, val, buf;
 	var filename, url;
 	var i, j, k, l;
 	var row1, row2, row3;
+	var pdfrowpitch;
 	
 	if(chkenv_pdf() == false) {
 		modal_showonly("警告", "ご利用のブラウザーは、PDFファイルのダウンロードに対応していません。", false);
 	} else {
+		// PDFファイルの行ピッチを取得する
+		pdfrowpitch = storage_get(logons["localid"] + ":pdfrowpitch", logons["localpass"]);
+		if(pdfrowpitch == null) for(i in pdfrowpitchs) if(pdfrowpitchs[i] == pdfdef) {
+			pdfrowpitch = i;
+			break;
+		}
+		ldl = parseInt(pdfrowpitch, 10);
 		
 		pdfstr += "BT\r\n";
 		
@@ -1944,7 +1980,7 @@ function fnc_pdf() {
 				k += Math.ceil(tag_tr[tag_tr.length - j - 1].childNodes[(j == tag_tr.length - 1? 1: 0)].firstChild.nodeValue.length / ail);
 			}
 			row1 = Math.max(row1, k);
-			l = row1 * lfl;
+			l = row1 * pdfrowpitch;
 			
 			// ページ溢れの場合、生成を打ち切る
 			if(y < 90 + l) break;
@@ -1960,7 +1996,7 @@ function fnc_pdf() {
 			for(j = row1 - 1; j >= 0; j--) {
 				buf = val.substring((row1 - j - 1) * fil, (row1 - j - 1) * fil + fil);
 				if(buf == "") continue;
-				pdfstr += "1 0 0 1 60 " + (y + 2 + lfl * j + (lfl - chl) / 2).toString() + " Tm\r\n<" + get_binary_sjis(buf) + "> Tj\r\n";
+				pdfstr += "1 0 0 1 60 " + (y + 2 + pdfrowpitch * j + (pdfrowpitch - chl) / 2).toString() + " Tm\r\n<" + get_binary_sjis(buf) + "> Tj\r\n";
 			}
 			
 			// 口座種目の行数を計算する
@@ -1981,7 +2017,7 @@ function fnc_pdf() {
 				row2 = Math.ceil(val.length / ail);
 				for(k = row2 - 1; k >= 0; k--) {
 					val = buf.substring((row2 - k - 1) * ail, (row2 - k - 1) * ail + ail);
-					pdfstr += "1 0 0 1 197 " + (y + 2 + lfl * (l - 1) + (lfl - chl) / 2).toString() + " Tm\r\n<" + get_binary_sjis(val) + "> Tj\r\n";
+					pdfstr += "1 0 0 1 197 " + (y + 2 + pdfrowpitch * (l - 1) + (pdfrowpitch - chl) / 2).toString() + " Tm\r\n<" + get_binary_sjis(val) + "> Tj\r\n";
 					l--;
 				}
 			}
@@ -1993,13 +2029,13 @@ function fnc_pdf() {
 					buf = tag_tr[tag_tr.length - j - 1].childNodes[(j == tag_tr.length - 1? 1: 0)].firstChild.nodeValue;
 					row2 = Math.ceil(buf.length / ail);
 					val = tag_tr[tag_tr.length - j - 1].childNodes[(j == tag_tr.length - 1? 2: 1)].firstChild.nodeValue;
-					pdfstr += "1 0 0 1 " + (407 + cwl * (mbl - val.length)).toString() + " " + (y + 2 + lfl * (l - 1) + (lfl - chl) / 2).toString() + " Tm\r\n<" + get_binary_sjis(val) + "> Tj\r\n";
+					pdfstr += "1 0 0 1 " + (407 + cwl * (mbl - val.length)).toString() + " " + (y + 2 + pdfrowpitch * (l - 1) + (pdfrowpitch - chl) / 2).toString() + " Tm\r\n<" + get_binary_sjis(val) + "> Tj\r\n";
 					l -= row2;
 				}
 				
 				// 更新日時を出力する
 				val = tag_tr[0].childNodes[3].firstChild.nodeValue;
-				pdfstr += "1 0 0 1 " + (476 + cwl * (udl - val.length)).toString() + " " + (y + 2 + lfl * (row1 - 1) + (lfl - chl) / 2).toString() + " Tm\r\n<" + get_binary_sjis(val) + "> Tj\r\n";
+				pdfstr += "1 0 0 1 " + (476 + cwl * (udl - val.length)).toString() + " " + (y + 2 + pdfrowpitch * (row1 - 1) + (pdfrowpitch - chl) / 2).toString() + " Tm\r\n<" + get_binary_sjis(val) + "> Tj\r\n";
 			}
 		}
 		
