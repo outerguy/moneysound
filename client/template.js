@@ -1897,9 +1897,14 @@ function fnc_pdf() {
 	var tag_tbodys = dom_get_tag("tbody");
 	var tag_tr;
 	var y = 714;
-	var r = 0;
-	var fil = 12;
-	var ail = 19;
+	var cpt = 10.5; // 文字ポイント（変更不能）
+	var cwl = cpt / 2; // 文字幅（変更不能）
+	var chl = cpt + 1.5; // 文字高（変更不能）
+	var fil = 12; // 表内の金融機関の折り返し文字数（変更不能）
+	var ail = 19; // 表内の口座種目の折り返し文字数（変更不能）
+	var mbl = 11; // 表内の残高の折り返し文字数（変更不能）
+	var udl = 11; // 表内の更新日時の折り返し文字数（変更不能）
+	var lfl = 15; // 表内の行の高さ（変更可能）
 	var val, buf;
 	var filename, url;
 	var i, j, k, l;
@@ -1916,6 +1921,7 @@ function fnc_pdf() {
 		pdfstr += "1 0 0 1 60 772 Tm\r\n<" + get_binary_sjis(tag_h1.firstChild.nodeValue) + "> Tj\r\n"; // マネーサウンド
 		pdfstr += "/F1 10.5 Tf\r\n";
 		pdfstr += "1 0 0 1 60 754 Tm\r\n<" + get_binary_sjis(logons["localid"]) + "> Tj\r\n"; // ローカルID
+		pdfstr += "/F1 " + cpt.toString() + " Tf\r\n";
 		
 		// 表ヘッダー部を生成する
 		pdfobj += "q\r\n1.5 w\r\n1 0 0 1 57 742 cm\r\n0 0 0 rg\r\n0 0 m\r\n480 0 l\r\n480 2.5 l\r\n0 2.5 l\r\nf\r\nQ\r\n";
@@ -1938,23 +1944,23 @@ function fnc_pdf() {
 				k += Math.ceil(tag_tr[tag_tr.length - j - 1].childNodes[(j == tag_tr.length - 1? 1: 0)].firstChild.nodeValue.length / ail);
 			}
 			row1 = Math.max(row1, k);
+			l = row1 * lfl;
 			
-			// 総行数が52を超える場合、生成を打ち切る
-			r += row1;
-			if(r > 52) break;
+			// ページ溢れの場合、生成を打ち切る
+			if(y < 90 + l) break;
 			
 			// 行を繰り下げる
-			y -= 12 * row1;
+			y -= l;
 			
 			// 偶数行を着色する
-			if(i % 2 == 0) pdfobj += "q\r\n1 0 0 1 57 " + y.toString() + " cm\r\n0.8 0.933 1 rg\r\n0 0 m\r\n480 0 l\r\n480 " + (12 * row1).toString() + " l\r\n0 " + (12 * row1).toString() + " l\r\nf\r\nQ\r\n";
+			if(i % 2 == 0) pdfobj += "q\r\n1 0 0 1 57 " + y.toString() + " cm\r\n0.8 0.933 1 rg\r\n0 0 m\r\n480 0 l\r\n480 " + l.toString() + " l\r\n0 " + l.toString() + " l\r\nf\r\nQ\r\n";
 			
 			// 金融機関を出力する
 			val = tag_tr[0].childNodes[0].firstChild.firstChild.nodeValue;
 			for(j = row1 - 1; j >= 0; j--) {
 				buf = val.substring((row1 - j - 1) * fil, (row1 - j - 1) * fil + fil);
 				if(buf == "") continue;
-				pdfstr += "1 0 0 1 60 " + (y + 2 + fil * j).toString() + " Tm\r\n<" + get_binary_sjis(buf) + "> Tj\r\n";
+				pdfstr += "1 0 0 1 60 " + (y + 2 + lfl * j + (lfl - chl) / 2).toString() + " Tm\r\n<" + get_binary_sjis(buf) + "> Tj\r\n";
 			}
 			
 			// 口座種目の行数を計算する
@@ -1975,7 +1981,7 @@ function fnc_pdf() {
 				row2 = Math.ceil(val.length / ail);
 				for(k = row2 - 1; k >= 0; k--) {
 					val = buf.substring((row2 - k - 1) * ail, (row2 - k - 1) * ail + ail);
-					pdfstr += "1 0 0 1 197 " + (y + 2 + 12 * (l - 1)).toString() + " Tm\r\n<" + get_binary_sjis(val) + "> Tj\r\n";
+					pdfstr += "1 0 0 1 197 " + (y + 2 + lfl * (l - 1) + (lfl - chl) / 2).toString() + " Tm\r\n<" + get_binary_sjis(val) + "> Tj\r\n";
 					l--;
 				}
 			}
@@ -1984,16 +1990,16 @@ function fnc_pdf() {
 				l = row3;
 				// 残高を出力する
 				for(j = tag_tr.length - 1; j >= 0; j--) {
-					val = tag_tr[tag_tr.length - j - 1].childNodes[(j == tag_tr.length - 1? 1: 0)].firstChild.nodeValue;
-					row2 = Math.ceil(val.length / ail);
+					buf = tag_tr[tag_tr.length - j - 1].childNodes[(j == tag_tr.length - 1? 1: 0)].firstChild.nodeValue;
+					row2 = Math.ceil(buf.length / ail);
 					val = tag_tr[tag_tr.length - j - 1].childNodes[(j == tag_tr.length - 1? 2: 1)].firstChild.nodeValue;
-					pdfstr += "1 0 0 1 " + (407 + 5.25 * (11 - val.length)).toString() + " " + (y + 2 + 12 * (l - 1)).toString() + " Tm\r\n<" + get_binary_sjis(val) + "> Tj\r\n";
+					pdfstr += "1 0 0 1 " + (407 + cwl * (mbl - val.length)).toString() + " " + (y + 2 + lfl * (l - 1) + (lfl - chl) / 2).toString() + " Tm\r\n<" + get_binary_sjis(val) + "> Tj\r\n";
 					l -= row2;
 				}
 				
 				// 更新日時を出力する
 				val = tag_tr[0].childNodes[3].firstChild.nodeValue;
-				pdfstr += "1 0 0 1 " + (476 + 5.25 * (11 - val.length)).toString() + " " + (y + 2 + 12 * (row1 - 1)).toString() + " Tm\r\n<" + get_binary_sjis(val) + "> Tj\r\n";
+				pdfstr += "1 0 0 1 " + (476 + cwl * (udl - val.length)).toString() + " " + (y + 2 + lfl * (row1 - 1) + (lfl - chl) / 2).toString() + " Tm\r\n<" + get_binary_sjis(val) + "> Tj\r\n";
 			}
 		}
 		
@@ -2006,7 +2012,7 @@ function fnc_pdf() {
 		
 		// 残高合計を出力する
 		val = tag_tr.childNodes[2].firstChild.nodeValue;
-		pdfstr += "1 0 0 1 " + (407 + 5.25 * (11 - val.length)).toString() + " " + (y - 18).toString() + " Tm\r\n<" + get_binary_sjis(val) + "> Tj\r\n";
+		pdfstr += "1 0 0 1 " + (407 + cwl * (11 - val.length)).toString() + " " + (y - 18).toString() + " Tm\r\n<" + get_binary_sjis(val) + "> Tj\r\n";
 		
 		pdfstr += "ET\r\n";
 		
