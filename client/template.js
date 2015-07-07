@@ -1916,8 +1916,8 @@ function fnc_pdf() {
 	var tag_section = dom_get_tag("section")[0];
 	var tag_tbodys = dom_get_tag("tbody");
 	var tag_tr;
+	var title = dom_get_tag("title")[0].firstChild.nodeValue;
 	var pdf = null;
-	var title = dom_get_tag("h1")[0].firstChild.nodeValue;
 	var timestamp = timestamp_get();
 	var str = pdftext.replace("<!--[datetime]-->", timestamp);
 	var pagestream = " ";
