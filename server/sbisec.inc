@@ -144,6 +144,7 @@ if(strpos($body, "ログイン後の全てのサービスを停止") !== false) 
 } else {
 	$marginbalance = "0";
 	$availcash = "0";
+	$acctname = $settings["name"] . ENV_CHR_CONCATENATOR . $user;
 	
 	// 実行時間（タイムアウト）を再設定する
 	@set_time_limit(ENV_NUM_TIMEOUT);
@@ -901,7 +902,7 @@ if(strpos($body, "ログイン後の全てのサービスを停止") !== false) 
 	$invstmtmsgsrsv1 .= "<SHORTBALANCE>0</SHORTBALANCE>";
 	$invstmtmsgsrsv1 .= "</INVBAL>";
 	$invstmtmsgsrsv1 .= "\r\n";
-	$invstmtmsgsrsv1 .= "<MKTGINFO>" . $settings["name"] . "</MKTGINFO>";
+	$invstmtmsgsrsv1 .= "<MKTGINFO>" . $acctname . "</MKTGINFO>";
 	$invstmtmsgsrsv1 .= "\r\n";
 	$invstmtmsgsrsv1 .= "</INVSTMTRS>";
 	$invstmtmsgsrsv1 .= "\r\n";

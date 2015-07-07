@@ -114,7 +114,7 @@ if(strpos($body, "ログインすることが出来ませんでした") !== fals
 	
 	$account = array();
 	
-	$account["acctname"] = $settings["name"];
+	$account["acctname"] = $settings["name"] . ENV_CHR_CONCATENATOR . $user;
 	
 	// 支店番号を取得する
 	if(preg_match("/" . preg_quote("貯金箱番号") . "[\s\t]*([0-9]+)/", $body, $matches) > 0) $account["branchid"] = $matches[1];
