@@ -2437,11 +2437,13 @@ function fnc_list(list) {
 		for(i = 0; i < investments.length; i++) {
 			marginbalance = parseInt(dom_get_tag("MARGINBALANCE", investments[i])[0].firstChild.nodeValue, 10);
 			invacctfrom = dom_get_tag("INVACCTFROM", investments[i])[0];
+			mktginfo = (dom_get_tag("MKTGINFO", investments[i]).length == 0? "": dom_get_tag("MKTGINFO", investments[i])[0].firstChild.nodeValue);
 			
 			brokerid = dom_get_tag("BROKERID", invacctfrom)[0].firstChild.nodeValue;
 			acctid = dom_get_tag("ACCTID", invacctfrom)[0].firstChild.nodeValue;
 			
-			group = "預金";
+			j = mktginfo.indexOf("　");
+			group = "預金" + (j == -1? "": " " + mktginfo.substring(j + 1));
 			
 			mktval = 0;
 			invposlist = dom_get_tag("INVPOSLIST", investments[i])[0];
