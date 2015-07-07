@@ -188,6 +188,15 @@ table#detail td {
 .ipt {
 	width: 320px;
 }
+.al {
+	text-align: left;
+}
+.ac {
+	text-align: centert;
+}
+.ar {
+	text-align: right;
+}
 .none {
 	display: none;
 }
