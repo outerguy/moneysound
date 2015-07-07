@@ -689,11 +689,11 @@ function fnc_version() {
 		cdf.appendChild(tag_hr);
 		
 		tag_p = dom_create_tag("p");
-		tag_p.appendChild(dom_create_text("Copyright (C) 2008-2015 OFFICE OUTERGUY. All rights reserved."));
+		tag_p.appendChild(dom_create_text("Copyright &copy; 2008-2015 OFFICE OUTERGUY. All rights reserved."));
 		cdf.appendChild(tag_p);
 		
 		tag_p = dom_create_tag("p");
-		tag_p.appendChild(dom_create_text("Portions Copyright (C) 2012-2015 Hiromu2000. All rights reserved."));
+		tag_p.appendChild(dom_create_text("Portions Copyright &copy; 2012-2015 Hiromu2000. All rights reserved."));
 		cdf.appendChild(tag_p);
 		
 		tag_p = dom_create_tag("p", { "class": "label" });
