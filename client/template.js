@@ -11,7 +11,7 @@ var fprefix = "<!--[family]-->_";
 var ver = "<!--[client]-->.<!--[server]-->";
 var ofxhead = "<!--[ofxhead]-->";
 var pdftext = "<!--[pdftext]-->";
-var pdfdef = "標準";
+var pdfdefsetting = "標準";
 var get_all = -1;
 var xhr = null;
 var pw = false;
@@ -24,7 +24,7 @@ var themes = { "standard.css": "標準（スマートフォン対応）", "moder
 var outputs = { "OFX": "OFXファイルの結合ダウンロード", "CSV": "CSVファイルのダウンロード", "PDF": "PDFファイルのダウンロード", "LPT": "口座一覧の印刷", "EXP": "口座情報のエクスポート" };
 var ofxbuttons = { "T": "する", "F": "しない（出力ボタンの操作に追加する）" };
 var csvencodings = { "SJIS": "Shift_JIS", "UTFB": "UTF-8（BOMあり）", "UTF8": "UTF-8（BOMなし）" };
-var pdfrowpitchs = { "12": "狭い", "15": pdfdef, "18": "広い" };
+var pdfrowpitchs = { "12": "狭い", "15": pdfdefsetting, "18": "広い" };
 var fiids = "<!--[filist]-->";
 fiids["logon"] = { "type": "LOCAL", "name": "ログオン", "form": "localid|localpass", "localid": "ローカルID|text", "localpass": "ローカルパスワード|password" };
 fiids["register"] = { "type": "LOCAL", "name": "登録", "form": "localid|localpass", "localid": "ローカルID|text", "localpass": "ローカルパスワード|password" };
@@ -133,7 +133,7 @@ function fnc_load() {
 	// デバッグ機能が有効の場合
 	if(debug != false) {
 		// 警告を表示する
-		tag_p = dom_create_tag("p", { "style": "padding: 0.5em; color: #FFFFFF; background: #FF0000; text-align: center;" });
+		tag_p = dom_create_tag("p", { "class": "ac", "style": "padding: 0.5em; color: #FFFFFF; background: #FF0000;" });
 		tag_strong = dom_create_tag("strong");
 		tag_strong.appendChild(dom_create_text("【警告】開発者向け（デバッグ）機能が有効のため、認証情報を含む詳細な記録が残ります。開発者以外の方は、操作しないでください。または、開発者へご相談ください。"));
 		tag_p.appendChild(tag_strong);
@@ -144,7 +144,7 @@ function fnc_load() {
 	}
 	
 	// ボタンに機能を割り当てる
-	for(i = 0; i < fnc_btns.length; i++) with(dom_get_id("btn" + fnc_btns[i].toString().replace(/^[^_]+(_[a-z_]+)[\w\W]+$/m, "$1"))) onclick = fnc_btns[i];
+	for(i = 0; i < fnc_btns.length; i++) dom_get_id("btn" + fnc_btns[i].toString().replace(/^[^_]+(_[a-z_]+)[\w\W]+$/m, "$1")).onclick = fnc_btns[i];
 	
 	// リンク先を設定する
 	for(i = 0; i < tag_as.length; i++) tag_as[i].target = "link";
@@ -553,7 +553,7 @@ function fnc_option() {
 	
 	// PDFファイルの行ピッチを取得する
 	pdfrowpitch = storage_get(logons["localid"] + ":pdfrowpitch", logons["localpass"]);
-	if(pdfrowpitch == null) for(i in pdfrowpitchs) if(pdfrowpitchs[i] == pdfdef) {
+	if(pdfrowpitch == null) for(i in pdfrowpitchs) if(pdfrowpitchs[i] == pdfdefsetting) {
 		pdfrowpitch = i;
 		break;
 	}
@@ -1512,7 +1512,8 @@ function fnc_ofx_all() {
 	var current = null;
 	var f = false;
 	var tag_section = dom_get_tag("section")[0];
-	var logons, auths, timestamp, settings, filename, url, str, ofx;
+	var logons, auths, timestamp, settings, str;
+	var blob;
 	var tag_ofx, tag_signonmsgsrsv1, tag_sonrs, tag_status, tag_code, tag_severity, tag_dtserver, tag_language, tag_fi, tag_org, tag_bankmsgsrsv1, tag_creditcardmsgsrsv1, tag_invstmtmsgsrsv1, tag_seclistmsgsrsv1, tag_stmttrnrss, tag_seclist, tag_ccstmttrnrss, tag_invstmttrnrss, tag_seclists, tag_seclisttrnrs, tag_trnuid;
 	var tag_a;
 	var i, j, k;
@@ -1646,25 +1647,14 @@ function fnc_ofx_all() {
 		
 		str = ofxhead + serializer.serializeToString(merge);
 		
-		filename = fprefix + timestamp + ".ofx";
-		
-		// ダウンロード用データを生成する
-		ofx = new Blob([str]);
-		
 		// データをダウンロードする
 		if(f == false) {
 			modal_showonly("警告", "ダウンロード可能なOFXがありません。", false);
 		} else {
-			if(self.window.navigator.msSaveOrOpenBlob) {
-				self.window.navigator.msSaveOrOpenBlob(ofx, filename);
-			} else {
-				url = self.window.URL || self.window.webkitURL;
-				tag_a = dom_create_tag("a", { "href": url.createObjectURL(ofx), "id": "download", "type": "application/x-ofx", "download": filename });
-				tag_a.appendChild(dom_create_text("ダウンロード"));
-				tag_section.appendChild(tag_a);
-				dom_get_id("download").click();
-				tag_section.removeChild(tag_a);
-			}
+			// データをダウンロードする
+			blob = new Blob([str]);
+			filedownload(blob, fprefix + timestamp + ".ofx", "application/x-ofx");
+			blob = null;
 		}
 	}
 	
@@ -1677,30 +1667,17 @@ function fnc_ofx(rowid) {
 	var logons = local_current();
 	var settings = auth_parse(auth);
 	var tag_section = dom_get_tag("section")[0];
-	var ofx = null;
+	var blob;
 	var tag_a;
-	var filename, url;
 	
 	if(chkenv_export() == false) {
 		modal_showonly("警告", "ご利用のブラウザーは、OFXファイルのダウンロードに対応していません。", false);
 	} else {
-		filename = settings["fiid"] + (settings["keyvalues"]["timestamp"] != ""? "_" + settings["keyvalues"]["timestamp"]: "") + ".ofx";
-		
-		// ダウンロード用データを生成する
-		ofx = new Blob([storage_get(logons["localid"] + ":" + settings["rowid"], logons["localpass"])]);
 		
 		// データをダウンロードする
-		if(self.window.navigator.msSaveOrOpenBlob) {
-			self.window.navigator.msSaveOrOpenBlob(ofx, filename);
-		} else {
-			url = self.window.URL || self.window.webkitURL;
-			tag_a = dom_create_tag("a", { "href": url.createObjectURL(ofx), "id": "download", "type": "application/x-ofx", "download": filename });
-			tag_a.appendChild(dom_create_text("ダウンロード"));
-			tag_section.appendChild(tag_a);
-			dom_get_id("download").click();
-			tag_section.removeChild(tag_a);
-		}
-		ofx = null;
+		blob = new Blob([storage_get(logons["localid"] + ":" + settings["rowid"], logons["localpass"])]);
+		filedownload(blob, settings["fiid"] + (settings["keyvalues"]["timestamp"] != ""? "_" + settings["keyvalues"]["timestamp"]: "") + ".ofx", "application/x-ofx");
+		blob = null;
 	}
 	
 	return;
@@ -1714,12 +1691,12 @@ function fnc_csv() {
 	var tag_section = dom_get_tag("section")[0];
 	var title = dom_get_tag("title")[0].firstChild.nodeValue;
 	var logons = local_current();
-	var auths, timestamp, settings, filename, str, csv, total;
+	var auths, timestamp, settings, str, total;
+	var blob;
 	var tag_stmttrnrss, tag_ccstmttrnrss, tag_invstmttrnrss, tag_stmttrns, tag_secinfos, tag_invposs;
 	var mktginfo, balamt, availcash, dtasof, bankid, branchid, brokerid, acctid, dtposted, name, trnamt, memo, secname, uniqueid, dtpriceasof, mktval;
 	var buf, buf_sjis, buf_blob, buf_view;
 	var tag_a;
-	var url;
 	var csvencoding;
 	var i, j, k;
 	
@@ -1873,10 +1850,10 @@ function fnc_csv() {
 			switch(csvencoding) {
 			case "UTFB":
 				// BOMを追加する
-				csv = new Blob([new Uint8Array([0xEF, 0xBB, 0xBF]), buf]);
+				blob = new Blob([new Uint8Array([0xEF, 0xBB, 0xBF]), buf]);
 				break;
 			case "UTF8":
-				csv = new Blob([buf]);
+				blob = new Blob([buf]);
 				break;
 			case "SJIS":
 			default:
@@ -1886,22 +1863,13 @@ function fnc_csv() {
 				buf_blob = new ArrayBuffer(j);
 				buf_view = new Uint8Array(buf_blob);
 				for(i = 0; i < j; i++) buf_view[i] = buf_sjis[i];
-				csv = new Blob([buf_blob]);
+				blob = new Blob([buf_blob]);
 				break;
 			}
 			
-			filename = fprefix + timestamp + ".csv";
-			
-			if(self.window.navigator.msSaveOrOpenBlob) {
-				self.window.navigator.msSaveOrOpenBlob(csv, filename);
-			} else {
-				url = self.window.URL || self.window.webkitURL;
-				tag_a = dom_create_tag("a", { "href": url.createObjectURL(csv), "id": "download", "type": "text/csv", "download": filename });
-				tag_a.appendChild(dom_create_text("ダウンロード"));
-				tag_section.appendChild(tag_a);
-				dom_get_id("download").click();
-				tag_section.removeChild(tag_a);
-			}
+			// データをダウンロードする
+			filedownload(blob, fprefix + timestamp + ".csv", "text/csv");
+			blob = null;
 		}
 	}
 	
@@ -1917,7 +1885,7 @@ function fnc_pdf() {
 	var tag_tbodys = dom_get_tag("tbody");
 	var tag_tr;
 	var title = dom_get_tag("title")[0].firstChild.nodeValue;
-	var pdf = null;
+	var blob;
 	var timestamp = timestamp_get();
 	var str = pdftext.replace("<!--[datetime]-->", timestamp);
 	var pagestream = " ";
@@ -1938,7 +1906,6 @@ function fnc_pdf() {
 	var mbl = 11; // 残高の折り返し文字数
 	var udl = 11; // 更新日時の折り返し文字数
 	var ldl; // PDFファイルの行ピッチ
-	var filename, url;
 	var tocobj, pdfobj, pdfchar, pdfdraw, pdfrowpitch;
 	var buf1, buf2;
 	var row1, row2, row3;
@@ -1949,7 +1916,7 @@ function fnc_pdf() {
 	} else {
 		// PDFファイルの行ピッチを取得する
 		pdfrowpitch = storage_get(logons["localid"] + ":pdfrowpitch", logons["localpass"]);
-		if(pdfrowpitch == null) for(i in pdfrowpitchs) if(pdfrowpitchs[i] == pdfdef) {
+		if(pdfrowpitch == null) for(i in pdfrowpitchs) if(pdfrowpitchs[i] == pdfdefsetting) {
 			pdfrowpitch = i;
 			break;
 		}
@@ -1978,9 +1945,7 @@ function fnc_pdf() {
 				// 明細1件あたりの出力行数を計算する
 				row1 = Math.max(tag_tr.length, Math.ceil(tag_tr[0].childNodes[0].firstChild.firstChild.nodeValue.length / fil));
 				k = 0;
-				for(j = tag_tr.length - 1; j >= 0; j--) {
-					k += Math.ceil(tag_tr[tag_tr.length - j - 1].childNodes[(j == tag_tr.length - 1? 1: 0)].firstChild.nodeValue.length / ail);
-				}
+				for(j = tag_tr.length - 1; j >= 0; j--) k += Math.ceil(tag_tr[tag_tr.length - j - 1].childNodes[(j == tag_tr.length - 1? 1: 0)].firstChild.nodeValue.length / ail);
 				row1 = Math.max(row1, k);
 				l = row1 * pdfrowpitch;
 				
@@ -2093,23 +2058,10 @@ function fnc_pdf() {
 		str = str.replace("<!--[reference]-->", reference);
 		str = str.replace("<!--[xref]-->", str.indexOf("xref").toString());
 		
-		filename = fprefix + timestamp + ".pdf";
-		
-		// ダウンロード用データを生成する
-		pdf = new Blob([str]);
-		
 		// データをダウンロードする
-		if(self.window.navigator.msSaveOrOpenBlob) {
-			self.window.navigator.msSaveOrOpenBlob(pdf, filename);
-		} else {
-			url = self.window.URL || self.window.webkitURL;
-			tag_a = dom_create_tag("a", { "href": url.createObjectURL(pdf), "id": "download", "type": "application/pdf", "download": filename });
-			tag_a.appendChild(dom_create_text("ダウンロード"));
-			tag_section.appendChild(tag_a);
-			dom_get_id("download").click();
-			tag_section.removeChild(tag_a);
-		}
-		pdf = null;
+		blob = new Blob([str]);
+		filedownload(blob, fprefix + timestamp + ".pdf", "application/pdf");
+		blob = null;
 	}
 	
 	return;
@@ -2219,10 +2171,9 @@ function fnc_export() {
 	var logons = local_current();
 	var auth = storage_get(logons["localid"], logons["localpass"]);
 	var cdf = document.createDocumentFragment();
-	var txt = null;
+	var blob;
 	var tag_section = dom_get_tag("section")[0];
 	var tag_p, tag_input;
-	var filename, url;
 	var pass;
 	var enc;
 	
@@ -2253,8 +2204,6 @@ function fnc_export() {
 		
 		enc = "data:application/octet-stream;ver=" + ver + ";base64," + CryptoJS.AES.encrypt((pass + "\t" + auth.replace(/\t?(status|timestamp)\=[^\t\r\n]+/gm, "") + "\r\n").toString(CryptoJS.enc.Utf8), pass).toString();
 		
-		filename = fprefix + logons["localid"] + ".txt";
-		
 		if(chkenv_export() == false) {
 			tag_p = dom_create_tag("p");
 			tag_p.appendChild(dom_create_text("以下のデータをコピー&amp;ペーストし、保存してください。"));
@@ -2271,21 +2220,10 @@ function fnc_export() {
 			
 			modal_showonly("口座情報のエクスポート", cdf, false, "enc");
 		} else {
-			// ダウンロード用データを生成する
-			txt = new Blob([enc]);
-			
 			// データをダウンロードする
-			if(self.window.navigator.msSaveOrOpenBlob) {
-				self.window.navigator.msSaveOrOpenBlob(txt, filename);
-			} else {
-				url = self.window.URL || self.window.webkitURL;
-				tag_a = dom_create_tag("a", { "href": url.createObjectURL(txt), "id": "download", "type": "text/plain", "download": filename });
-				tag_a.appendChild(dom_create_text("ダウンロード"));
-				tag_section.appendChild(tag_a);
-				dom_get_id("download").click();
-				tag_section.removeChild(tag_a);
-			}
-			txt = null;
+			blob = new Blob([enc]);
+			filedownload(blob, fprefix + logons["localid"] + ".txt", "text/plain");
+			blob = null;
 		}
 	}
 	
@@ -3203,6 +3141,24 @@ function form_empty_check() {
 	return;
 }
 
+// blobをファイルダウンロードする
+function filedownload(blob, filename, filetype) {
+	var tag_section = dom_get_tag("section")[0];
+	var tag_a;
+	
+	if(self.window.navigator.msSaveOrOpenBlob) {
+		self.window.navigator.msSaveOrOpenBlob(blob, filename);
+	} else {
+		tag_a = dom_create_tag("a", { "href": (self.window.URL || self.window.webkitURL).createObjectURL(blob), "id": "filedownload", "type": filetype, "download": filename });
+		tag_a.appendChild(dom_create_text("ダウンロード"));
+		tag_section.appendChild(tag_a);
+		dom_get_id("filedownload").click();
+		tag_section.removeChild(tag_a);
+	}
+	
+	return;
+}
+
 
 // =========================================================================
 // 関数
@@ -3409,7 +3365,7 @@ function dom_create_tag(name, attrs) {
 function dom_convert_escape(str) {
 	var ret = "";
 	var buf = "";
-	var hcs = { "amp": String.fromCharCode(0x26), "quot": String.fromCharCode(0x22), "lt": String.fromCharCode(0x3C), "gt": String.fromCharCode(0x3E), "nbsp": String.fromCharCode(0xA0), "copy": String.fromCharCode(0xA9), "reg": String.fromCharCode(0xAE) };
+	var hcs = { "amp": String.fromCharCode(0x26), "quot": String.fromCharCode(0x22), "lt": String.fromCharCode(0x3C), "gt": String.fromCharCode(0x3E) };
 	var fnc;
 	var i;
 	
@@ -3419,6 +3375,7 @@ function dom_convert_escape(str) {
 		fnc = function() {
 			return hcs[arguments[1]];
 		};
+		
 		for(i in hcs) buf += "|" + i;
 		ret = str.replace(new RegExp(hcs["amp"] + "(" + buf.substring(1) + ");", "g"), fnc);
 	}
