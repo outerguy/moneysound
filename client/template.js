@@ -2341,7 +2341,7 @@ function fnc_list(list) {
 			accttype = dom_get_tag("ACCTTYPE", bankacctfrom)[0].firstChild.nodeValue;
 			
 			j = mktginfo.indexOf("　");
-			group = (j == -1? "預金": mktginfo.substring(j + 1));
+			group = (j == -1? "預金": mktginfo.substring(j + 1)) + (accttype == "SAVINGS"? " " + acctid.substring(3, 7): "");
 			
 			tag_tr = dom_create_tag("tr");
 			
@@ -2394,7 +2394,7 @@ function fnc_list(list) {
 			acctid = dom_get_tag("ACCTID", ccacctfrom)[0].firstChild.nodeValue;
 			
 			j = mktginfo.indexOf("　");
-			group = (j == -1? "預金": mktginfo.substring(j + 1));
+			group = (j == -1? "預金": mktginfo.substring(j + 1)) + " " + acctid.substring(acctid.length - 4, acctid.length);
 			
 			// 明細の最終行がクレジットカード支払請求、かつ支払日が未到来の場合、残高より該当金額を差し引く
 			stmttrns = dom_get_tag("STMTTRN", creditcards[i]);
