@@ -65,7 +65,11 @@ endobj
 
 6 0 obj
 <<
-/CreationDate (D:<!--[datetime]-->+09'00')
+/Title (<!--[title]-->)
+/Subject (<!--[subject]-->)
+/Creator (<!--[creator]-->)
+/Producer (<!--[producer]-->)
+/CreationDate (D:<!--[creationdate]-->+09'00')
 >>
 endobj
 

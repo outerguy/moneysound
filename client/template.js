@@ -1886,9 +1886,8 @@ function fnc_pdf() {
 	var tag_tbodys = dom_get_tag("tbody");
 	var tag_tr;
 	var title = dom_get_tag("title")[0].firstChild.nodeValue;
-	var blob;
 	var timestamp = timestamp_get();
-	var pdf = pdftext.replace("<!--[datetime]-->", timestamp);
+	var pdf = pdftext;
 	var pagestream = " ";
 	var pdflength = "<<\r\n/Length <!--[length]-->\r\n>>\r\n";
 	var pdfstream = "stream\r\n<!--[stream]-->endstream\r\n";
@@ -1914,6 +1913,7 @@ function fnc_pdf() {
 	var i, j, k, l;
 	var y;
 	var objnum;
+	var blob;
 	
 	if(chkenv_pdf() == false) {
 		modal_showonly("警告", "ご利用のブラウザーは、PDFファイルのダウンロードに対応していません。", false);
@@ -1925,6 +1925,13 @@ function fnc_pdf() {
 			break;
 		}
 		ldl = parseInt(pdfrowpitch, 10);
+		
+		// 埋め込み文字列を置換する
+		pdf = pdf.replace("<!--[title]-->", "<!--[family]-->");
+		pdf = pdf.replace("<!--[subject]-->", timestamp.substring(0, 4) + "-" + timestamp.substring(4, 6) + "-" + timestamp.substring(6, 8) + " " + timestamp.substring(8, 10) + ":" + timestamp.substring(10, 12) + ":" + timestamp.substring(12, 14));
+		pdf = pdf.replace("<!--[creator]-->", "<!--[family]-->");
+		pdf = pdf.replace("<!--[producer]-->", "<!--[family]-->/" + ver);
+		pdf = pdf.replace("<!--[creationdate]-->", timestamp);
 		
 		// obj生成開始番号を取得する
 		objnum = objstart;
