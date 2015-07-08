@@ -607,7 +607,7 @@ function fnc_option() {
 		tag_p.appendChild(tag_select);
 		cdf.appendChild(tag_p);
 		
-		// PDFファイルの行ピッチを生成する
+		// PDFファイルの行ピッチリストを生成する
 		tag_p = dom_create_tag("p", { "class": "label" });
 		tag_p.appendChild(dom_create_text("PDFファイルの行ピッチ"));
 		cdf.appendChild(tag_p);
@@ -1673,7 +1673,6 @@ function fnc_ofx(rowid) {
 	if(chkenv_export() == false) {
 		modal_showonly("警告", "ご利用のブラウザーは、OFXファイルのダウンロードに対応していません。", false);
 	} else {
-		
 		// データをダウンロードする
 		blob = new Blob([storage_get(logons["localid"] + ":" + settings["rowid"], logons["localpass"])]);
 		filedownload(blob, settings["fiid"] + (settings["keyvalues"]["timestamp"] != ""? "_" + settings["keyvalues"]["timestamp"]: "") + ".ofx", "application/x-ofx");
@@ -2827,10 +2826,8 @@ function modal_hide() {
 		for(i in tag_bgs) tag_bgs[i].className = "";
 		
 		with(self.document) {
-			// モーダルウィンドウがドラッグされた場合、何もしない
+			// モーダルウィンドウがドラッグ・ドロップされた場合、何もしない
 			onmousemove = null;
-			
-			// モーダルウィンドウがドロップされた場合、何もしない
 			onmouseup = null;
 		}
 		
@@ -3237,11 +3234,7 @@ function timestamp_get() {
 function to_amount(src) {
 	var dst = src.toString().replace(/,/g, "");
 	
-	if(isNaN(Number(dst)) == true) {
-		dst = "";
-	} else {
-		while(dst != (dst = dst.replace(/^(-?\d+)(\d{3})/, "$1,$2")));
-	}
+	if(isNaN(Number(dst)) == true) dst = ""; else while(dst != (dst = dst.replace(/^(-?\d+)(\d{3})/, "$1,$2")));
 	
 	return dst;
 }
