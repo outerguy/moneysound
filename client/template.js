@@ -1894,11 +1894,12 @@ function fnc_pdf() {
 	var pdfstream = "stream\r\n<!--[stream]-->endstream\r\n";
 	var content = "";
 	var reference = "";
-	var objnum = 1;
+	var objstart = 1;
 	var pagecount = 1; // ページ開始番号
 	var phl = 772; // ページ先頭の高さ
 	var pfl = 68; // ページ末尾の高さ
-	var tyl = 58; // ヘッダーの高さ
+	var thl = 58; // ヘッダーの高さ
+	var tfl = 28; // フッターの高さ
 	var cpt = 10.5; // 文字サイズ（単位はpt）
 	var cwl = cpt / 2; // 文字幅
 	var chl = cpt + 1.5; // 文字高
@@ -1912,6 +1913,7 @@ function fnc_pdf() {
 	var row1, row2, row3;
 	var i, j, k, l;
 	var y;
+	var objnum;
 	
 	if(chkenv_pdf() == false) {
 		modal_showonly("警告", "ご利用のブラウザーは、PDFファイルのダウンロードに対応していません。", false);
@@ -1925,6 +1927,7 @@ function fnc_pdf() {
 		ldl = parseInt(pdfrowpitch, 10);
 		
 		// obj生成開始番号を取得する
+		objnum = objstart;
 		while(pdf.indexOf(objnum.toString() + " 0 obj") != -1) objnum++;
 		
 		// 未出力明細が存在する場合、ループする
@@ -1937,11 +1940,11 @@ function fnc_pdf() {
 			pdfobj = fnc_pdf_pdfobj(objnum++);
 			pdfchar = fnc_pdf_charhead(title, logons["localid"], cpt, cwl, udl, pagecount, y);
 			pdfdraw = fnc_pdf_drawhead();
-			y -= tyl;
+			y -= thl;
 			
-			// ページ末尾以内、かつ未出力明細が存在する場合
-			while(y >= pfl && i < tag_tbodys.length) {
-				// 表ボディー部を生成する
+			// 未出力明細が存在する場合
+			while(i < tag_tbodys.length) {
+				// ボディーを生成する
 				tag_tr = dom_get_tag("tr", tag_tbodys[i]);
 				
 				// 明細1件あたりの出力行数を計算する
@@ -1953,6 +1956,9 @@ function fnc_pdf() {
 				
 				// 改行する
 				y -= l;
+				
+				// ページ末尾に収まらない場合、ループを抜ける
+				if(y < pfl) break;
 				
 				// 偶数行を着色する
 				buf = l.toString();
@@ -2010,8 +2016,17 @@ function fnc_pdf() {
 			}
 		} while(i < tag_tbodys.length);
 		
-		// ページ末尾の場合
-		if(y < pfl) {
+		// フッターを出力する高さがない場合
+		if(y - tfl < pfl) {
+			// 改ページする
+			pdfchar += fnc_pdf_charfoot(mbl, cwl, udl, y, false);
+			pdfdraw += fnc_pdf_drawfoot(y, false);
+			
+			// 埋め込み文字列を置換する
+			pdfobj = pdfobj.replace("<!--[pdfobj]-->", pdflength.replace("<!--[length]-->", (pdfdraw.length + pdfchar.length).toString()) + pdfstream.replace("<!--[stream]-->", pdfdraw + pdfchar));
+			content += tocobj + pdfobj;
+			pagecount++;
+			
 			// 新規ページを生成する
 			y = phl;
 			pagestream += objnum.toString() + " 0 R ";
@@ -2019,15 +2034,15 @@ function fnc_pdf() {
 			pdfobj = fnc_pdf_pdfobj(objnum++);
 			pdfchar = fnc_pdf_charhead(title, logons["localid"], cpt, cwl, udl, pagecount, y);
 			pdfdraw = fnc_pdf_drawhead();
-			y -= tyl;
+			y -= thl;
 		}
 		
-		// 表フッター部を生成する
+		// フッターを生成する
 		pdfchar += fnc_pdf_charfoot(mbl, cwl, udl, y, true);
 		pdfdraw += fnc_pdf_drawfoot(y, true);
 		
 		// 埋め込み文字列を置換する
-			pdfobj = pdfobj.replace("<!--[pdfobj]-->", pdflength.replace("<!--[length]-->", (pdfdraw.length + pdfchar.length).toString()) + pdfstream.replace("<!--[stream]-->", pdfdraw + pdfchar));
+		pdfobj = pdfobj.replace("<!--[pdfobj]-->", pdflength.replace("<!--[length]-->", (pdfdraw.length + pdfchar.length).toString()) + pdfstream.replace("<!--[stream]-->", pdfdraw + pdfchar));
 		content += tocobj + pdfobj;
 		
 		pdf = pdf.replace("<!--[pagestream]-->", pagestream);
@@ -2035,8 +2050,8 @@ function fnc_pdf() {
 		pdf = pdf.replace("<!--[content]-->", content);
 		pdf = pdf.replace("<!--[objnum]-->", objnum.toString());
 		
-		// 生成したobjの開始位置より相互参照を生成する
-		for(i = 1; i < objnum; i++) {
+		// objの開始位置より相互参照を生成する
+		for(i = objstart; i < objnum; i++) {
 			buf = pdf.indexOf(i.toString() + " 0 obj").toString();
 			while(buf.length < 10) buf = "0" + buf;
 			reference += buf + " 00000 n\r\n";
