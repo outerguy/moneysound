@@ -1322,7 +1322,7 @@ function fnc_detail(rowid) {
 						group = (j == -1? "預金": mktginfo.substring(j + 1)) + " " + dom_get_tag("ACCTID", tag_stmttrnrss[i])[0].firstChild.nodeValue;
 						
 						tag_option = dom_create_tag("option", { "value": i.toString() });
-						tag_option.appendChild(dom_create_text(utf8_to_han(group)));
+						tag_option.appendChild(dom_create_text(utf8_zentohan(group)));
 						tag_select.appendChild(tag_option);
 					}
 					
@@ -1366,7 +1366,7 @@ function fnc_detail(rowid) {
 								tag_tr.appendChild(tag_td);
 								
 								tag_td = dom_create_tag("td", { "class": "note" });
-								tag_td.appendChild(dom_create_text(utf8_to_han(name)));
+								tag_td.appendChild(dom_create_text(utf8_zentohan(name)));
 								tag_tr.appendChild(tag_td);
 								
 								tag_td = dom_create_tag("td", { "class": "amt" });
@@ -1412,7 +1412,7 @@ function fnc_detail(rowid) {
 								tag_tr.appendChild(tag_td);
 								
 								tag_td = dom_create_tag("td", { "class": "note" });
-								tag_td.appendChild(dom_create_text(utf8_to_han((parseInt(total, 10) < 0? "買付": "売付") + " " + security)));
+								tag_td.appendChild(dom_create_text(utf8_zentohan((parseInt(total, 10) < 0? "買付": "売付") + " " + security)));
 								tag_tr.appendChild(tag_td);
 								
 								tag_td = dom_create_tag("td", { "class": "amt" });
@@ -1454,7 +1454,7 @@ function fnc_detail(rowid) {
 									tag_tr.appendChild(tag_td);
 									
 									tag_td = dom_create_tag("td", { "class": "note" });
-									tag_td.appendChild(dom_create_text(utf8_to_han(name)));
+									tag_td.appendChild(dom_create_text(utf8_zentohan(name)));
 									tag_tr.appendChild(tag_td);
 									
 									tag_td = dom_create_tag("td", { "class": "amt" });
@@ -2353,7 +2353,7 @@ function fnc_list(list) {
 			
 			// 口座種目
 			tag_td = dom_create_tag("td", { "class": "accttype", "title": bankid + " " + branchid + " " + acctid });
-			tag_td.appendChild(dom_create_text(utf8_to_han(group)));
+			tag_td.appendChild(dom_create_text(utf8_zentohan(group)));
 			tag_tr.appendChild(tag_td);
 			
 			// 残高
@@ -2411,7 +2411,7 @@ function fnc_list(list) {
 			
 			// 口座種目
 			tag_td = dom_create_tag("td", { "class": "accttype", "title": acctid });
-			tag_td.appendChild(dom_create_text(utf8_to_han(group)));
+			tag_td.appendChild(dom_create_text(utf8_zentohan(group)));
 			tag_tr.appendChild(tag_td);
 			
 			// 残高
@@ -2469,7 +2469,7 @@ function fnc_list(list) {
 			
 			// 口座種目
 			tag_td = dom_create_tag("td", { "class": "accttype", "title": brokerid + " " + acctid });
-			tag_td.appendChild(dom_create_text(utf8_to_han(group)));
+			tag_td.appendChild(dom_create_text(utf8_zentohan(group)));
 			tag_tr.appendChild(tag_td);
 			
 			// 残高（預金）
@@ -2501,7 +2501,7 @@ function fnc_list(list) {
 			
 			// 口座種目
 			tag_td = dom_create_tag("td", { "class": "accttype", "title": brokerid + " " + acctid + "-1" });
-			tag_td.appendChild(dom_create_text(utf8_to_han(group)));
+			tag_td.appendChild(dom_create_text(utf8_zentohan(group)));
 			tag_tr.appendChild(tag_td);
 			
 			// 残高（有価証券）
@@ -2581,7 +2581,7 @@ function fnc_list(list) {
 		
 		// 口座種目
 		tag_td = dom_create_tag("td", { "colspan": (status == "200"? "1": (timestamp != ""? "2": "3")), "class": "accttype", "title": caption });
-		tag_td.appendChild(dom_create_text(utf8_to_han(group)));
+		tag_td.appendChild(dom_create_text(utf8_zentohan(group)));
 		tag_tr.appendChild(tag_td);
 		
 		// 残高
@@ -3171,7 +3171,7 @@ function filedownload(blob, filename, filetype) {
 // =========================================================================
 
 // 全角英数字と全角記号の一部を半角文字に変換する（UTF-8）
-function utf8_to_han(str) {
+function utf8_zentohan(str) {
 	var fnc = function(str) {
 		return String.fromCharCode(str.charCodeAt(0) - 0xFEE0);
 	};
