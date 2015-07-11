@@ -103,7 +103,7 @@ function mb_convert_uniqueid($str) {
 }
 
 function mb_convert_uniquename($str) {
-	return strtoupper(mb_convert_kana(str_replace(array("　", "－", "・"), array("", "", ""), $str), "ask"));
+	return strtoupper(mb_convert_kana(str_replace(array("　", "－", "・"), array("", "", ""), $str), "ask"), "UTF-8");
 }
 
 function mb_convert_string($str) {
