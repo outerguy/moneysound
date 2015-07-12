@@ -601,7 +601,7 @@ if(strpos($body, "ログイン後の全てのサービスを停止") !== false) 
 				
 				// 金額を取得する
 				$ct_total *= (integer)$line[13];
-			} else if(strpos($line[4], ENV_STR_ASSET_FUND_NAME) !== false  || strpos($line[4], ENV_STR_ASSET_FUND_DIV) !== false) { // 投信、分配金再投資
+			} else if(strpos($line[4], ENV_STR_ASSET_FUND_NAME) !== false || strpos($line[4], ENV_STR_ASSET_FUND_DIV) !== false) { // 投信、分配金再投資
 				$ct_category = ENV_STR_OFX_FUND;
 				
 				// 銘柄一覧より名前を取得する
