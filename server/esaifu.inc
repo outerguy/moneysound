@@ -170,7 +170,7 @@ if($sid > 0) {
 } else {
 	$account = array();
 	
-	$account["acctname"] = $settings["name"] . ENV_CHR_CONCATENATOR . $user;
+	$account["acctname"] = $settings["name"];
 	
 	// 支店番号を取得する
 	$account["branchid"] = "0";

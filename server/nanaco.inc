@@ -73,7 +73,7 @@ if(strpos($body, "残高・履歴確認") === false) {
 } else {
 	$account = array();
 	
-	$account["acctname"] = $settings["name"] . ENV_CHR_CONCATENATOR . substr($user, 0, 4) . " " . substr($user, 4, 4) . " " . substr($user, 8, 4) . " " . substr($user, 12, 4);
+	$account["acctname"] = $settings["name"];
 	
 	// 支店番号を取得する
 	$account["branchid"] = "0";
