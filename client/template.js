@@ -1277,7 +1277,7 @@ function fnc_detail(rowid) {
 	var parser = null;
 	var securitys = new Array();
 	var auth, logons, settings, str, current;
-	var uniqueidtypes, uniqueids, secnames, mktginfo, dtposted, name, trnamt, dttrade, security, total, dtpriceasofs, mktvals;
+	var uniqueidtypes, uniqueids, secnames, acctid, accttype, mktginfo, dtposted, name, trnamt, dttrade, security, total, dtpriceasofs, mktvals;
 	var i, j;
 	
 	if(chkenv_parser() == false) {
@@ -1317,9 +1317,11 @@ function fnc_detail(rowid) {
 				} else {
 					tag_select = dom_create_tag("select", { "id": "acct", "onchange": "fnc_detail_change();" });
 					for(i = 0; i < tag_stmttrnrss.length; i++) {
+						acctid = (dom_get_tag("ACCTID", tag_stmttrnrss[i]).length == 0? "": dom_get_tag("ACCTID", tag_stmttrnrss[i])[0].firstChild.nodeValue);
+						accttype = (dom_get_tag("ACCTTYPE", tag_stmttrnrss[i]).length == 0? "": dom_get_tag("ACCTTYPE", tag_stmttrnrss[i])[0].firstChild.nodeValue);
 						mktginfo = (dom_get_tag("MKTGINFO", tag_stmttrnrss[i]).length == 0? "": dom_get_tag("MKTGINFO", tag_stmttrnrss[i])[0].firstChild.nodeValue);
 						j = mktginfo.indexOf("　");
-						group = (j == -1? "預金": mktginfo.substring(j + 1)) + " " + dom_get_tag("ACCTID", tag_stmttrnrss[i])[0].firstChild.nodeValue;
+						group = (accttype == "SAVINGS"? (j == -1? "預金": mktginfo.substring(j + 1)) + " " + acctid: acctid);
 						
 						tag_option = dom_create_tag("option", { "value": i.toString() });
 						tag_option.appendChild(dom_create_text(utf8_zentohan(group)));
@@ -2338,7 +2340,7 @@ function fnc_list(list) {
 			accttype = dom_get_tag("ACCTTYPE", bankacctfrom)[0].firstChild.nodeValue;
 			
 			j = mktginfo.indexOf("　");
-			group = (j == -1? "預金": mktginfo.substring(j + 1)) + (accttype == "SAVINGS"? " " + acctid.substring(3, 7): "");
+			group = (accttype == "SAVINGS"? (j == -1? "預金": mktginfo.substring(j + 1)) + " " + acctid.substring(3, 7): (j == -1? acctid: mktginfo.substring(j + 1)));
 			
 			tag_tr = dom_create_tag("tr");
 			
@@ -2352,7 +2354,7 @@ function fnc_list(list) {
 			}
 			
 			// 口座種目
-			tag_td = dom_create_tag("td", { "class": "accttype", "title": bankid + " " + branchid + " " + acctid });
+			tag_td = dom_create_tag("td", { "class": "accttype", "title": bankid + " " + (branchid == "0"? "": branchid + " ") + acctid });
 			tag_td.appendChild(dom_create_text(utf8_zentohan(group)));
 			tag_tr.appendChild(tag_td);
 			
