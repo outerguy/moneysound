@@ -9,3 +9,7 @@ https://github.com/outerguy/moneysound
 
 プロジェクトサイト（Beatrek）
 http://www.beatrek.com/home/moneysound.htm
+
+Beatrek OFX仕様書（Beatrek）
+http://www.beatrek.com/home/ofxspec.htm
+
