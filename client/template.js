@@ -3398,11 +3398,11 @@ function dom_create_tag(name, attrs) {
 function dom_convert_escape(str) {
 	var ret = "";
 	var buf = "";
-	var hcs = { "amp": String.fromCharCode(0x26), "quot": String.fromCharCode(0x22), "lt": String.fromCharCode(0x3C), "gt": String.fromCharCode(0x3E) };
+	var hcs = { "amp": "&", "quot": "\"", "lt": "<", "gt": ">" };
 	var fnc;
 	var i;
 	
-	if(str.indexOf(String.fromCharCode(0x26)) == -1) {
+	if(str.indexOf(hcs["amp"]) == -1) {
 		ret = str;
 	} else {
 		fnc = function() {
