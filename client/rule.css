@@ -27,7 +27,9 @@ nav p, footer ul {
 }
 footer ul li {
 	display: inline;
+	border: 0px;
 	padding: 0px 0.25em 0px 0.25em;
+	margin: 0px;
 }
 section h2, footer h2 {
 	display: none;
