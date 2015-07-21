@@ -3,9 +3,9 @@
 		font-family: "Meiryo UI", "メイリオ", "Meiryo", sans-serif;
 	}
 	body {
-		font-size: 85%;
 		color: #000000;
 		background: #FFFFFF;
+		font-size: 85%;
 	}
 	hr, h1 {
 		display: none;

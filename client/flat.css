@@ -3,11 +3,11 @@
 		font-family: "ヒラギノ角ゴ ProN W3", "Hiragino Kaku Gothic ProN", "IPAexゴシック", "IPA Pゴシック", "IPAPGothic", "Meiryo UI", "メイリオ", "Meiryo", sans-serif;
 	}
 	body {
-		font-size: 80%;
 		color: #000000;
 		background: #EFA09B;
 		background: #EFA09B linear-gradient(to right, #D8B99A, #EFA09B, #A87190);
 		background-attachment: fixed;
+		font-size: 80%;
 	}
 	body > p {
 		margin: 60px 0px -40px 0px;
@@ -172,7 +172,7 @@
 	nav .btn, nav .btn:hover, nav .btn:active, nav .btn:focus, nav .btn:disabled {
 		border: 0px;
 		border-radius: 0px;
-		margin 0px;
+		margin: 0px;
 		color: #474747;
 		background: transparent;
 		text-shadow: 0px 0px 0px #272727;

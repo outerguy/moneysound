@@ -4,9 +4,9 @@
 	}
 	body {
 		margin: 0px 0px 40px 0px;
-		font-size: 95%;
 		color: #000000;
 		background: #1D1D1D;
+		font-size: 95%;
 	}
 	hr {
 		display: none;
