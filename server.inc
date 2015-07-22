@@ -400,7 +400,6 @@ function parse_uri($uri_next, $uris = array()) {
 // CSV形式のデータをパースする
 function parse_csv($csv, $delimiter = ",", $enclosure = "\"") {
 	$ret = array();
-	
 	$de = substr($delimiter, 0, 1);
 	$en = substr($enclosure, 0, 1);
 	
@@ -440,7 +439,6 @@ function http11($method, $protocol, $host, $port = 0, $page = "/", $query = "", 
 	$ret = "";
 	$head = "";
 	$body = "";
-	
 	$chunked = false;
 	
 	// 接続情報を決定する
@@ -558,7 +556,6 @@ function http11_fread_blocking($fp, $len) {
 function update_cookie($memories, $heads, $cookie) {
 	$ret = "";
 	$cookies = array();
-	
 	$kvs = explode(";", $cookie);
 	foreach($kvs as $kv) {
 		list($k, $v) = explode("=", $kv, 2);
