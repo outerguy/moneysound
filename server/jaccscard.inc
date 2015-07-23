@@ -91,6 +91,7 @@ if(strpos($body, "メンテナンスを行っております") !== false) {
 	list($head, $body) = jaccscard_http11($method, $protocol, $host, $page, $query, $cookie);
 	
 	// カードが複数枚存在する場合、最初のカードを選択する
+	// 当月を取得する
 	$as = parse_tag($body, "a");
 	$bufs = array();
 	foreach($as as $a) if(parse_tag_search(parse_tag($a["innerHTML"], "img"), "alt", "ご利用代金明細を見る") != -1) array_push($bufs, $a["href"]);
@@ -105,13 +106,23 @@ if(strpos($body, "メンテナンスを行っております") !== false) {
 		break;
 	}
 	
+	$bodies[] = $body;
+	
+	// お支払日を取得する
+	$paydate = "";
+	$trs = parse_tag($body, "tr", true);
+	$c = parse_tag_search($trs, "class", "first");
+	if($c != -1) {
+		if(preg_match("/<td>(.*?)<\/td>/s", $trs[$c]["innerHTML"], $matches) > 0) $paydate = parse_date(trim(str_replace("\t", "", $matches[1])));
+	}
+	
 	// カード名称・カード番号を取得する
 	preg_match_all("/<dd>(.*?)<\/dd>/s", $body, $matches);
 	$account['acctname'] = $matches[1][0];
 	$account['acctid'] = strip_tags(str_replace("&lowast;", "*", $matches[1][1]));
 	
-	// 当月を取得
-	$bodies[] = $body;
+	/*
+	// 過去の確定月を取得する
 	preg_match_all("/'JAST00016_07M', '(20[0-9]{4})'/", $body, $months, PREG_SET_ORDER);
 	while(preg_match("/(JAST[0-9]{5}_[0-9]{2}[A-Z]).*?次へ/", $body, $matches)) {
 		$queries = jaccscard_getqueries($body);
@@ -121,8 +132,9 @@ if(strpos($body, "メンテナンスを行っております") !== false) {
 		list($head, $body) = jaccscard_http11($method, $protocol, $host, $page, $query, $cookie);
 		$bodies[] = $body;
 	}
+	*/
 	
-	// 未確定月を取得
+	// 未確定月を取得する
 	if(ENV_BOOL_PENDING_DETAIL) {
 		// 実行時間（タイムアウト）を再設定する
 		@set_time_limit(ENV_NUM_TIMEOUT);
@@ -156,9 +168,15 @@ if(strpos($body, "メンテナンスを行っております") !== false) {
 	
 	// DOMツリーを生成
 	$ofxdom = new ofxDOM($account['acctid']);
+	$f = false;
 	foreach($bodies as $body) {
 		// 明細をパース
-		$cds = jaccscard_parsedom($body);
+		if($f == false) {
+			$f = true;
+			$cds = jaccscard_parsedom($body, $paydate, $settings);
+		} else {
+			$cds = jaccscard_parsedom($body);
+		}
 		// 明細をセット
 		$ofxdom->setTrans($cds);
 	}
@@ -239,7 +257,7 @@ function jaccscard_getqueries($body) {
 	return $queries;
 }
 
-function jaccscard_parsedom($str) {
+function jaccscard_parsedom($str, $paydate = "", $settings = array()) {
 	// 明細表読み込み用DOMツリー作成
 	$doc = new DOMDocument();
 	// <meta … charset=Shift_JIS">の前の<title>が，文字化けの原因となるため，削除
@@ -262,6 +280,8 @@ function jaccscard_parsedom($str) {
 	$ret = "";
 	$cds = array();
 	$nrow = $rows->length;
+	
+	$cds_balamt = 0;
 	
 	for($i=0; $i<$nrow; $i++) {
 		$cd = array();
@@ -296,7 +316,20 @@ function jaccscard_parsedom($str) {
 			$cd["TRNAMT"] = (-1)*(double)parse_amount(trim($cols->item(8)->nodeValue));
 		}
 		array_push($cds, $cd);
+		$cds_balamt += $cd["TRNAMT"];
 	}
+	
+	// クレジットカード支払請求を明細に追加する
+	if($paydate != "") {
+		$cd = array();
+		$cd["TRNTYPE"] = ENV_STR_OFX_TRNTYPE_DIRECTDEBIT;
+		$cd["DTPOSTED"] = $paydate;
+		$cd["NAME"] = $settings["name"];
+		$cd["TRNAMT"] = (-1)*$cds_balamt;
+		$cd["FITID"] = sprintf("%02d0", $month);
+		array_push($cds, $cd);
+	}
+	
 	return $cds;
 	
 }
