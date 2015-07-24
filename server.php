@@ -28,11 +28,10 @@ if(file_exists($inc) == true && is_readable($inc) == true) {
 	$resp = require_once($inc);
 }
 
-// 中身が存在しない場合、何も出力しない
-if($resp["ofx"] == "") $resp["status"] = ENV_NUM_STATUS_NONE;
+$n = strlen($resp["ofx"]);
 
-// 中身を取り出す
-$content = $resp["ofx"];
+// 中身が存在しない場合、何も出力しない
+if($n == 0) $resp["status"] = ENV_NUM_STATUS_NONE;
 
 // ヘッダーを出力する
 header(get_http_status($resp["status"]));
@@ -51,19 +50,13 @@ case ENV_NUM_STATUS_CAUTION:
 	// 正常・エラーの場合、OFXファイルを出力する
 	header("Content-Type: application/x-ofx; charset=UTF-8");
 	header("Content-Disposition: attachment; filename=\"" . $settings["fiid"] . "_" . ENV_STR_DATE_TODAY . ENV_FILE_EXT_OFX . "\"");
+	header("Content-Length: " . (string)$n);
+	echo $resp["ofx"];
 	break;
 case ENV_NUM_STATUS_NONE:
 default:
 	// 空、またはその他の場合、何も出力しない
-	$content = "";
 	break;
-}
-
-// ボディーを出力する
-$n = strlen($content);
-if($n > 0) {
-	header("Content-Length: " . (string)$n);
-	echo $content;
 }
 
 ?>
