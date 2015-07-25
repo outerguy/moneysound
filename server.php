@@ -19,6 +19,7 @@ while(list($k, $v) = each($_POST)) {
 	$debug .= $k . "=" . $v . "\r\n";
 }
 $ofxforms["fiid"] = basename($ofxforms["fiid"]);
+
 env_dlog($debug);
 
 // 金融機関毎の処理を実行する
