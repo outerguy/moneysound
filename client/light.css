@@ -62,6 +62,7 @@
 	}
 	table {
 		border: solid 1px #CECBC8;
+		padding: 0px;
 		margin: 0px auto 0px auto;
 		color: inherit;
 		background: #FFFFFF;

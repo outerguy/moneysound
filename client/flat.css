@@ -78,6 +78,7 @@
 		background: #ECECEC;
 	}
 	table {
+		border: 0px;
 		padding: 0px;
 		margin: 0px auto 0px auto;
 		font-size: 95%;
