@@ -62,9 +62,9 @@ if($sid == 0) {
 		}
 	}
 	
-	// より安心してご利用いただくにあたってのご注意画面が表示される場合、改めてログイン画面を取得する
-	$as = parse_tag($body, "a");
-	foreach($as as $a) if(parse_tag_search(parse_tag($a["innerHTML"], "img"), "alt", "上記を確認のうえ、ログイン画面に進む") != -1 || parse_tag_search(parse_tag($a["innerHTML"], "img"), "alt", "ログイン画面に進む") != -1) {
+	// より安心してご利用いただくにあたってのご注意画面やゆうちょダイレクトリニューアルについて画面が表示される場合、改めてログイン画面を取得する
+	$as = parse_tag($body, "a", true);
+	foreach($as as $a) if(strpos($a["href"], "#") === false && (parse_tag_search(parse_tag($a["innerHTML"], "img"), "alt", "上記を確認のうえ、ログイン画面に進む") != -1 || parse_tag_search(parse_tag($a["innerHTML"], "img"), "alt", "ログイン画面に進む") != -1)) {
 		$method = "GET";
 		$uris = parse_uri($a["href"], $uris);
 		$query = "";
