@@ -10,7 +10,7 @@ define("ENV_PRODUCT_CODENAME", "PURSE");
 define("ENV_PRODUCT_VERSION", "1.1");
 define("ENV_PRODUCT_ID", ENV_PRODUCT_CODENAME . "/" . ENV_PRODUCT_VERSION);
 define("ENV_PRODUCT_FAMILY", "MoneySound");
-define("ENV_PRODUCT_COMMENT", "+https://github.com/outerguy/moneysound/");
+define("ENV_PRODUCT_COMMENT", "+https://github.com/outerguy/moneysound");
 define("ENV_PRODUCT_UA", "Mozilla/5.0 (compatible; " . ENV_PRODUCT_ID . (defined("ENV_PRODUCT_FAMILY") == true && ENV_PRODUCT_FAMILY != ""? "; " . ENV_PRODUCT_FAMILY: "") . (defined("ENV_PRODUCT_COMMENT") == true && ENV_PRODUCT_COMMENT != ""? "; " . ENV_PRODUCT_COMMENT: "") . ")");
 
 define("ENV_BOOL_DEBUG", false); // 開発者向け（デバッグ）機能を有効とするか否か
