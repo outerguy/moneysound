@@ -32,7 +32,7 @@ define("ENV_STR_ACCTTYPE_SAVINGS", "SAVINGS"); // 普通預金口座
 define("ENV_STR_ACCTTYPE_CHECKING", "CHECKING"); // 当座預金口座
 
 define("ENV_STR_DATE_TODAY", date("Ymd")); // 本日
-define("ENV_STR_DATE_PASTDAY", date("Ymd", strtotime(date("Y-m-1") . " -1 month"))); // 前月1日
+define("ENV_STR_DATE_PASTDAY", date("Ymd", strtotime(date("Y-m-01") . " -1 month"))); // 前月1日
 
 define("ENV_STR_OFX_CURRENCY_JPY", "JPY"); // 通貨
 define("ENV_STR_OFX_TZ", "000000[+9:JST]"); // 時分秒・タイムゾーン
