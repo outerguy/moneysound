@@ -419,7 +419,7 @@ function fnc_register() {
 			
 			if(txt != "" && dec == "") {
 				// 口座情報が指定されていて、かつ復号結果が空の場合、エラーを表示する
-				modal_show("エラー", "口座情報が正しくないか、または" + fiids["logon"][fiids["logon"]["form"].split("|")[1]].split("|")[0] + "が一致しません。", false);
+				modal_show("エラー", "口座情報が正しくないか、または" + fiids["logon"][ps[0]].split("|", 2)[0] + "が一致しません。", false);
 			} else {
 				switch(storage_get(us[1], ps[1])) {
 				case null:
