@@ -1,6 +1,6 @@
 <?php
 /*
-common.inc: 定数・共通関数を定義する
+common.inc: 全体の定数・共通関数を定義する
 Copyright (C) 2008-2015 OFFICE OUTERGUY. All rights reserved.
 mailto:contact@beatrek.com
 Dual-licensed under the GNU All-Permissive License and Beatrek Origin License.
