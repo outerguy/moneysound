@@ -1892,6 +1892,7 @@ function fnc_pdf() {
 	var pagestream = " ";
 	var pdflength = "<<\r\n/Length <!--[length]-->\r\n>>\r\n";
 	var pdfstream = "stream\r\n<!--[stream]-->endstream\r\n";
+	var ua = navigator.userAgent;
 	var content = "";
 	var reference = "";
 	var objstart = 1;  // obj開始番号
@@ -1927,11 +1928,13 @@ function fnc_pdf() {
 		}
 		ldl = parseInt(pdfrowpitch, 10);
 		
+		ua = (ua.match(/[^\x20-\x7E]/)? "<!--[family]-->": ua.replace(/\(/g, "\\(").replace(/\)/g, "\\)"));
+		
 		// 埋め込み文字列を置換する
 		pdf = pdf.replace("<!--[title]-->", "<!--[family]-->");
-		pdf = pdf.replace("<!--[subject]-->", timestamp.substring(0, 4) + "-" + timestamp.substring(4, 6) + "-" + timestamp.substring(6, 8) + " " + timestamp.substring(8, 10) + ":" + timestamp.substring(10, 12) + ":" + timestamp.substring(12, 14));
-		pdf = pdf.replace("<!--[creator]-->", "<!--[family]-->");
-		pdf = pdf.replace("<!--[producer]-->", "<!--[family]-->/" + ver);
+		pdf = pdf.replace("<!--[subject]-->", logons["localid"]);
+		pdf = pdf.replace("<!--[creator]-->", "<!--[family]-->/" + ver);
+		pdf = pdf.replace("<!--[producer]-->", ua);
 		pdf = pdf.replace("<!--[creationdate]-->", timestamp);
 		
 		// obj生成開始番号を取得する
