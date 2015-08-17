@@ -1977,7 +1977,7 @@ function fnc_pdf() {
 				
 				// 金融機関を出力する
 				bufs = utf8_split(tag_tr[0].childNodes[0].firstChild.firstChild.nodeValue, fil);
-				for(j = row1 - 1; j >= 0; j--) pdfchar += "1 0 0 1 60 " + (y + 2 + pdfrowpitch * j + (pdfrowpitch - chl) / 2).toString() + " Tm\r\n<" + get_binary_sjis(bufs[row1 - j - 1]) + "> Tj\r\n";
+				for(j = row1 - 1; j >= 0; j--) if(bufs[row1 - j - 1]) pdfchar += "1 0 0 1 60 " + (y + 2 + pdfrowpitch * j + (pdfrowpitch - chl) / 2).toString() + " Tm\r\n<" + get_binary_sjis(bufs[row1 - j - 1]) + "> Tj\r\n";
 				
 				// 口座種目の行数を計算する
 				row2 = 0;
