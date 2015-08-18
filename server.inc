@@ -203,6 +203,7 @@ class ofxDOM {
 	}
 	private function setFitid() {
 		$acctid = $this->dom->getElementsByTagName('ACCTID')->item(0)->nodeValue;
+		$acctid = substr($acctid, strlen($acctid) - 4);
 		$cd_num = 0;
 		$last_dtposted = "";
 		foreach ($this->getTrans() as $tran) {
