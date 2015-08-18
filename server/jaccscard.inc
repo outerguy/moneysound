@@ -272,10 +272,19 @@ function jaccscard_parsedom($str, $paydate = "", $settings = array()) {
 	// HTMLからDOMツリー作成
 	@$doc->loadHTML($str);
 	$xpath = new DOMXPath($doc);
+	/*
 	// 明細表のテーブルを指定
 	$rows = $xpath->query("//table[@id='olcreco_target']/tr[@data-pay-id]"); 
 	// 確定月か否か flag=false: 確定月, flag=true: 未確定月
 	$flag = preg_match('/ggtd web_meisai/', $str);
+	*/
+	// 確定月か否か flag=false: 確定月, flag=true: 未確定月
+	$flag = preg_match('/ggtd web_meisai/', $str);
+	if($flag == true) {
+		$rows = $xpath->query("//table[@class='ggtd web_meisai']/tr[@data-pay-id]"); 
+	} else {
+		$rows = $xpath->query("//table[@data-cookie-delete='true']/tr[@data-pay-id]"); 
+	}
 	
 	$ret = "";
 	$cds = array();
@@ -297,11 +306,15 @@ function jaccscard_parsedom($str, $paydate = "", $settings = array()) {
 		$cd["DTPOSTED"] = sprintf("20%d%02d%02d", $matches[1], $matches[2], $matches[3]);
 		
 		// 引き落とし月を取得
+		/*
 		if($flag) {
 			$month = substr($cols->item(5)->nodeValue,5);
 		} else {
 			$month = substr($cols->item(5)->nodeValue,3);
 		}
+		*/
+		$month = substr($cols->item(5)->nodeValue,3);
+		
 		// トランザクション番号（請求月とデータ種別）を生成する
 		$cd["FITID"] = sprintf("%02d0", $month);
 		// 摘要を取得する
