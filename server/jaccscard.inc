@@ -156,6 +156,25 @@ if(strpos($body, "メンテナンスを行っております") !== false) {
 		$account["acctid"] = strip_tags(str_replace("&lowast;", "*", $dds[1]["innerHTML"]));
 	}
 	
+	/*
+	// 過去のご利用代金明細画面を表示する
+	$forms = parse_tag($body, "form");
+	$c = parse_tag_search($forms, "name", "MainForm");
+	if($c != -1) {
+		$inputs = parse_tag($forms[$c]["innerHTML"], "input");
+		$queries = array();
+		foreach($inputs as $input) if($input["name"] != "") $queries[$input["name"]] = urlencode($input["name"]) . "=" . urlencode($input["value"]);
+		$queries["_TRANID"] = "_TRANID=JAST00016_07M"; // 過去のご利用代金明細を確認
+		$queries["_SUBINDEX"] = "_SUBINDEX=201501"; // 年月
+		
+		$method = $forms[$c]["method"];
+		$uris = parse_uri($forms[$c]["action"], $uris);
+		$query = implode("&", $queries);
+		$cookie = jaccscard_update_cookie($head, $cookie);
+		list($head, $body) = jaccscard_http11($method, $uris, $query, $cookie);
+	}
+	*/
+	
 	$body_old = $body;
 	
 	// CSVファイルをダウンロードする
@@ -259,6 +278,7 @@ function jaccscard_parse_csv($str, $account) {
 	$cd_date = "";
 	$cd_num = 0;
 	$ledge_balamt = 0;
+	$flg = false;
 	
 	foreach($lines as $line) {
 		$cd = array();
@@ -266,7 +286,11 @@ function jaccscard_parse_csv($str, $account) {
 		if(count($line) == 2 && $line[0] == "(A)1回・2回・分割・ボーナス払の今回お支払金額小計") {
 			// 今回お支払金額を取得する
 			$cds_balamt = (string)((double)parse_amount($line[1]));
-		} else if(count($line) == 13 && $line[0] != "ご利用年月日" && $line[0] != "") {
+		} else if(count($line) == 13 && $line[1] == "＜＜次回以降のお支払明細＞＞") {
+			// 次回以降のお支払明細を処理しない
+			$flg = true;
+			// break;
+		} else if(count($line) == 13 && $line[0] != "ご利用年月日" && $line[0] != "" && $flg == false) {
 			// PAYMENT固定とする
 			$cd["TRNTYPE"] = ENV_STR_OFX_TRNTYPE_PAYMENT;
 			
