@@ -349,7 +349,7 @@ if(strpos($body, "ログイン後の全てのサービスを停止") !== false) 
 		$locations = parse_header($head, "location");
 		if(count($locations) > 0) {
 			$method = "GET";
-			$uris = parse_uri($locations[0], $uris);
+			$uris = parse_uri(rtrim($locations[0]), $uris);
 			$query = "";
 			$cookie = sbisec_update_cookie($head, $cookie);
 			list($head, $body) = sbisec_http11($method, $uris, $query, $cookie);
