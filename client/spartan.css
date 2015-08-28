@@ -1,0 +1,219 @@
+@media screen {
+	* {
+		font-family: "Yu Gothic UI", "游ゴシック", "Meiryo UI", "メイリオ", "Meiryo", sans-serif;
+	}
+	body {
+		margin: 0px;
+		color: #000000;
+		background: #FFFFFF;
+		font-size: 80%;
+	}
+	hr {
+		display: none;
+	}
+	header {
+		height: 32px;
+		color: inherit;
+		background: #CCCCCC;
+	}
+	header h1 {
+		display: inline-block;
+		padding: 0px 8px 0px 8px;
+		margin: 0px;
+		color: inherit;
+		background: #F2F2F2;
+		font-size: 100%;
+		font-weight: normal;
+		line-height: 32px;
+		text-align: left;
+	}
+	footer {
+		line-height: 32px;
+	}
+	footer ul li a {
+		margin: 0px 0.2em 0px 0.2em;
+	}
+	aside {
+		color: inherit;
+		background: #F2F2F2;
+		background: rgba(0, 0, 0, 0.15);
+	}
+	nav {
+		border: solid #CCCCCC;
+		border-width: 0px 0px 1px 0px;
+		padding: 0px;
+		margin: 0px;
+		color: inherit;
+		background: #F2F2F2;
+	}
+	nav p {
+		margin: 0px;
+		line-height: 44px;
+		text-align: left;
+	}
+	section {
+		color: inherit;
+		background: #FFFFFF;
+	}
+	form#modal {
+		border: solid 1px #A4A4A4;
+		padding: 0px;
+		box-shadow: 0px 0px 16px 0px rgba(0, 0, 0, 0.3);
+		color: inherit;
+		background: #FFFFFF;
+	}
+	h3#modalhead {
+		border: solid #DADBDC;
+		border-width: 0px 0px 1px 0px;
+		padding: 5px;
+		margin: 0px;
+		color: inherit;
+		background: transparent;
+		text-align: left;
+		text-indent: 0px;
+		font-weight: normal;
+		font-size: 100%;
+		line-height: 140%;
+		letter-spacing: 0px;
+	}
+	div#modalbody {
+		border: 0px;
+		padding: 10px;
+		margin: 0px;
+		color: inherit;
+		background: #FFFFFF;
+		font-size: 120%;
+		line-height: 120%;
+	}
+	div#modalfoot {
+		border: 0px;
+		margin: 0px 10px 10px 10px;
+		color: inherit;
+		background: #FFFFFF;
+	}
+	table {
+		border: solid 1px #CCCCCC;
+		padding: 0px;
+		margin: 0px auto 0px auto;
+	}
+	tbody {
+		color: inherit;
+		background: #FFFFFF;
+	}
+	tbody.pending {
+		color: inherit;
+		background: #91C1E7;
+	}
+	tbody.ready {
+		color: #B2B2B2;
+		background: #F2F2F2;
+	}
+	tbody.error {
+		color: #FD2121;
+		background: #F2F2F2;
+	}
+	caption {
+		border: 0px;
+		padding: 0px 8px 0px 8px;
+		color: inherit;
+		background: #FFFFFF;
+		font-size: 150%;
+		line-height: 64px;
+		text-align: left;
+	}
+	th, td {
+		border: solid #CCCCCC;
+		border-width: 1px 0px 1px 0px;
+		padding: 0px;
+		margin: 0px;
+		line-height: 170%;
+	}
+	td.fi {
+		max-width: 144px;
+	}
+	td.accttype {
+		max-width: 224px;
+	}
+	.fi, .accttype, .balance, .timestamp {
+		padding: 0px 8px 0px 8px;
+	}
+	th {
+		color: inherit;
+		background: #E6E6E6;
+		font-weight: bold;
+	}
+	a:link, a:visited {
+		color: #0078D7;
+		background: transparent;
+		text-decoration: none;
+	}
+	a:hover {
+		color: #0068AF;
+		background: transparent;
+	}
+	a:active {
+		color: #00456B;
+		background: transparent;
+	}
+	.btn {
+		min-width: 44px;
+		border: 0px;
+		padding: 0px 8px 0px 8px;
+		margin: 0px;
+		color: #000000;
+		background: transparent;
+		text-decoration: none;
+		font-size: 100%;
+		font-weight: normal;
+		line-height: 45px;
+	}
+	.btn:hover, .btn:active {
+		border: 0px;
+		color: inherit;
+		background: #DADADA;
+	}
+	.btn:disabled {
+		border: 0px;
+		color: #B2B2B2;
+		background: transparent;
+	}
+	div#modalbody th, div#modalbody td {
+		font-size: 85%;
+	}
+	div#modalbody input {
+		font-size: 100%;
+	}
+	div#modalbody select {
+		font-size: 100%;
+		line-height: 170%;
+	}
+	div#modalbody p.label {
+		font-weight: normal;
+		line-height: 170%;
+	}
+	div#modalbody p.label:after {
+		content: "";
+	}
+	div#modalfoot .btn {
+		border: solid 2px #CCCCCC;
+		padding: 0px 8px 0px 8px;
+		margin: 0px;
+		font-size: 120%;
+		line-height: 170%;
+		color: #000000;
+		background: #CCCCCC;
+	}
+	div#modalfoot .btn:hover {
+		border: solid 2px #7A7A7A;
+		color: inherit;
+		background: #CCCCCC;
+	}
+	div#modalfoot .btn:active {
+		border: solid 2px #999999;
+		color: inherit;
+		background: #999999;
+	}
+	div#modalfoot .btn + .btn {
+		margin: 0px 0px 0px 10px;
+	}
+}
