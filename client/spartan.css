@@ -36,7 +36,7 @@
 	aside {
 		color: inherit;
 		background: #F2F2F2;
-		background: rgba(0, 0, 0, 0.15);
+		background: rgba(0, 0, 0, 0.05);
 	}
 	nav {
 		border: solid #CCCCCC;
@@ -169,7 +169,7 @@
 	}
 	.btn:hover, .btn:active {
 		border: 0px;
-		color: inherit;
+		color: #000000;
 		background: #DADADA;
 	}
 	.btn:disabled {
