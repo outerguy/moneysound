@@ -128,14 +128,17 @@
 		margin: 0px;
 		line-height: 170%;
 	}
-	td.fi {
-		max-width: 144px;
+	.fi {
+		max-width: 90px;
 	}
-	td.accttype {
-		max-width: 224px;
+	.accttype {
+		max-width: 170px;
+	}
+	.timestamp {
+		max-width: 40px;
 	}
 	.fi, .accttype, .balance, .timestamp {
-		padding: 0px 8px 0px 8px;
+		padding: 0px 4px 0px 4px;
 	}
 	th {
 		color: inherit;
