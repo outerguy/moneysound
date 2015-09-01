@@ -2746,7 +2746,11 @@ function modal_show(mhead, mbody, showcancel, focusto) {
 			focus();
 			if(tagName == "input") select();
 		} else {
-			dom_get_id("modalok").focus();
+			// iOSのSafariブラウザー対策
+			fnc = function() {
+				dom_get_id("modalok").focus();
+			};
+			self.window.setTimeout(fnc, 100);
 		}
 		
 		// オーバーレイを生成する
@@ -3266,7 +3270,18 @@ function chkenv_xmlhttprequest() {
 
 // JavaScriptの実装状況をチェックする（WebStorage）
 function chkenv_webstorage() {
-	return (self.window.localStorage && self.window.sessionStorage? true: false);
+	var ret = false;
+	if(self.window.localStorage && self.window.sessionStorage) try {
+		// iOSのSafariブラウザーのプライベートブラウズモード対策
+		with(self.window.localStorage) {
+			setItem("undefined", "");
+			removeItem("undefined");
+		}
+		ret = true;
+	} catch(e) {
+		void(0);
+	}
+	return ret;
 }
 
 // JavaScriptの実装状況をチェックする（Blob）
