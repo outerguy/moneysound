@@ -25,7 +25,12 @@ aside {
 nav p, footer ul {
 	text-align: center;
 }
-footer ul li {
+footer ul {
+	border: 0px;
+	padding: 0px;
+	margin: 0px;
+}
+footer li {
 	display: inline;
 	border: 0px;
 	padding: 0px 0.25em 0px 0.25em;
