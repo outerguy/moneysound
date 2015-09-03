@@ -216,6 +216,15 @@ if(strpos($body, "現在この取引はお取扱いできません") !== false) 
 			list($head, $body) = netbk_http11($method, $uris, $query, $cookie);
 		}
 		
+		// 明細が存在しない場合、選択中の口座の残高を取得する
+		if(strpos($body, "表示可能な明細はございません") !== false) {
+			$divs = parse_tag($body, "div", true);
+			foreach($divs as $div) if($div["class"] == "tablef01M" && $div["innerHTML"] != "選択中の口座の残高") {
+				$account["balamt"] = parse_amount(str_replace("&nbsp;", "", trim(strip_tags($div["innerHTML"]))));
+				break;
+			}
+		}
+		
 		$body_old = $body;
 		
 		// CSVファイルをダウンロードする
@@ -399,6 +408,8 @@ function netbk_parse_csv($str, $account) {
 			$cd_date = $cd["DTPOSTED"];
 		}
 	}
+	
+	if($account["balamt"] != "") $cds_balamt = $account["balamt"];
 	
 	// BANKTRANLIST
 	$ret .= "<BANKTRANLIST>";
