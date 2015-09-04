@@ -166,7 +166,7 @@ function fnc_initialize() {
 	var i;
 	
 	if(chkenv_run() == false) {
-		tag_p = dom_create_tag("p");
+		tag_p = dom_create_tag("p", { "class": "ac" });
 		tag_p.appendChild(dom_create_text("ご利用のブラウザーでは実行できません。"));
 		
 		tag_table.parentNode.replaceChild(tag_p, tag_table);
