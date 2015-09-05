@@ -3,7 +3,6 @@
 		font-family: "Yu Gothic UI", "游ゴシック", "Meiryo UI", "メイリオ", "Meiryo", sans-serif;
 	}
 	body {
-		margin: 0px;
 		color: #000000;
 		background: #FFFFFF;
 		font-size: 80%;
@@ -18,6 +17,7 @@
 	}
 	header h1 {
 		display: inline-block;
+		border: 0px;
 		padding: 0px 8px 0px 8px;
 		margin: 0px;
 		color: inherit;
@@ -31,6 +31,8 @@
 		line-height: 32px;
 	}
 	footer ul li a {
+		border: 0px;
+		padding: 0px;
 		margin: 0px 0.2em 0px 0.2em;
 	}
 	aside {
@@ -47,6 +49,8 @@
 		background: #F2F2F2;
 	}
 	nav p {
+		border: 0px;
+		padding: 0px;
 		margin: 0px;
 		line-height: 44px;
 		text-align: left;
@@ -58,6 +62,7 @@
 	form#modal {
 		border: solid 1px #A4A4A4;
 		padding: 0px;
+		margin: 0px;
 		box-shadow: 0px 0px 16px 0px rgba(0, 0, 0, 0.3);
 		color: inherit;
 		background: #FFFFFF;
@@ -87,6 +92,7 @@
 	}
 	div#modalfoot {
 		border: 0px;
+		padding: 0px;
 		margin: 0px 10px 10px 10px;
 		color: inherit;
 		background: #FFFFFF;
@@ -115,6 +121,7 @@
 	caption {
 		border: 0px;
 		padding: 0px 8px 0px 8px;
+		margin: 0px;
 		color: inherit;
 		background: #FFFFFF;
 		font-size: 150%;
@@ -171,12 +178,10 @@
 		line-height: 45px;
 	}
 	.btn:hover, .btn:active {
-		border: 0px;
 		color: #000000;
 		background: #DADADA;
 	}
 	.btn:disabled {
-		border: 0px;
 		color: #B2B2B2;
 		background: transparent;
 	}
@@ -208,11 +213,15 @@
 	}
 	div#modalfoot .btn:hover {
 		border: solid 2px #7A7A7A;
+		padding: 0px 8px 0px 8px;
+		margin: 0px;
 		color: inherit;
 		background: #CCCCCC;
 	}
 	div#modalfoot .btn:active {
 		border: solid 2px #999999;
+		padding: 0px 8px 0px 8px;
+		margin: 0px;
 		color: inherit;
 		background: #999999;
 	}
