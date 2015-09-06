@@ -178,10 +178,12 @@
 		line-height: 45px;
 	}
 	.btn:hover, .btn:active {
+		border: 0px;
 		color: #000000;
 		background: #DADADA;
 	}
 	.btn:disabled {
+		border: 0px;
 		color: #B2B2B2;
 		background: transparent;
 	}
@@ -213,15 +215,11 @@
 	}
 	div#modalfoot .btn:hover {
 		border: solid 2px #7A7A7A;
-		padding: 0px 8px 0px 8px;
-		margin: 0px;
 		color: inherit;
 		background: #CCCCCC;
 	}
 	div#modalfoot .btn:active {
 		border: solid 2px #999999;
-		padding: 0px 8px 0px 8px;
-		margin: 0px;
 		color: inherit;
 		background: #999999;
 	}
