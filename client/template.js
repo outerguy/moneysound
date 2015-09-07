@@ -36,10 +36,16 @@ for(fi in ficats) filists[fi] = new Array();
 for(fi in fiids) if(typeof filists[fiids[fi]["type"]] != "undefined") filists[fiids[fi]["type"]][fi] = fiids[fi];
 
 (function() {
+	// 起動時にロード機能を呼び出す
+	with(self.window) if(addEventListener) {
+		addEventListener("load", fnc_load, true);
+	} else if(attachEvent) {
+		attachEvent("onload", fnc_load);
+	} else {
+		onload = fnc_load;
+	}
+	
 	with(self.document) {
-		// 起動時にロード機能を呼び出す
-		body.onload = fnc_load;
-		
 		// キーに機能を割り当てる
 		onkeydown = function(e) {
 			var ret = true;
