@@ -7,6 +7,7 @@ body {
 	overflow-x: hidden;
 	overflow-y: scroll;
 	font-size: 85%;
+	z-index: 1;
 }
 header, caption, footer {
 	cursor: default;
@@ -20,7 +21,7 @@ aside {
 	left: 0px;
 	width: 100%;
 	height: 100%;
-	z-index: 1000;
+	z-index: 2;
 }
 nav p, footer ul {
 	text-align: center;
@@ -89,7 +90,7 @@ form#modal {
 	position: fixed;
 	top: 0px;
 	left: 0px;
-	z-index: 9999;
+	z-index: 3;
 	white-space: nowrap;
 }
 form#modal p {
