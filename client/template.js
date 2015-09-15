@@ -139,7 +139,7 @@ function fnc_load() {
 	// デバッグ機能が有効の場合
 	if(debug != false) {
 		// 警告を表示する
-		tag_p = dom_create_tag("p", { "class": "ac", "style": "padding: 0.5em; color: #FFFFFF; background: #FF0000;" });
+		tag_p = dom_create_tag("p", { "id": "debug" });
 		tag_strong = dom_create_tag("strong");
 		tag_strong.appendChild(dom_create_text("【警告】開発者向け（デバッグ）機能が有効のため、認証情報を含む詳細な記録が残ります。開発者以外の方は、操作しないでください。または、開発者へご相談ください。"));
 		tag_p.appendChild(tag_strong);
