@@ -292,6 +292,9 @@ table#detail td {
 		font-size: 100%;
 		text-align: left;
 	}
+	p#debug {
+		display: none;
+	}
 	a {
 		color: #000000;
 		background: transparent;
