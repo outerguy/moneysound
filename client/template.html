@@ -1,32 +1,32 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<meta charset="UTF-8" />
+<meta charset="UTF-8">
 <title>マネーサウンド</title>
-<meta name="application-name" content="マネーサウンド" />
-<meta name="description" content="マネーサウンドは、対応金融機関の口座情報一覧を取得するアカウントアグリゲーションサービスです。取得した明細データは、OFX/CSV対応ソフト・サービスに取り込めるほか、口座一覧の印刷やPDF保存にも対応しています。" />
-<meta name="keywords" content="マネーサウンド,MoneySound,アカウントアグリゲーションサービス,金融機関,残高照会,口座管理,OFX,CSV,PDF,オープンソース" />
-<meta name="viewport" content="width=640, user-scalable=no" />
-<meta name="msapplication-navbutton-color" content="#0099FF" />
-<meta name="msapplication-window" content="width=800; height=450" />
-<meta name="msapplication-tooltip" content="マネーサウンドは、対応金融機関の口座情報一覧を取得するアカウントアグリゲーションサービスです。" />
-<link rel="stylesheet" href="./client/rule.css" id="css_rule" />
-<link rel="stylesheet" href="./client/standard.css" id="css_theme" />
-<link rel="icon" href="./client/icon.ico" />
-<link rel="apple-touch-icon" href="./client/icon.png" />
+<meta name="application-name" content="マネーサウンド">
+<meta name="description" content="マネーサウンドは、対応金融機関の口座情報一覧を取得するアカウントアグリゲーションサービスです。取得した明細データは、OFX/CSV対応ソフト・サービスに取り込めるほか、口座一覧の印刷やPDF保存にも対応しています。">
+<meta name="keywords" content="マネーサウンド,MoneySound,アカウントアグリゲーションサービス,金融機関,残高照会,口座管理,OFX,CSV,PDF,オープンソース">
+<meta name="viewport" content="width=640, user-scalable=no">
+<meta name="msapplication-navbutton-color" content="#0099FF">
+<meta name="msapplication-window" content="width=800; height=450">
+<meta name="msapplication-tooltip" content="マネーサウンドは、対応金融機関の口座情報一覧を取得するアカウントアグリゲーションサービスです。">
+<link rel="stylesheet" href="./client/rule.css" id="css_rule">
+<link rel="stylesheet" href="./client/standard.css" id="css_theme">
+<link rel="icon" href="./client/icon.ico">
+<link rel="apple-touch-icon" href="./client/icon.png">
 </head>
 <body>
 <header>
 <h1>マネーサウンド</h1>
 </header>
 <nav>
-<p><input type="button" value="ログオン" disabled="disabled" id="btn_logon" class="btn" /><input type="button" value="ログオフ" disabled="disabled" id="btn_logoff" class="btn" /><input type="button" value="登録" disabled="disabled" id="btn_register" class="btn" /><input type="button" value="抹消" disabled="disabled" id="btn_erase" class="btn" /><input type="button" value="デバッグ情報" disabled="disabled" id="btn_debug" class="btn none" /><input type="button" value="設定" disabled="disabled" id="btn_option" class="btn" /><input type="button" value="バージョン情報" disabled="disabled" id="btn_version" class="btn" /></p>
+<p><input type="button" value="ログオン" disabled="disabled" id="btn_logon" class="btn"><input type="button" value="ログオフ" disabled="disabled" id="btn_logoff" class="btn"><input type="button" value="登録" disabled="disabled" id="btn_register" class="btn"><input type="button" value="抹消" disabled="disabled" id="btn_erase" class="btn"><input type="button" value="デバッグ情報" disabled="disabled" id="btn_debug" class="btn none"><input type="button" value="設定" disabled="disabled" id="btn_option" class="btn"><input type="button" value="バージョン情報" disabled="disabled" id="btn_version" class="btn"></p>
 </nav>
 <section>
 <h2>口座一覧</h2>
 <table>
 <caption>マネーサウンド</caption>
-<thead><tr><th class="fi">金融機関</th><th class="accttype">口座種目</th><th class="balance">残高</th><th class="timestamp">更新日時</th><th class="control"><input type="button" value="更新" disabled="disabled" id="btn_update_all" class="btn" /><input type="button" value="中止" disabled="disabled" id="btn_cancel" class="btn" /><input type="button" value="OFX" disabled="disabled" id="btn_ofx_all" class="btn" /><input type="button" value="追加" disabled="disabled" id="btn_create" class="btn" /><input type="button" value="出力" disabled="disabled" id="btn_output" class="btn" /></th></tr></thead>
+<thead><tr><th class="fi">金融機関</th><th class="accttype">口座種目</th><th class="balance">残高</th><th class="timestamp">更新日時</th><th class="control"><input type="button" value="更新" disabled="disabled" id="btn_update_all" class="btn"><input type="button" value="中止" disabled="disabled" id="btn_cancel" class="btn"><input type="button" value="OFX" disabled="disabled" id="btn_ofx_all" class="btn"><input type="button" value="追加" disabled="disabled" id="btn_create" class="btn"><input type="button" value="出力" disabled="disabled" id="btn_output" class="btn"></th></tr></thead>
 <tfoot><tr><th></th><th class="accttype al">合計</th><th id="num_total" class="balance ar">0</th><th colspan="2"></th></tr></tfoot>
 <tbody class="none"><tr><td colspan="5">口座一覧</td></tr></tbody>
 </table>
