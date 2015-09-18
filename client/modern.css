@@ -37,6 +37,9 @@
 		background: #CCCCCC;
 		background: rgba(0, 0, 0, 0.5);
 	}
+	footer {
+		margin: 30px 0px 0px 0px;
+	}
 	nav, section {
 		color: inherit;
 		background: #1D1D1D;
@@ -138,7 +141,7 @@
 		color: #CC3333;
 		background: transparent;
 	}
-	.btn {
+	input[type="button"], input[type="submit"], input[type="reset"] {
 		border: solid 1px #AAAAAA;
 		padding: 1px 11px 1px 11px;
 		margin: 1px 0px 1px 0px;
@@ -148,27 +151,27 @@
 		text-decoration: none;
 		font-weight: normal;
 	}
-	.btn:hover {
+	input[type="button"]:hover, input[type="submit"]:hover, input[type="reset"]:hover {
 		border: solid 1px #77AAEE;
 		color: inherit;
 		background: #F0F7FF;
 		background: #F0F7FF linear-gradient(to bottom, #F0F7FF, #DDEEFF);
 	}
-	.btn:active {
+	input[type="button"]:active, input[type="submit"]:active, input[type="reset"]:active {
 		border: solid 1px #5599DD;
 		color: inherit;
 		background: #DDEEFF;
 		background: #DDEEFF linear-gradient(to bottom, #DDEEFF, #CCDDFF);
 	}
-	.btn:disabled {
+	input[type="button"]:disabled, input[type="submit"]:disabled, input[type="reset"]:disabled {
 		border: solid 1px #D9D9D9;
 		color: #838383;
 		background: #EFEFEF;
 	}
-	.btn:focus {
+	input[type="button"]:focus, input[type="submit"]:focus, input[type="reset"]:focus {
 		border: solid 1px #5599DD;
 	}
-	.btn + .btn {
+	input[type="button"] + input[type="button"], input[type="submit"] + input[type="reset"] {
 		margin: 0px 0px 0px 5px;
 	}
 }

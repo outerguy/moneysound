@@ -130,7 +130,7 @@
 		color: #FF4012;
 		background: transparent;
 	}
-	.btn {
+	input[type="button"], input[type="submit"], input[type="reset"] {
 		border: solid 1px #B7B7B7;
 		border-radius: 5px / 4px;
 		padding: 5px;
@@ -142,25 +142,25 @@
 		line-height: 110%;
 		text-decoration: none;
 	}
-	.btn:hover {
+	input[type="button"]:hover, input[type="submit"]:hover, input[type="reset"]:hover {
 		color: inerit;
 		background: #FFFFFF;
 		background: #FFFFFF linear-gradient(to bottom, #FFFFFF 50%, #F1F1F1);
 		box-shadow: 0px 0px 2px 0px #B7B7B7;
 	}
-	.btn:active {
+	input[type="button"]:active, input[type="submit"]:active, input[type="reset"]:active {
 		border: solid 1px #DD7C55;
 		color: inerit;
 		background: #DADADA;
 		background: #DADADA linear-gradient(to bottom, #E9E8E6, #F3F3F2 5%, #DDDBD9);
 		box-shadow: 0px 0px 2px 0px #DD7C55;
 	}
-	.btn:disabled {
+	input[type="button"]:disabled, input[type="submit"]:disabled, input[type="reset"]:disabled {
 		border: solid 1px #D2D2D2;
 		color: #95918C;
 		background: #EBEBEB;
 	}
-	.btn + .btn {
+	input[type="button"] + input[type="button"], input[type="submit"] + input[type="reset"] {
 		margin: 0px 0px 0px 5px;
 	}
 	input, select {

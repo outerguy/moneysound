@@ -34,6 +34,9 @@
 		padding: 0px 0px 0px 0px;
 		margin: 0px;
 	}
+	footer {
+		margin: 10px 0px 0px 0px;
+	}
 	footer ul li a {
 		font-size: 85%;
 	}
@@ -151,7 +154,7 @@
 		color: #FF0000;
 		background: transparent;
 	}
-	.btn {
+	input[type="button"], input[type="submit"], input[type="reset"] {
 		border: solid 1px #666666;
 		border-radius: 4px;
 		padding: 2px 10px 2px 10px;
@@ -163,26 +166,26 @@
 		text-decoration: none;
 		font-weight: normal;
 	}
-	.btn:hover {
+	input[type="button"]:hover, input[type="submit"]:hover, input[type="reset"]:hover {
 		border: solid 2px #FFAA33;
 		padding: 1px 9px 1px 9px;
 		box-shadow: 0px 0px 0px 1px #003366;
 	}
-	.btn:active {
+	input[type="button"]:active, input[type="submit"]:active, input[type="reset"]:active {
 		border: solid 1px #003366;
 		padding: 2px 10px 2px 10px;
 		box-shadow: 0px 0px 1px 0px #003366;
 		color: inherit;
 		background: #E2E1DA;
 	}
-	.btn:disabled {
+	input[type="button"]:disabled, input[type="submit"]:disabled, input[type="reset"]:disabled {
 		border: solid 1px #AAAAAA;
 		padding: 2px 10px 2px 10px;
 		color: #AAAA99;
 		background: #F7F7EE;
 		box-shadow: 0px 0px 1px 0px #FFFFFF;
 	}
-	.btn + .btn {
+	input[type="button"] + input[type="button"], input[type="submit"] + input[type="reset"] {
 		margin: 0px 0px 0px 2px;
 	}
 }

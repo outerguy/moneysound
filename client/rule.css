@@ -196,21 +196,21 @@ table#detail td {
 	overflow: hidden;
 	text-overflow: ellipsis;
 }
-.pending, .pending .btn:disabled {
+.pending, .pending input[type="button"]:disabled {
 	cursor: wait;
 }
-.btn {
+input[type="button"], input[type="submit"], input[type="reset"] {
 	font-size: 85%;
 	cursor: pointer;
 	line-height: 150%;
 	/* iOSのボタンサイズを補正する */
 	-webkit-appearance: none;
 }
-.btn:disabled {
+input[type="button"]:disabled, input[type="submit"]:disabled, input[type="reset"]:disabled {
 	cursor: default;
 }
 /* Firefoxのボタンサイズを補正する */
-.btn::-moz-focus-inner {
+input[type="button"]::-moz-focus-inner, input[type="submit"]::-moz-focus-inner, input[type="reset"]::-moz-focus-inner {
 	border-width: 1px;
 	padding: 0px;
 	margin: -1px;

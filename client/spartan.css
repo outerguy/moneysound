@@ -28,7 +28,7 @@
 		text-align: left;
 	}
 	footer {
-		line-height: 32px;
+		line-height: 44px;
 	}
 	footer ul li a {
 		border: 0px;
@@ -165,7 +165,7 @@
 		color: #00456B;
 		background: transparent;
 	}
-	.btn {
+	input[type="button"], input[type="submit"], input[type="reset"] {
 		min-width: 44px;
 		border: 0px;
 		padding: 0px 8px 0px 8px;
@@ -177,12 +177,12 @@
 		font-weight: normal;
 		line-height: 45px;
 	}
-	.btn:hover, .btn:active {
+	input[type="button"]:hover, input[type="button"]:active, input[type="submit"]:hover, input[type="submit"]:active, input[type="reset"]:hover, input[type="reset"]:active {
 		border: 0px;
 		color: #000000;
 		background: #DADADA;
 	}
-	.btn:disabled {
+	input[type="button"]:disabled, input[type="submit"]:disabled, input[type="reset"]:disabled {
 		border: 0px;
 		color: #B2B2B2;
 		background: transparent;
@@ -204,7 +204,7 @@
 	div#modalbody p.label:after {
 		content: "";
 	}
-	div#modalfoot .btn {
+	div#modalfoot input[type="submit"], div#modalfoot input[type="reset"] {
 		border: solid 2px #CCCCCC;
 		padding: 0px 8px 0px 8px;
 		margin: 0px;
@@ -213,17 +213,17 @@
 		color: #000000;
 		background: #CCCCCC;
 	}
-	div#modalfoot .btn:hover {
+	div#modalfoot input[type="submit"]:hover, div#modalfoot input[type="reset"]:hover {
 		border: solid 2px #7A7A7A;
 		color: inherit;
 		background: #CCCCCC;
 	}
-	div#modalfoot .btn:active {
+	div#modalfoot input[type="submit"]:active, div#modalfoot input[type="reset"]:active {
 		border: solid 2px #999999;
 		color: inherit;
 		background: #999999;
 	}
-	div#modalfoot .btn + .btn {
+	div#modalfoot input[type="submit"] + input[type="reset"] {
 		margin: 0px 0px 0px 10px;
 	}
 }

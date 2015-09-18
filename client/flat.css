@@ -43,6 +43,9 @@
 		background: #7F7F7F;
 		background: rgba(0, 0, 0, 0.3);
 	}
+	footer {
+		margin: 20px 0px 0px 0px;
+	}
 	form#modal {
 		border: 0px;
 		border-radius: 4px;
@@ -139,7 +142,7 @@
 		color: #167CFC;
 		background: transparent;
 	}
-	.btn, .btn:hover {
+	input[type="button"], input[type="button"]:hover, input[type="submit"], input[type="submit"]:hover, input[type="reset"], input[type="reset"]:hover {
 		border: solid 1px #C2C2C2;
 		border-radius: 4px;
 		padding: 0px 10px 0px 10px;
@@ -152,25 +155,25 @@
 		font-weight: normal;
 		line-height: 175%;
 	}
-	.btn:active, .btn:focus {
+	input[type="button"]:active, input[type="button"]:focus, input[type="submit"]:active, input[type="submit"]:focus, input[type="reset"]:active, input[type="reset"]:focus {
 		border: solid 1px #3383FB;
 		color: #FFFFFF;
 		background: #A4D3FF;
 		background: #A4D3FF linear-gradient(to bottom, #4EADFF, #0092FF, #0075FF);
 		text-shadow: 0px 0px 0px #FFFFFF;
 	}
-	.btn:disabled {
+	input[type="button"]:disabled, input[type="submit"]:disabled, input[type="reset"]:disabled {
 		border: solid 1px #D7D7D7;
 		color: #B8B8B8;
 		background: #F5F5F5;
 	}
-	.btn + .btn {
+	input[type="button"] + input[type="button"], input[type="submit"] + input[type="reset"] {
 		margin: 0px 0px 0px 4px;
 	}
 	input, select {
 		font-size: 100%;
 	}
-	nav .btn, nav .btn:hover, nav .btn:active, nav .btn:focus, nav .btn:disabled {
+	nav input[type="button"], nav input[type="button"]:hover, nav input[type="button"]:active, nav input[type="button"]:focus, nav input[type="button"]:disabled {
 		border: 0px;
 		border-radius: 0px;
 		margin: 0px;
@@ -181,15 +184,15 @@
 		line-height: 22px;
 		cursor: default;
 	}
-	nav .btn:disabled {
+	nav input[type="button"]:disabled {
 		display: none;
 	}
-	nav .btn:active {
+	nav input[type="button"]:active {
 		color: #FFFFFF;
 		background: #0662D9;
 		text-shadow: 0px 0px 0px #FFFFFF;
 	}
-	nav .btn+.btn {
+	nav input[type="button"] + input[type="button"] {
 		margin: 0px;
 	}
 }

@@ -146,7 +146,7 @@ function fnc_load() {
 		tag_nav.parentNode.insertBefore(tag_p, tag_nav);
 		
 		// デバッグ情報ボタンを表示する
-		dom_get_id("btn_debug").className = "btn";
+		dom_get_id("btn_debug").className = "";
 	}
 	
 	// ボタンに機能を割り当てる
@@ -2381,11 +2381,11 @@ function fnc_list(list) {
 				
 				// 操作
 				tag_td = dom_create_tag("td", { "rowspan": banks.length.toString(), "class": "control" });
-				tag_td.appendChild(dom_create_tag("input", { "type": "button", "value": "更新", "class": "btn", "onclick": "fnc_update(\"" + settings["rowid"] + "\");" }));
-				tag_td.appendChild(dom_create_tag("input", { "type": "button", "value": "明細", "class": "btn", "onclick": "fnc_detail(\"" + settings["rowid"] + "\");" }));
-				tag_td.appendChild(dom_create_tag("input", { "type": "button", "value": "OFX", "class": "btn", "onclick": "fnc_ofx(\"" + settings["rowid"] + "\");" }));
-				tag_td.appendChild(dom_create_tag("input", { "type": "button", "value": "変更", "class": "btn", "onclick": "fnc_modify(\"" + settings["rowid"] + "\");" }));
-				tag_td.appendChild(dom_create_tag("input", { "type": "button", "value": "削除", "class": "btn", "onclick": "fnc_delete(\"" + settings["rowid"] + "\");" }));
+				tag_td.appendChild(dom_create_tag("input", { "type": "button", "value": "更新", "onclick": "fnc_update(\"" + settings["rowid"] + "\");" }));
+				tag_td.appendChild(dom_create_tag("input", { "type": "button", "value": "明細", "onclick": "fnc_detail(\"" + settings["rowid"] + "\");" }));
+				tag_td.appendChild(dom_create_tag("input", { "type": "button", "value": "OFX", "onclick": "fnc_ofx(\"" + settings["rowid"] + "\");" }));
+				tag_td.appendChild(dom_create_tag("input", { "type": "button", "value": "変更", "onclick": "fnc_modify(\"" + settings["rowid"] + "\");" }));
+				tag_td.appendChild(dom_create_tag("input", { "type": "button", "value": "削除", "onclick": "fnc_delete(\"" + settings["rowid"] + "\");" }));
 				tag_tr.appendChild(tag_td);
 			}
 			
@@ -2438,11 +2438,11 @@ function fnc_list(list) {
 				
 				// 操作
 				tag_td = dom_create_tag("td", { "rowspan": banks.length.toString(), "class": "control" });
-				tag_td.appendChild(dom_create_tag("input", { "type": "button", "value": "更新", "class": "btn", "onclick": "fnc_update(\"" + settings["rowid"] + "\");" }));
-				tag_td.appendChild(dom_create_tag("input", { "type": "button", "value": "明細", "class": "btn", "onclick": "fnc_detail(\"" + settings["rowid"] + "\");" }));
-				tag_td.appendChild(dom_create_tag("input", { "type": "button", "value": "OFX", "class": "btn", "onclick": "fnc_ofx(\"" + settings["rowid"] + "\");" }));
-				tag_td.appendChild(dom_create_tag("input", { "type": "button", "value": "変更", "class": "btn", "onclick": "fnc_modify(\"" + settings["rowid"] + "\");" }));
-				tag_td.appendChild(dom_create_tag("input", { "type": "button", "value": "削除", "class": "btn", "onclick": "fnc_delete(\"" + settings["rowid"] + "\");" }));
+				tag_td.appendChild(dom_create_tag("input", { "type": "button", "value": "更新", "onclick": "fnc_update(\"" + settings["rowid"] + "\");" }));
+				tag_td.appendChild(dom_create_tag("input", { "type": "button", "value": "明細", "onclick": "fnc_detail(\"" + settings["rowid"] + "\");" }));
+				tag_td.appendChild(dom_create_tag("input", { "type": "button", "value": "OFX", "onclick": "fnc_ofx(\"" + settings["rowid"] + "\");" }));
+				tag_td.appendChild(dom_create_tag("input", { "type": "button", "value": "変更", "onclick": "fnc_modify(\"" + settings["rowid"] + "\");" }));
+				tag_td.appendChild(dom_create_tag("input", { "type": "button", "value": "削除", "onclick": "fnc_delete(\"" + settings["rowid"] + "\");" }));
 				tag_tr.appendChild(tag_td);
 			}
 			
@@ -2496,11 +2496,11 @@ function fnc_list(list) {
 				
 				// 操作
 				tag_td = dom_create_tag("td", { "rowspan": (investments.length + 1).toString(), "class": "control" });
-				tag_td.appendChild(dom_create_tag("input", { "type": "button", "value": "更新", "class": "btn", "onclick": "fnc_update(\"" + settings["rowid"] + "\");" }));
-				tag_td.appendChild(dom_create_tag("input", { "type": "button", "value": "明細", "class": "btn", "onclick": "fnc_detail(\"" + settings["rowid"] + "\");" }));
-				tag_td.appendChild(dom_create_tag("input", { "type": "button", "value": "OFX", "class": "btn", "onclick": "fnc_ofx(\"" + settings["rowid"] + "\");" }));
-				tag_td.appendChild(dom_create_tag("input", { "type": "button", "value": "変更", "class": "btn", "onclick": "fnc_modify(\"" + settings["rowid"] + "\");" }));
-				tag_td.appendChild(dom_create_tag("input", { "type": "button", "value": "削除", "class": "btn", "onclick": "fnc_delete(\"" + settings["rowid"] + "\");" }));
+				tag_td.appendChild(dom_create_tag("input", { "type": "button", "value": "更新", "onclick": "fnc_update(\"" + settings["rowid"] + "\");" }));
+				tag_td.appendChild(dom_create_tag("input", { "type": "button", "value": "明細", "onclick": "fnc_detail(\"" + settings["rowid"] + "\");" }));
+				tag_td.appendChild(dom_create_tag("input", { "type": "button", "value": "OFX", "onclick": "fnc_ofx(\"" + settings["rowid"] + "\");" }));
+				tag_td.appendChild(dom_create_tag("input", { "type": "button", "value": "変更", "onclick": "fnc_modify(\"" + settings["rowid"] + "\");" }));
+				tag_td.appendChild(dom_create_tag("input", { "type": "button", "value": "削除", "onclick": "fnc_delete(\"" + settings["rowid"] + "\");" }));
 				tag_tr.appendChild(tag_td);
 			}
 			
@@ -2611,13 +2611,13 @@ function fnc_list(list) {
 		
 		// 操作
 		tag_td = dom_create_tag("td", { "class": "control" });
-		tag_td.appendChild(dom_create_tag("input", { "type": "button", "value": "更新", "class": "btn", "onclick": "fnc_update(\"" + settings["rowid"] + "\");" }));
+		tag_td.appendChild(dom_create_tag("input", { "type": "button", "value": "更新", "onclick": "fnc_update(\"" + settings["rowid"] + "\");" }));
 		disabled = (status != "200" && parser != null? "true": "false");
-		tag_td.appendChild(dom_create_tag("input", { "type": "button", "value": "明細", "class": "btn", "disabled": disabled, "onclick": "fnc_detail(\"" + settings["rowid"] + "\");" }));
+		tag_td.appendChild(dom_create_tag("input", { "type": "button", "value": "明細", "disabled": disabled, "onclick": "fnc_detail(\"" + settings["rowid"] + "\");" }));
 		disabled = (status != "200" && parser != null && debug == false? "true": "false");
-		tag_td.appendChild(dom_create_tag("input", { "type": "button", "value": "OFX", "class": "btn", "disabled": disabled, "onclick": "fnc_ofx(\"" + settings["rowid"] + "\");" }));
-		tag_td.appendChild(dom_create_tag("input", { "type": "button", "value": "変更", "class": "btn", "onclick": "fnc_modify(\"" + settings["rowid"] + "\");" }));
-		tag_td.appendChild(dom_create_tag("input", { "type": "button", "value": "削除", "class": "btn", "onclick": "fnc_delete(\"" + settings["rowid"] + "\");" }));
+		tag_td.appendChild(dom_create_tag("input", { "type": "button", "value": "OFX", "disabled": disabled, "onclick": "fnc_ofx(\"" + settings["rowid"] + "\");" }));
+		tag_td.appendChild(dom_create_tag("input", { "type": "button", "value": "変更", "onclick": "fnc_modify(\"" + settings["rowid"] + "\");" }));
+		tag_td.appendChild(dom_create_tag("input", { "type": "button", "value": "削除", "onclick": "fnc_delete(\"" + settings["rowid"] + "\");" }));
 		tag_tr.appendChild(tag_td);
 		
 		tag_tbody.appendChild(tag_tr);
@@ -2688,8 +2688,8 @@ function modal_show(mhead, mbody, showcancel, focusto) {
 		tag_form.appendChild(tag_div);
 		
 		tag_div = dom_create_tag("div", { "id": "modalfoot" });
-		tag_div.appendChild(dom_create_tag("input", { "type": "submit", "value": "OK", "id": "modalok", "class": "btn" }));
-		if(showcancel == true) tag_div.appendChild(dom_create_tag("input", { "type": "reset", "value": "キャンセル", "id": "modalcancel", "class": "btn" }));
+		tag_div.appendChild(dom_create_tag("input", { "type": "submit", "value": "OK", "id": "modalok" }));
+		if(showcancel == true) tag_div.appendChild(dom_create_tag("input", { "type": "reset", "value": "キャンセル", "id": "modalcancel" }));
 		
 		tag_form.appendChild(tag_div);
 		tag_article.appendChild(tag_form);

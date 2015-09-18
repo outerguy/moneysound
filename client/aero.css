@@ -22,6 +22,9 @@
 		background: #CCCCCC;
 		background: rgba(204, 204, 204, 0.5);
 	}
+	footer {
+		margin: 20px 0px 0px 0px;
+	}
 	form#modal {
 		border: solid 1px #000000;
 		border-radius: 7px 7px 6px 6px;
@@ -122,7 +125,7 @@
 		color: #FF0000;
 		background: transparent;
 	}
-	.btn {
+	input[type="button"], input[type="submit"], input[type="reset"] {
 		border: solid 1px #666666;
 		border-radius: 4px;
 		padding: 4px 9px 4px 9px;
@@ -133,22 +136,22 @@
 		text-decoration: none;
 		font-weight: normal;
 	}
-	.btn:hover {
+	input[type="button"]:hover, input[type="submit"]:hover, input[type="reset"]:hover {
 		border: solid 1px #3377AA;
 		background: #AADDEE;
 		background: #AADDEE linear-gradient(to bottom, #DDEEFF 50%, #AADDEE 50%);
 	}
-	.btn:active {
+	input[type="button"]:active, input[type="submit"]:active, input[type="reset"]:active {
 		border: solid 1px #336688;
 		background: #DDDDDD;
 		background: #DDDDDD linear-gradient(to bottom, #D7E7F7 50%, #66BBDD 60%);
 	}
-	.btn:disabled {
+	input[type="button"]:disabled, input[type="submit"]:disabled, input[type="reset"]:disabled {
 		border: solid 1px #AAAAAA;
 		color: #888888;
 		background: #EEEEEE;
 	}
-	.btn + .btn {
+	input[type="button"] + input[type="button"], input[type="submit"] + input[type="reset"] {
 		margin: 0px 0px 0px 5px;
 	}
 	input, select {

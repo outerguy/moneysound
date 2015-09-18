@@ -22,6 +22,9 @@
 	nav {
 		margin: 20px 0px 20px 0px;
 	}
+	footer {
+		margin: 20px 0px 0px 0px;
+	}
 	footer ul li a:link, footer ul li a:visited, footer ul li a:hover {
 		border: solid 1px #939393;
 		border-radius: 4px;
@@ -150,7 +153,7 @@
 		color: #2B6DDE;
 		background: transparent;
 	}
-	.btn, .btn:hover {
+	input[type="button"], input[type="button"]:hover, input[type="submit"], input[type="submit"]:hover, input[type="reset"], input[type="reset"]:hover {
 		border: solid 1px #939393;
 		border-radius: 4px;
 		padding: 0px 12px 0px 12px;
@@ -165,17 +168,17 @@
 		font-weight: normal;
 		line-height: 175%;
 	}
-	.btn:active {
+	input[type="button"]:active, input[type="submit"]:active, input[type="reset"]:active {
 		border: solid 1px #5B60B0;
 		background: #A4D3FF;
 		background: #A4D3FF linear-gradient(to bottom, #E4FAFF 5%, #D5ECFF 5%, #A4D3FF 50%, #88C7FA 50%, #D5F9FF 100%);
 	}
-	.btn:disabled {
+	input[type="button"]:disabled, input[type="submit"]:disabled, input[type="reset"]:disabled {
 		border: solid 1px #AAAAAA;
 		color: #888888;
 		background: #EEEEEE;
 	}
-	.btn + .btn {
+	input[type="button"] + input[type="button"], input[type="submit"] + input[type="reset"] {
 		margin: 0px 0px 0px 5px;
 	}
 	input, select {

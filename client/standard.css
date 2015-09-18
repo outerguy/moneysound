@@ -135,7 +135,7 @@
 		color: #FF0000;
 		background: transparent;
 	}
-	.btn {
+	input[type="button"], input[type="submit"], input[type="reset"] {
 		min-width: 4em;
 		border: 0px;
 		border-radius: 5px;
@@ -149,24 +149,24 @@
 		text-decoration: none;
 		font-weight: bold;
 	}
-	.btn:hover {
+	input[type="button"]:hover, input[type="submit"]:hover, input[type="reset"]:hover {
 		color: #FFFFFF;
 		background: #CC3300;
 		background: #CC3300 linear-gradient(to bottom, #FF6600, #CC3300 50%, #FF6600);
 	}
-	.btn:active {
+	input[type="button"]:active, input[type="submit"]:active, input[type="reset"]:active {
 		color: #FFFFFF;
 		background: #FF6600;
 		text-shadow: 0px 0px 5px #FF6600;
 		box-shadow: 0px 0px 2px 0px #FFFFFF;
 	}
-	.btn:disabled {
+	input[type="button"]:disabled, input[type="submit"]:disabled, input[type="reset"]:disabled {
 		color: #FFFFFF;
 		background: #999999;
 		text-shadow: 0px 0px 5px #999999;
 		box-shadow: 0px 0px 2px 0px #FFFFFF;
 	}
-	.btn + .btn {
+	input[type="button"] + input[type="button"], input[type="submit"] + input[type="reset"] {
 		margin: 0px 0px 0px 9px;
 	}
 	input, select {
