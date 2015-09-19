@@ -264,7 +264,7 @@ function fnc_logon() {
 			cdf.appendChild(tag_p);
 			
 			tag_p = dom_create_tag("p");
-			tag_p.appendChild(dom_create_tag("input", { "type": lists[1], "name": inputs[i], "id": inputs[i], "value": (typeof auths[inputs[i]] == "string"? auths[inputs[i]]: "") , "class": "ipt", "onkeyup": "form_empty_check();", "onblur": "this.onkeyup();" }));
+			tag_p.appendChild(dom_create_tag("input", { "type": lists[1], "name": inputs[i], "id": inputs[i], "value": (typeof auths[inputs[i]] == "string"? auths[inputs[i]]: ""), "onkeyup": "form_empty_check();", "onblur": "this.onkeyup();" }));
 			cdf.appendChild(tag_p);
 		}
 		
@@ -356,7 +356,7 @@ function fnc_register() {
 			cdf.appendChild(tag_p);
 			
 			tag_p = dom_create_tag("p");
-			tag_p.appendChild(dom_create_tag("input", { "type": lists[1], "name": inputs[i], "id": inputs[i], "class": "ipt", "onkeyup": "form_empty_check();", "onblur": "this.onkeyup();" }));
+			tag_p.appendChild(dom_create_tag("input", { "type": lists[1], "name": inputs[i], "id": inputs[i], "onkeyup": "form_empty_check();", "onblur": "this.onkeyup();" }));
 			cdf.appendChild(tag_p);
 		}
 		
@@ -367,18 +367,18 @@ function fnc_register() {
 		if(chkenv_import() == true) {
 			// ファイルアップロードを表示する
 			tag_p = dom_create_tag("p");
-			tag_input = dom_create_tag("input", { "type": "file", "name": "enc", "id": "enc", "accept": "text/plain", "class": "ipt", "onchange": "with(new FileReader()) { readAsText(this.files[0]); onload = function() { dom_get_id(\"txt\").value = this.result; }; }" });
+			tag_input = dom_create_tag("input", { "type": "file", "name": "enc", "id": "enc", "accept": "text/plain", "onchange": "with(new FileReader()) { readAsText(this.files[0]); onload = function() { dom_get_id(\"txt\").value = this.result; }; }" });
 			tag_p.appendChild(tag_input);
 			cdf.appendChild(tag_p);
 			
 			tag_p = dom_create_tag("p");
-			tag_input = dom_create_tag("input", { "type": "hidden", "name": "txt", "id": "txt", "class": "ipt" });
+			tag_input = dom_create_tag("input", { "type": "hidden", "name": "txt", "id": "txt" });
 			tag_p.appendChild(tag_input);
 			cdf.appendChild(tag_p);
 		} else {
 			// テキストボックスを表示する
 			tag_p = dom_create_tag("p");
-			tag_input = dom_create_tag("input", { "type": "text", "name": "txt", "id": "txt", "class": "ipt" });
+			tag_input = dom_create_tag("input", { "type": "text", "name": "txt", "id": "txt" });
 			tag_p.appendChild(tag_input);
 			cdf.appendChild(tag_p);
 		}
@@ -462,7 +462,7 @@ function fnc_erase() {
 		cdf.appendChild(tag_p);
 		
 		tag_p = dom_create_tag("p");
-		tag_p.appendChild(dom_create_tag("input", { "type": lists[1], "name": input, "id": input, "class": "ipt", "onkeyup": "form_empty_check();", "onblur": "this.onkeyup();" }));
+		tag_p.appendChild(dom_create_tag("input", { "type": lists[1], "name": input, "id": input, "onkeyup": "form_empty_check();", "onblur": "this.onkeyup();" }));
 		cdf.appendChild(tag_p);
 		
 		tag_p = dom_create_tag("p", { "class": "label" });
@@ -571,7 +571,7 @@ function fnc_option() {
 		cdf.appendChild(tag_p);
 		
 		tag_p = dom_create_tag("p");
-		tag_select = dom_create_tag("select", { "name": "theme", "id": "theme", "class": "ipt" });
+		tag_select = dom_create_tag("select", { "name": "theme", "id": "theme" });
 		for(i in themes) {
 			tag_option = dom_create_tag("option", { "value": i });
 			if(dom_get_id("css_theme").href.indexOf(i) != -1) tag_option["selected"] = "selected";
@@ -587,7 +587,7 @@ function fnc_option() {
 		cdf.appendChild(tag_p);
 		
 		tag_p = dom_create_tag("p");
-		tag_select = dom_create_tag("select", { "name": "ofxbutton", "id": "ofxbutton", "class": "ipt" });
+		tag_select = dom_create_tag("select", { "name": "ofxbutton", "id": "ofxbutton" });
 		for(i in ofxbuttons) {
 			tag_option = dom_create_tag("option", { "value": i });
 			if(i == ofxbutton) tag_option["selected"] = "selected";
@@ -603,7 +603,7 @@ function fnc_option() {
 		cdf.appendChild(tag_p);
 		
 		tag_p = dom_create_tag("p");
-		tag_select = dom_create_tag("select", { "name": "csvencoding", "id": "csvencoding", "class": "ipt" });
+		tag_select = dom_create_tag("select", { "name": "csvencoding", "id": "csvencoding" });
 		for(i in csvencodings) {
 			tag_option = dom_create_tag("option", { "value": i });
 			if(i == csvencoding) tag_option["selected"] = "selected";
@@ -619,7 +619,7 @@ function fnc_option() {
 		cdf.appendChild(tag_p);
 		
 		tag_p = dom_create_tag("p");
-		tag_select = dom_create_tag("select", { "name": "pdfrowpitch", "id": "pdfrowpitch", "class": "ipt" });
+		tag_select = dom_create_tag("select", { "name": "pdfrowpitch", "id": "pdfrowpitch" });
 		for(i in pdfrowpitchs) {
 			tag_option = dom_create_tag("option", { "value": i });
 			if(i == pdfrowpitch) tag_option["selected"] = "selected";
@@ -757,7 +757,7 @@ function fnc_create() {
 		cdf.appendChild(tag_p);
 		
 		tag_p = dom_create_tag("p");
-		tag_select = dom_create_tag("select", { "name": "ficat", "id": "ficat", "class": "ipt", "onchange": "fnc_create_change(this[this.selectedIndex].value);", "onkeyup": "this.onchange();" });
+		tag_select = dom_create_tag("select", { "name": "ficat", "id": "ficat", "onchange": "fnc_create_change(this[this.selectedIndex].value);", "onkeyup": "this.onchange();" });
 		for(i in ficats) {
 			tag_option = dom_create_tag("option", { "value": i });
 			tag_option.appendChild(dom_create_text(ficats[i]));
@@ -772,7 +772,7 @@ function fnc_create() {
 		cdf.appendChild(tag_p);
 		
 		tag_p = dom_create_tag("p");
-		tag_select = dom_create_tag("select", { "name": "fiid", "id": "fiid", "size": "8", "class": "ipt", "ondblclick": "dom_get_id(\"modal\").onsubmit();" });
+		tag_select = dom_create_tag("select", { "name": "fiid", "id": "fiid", "size": "8", "ondblclick": "dom_get_id(\"modal\").onsubmit();" });
 		tag_p.appendChild(tag_select);
 		cdf.appendChild(tag_p);
 		
@@ -852,7 +852,7 @@ function fnc_modify(rowid) {
 				cdf.appendChild(tag_p);
 				
 				tag_p = dom_create_tag("p");
-				tag_p.appendChild(dom_create_tag("input", { "type": lists[1], "name": inputs[i], "id": inputs[i], "value": (typeof auths[inputs[i]] == "string"? auths[inputs[i]]: "") , "class": "ipt", "onkeyup": "form_empty_check();", "onblur": "this.onkeyup();" }));
+				tag_p.appendChild(dom_create_tag("input", { "type": lists[1], "name": inputs[i], "id": inputs[i], "value": (typeof auths[inputs[i]] == "string"? auths[inputs[i]]: ""), "onkeyup": "form_empty_check();", "onblur": "this.onkeyup();" }));
 				cdf.appendChild(tag_p);
 			}
 			
@@ -951,7 +951,7 @@ function fnc_output() {
 		}
 		
 		tag_p = dom_create_tag("p");
-		tag_select = dom_create_tag("select", { "name": "ficat", "id": "format", "class": "ipt" });
+		tag_select = dom_create_tag("select", { "name": "ficat", "id": "format" });
 		for(i in outputs) {
 			// OFXボタンが表示されている場合、OFX結合ダウンロード機能を取り除く
 			if(i == "OFX" && ofxbutton != "F") continue;
@@ -1232,7 +1232,7 @@ function fnc_update_additional(auth) {
 				
 				// 入力項目を設定する
 				tag_p = dom_create_tag("p");
-				tag_p.appendChild(dom_create_tag("input", { "type": inputs[1], "name": mfaphraseid, "id": mfaphraseid, "class": "ipt", "onkeyup": "form_empty_check();", "onblur": "this.onkeyup();" }));
+				tag_p.appendChild(dom_create_tag("input", { "type": inputs[1], "name": mfaphraseid, "id": mfaphraseid, "onkeyup": "form_empty_check();", "onblur": "this.onkeyup();" }));
 				cdf.appendChild(tag_p);
 			}
 			
@@ -2200,12 +2200,12 @@ function fnc_export() {
 		cdf.appendChild(tag_p);
 		
 		tag_p = dom_create_tag("p");
-		tag_input = dom_create_tag("input", { "type": "password", "name": "pass", "id": "pass", "value": logons["localpass"], "class": "ipt", "onkeyup": "form_empty_check();", "onblur": "this.onkeyup();" });
+		tag_input = dom_create_tag("input", { "type": "password", "name": "pass", "id": "pass", "value": logons["localpass"], "onkeyup": "form_empty_check();", "onblur": "this.onkeyup();" });
 		tag_p.appendChild(tag_input);
 		cdf.appendChild(tag_p);
 		
 		tag_p = dom_create_tag("p");
-		tag_input = dom_create_tag("input", { "type": "hidden", "name": "auth", "id": "auth", "value": auth.replace(/\r\n/gm, "\n"), "class": "ipt" });
+		tag_input = dom_create_tag("input", { "type": "hidden", "name": "auth", "id": "auth", "value": auth.replace(/\r\n/gm, "\n") });
 		tag_p.appendChild(tag_input);
 		cdf.appendChild(tag_p);
 		
@@ -2231,7 +2231,7 @@ function fnc_export() {
 			cdf.appendChild(tag_p);
 			
 			tag_p = dom_create_tag("p");
-			tag_input = dom_create_tag("input", { "type": "text", "name": "enc", "id": "enc", "value": enc, "readonly": "readonly", "class": "ipt", "onfocus": "this.select();" });
+			tag_input = dom_create_tag("input", { "type": "text", "name": "enc", "id": "enc", "value": enc, "readonly": "readonly", "onfocus": "this.select();" });
 			tag_p.appendChild(tag_input);
 			cdf.appendChild(tag_p);
 			
