@@ -519,7 +519,7 @@ function http11($method, $protocol, $host, $port = 0, $page = "/", $query = "", 
 				}
 			}
 			if($enc == "") $enc = "Shift_JIS";
-			if(strtoupper($enc) == "X-SJIS") $enc = "Shift_JIS";
+			if(strtoupper($enc) == "X-SJIS" || strtoupper($enc) == "SHIFT-JIS") $enc = "Shift_JIS";
 			switch(strtoupper($enc)) {
 			case "UTF-7":
 			case "UTF-16":
