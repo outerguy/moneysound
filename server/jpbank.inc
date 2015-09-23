@@ -1,6 +1,6 @@
 <?php
 /*
-jpbank.inc: ゆうちょ銀行のHTMLよりOFXファイルを生成する
+jpbank.inc: ゆうちょ銀行のCSVよりOFXファイルを生成する
 Copyright (C) 2012-2015 OFFICE OUTERGUY. All rights reserved.
 mailto:contact@beatrek.com
 Licensed under the GNU AGPLv3.
@@ -130,31 +130,18 @@ if($sid == 0) {
 
 if(strpos($body, "合言葉入力１") !== false) {
 	// 合言葉を入力する（１）
-	$trs = parse_tag($body, "tr");
-	$bufs = array();
-	foreach($trs as $tr) {
-		$ths = parse_tag($tr["innerHTML"], "th");
-		$tds = parse_tag($tr["innerHTML"], "td");
-		if(count($ths) == 1 && count($tds) == 1 && trim(strip_tags($ths[0]["innerHTML"])) == "質問") {
-			$shitsumon = trim(strip_tags($tds[0]["innerHTML"]));
-			break;
-		}
-	}
+	$dds = parse_tag($body, "dd");
+	if(count($dds) > 0) $shitsumon = trim(strip_tags($dds[0]["innerHTML"]));
 	
+	$as = parse_tag($body, "a");
+	$c = parse_tag_search($as, "innerHTML", "次へ");
+	if($c != -1) $dcs = jpbank_parse_dcrequest($a["onclick"]);
 	$forms = parse_tag($body, "form");
 	$c = parse_tag_search($forms, "name", "submitData");
 	if($c != -1) {
 		$inputs = parse_tag($forms[$c]["innerHTML"], "input");
 		$queries = array();
-		foreach($inputs as $input) switch($input["value"]) {
-		case "次へ":
-			$dcs = jpbank_parse_dcrequest($input["onclick"]);
-			// breakしない
-		default:
-			if($input["name"] != "") $queries[$input["name"]] = urlencode($input["name"]) . "=" . urlencode($input["value"]);
-			break;
-		}
-		// $queries["pm_fp"] = $pmfp;
+		foreach($inputs as $input) if($input["name"] != "") $queries[$input["name"]] = urlencode($input["name"]) . "=" . urlencode($input["value"]);
 		$forms[$c]["action"] = $dcs["path"];
 		if(count($dcs["kvs"]) > 0) foreach($dcs["kvs"] as $k => $v) $queries[$k] = $v;
 		$queries["aikotoba"] = "aikotoba=";
@@ -190,31 +177,18 @@ if(strpos($body, "合言葉入力１") !== false) {
 
 if(strpos($body, "合言葉入力２") !== false) {
 	// 合言葉を入力する（２）
-	$trs = parse_tag($body, "tr");
-	$bufs = array();
-	foreach($trs as $tr) {
-		$ths = parse_tag($tr["innerHTML"], "th");
-		$tds = parse_tag($tr["innerHTML"], "td");
-		if(count($ths) == 1 && count($tds) == 1 && trim(strip_tags($ths[0]["innerHTML"])) == "質問") {
-			$shitsumon = trim(strip_tags($tds[0]["innerHTML"]));
-			break;
-		}
-	}
+	$dds = parse_tag($body, "dd");
+	if(count($dds) > 0) $shitsumon = trim(strip_tags($dds[0]["innerHTML"]));
 	
+	$as = parse_tag($body, "a");
+	$c = parse_tag_search($as, "innerHTML", "次へ");
+	if($c != -1) $dcs = jpbank_parse_dcrequest($a["onclick"]);
 	$forms = parse_tag($body, "form");
 	$c = parse_tag_search($forms, "name", "submitData");
 	if($c != -1) {
 		$inputs = parse_tag($forms[$c]["innerHTML"], "input");
 		$queries = array();
-		foreach($inputs as $input) switch($input["value"]) {
-		case "次へ":
-			$dcs = jpbank_parse_dcrequest($input["onclick"]);
-			// breakしない
-		default:
-			if($input["name"] != "") $queries[$input["name"]] = urlencode($input["name"]) . "=" . urlencode($input["value"]);
-			break;
-		}
-		// $queries["pm_fp"] = $pmfp;
+		foreach($inputs as $input) if($input["name"] != "") $queries[$input["name"]] = urlencode($input["name"]) . "=" . urlencode($input["value"]);
 		$forms[$c]["action"] = $dcs["path"];
 		if(count($dcs["kvs"]) > 0) foreach($dcs["kvs"] as $k => $v) $queries[$k] = $v;
 		$queries["aikotoba"] = "aikotoba=";
@@ -298,6 +272,39 @@ if(strpos($body, "ログインパスワード入力") !== false) {
 	}
 }
 
+// お知らせ専用画面が表示される場合、次の画面を取得する
+$as = parse_tag($body, "a");
+$c = parse_tag_search($as, "innerHTML", "ダイレクトトップ");
+if($c != -1) $dcs = jpbank_parse_dcrequest($as[$c]["onclick"]);
+$forms = parse_tag($body, "form");
+$c = parse_tag_search($forms, "name", "simpleTransitionForm");
+if($c != -1) {
+	$inputs = parse_tag($forms[$c]["innerHTML"], "input");
+	$queries = array();
+	foreach($inputs as $input) if($input["name"] != "") $queries[$input["name"]] = urlencode($input["name"]) . "=" . urlencode($input["value"]);
+	$forms[$c]["action"] = $dcs["path"];
+	if(count($dcs["kvs"]) > 0) foreach($dcs["kvs"] as $k => $v) $queries[$k] = $v;
+	
+	$method = $forms[$c]["method"];
+	$uris = parse_uri($forms[$c]["action"], $uris);
+	$query = implode("&", $queries);
+	$cookie = jpbank_update_cookie($head, $cookie);
+	list($head, $body) = jpbank_http11($method, $uris, $query, $cookie);
+}
+
+// リダイレクトする
+$retry = 0;
+while($retry++ < ENV_NUM_HTTP11_RETRY) {
+	$locations = parse_header($head, "location");
+	if(count($locations) > 0) {
+		$method = "GET";
+		$uris = parse_uri($locations[0], $uris);
+		$query = "";
+		$cookie = jpbank_update_cookie($head, $cookie);
+		list($head, $body) = jpbank_http11($method, $uris, $query, $cookie);
+	}
+}
+
 if($sid > 0) {
 	// セッションを引き継ぐ
 	$resp["status"] = ENV_NUM_STATUS_ADDITION;
@@ -328,7 +335,7 @@ if($sid > 0) {
 	$resp["head"] = $head;
 	$resp["body"] = $body;
 	$resp["ofx"] = generate_ofx($resp["status"]);
-} else if(strpos($body, "メインメニュー") === false) {
+} else if(strpos($body, "前回ログイン日時") === false) {
 	// ログイン失敗の場合
 	$resp["status"] = ENV_NUM_STATUS_FAILURE;
 	$resp["method"] = $method;
@@ -345,171 +352,23 @@ if($sid > 0) {
 	@set_time_limit(ENV_NUM_TIMEOUT);
 	
 	// 口座情報を取得する
-	if(preg_match("/ComInfoOutput\((.+?)\);/", $body, $matches) > 0) {
-		$accs = parse_csv($matches[1]);
-		$accttype = jpbank_getaccttype($accs[0][7]);
-		$branchid = str_replace(array("〇", "一", "二", "三", "四", "五" ,"六" ,"七", "八", "九", "店"), array("0", "1", "2", "3", "4", "5", "6", "7", "8", "9", ""), $accs[0][8]);
-		$acctid = $accs[0][9];
-		$account["balance"] = parse_amount($accs[0][12]);
-		$account["acctname"] = implode(ENV_CHR_CONCATENATOR, array($settings["name"], $accs[0][8], $accs[0][7]));
-		
-		// 現在時刻より西暦と和暦の差を取得する
-		$delta = (preg_match("/[0-9]+/", $accs[0][17], $years) > 0? (integer)substr(ENV_STR_DATE_TODAY, 0, 4) - (integer)$years[0]: 0);
+	$divs = parse_tag($body, "div", true);
+	$c = parse_tag_search($divs, "class", "col w45");
+	if($c != -1) {
+		if(preg_match("/\((.+?)" . preg_quote("：") . "(.+?)&emsp;([0-9]{7})\)/", $divs[$c]["innerHTML"], $matches) > 0) {
+			$accttype = jpbank_getaccttype($matches[1]);
+			$branchid = str_replace(array("〇", "一", "二", "三", "四", "五" ,"六" ,"七", "八", "九", "店"), array("0", "1", "2", "3", "4", "5", "6", "7", "8", "9", ""), $matches[2]);
+			$acctid = $matches[3];
+			$account["acctname"] = implode(ENV_CHR_CONCATENATOR, array($settings["name"], $matches[2], $matches[1]));
+		}
 	}
+	
+	$c = parse_tag_search($divs, "class", "col w55");
+	if($c != -1) $account["balance"] = parse_amount(trim(strip_tags($divs[$c]["innerHTML"])));
 	
 	// 入出金明細照会画面を取得する
-	$forms = parse_tag($body, "form");
-	$c = parse_tag_search($forms, "name", "submitData");
-	if($c != -1) {
-		$inputs = parse_tag($forms[$c]["innerHTML"], "input");
-		$c = parse_tag_search($inputs, "name", "U030110"); // 入出金明細照会
-		if($c != -1) $dcs = jpbank_parse_dcrequest($inputs[$c]["onclick"]);
-	}
-	$c = parse_tag_search($forms, "name", "simpleTransitionForm");
-	if($c != -1) {
-		$inputs = parse_tag($forms[$c]["innerHTML"], "input");
-		$queries = array();
-		foreach($inputs as $input) if($input["name"] != "") $queries[$input["name"]] = urlencode($input["name"]) . "=" . urlencode($input["value"]);
-		$forms[$c]["action"] = $dcs["path"];
-		if(count($dcs["kvs"]) > 0) foreach($dcs["kvs"] as $k => $v) $queries[$k] = $v;
-		
-		$method = $forms[$c]["method"];
-		$uris = parse_uri($forms[$c]["action"], $uris);
-		$query = implode("&", $queries);
-		$cookie = jpbank_update_cookie($head, $cookie);
-		list($head, $body) = jpbank_http11($method, $uris, $query, $cookie);
-	}
-	
-	// リダイレクトする
-	$retry = 0;
-	while($retry++ < ENV_NUM_HTTP11_RETRY) {
-		$locations = parse_header($head, "location");
-		if(count($locations) > 0) {
-			$method = "GET";
-			$uris = parse_uri($locations[0], $uris);
-			$query = "";
-			$cookie = jpbank_update_cookie($head, $cookie);
-			list($head, $body) = jpbank_http11($method, $uris, $query, $cookie);
-		}
-	}
-	
-	// 入出金明細画面を取得する
-	$forms = parse_tag($body, "form");
-	$c = parse_tag_search($forms, "name", "submitData");
-	if($c != -1) {
-		$inputs = parse_tag($forms[$c]["innerHTML"], "input");
-		$queries = array();
-		foreach($inputs as $input) switch($input["value"]) {
-		case "次へ":
-			$dcs = jpbank_parse_dcrequest($input["onclick"]);
-			// breakしない
-		default:
-			if($input["name"] != "") $queries[$input["name"]] = urlencode($input["name"]) . "=" . urlencode($input["value"]);
-			break;
-		}
-		$selects = parse_tag($forms[$c]["innerHTML"], "select");
-		foreach($selects as $select) {
-			$options = parse_tag($select["innerHTML"], "option");
-			foreach($options as $option) if($select["name"] != "" && $option["selected"] == "selected") $queries[$select["name"]] = urlencode($select["name"]) . "=" . urlencode($option["value"]);
-		}
-		$forms[$c]["action"] = $dcs["path"];
-		if(count($dcs["kvs"]) > 0) foreach($dcs["kvs"] as $k => $v) $queries[$k] = $v;
-		$queries["shoukaiTaishouSentaku"] = "shoukaiTaishouSentaku=01"; // 01=入出金明細
-		$queries["shoukaiHaniSentaku"] = "shoukaiHaniSentaku=00"; // 00=日付指定
-		$queries["nyuushukkinShoukaiHaniWarekiKaishiNen"] = "nyuushukkinShoukaiHaniWarekiKaishiNen=" . (string)((integer)substr(ENV_STR_DATE_PASTDAY, 0, 4) - $delta);
-		$queries["nyuushukkinShoukaiHaniWarekiKaishiTsuki"] = "nyuushukkinShoukaiHaniWarekiKaishiTsuki=" . (string)substr(ENV_STR_DATE_PASTDAY, 4, 2);
-		$queries["nyuushukkinShoukaiHaniWarekiKaishiHi"] = "nyuushukkinShoukaiHaniWarekiKaishiHi=" . (string)substr(ENV_STR_DATE_PASTDAY, 6, 2);
-		$queries["nyuushukkinShoukaiHaniWarekiShuuryouNen"] = "nyuushukkinShoukaiHaniWarekiShuuryouNen=" . (string)((integer)substr(ENV_STR_DATE_TODAY, 0, 4) - $delta);
-		$queries["nyuushukkinShoukaiHaniWarekiShuuryouTsuki"] = "nyuushukkinShoukaiHaniWarekiShuuryouTsuki=" . (string)substr(ENV_STR_DATE_TODAY, 4, 2);
-		$queries["nyuushukkinShoukaiHaniWarekiShuuryouHi"] = "nyuushukkinShoukaiHaniWarekiShuuryouHi=" . (string)substr(ENV_STR_DATE_TODAY, 6, 2);
-		
-		$method = $forms[$c]["method"];
-		$uris = parse_uri($forms[$c]["action"], $uris);
-		$query = implode("&", $queries);
-		$cookie = jpbank_update_cookie($head, $cookie);
-		list($head, $body) = jpbank_http11($method, $uris, $query, $cookie);
-	}
-	
-	// リダイレクトする
-	$retry = 0;
-	while($retry++ < ENV_NUM_HTTP11_RETRY) {
-		$locations = parse_header($head, "location");
-		if(count($locations) > 0) {
-			$method = "GET";
-			$uris = parse_uri($locations[0], $uris);
-			$query = "";
-			$cookie = jpbank_update_cookie($head, $cookie);
-			list($head, $body) = jpbank_http11($method, $uris, $query, $cookie);
-		}
-	}
-	
-	$details = array();
-	$n = 0;
-	
-	do {
-		// 明細を取得する
-		$trs = parse_tag($body, "tr");
-		foreach($trs as $tr) {
-			$tds = parse_tag($tr["innerHTML"], "td");
-			if(count($tds) == 5) {
-				for($i = 0; $i < count($tds); $i++) $tds[$i]["innerHTML"] = str_replace("&nbsp;", "", trim(strip_tags($tds[$i]["innerHTML"])));
-				$details[$n]["date"] = parse_date($tds[0]["innerHTML"]);
-				$details[$n]["deposit"] = parse_amount($tds[1]["innerHTML"]);
-				$details[$n]["withdrawals"] = parse_amount($tds[2]["innerHTML"]);
-				$details[$n]["summary"] = ($tds[3]["innerHTML"] != ""? $tds[3]["innerHTML"]: ENV_STR_OFX_MEMO);
-				$details[$n]["memo"] = ENV_STR_OFX_MEMO;
-				$n++;
-			}
-		}
-		
-		$f = false;
-		
-		// 2ページ目以降を取得する
-		$inputs = parse_tag($body, "input");
-		$c = parse_tag_search($inputs, "value", "次を表示");
-		if($c != -1) {
-			$dcs = jpbank_parse_dcrequest($inputs[$c]["onclick"]);
-			$f = true;
-			
-			$forms = parse_tag($body, "form");
-			$c = parse_tag_search($forms, "name", "pageLinksBeanPageLinksForm");
-			if($c != -1) {
-				$inputs = parse_tag($forms[$c]["innerHTML"], "input");
-				$queries = array();
-				foreach($inputs as $input) if($input["name"] != "") $queries[$input["name"]] = urlencode($input["name"]) . "=" . urlencode($input["value"]);
-				$forms[$c]["action"] = $dcs["path"];
-				if(count($dcs["kvs"]) > 0) foreach($dcs["kvs"] as $k => $v) $queries[$k] = $v;
-				
-				$method = $forms[$c]["method"];
-				$uris = parse_uri($forms[$c]["action"], $uris);
-				$query = implode("&", $queries);
-				$cookie = jpbank_update_cookie($head, $cookie);
-				list($head, $body) = jpbank_http11($method, $uris, $query, $cookie);
-			}
-			
-			// リダイレクトする
-			$retry = 0;
-			while($retry++ < ENV_NUM_HTTP11_RETRY) {
-				$locations = parse_header($head, "location");
-				if(count($locations) > 0) {
-					$method = "GET";
-					$uris = parse_uri($locations[0], $uris);
-					$query = "";
-					$cookie = jpbank_update_cookie($head, $cookie);
-					list($head, $body) = jpbank_http11($method, $uris, $query, $cookie);
-				}
-			}
-		}
-	} while($f == true);
-	
-	$account["details"] = $details;
-	
-	// 実行時間（タイムアウト）を再設定する
-	@set_time_limit(ENV_NUM_TIMEOUT);
-	
-	// ログアウトする
 	$as = parse_tag($body, "a");
-	$c = parse_tag_search($as, "id", "LOGOUTBT"); // ログアウト
+	$c = parse_tag_search($as, "innerHTML", "もっと見る");
 	if($c != -1) $dcs = jpbank_parse_dcrequest($as[$c]["onclick"]);
 	$forms = parse_tag($body, "form");
 	$c = parse_tag_search($forms, "name", "simpleTransitionForm");
@@ -540,36 +399,141 @@ if($sid > 0) {
 		}
 	}
 	
-	$bankmsgsrsv1 = "";
-	$bankmsgsrsv1 .= "<BANKMSGSRSV1>";
-	$bankmsgsrsv1 .= "\r\n";
+	// 明細CSVダウンロード画面を取得する
+	$forms = parse_tag($body, "form");
+	$c = parse_tag_search($forms, "name", "submitData");
+	if($c != -1) {
+		$as = parse_tag($body, "a");
+		foreach($as as $a) if($a["innerHTML"] == "データダウンロード（CSV形式）" && $a["onclick"] != "") {
+			$dcs = jpbank_parse_dcrequest($a["onclick"]);
+			break;
+		}
+		$inputs = parse_tag($forms[$c]["innerHTML"], "input");
+		$queries = array();
+		foreach($inputs as $input) if($input["name"] != "") $queries[$input["name"]] = urlencode($input["name"]) . "=" . urlencode($input["value"]);
+		$selects = parse_tag($forms[$c]["innerHTML"], "select");
+		foreach($selects as $select) {
+			$options = parse_tag($select["innerHTML"], "option");
+			foreach($options as $option) if($select["name"] != "" && $option["selected"] == "selected") $queries[$select["name"]] = urlencode($select["name"]) . "=" . urlencode($option["value"]);
+		}
+		
+		$forms[$c]["action"] = $dcs["path"];
+		if(count($dcs["kvs"]) > 0) foreach($dcs["kvs"] as $k => $v) $queries[$k] = $v;
+		$queries["shoukaiTaishouSentaku"] = "shoukaiTaishouSentaku=01"; // 01=入出金
+		$queries["shoukaiHaniSentaku"] = "shoukaiHaniSentaku=01"; // 00=日付を指定
+		$queries["nyuushukkinShoukaiHaniKaishiNen"] = "nyuushukkinShoukaiHaniKaishiNen=" . substr(ENV_STR_DATE_PASTDAY, 0, 4);
+		$queries["shiteiKanouKaishiTsukiId"] = "shiteiKanouKaishiTsukiId=" . substr(ENV_STR_DATE_PASTDAY, 4, 2);
+		$queries["shiteiKanouKaishiHiId"] = "shiteiKanouKaishiHiId=" . substr(ENV_STR_DATE_PASTDAY, 6, 2);
+		$queries["nyuushukkinShoukaiHaniShuuryouNen"] = "nyuushukkinShoukaiHaniShuuryouNen=" . substr(ENV_STR_DATE_TODAY, 0, 4);
+		$queries["shiteiKanouShuuryouTsukiId"] = "shiteiKanouShuuryouTsukiId=" . substr(ENV_STR_DATE_TODAY, 4, 2);
+		$queries["shiteiKanouShuuryouHiId"] = "shiteiKanouShuuryouHiId=" . substr(ENV_STR_DATE_TODAY, 6, 2);
+		
+		$method = $forms[$c]["method"];
+		$uris = parse_uri($forms[$c]["action"], $uris);
+		$query = implode("&", $queries);
+		$cookie = jpbank_update_cookie($head, $cookie);
+		list($head, $body) = jpbank_http11($method, $uris, $query, $cookie);
+	}
 	
-	// 口座情報を生成する
-	$bankmsgsrsv1 .= "<STMTTRNRS>";
-	$bankmsgsrsv1 .= "\r\n";
-	$bankmsgsrsv1 .= "<TRNUID>0</TRNUID>";
-	$bankmsgsrsv1 .= "\r\n";
-	$bankmsgsrsv1 .= "<STATUS><CODE>0</CODE><SEVERITY>INFO</SEVERITY></STATUS>";
-	$bankmsgsrsv1 .= "\r\n";
-	$bankmsgsrsv1 .= "<STMTRS>";
-	$bankmsgsrsv1 .= "\r\n";
-	$bankmsgsrsv1 .= "<CURDEF>" . ENV_STR_OFX_CURRENCY_JPY . "</CURDEF>";
-	$bankmsgsrsv1 .= "\r\n";
-	$bankmsgsrsv1 .= "<BANKACCTFROM>";
-	$bankmsgsrsv1 .= "<BANKID>" . $settings["code"] . "</BANKID>";
-	$bankmsgsrsv1 .= "<BRANCHID>" . $branchid . "</BRANCHID>";
-	$bankmsgsrsv1 .= "<ACCTID>" . $acctid . "</ACCTID>";
-	$bankmsgsrsv1 .= "<ACCTTYPE>" . $accttype . "</ACCTTYPE>";
-	$bankmsgsrsv1 .= "</BANKACCTFROM>";
-	$bankmsgsrsv1 .= "\r\n";
-	$bankmsgsrsv1 .= jpbank_parse_details($account);
-	$bankmsgsrsv1 .= "</STMTRS>";
-	$bankmsgsrsv1 .= "\r\n";
-	$bankmsgsrsv1 .= "</STMTTRNRS>";
-	$bankmsgsrsv1 .= "\r\n";
+	// リダイレクトする
+	$retry = 0;
+	while($retry++ < ENV_NUM_HTTP11_RETRY) {
+		$locations = parse_header($head, "location");
+		if(count($locations) > 0) {
+			$method = "GET";
+			$uris = parse_uri($locations[0], $uris);
+			$query = "";
+			$cookie = jpbank_update_cookie($head, $cookie);
+			list($head, $body) = jpbank_http11($method, $uris, $query, $cookie);
+		}
+	}
 	
-	$bankmsgsrsv1 .= "</BANKMSGSRSV1>";
-	$bankmsgsrsv1 .= "\r\n";
+	$body_old = $body;
+	
+	// CSVファイルをダウンロードする
+	$as = parse_tag($body, "a");
+	$c = parse_tag_search($as, "innerHTML", "ダウンロード");
+	if($c != -1) $dcs = jpbank_parse_dcrequest($as[$c]["onclick"]);
+	$forms = parse_tag($body, "form");
+	$c = parse_tag_search($forms, "name", "submitData");
+	if($c != -1) {
+		$inputs = parse_tag($forms[$c]["innerHTML"], "input");
+		$queries = array();
+		foreach($inputs as $input) if($input["name"] != "") $queries[$input["name"]] = urlencode($input["name"]) . "=" . urlencode($input["value"]);
+		$forms[$c]["action"] = $dcs["path"];
+		if(count($dcs["kvs"]) > 0) foreach($dcs["kvs"] as $k => $v) $queries[$k] = $v;
+		
+		$method = $forms[$c]["method"];
+		$uris = parse_uri($forms[$c]["action"], $uris);
+		$query = implode("&", $queries);
+		$cookie = jpbank_update_cookie($head, $cookie);
+		list($head, $body) = jpbank_http11($method, $uris, $query, $cookie);
+		
+		if(strpos($head, "Content-Type: text/html") === false) {
+			$bankmsgsrsv1 .= "<STMTTRNRS>";
+			$bankmsgsrsv1 .= "\r\n";
+			$bankmsgsrsv1 .= "<TRNUID>0</TRNUID>";
+			$bankmsgsrsv1 .= "\r\n";
+			$bankmsgsrsv1 .= "<STATUS><CODE>0</CODE><SEVERITY>INFO</SEVERITY></STATUS>";
+			$bankmsgsrsv1 .= "\r\n";
+			$bankmsgsrsv1 .= "<STMTRS>";
+			$bankmsgsrsv1 .= "\r\n";
+			$bankmsgsrsv1 .= "<CURDEF>" . ENV_STR_OFX_CURRENCY_JPY . "</CURDEF>";
+			$bankmsgsrsv1 .= "\r\n";
+			$bankmsgsrsv1 .= "<BANKACCTFROM>";
+			$bankmsgsrsv1 .= "<BANKID>" . $settings["code"] . "</BANKID>";
+			$bankmsgsrsv1 .= "<BRANCHID>" . $branchid . "</BRANCHID>";
+			$bankmsgsrsv1 .= "<ACCTID>" . $acctid . "</ACCTID>";
+			$bankmsgsrsv1 .= "<ACCTTYPE>" . $accttype . "</ACCTTYPE>";
+			$bankmsgsrsv1 .= "</BANKACCTFROM>";
+			$bankmsgsrsv1 .= "\r\n";
+			$bankmsgsrsv1 .= jpbank_parse_csv($body, $account);
+			$bankmsgsrsv1 .= "</STMTRS>";
+			$bankmsgsrsv1 .= "\r\n";
+			$bankmsgsrsv1 .= "</STMTTRNRS>";
+			$bankmsgsrsv1 .= "\r\n";
+		}
+	}
+	
+	$body = $body_old;
+	
+	// 実行時間（タイムアウト）を再設定する
+	@set_time_limit(ENV_NUM_TIMEOUT);
+	
+	// ログアウトする
+	$as = parse_tag($body, "a");
+	foreach($as as $a) if($a["innerHTML"] == "ログアウト" && $a["onclick"] != "") {
+		$dcs = jpbank_parse_dcrequest($a["onclick"]);
+		break;
+	}
+	$forms = parse_tag($body, "form");
+	$c = parse_tag_search($forms, "name", "simpleTransitionForm");
+	if($c != -1) {
+		$inputs = parse_tag($forms[$c]["innerHTML"], "input");
+		$queries = array();
+		foreach($inputs as $input) if($input["name"] != "") $queries[$input["name"]] = urlencode($input["name"]) . "=" . urlencode($input["value"]);
+		$forms[$c]["action"] = $dcs["path"];
+		if(count($dcs["kvs"]) > 0) foreach($dcs["kvs"] as $k => $v) $queries[$k] = $v;
+		
+		$method = $forms[$c]["method"];
+		$uris = parse_uri($forms[$c]["action"], $uris);
+		$query = implode("&", $queries);
+		$cookie = jpbank_update_cookie($head, $cookie);
+		list($head, $body) = jpbank_http11($method, $uris, $query, $cookie);
+	}
+	
+	// リダイレクトする
+	$retry = 0;
+	while($retry++ < ENV_NUM_HTTP11_RETRY) {
+		$locations = parse_header($head, "location");
+		if(count($locations) > 0) {
+			$method = "GET";
+			$uris = parse_uri($locations[0], $uris);
+			$query = "";
+			$cookie = jpbank_update_cookie($head, $cookie);
+			list($head, $body) = jpbank_http11($method, $uris, $query, $cookie);
+		}
+	}
 	
 	// OFXファイルを出力する
 	$resp["status"] = ENV_NUM_STATUS_SUCCESS;
@@ -631,50 +595,64 @@ function jpbank_delete_quote($str) {
 	return preg_replace("/^.*?([\"\'])(.*?)\\1.*?$/", "\\2", $str);
 }
 
-function jpbank_parse_details($account) {
+function jpbank_parse_csv($str, $account) {
 	$ret = "";
+	$lines = parse_csv(mb_convert_string($str));
 	$cds = array();
 	$cd_date = "";
-	$cd_num = 0;
-	foreach($account["details"] as $line) {
+	foreach($lines as $line) {
 		$cd = array();
-		if(mb_strpos($line["summary"], "振込") === 0) {
-			$cd["TRNTYPE"] = ENV_STR_OFX_TRNTYPE_DIRECTDEP;
-		} else if(mb_strpos($line["summary"], "振替") === 0 || mb_strpos($line["summary"], "自払") === 0 || mb_strpos($line["summary"], "割賦") === 0) {
-			$cd["TRNTYPE"] = ENV_STR_OFX_TRNTYPE_DIRECTDEBIT;
-		} else if(mb_strpos($line["summary"], "送金") === 0) {
-			$cd["TRNTYPE"] = ENV_STR_OFX_TRNTYPE_XFER;
-		} else if(mb_strpos($line["summary"], "払込") === 0 || mb_strpos($line["summary"], "払出") === 0) {
-			$cd["TRNTYPE"] = ENV_STR_OFX_TRNTYPE_CASH;
-		} else if(mb_strpos($line["summary"], "会費") === 0) {
-			$cd["TRNTYPE"] = ENV_STR_OFX_TRNTYPE_REPEATPMT;
-		} else if(mb_strpos($line["summary"], "通　帳") === 0) {
-			$cd["TRNTYPE"] = ENV_STR_OFX_TRNTYPE_ATM;
-		} else if(mb_strpos($line["summary"], "カード") === 0) {
-			$cd["TRNTYPE"] = ENV_STR_OFX_TRNTYPE_ATM;
-		} else if(mb_strpos($line["summary"], "料　金") === 0) {
-			$cd["TRNTYPE"] = ENV_STR_OFX_TRNTYPE_FEE;
-		} else if(mb_strpos($line["summary"], "受取利子") === 0 || mb_strpos($line["summary"], "利子") === 0) {
-			$cd["TRNTYPE"] = ENV_STR_OFX_TRNTYPE_INT;
-		} else if(mb_strpos($line["summary"], "税金") === 0) {
-			$cd["TRNTYPE"] = ENV_STR_OFX_TRNTYPE_INT;
-		} else {
-			$cd["TRNTYPE"] = ENV_STR_OFX_TRNTYPE_OTHER;
+		if(count($line) == 8 && $line[0] != "取引日") {
+			switch($line[4]) {
+			case "振込":
+				$cd["TRNTYPE"] = ENV_STR_OFX_TRNTYPE_DIRECTDEP;
+				break;
+			case "振替":
+			case "自払":
+			case "割賦":
+				$cd["TRNTYPE"] = ENV_STR_OFX_TRNTYPE_DIRECTDEBIT;
+				break;
+			case "送金":
+				$cd["TRNTYPE"] = ENV_STR_OFX_TRNTYPE_XFER;
+				break;
+			case "払込":
+			case "払出":
+				$cd["TRNTYPE"] = ENV_STR_OFX_TRNTYPE_CASH;
+				break;
+			case "会費":
+				$cd["TRNTYPE"] = ENV_STR_OFX_TRNTYPE_REPEATPMT;
+				break;
+			case "通　帳":
+			case "カード":
+				$cd["TRNTYPE"] = ENV_STR_OFX_TRNTYPE_ATM;
+				break;
+			case "料　金":
+				$cd["TRNTYPE"] = ENV_STR_OFX_TRNTYPE_FEE;
+				break;
+			case "受取利子":
+			case "利子":
+				$cd["TRNTYPE"] = ENV_STR_OFX_TRNTYPE_INT;
+				break;
+			case "税金":
+				$cd["TRNTYPE"] = ENV_STR_OFX_TRNTYPE_INT;
+				break;
+			default:
+				$cd["TRNTYPE"] = ENV_STR_OFX_TRNTYPE_OTHER;
+				break;
+			}
+			// 日付を取得する
+			$cd["DTPOSTED"] = $line[0];
+			// トランザクション番号を生成する
+			$cd["FITID"] = substr($line[1], 0, 8) . sprintf("%04d", (integer)substr($line[1], 8, 2)) . "000" . substr($line[1], 10, 5);
+			// 摘要を取得する
+			$cd["NAME"] = $line[4] . ($line[5] != ""? ENV_CHR_CONCATENATOR . $line[5]: "");
+			// 金額を取得する
+			$cd["TRNAMT"] = (string)((double)parse_amount($line[2]) - (double)parse_amount($line[3]));
+			$cd["MEMO"] = ENV_STR_OFX_MEMO;
+			
+			array_push($cds, $cd);
+			$cd_date = $cd["DTPOSTED"];
 		}
-		// 日付を取得する
-		$cd["DTPOSTED"] = $line["date"];
-		// 通番を生成する
-		if($cd["DTPOSTED"] == $cd_date) $cd_num++; else $cd_num = 0;
-		// トランザクション番号を生成する
-		$cd["FITID"] = $cd["DTPOSTED"] . sprintf("%04d", (integer)$account["id"]) . "000" . sprintf("%05d", $cd_num);
-		// 摘要を取得する
-		$cd["NAME"] = $line["summary"];
-		// 金額を取得する
-		$cd["TRNAMT"] = (string)((double)parse_amount($line["deposit"]) - (double)parse_amount($line["withdrawals"]));
-		$cd["MEMO"] = ENV_STR_OFX_MEMO;
-		
-		array_push($cds, $cd);
-		$cd_date = $cd["DTPOSTED"];
 	}
 	// BANKTRANLIST
 	$ret .= "<BANKTRANLIST>";
