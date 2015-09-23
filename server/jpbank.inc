@@ -135,7 +135,7 @@ if(strpos($body, "合言葉入力１") !== false) {
 	
 	$as = parse_tag($body, "a");
 	$c = parse_tag_search($as, "innerHTML", "次へ");
-	if($c != -1) $dcs = jpbank_parse_dcrequest($a["onclick"]);
+	if($c != -1) $dcs = jpbank_parse_dcrequest($as[$c]["onclick"]);
 	$forms = parse_tag($body, "form");
 	$c = parse_tag_search($forms, "name", "submitData");
 	if($c != -1) {
@@ -156,6 +156,7 @@ if(strpos($body, "合言葉入力１") !== false) {
 	$head = "";
 	$body = "";
 } else if($sid == 1) {
+	// セッションを復元する
 	$sid = 0;
 	$uris = parse_uri($uri);
 	$query = str_replace("aikotoba=", "aikotoba=" . $auth, $query);
@@ -182,7 +183,7 @@ if(strpos($body, "合言葉入力２") !== false) {
 	
 	$as = parse_tag($body, "a");
 	$c = parse_tag_search($as, "innerHTML", "次へ");
-	if($c != -1) $dcs = jpbank_parse_dcrequest($a["onclick"]);
+	if($c != -1) $dcs = jpbank_parse_dcrequest($as[$c]["onclick"]);
 	$forms = parse_tag($body, "form");
 	$c = parse_tag_search($forms, "name", "submitData");
 	if($c != -1) {
@@ -212,6 +213,7 @@ if(strpos($body, "合言葉入力２") !== false) {
 	$head = "";
 	$body = "";
 } else if($sid == 2) {
+	// セッションを復元する
 	$sid = 0;
 	$uris = parse_uri($uri);
 	$query = str_replace("aikotoba=", "aikotoba=" . $auth, $query);
