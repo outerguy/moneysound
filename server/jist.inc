@@ -152,11 +152,11 @@ if(strpos($body, "システムメンテナンス中") !== false) { // 要検討
 		$tds = parse_tag($tr["innerHTML"], "td");
 		if(count($tds) == 4 && $tds[2]["colspan"] == "4") {
 			// 商品番号を取得する
-			$bufs["UNIQUEID"] = trim(strip_tags($tds[0]["innerHTML"]));
+			$bufs["UNIQUEID"] = trim(str_replace("商品番号", "", strip_tags($tds[0]["innerHTML"])));
 			$bufs["UNIQUEIDTYPE"] = $settings["code"];
 			
 			// 商品名を取得する
-			$bufs["SECNAME"] = trim(strip_tags($tds[2]["innerHTML"]));
+			$bufs["SECNAME"] = trim(str_replace("商品名", "", strip_tags($tds[2]["innerHTML"])));
 			
 			$bufs["CATEGORY"] = ENV_STR_OFX_FUND; // 投資信託
 			$bufs["HELDINACCT"] = ENV_STR_OFX_TRNTYPE_CASH; // 現金
@@ -182,7 +182,7 @@ if(strpos($body, "システムメンテナンス中") !== false) { // 要検討
 			$bufs["MKTVAL"] = parse_amount(strip_tags($tds[3]["innerHTML"]));
 			
 			// 時価基準日を取得する
-			$bufs["DTPRICEASOF"] = ($tds[4]["innerHTML"] == "－"? ENV_STR_DATE_TODAY: parse_date($tds[4]["innerHTML"]));
+			$bufs["DTPRICEASOF"] = ($tds[4]["innerHTML"] == "－"? ENV_STR_DATE_TODAY: parse_date(strip_tags(str_replace("時価基準日", "", $tds[4]["innerHTML"]))));
 			
 			// 損益を算出することができない仕様のため、デフォルトの固定文字列とする
 			$bufs["MEMO"] = ENV_STR_OFX_MEMO;
@@ -265,19 +265,27 @@ if(strpos($body, "システムメンテナンス中") !== false) { // 要検討
 				$bufs["DTTRADE"] = parse_date($nobrs[1]["innerHTML"]); // 約定日
 			}
 			
-			// 売買区分・取引状況を取得する
-			$brs = explode("<BR>", $tds[1]["innerHTML"]);
-			if(count($brs) == 3) {
-				$bufs["NAME"] = trim(strip_tags($brs[0])); // 取引区分
-				$bufs["MEMO"] = $brs[1]; // 売買区分
+			// 取引区分を取得する
+			$nobrs = parse_tag($tds[1]["innerHTML"], "nobr");
+			if(count($nobrs) == 1) {
+				$bufs["NAME"] = trim(strip_tags($nobrs[0]["innerHTML"])); // 取引区分
 			}
 			
+			// 取引区分・売買区分を取得する
+			$brs = explode("<BR>", $tds[1]["innerHTML"]);
+			if(count($brs) == 5) {
+				$bufs["MEMO"] = trim(strip_tags($brs[3])); // 取引区分
+			}
+			
+			// 未約定の取引を読み飛ばす
+			if($brs[4] == "処理中") continue;
+			
 			// 商品番号を取得する
-			$bufs["UNIQUEID"] = strip_tags($tds[2]["innerHTML"]);
+			$bufs["UNIQUEID"] = strip_tags(str_replace("商品番号", "", $tds[2]["innerHTML"]));
 			$bufs["UNIQUEIDTYPE"] = $settings["code"];
 			
 			// 商品名を取得する
-			$bufs["SECNAME"] = strip_tags($tds[3]["innerHTML"]);
+			$bufs["SECNAME"] = strip_tags(str_replace("商品名", "", $tds[3]["innerHTML"]));
 			$bufs["CATEGORY"] = ENV_STR_OFX_FUND; // 投資信託
 			
 			// 表の右側を処理する
@@ -317,9 +325,6 @@ if(strpos($body, "システムメンテナンス中") !== false) { // 要検討
 				
 				array_push($banks, $bufs);
 			}
-			
-			// 未約定の取引を読み飛ばす
-			if($brs[2] == "処理中") continue;
 			
 			switch($bufs["MEMO"]) {
 			case "再投資":
