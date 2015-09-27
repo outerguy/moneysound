@@ -76,7 +76,6 @@ if($sid == 0) {
 			if($input["name"] != "") $queries[$input["name"]] = urlencode($input["name"]) . "=" . urlencode($input["value"]);
 			break;
 		}
-		// $queries["pm_fp"] = $pmfp;
 		$forms[$c]["action"] = $dcs["path"];
 		if(count($dcs["kvs"]) > 0) foreach($dcs["kvs"] as $k => $v) $queries[$k] = $v;
 		$queries["okyakusamaBangou1"] = "okyakusamaBangou1=" . substr($user, 0, 4);
@@ -224,7 +223,6 @@ if(strpos($body, "ログインパスワード入力") !== false) {
 			if($input["name"] != "") $queries[$input["name"]] = urlencode($input["name"]) . "=" . urlencode($input["value"]);
 			break;
 		}
-		// $queries["pm_fp"] = $pmfp;
 		$forms[$c]["action"] = $dcs["path"];
 		if(count($dcs["kvs"]) > 0) foreach($dcs["kvs"] as $k => $v) $queries[$k] = $v;
 		$queries["loginPassword"] = "loginPassword=" . $pass;
