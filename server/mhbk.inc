@@ -97,7 +97,6 @@ if($sid == 0) {
 			$inputs = parse_tag($forms[$c]["innerHTML"], "input");
 			$queries = array();
 			foreach($inputs as $input) if($input["name"] != "") $queries[$input["name"]] = urlencode($input["name"]) . "=" . urlencode($input["value"]);
-			// $queries["pm_fp"] = "pm_fp=";
 			$queries["txbCustNo"] = "txbCustNo=" . $user;
 			
 			$method = $forms[$c]["method"];
