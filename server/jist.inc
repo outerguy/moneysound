@@ -147,7 +147,7 @@ if(strpos($body, "システムメンテナンス中") !== false) { // 要検討
 	
 	$bufs = array();
 	
-	$trs = parse_tag($body, "tr", true);
+	$trs = parse_tag($body, "tr", true); // 再帰的に取得する
 	foreach($trs as $tr) {
 		$tds = parse_tag($tr["innerHTML"], "td");
 		if(count($tds) == 4 && $tds[2]["colspan"] == "4") {
@@ -193,7 +193,7 @@ if(strpos($body, "システムメンテナンス中") !== false) { // 要検討
 	}
 	
 	// 待機資金を取得する
-	$tds = parse_tag($body, "td", true);
+	$tds = parse_tag($body, "td", true); // 再帰的に取得する
 	foreach($tds as $td) {
 		if($td["rowspan"] == "2" && $td["align"] == "right") {
 			$marginbalance = parse_amount(strip_tags($td["innerHTML"]));
@@ -243,7 +243,7 @@ if(strpos($body, "システムメンテナンス中") !== false) { // 要検討
 	}
 	
 	// 取引履歴を取得する
-	$tables = parse_tag($body, "table", true);
+	$tables = parse_tag($body, "table", true); // 再帰的に取得する
 	$c = parse_tag_search($tables, "border", "1");
 	if($c != -1) {
 		$trs = parse_tag($tables[$c]["innerHTML"], "tr");
@@ -400,7 +400,7 @@ if(strpos($body, "システムメンテナンス中") !== false) { // 要検討
 	}
 	
 	// 契約名、および加入者口座番号を取得する
-	$trs = parse_tag($body, "tr", true);
+	$trs = parse_tag($body, "tr", true); // 再帰的に取得する
 	foreach($trs as $tr) {
 		$tds = parse_tag($tr["innerHTML"], "td");
 		if(count($tds == 2)) switch($tds[0]["innerHTML"]) {

@@ -328,7 +328,7 @@ if($sid > 0) {
 	@set_time_limit(ENV_NUM_TIMEOUT);
 	
 	// 口座情報を取得する
-	$divs = parse_tag($body, "div", true);
+	$divs = parse_tag($body, "div", true); // 再帰的に取得する
 	$c = parse_tag_search($divs, "class", "col w45");
 	if($c != -1) {
 		if(preg_match("/\((.+?)" . preg_quote("：") . "(.+?)&emsp;([0-9]{7})\)/", $divs[$c]["innerHTML"], $matches) > 0) {

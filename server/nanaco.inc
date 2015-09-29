@@ -83,7 +83,7 @@ if(strpos($body, "残高・履歴確認") === false) {
 	
 	// 残高を取得する
 	$account["balance"] = 0;
-	$divs = parse_tag($body, "div", true);
+	$divs = parse_tag($body, "div", true); // 再帰的に取得する
 	$c = parse_tag_search($divs, "class", "moneyBox");
 	if($c != -1) {
 		$div2s = parse_tag($divs[$c]["innerHTML"], "div");

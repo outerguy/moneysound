@@ -120,7 +120,7 @@ if($c != -1) {
 // 重要なお知らせ画面の文字コードを強制的に変換する
 if(preg_match("/<[Mm][Ee][Tt][Aa].*?[Cc][Oo][Nn][Tt][Ee][Nn][Tt][\s\t]*=[\s\t]*([\'\"]?).*?[Cc][Hh][Aa][Rr][Ss][Ee][Tt][\s\t]*\=[\s\t]*x\-sjis\\1[^>]*>/", $body, $matches) > 0) $body_old = mb_convert_encoding($body, "Shift_JIS", "UTF-8");
 
-// 重要なお知らせ画面をスキップする
+// 重要なお知らせ画面が表示される場合、次の画面を取得する
 if(strpos($body_old, "－重要なお知らせ－") !== false) {
 	if(preg_match("/<[Ff][Oo][Rr][Mm].*?[Aa][Cc][Tt][Ii][Oo][Nn][\s\t]*=[\s\t]*\"([^\"]*)\"[^>]*>/", $body_old, $matches) > 0) {
 		$method = "POST";

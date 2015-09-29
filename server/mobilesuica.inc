@@ -128,7 +128,7 @@ if($sid > 0) {
 	}
 	
 	$account["details"] = array();
-	$tables = parse_tag($body, "table", true);
+	$tables = parse_tag($body, "table", true); // 再帰的に取得する
 	foreach($tables as $table) if($table["cellpadding"] == "8") {
 		$account["details"] = mobilesuica_get_details($table["innerHTML"]);
 		$detail = array_shift($account["details"]);
@@ -136,7 +136,7 @@ if($sid > 0) {
 	}
 	
 	// SuicaID番号を取得する
-	$forms = parse_tag($body, "form", true);
+	$forms = parse_tag($body, "form", true); // 再帰的に取得する
 	$c = parse_tag_search($forms, "name", "form1");
 	if($c != -1) {
 		$inputs = parse_tag($forms[$c]["innerHTML"], "input");

@@ -53,8 +53,8 @@ if($c != -1) {
 	list($head, $body) = netbk_http11($method, $uris, $query, $cookie);
 }
 
+// 重要なお知らせ画面が表示される場合、次の画面を取得する
 if(strpos($body, "銀行からの重要なお知らせ") !== false) {
-	// 重要なお知らせ画面の場合、スキップする
 	$forms = parse_tag($body, "form");
 	$c = parse_tag_search($forms, "name", "form0103_01_100");
 	if($c != -1) {
@@ -218,7 +218,7 @@ if(strpos($body, "現在この取引はお取扱いできません") !== false) 
 		
 		// 明細が存在しない場合、選択中の口座の残高を取得する
 		if(strpos($body, "表示可能な明細はございません") !== false) {
-			$divs = parse_tag($body, "div", true);
+			$divs = parse_tag($body, "div", true); // 再帰的に取得する
 			foreach($divs as $div) if($div["class"] == "tablef01M" && $div["innerHTML"] != "選択中の口座の残高") {
 				$account["balamt"] = parse_amount(str_replace("&nbsp;", "", trim(strip_tags($div["innerHTML"]))));
 				break;

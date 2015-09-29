@@ -79,7 +79,7 @@ while($retry++ < ENV_NUM_HTTP11_RETRY) {
 }
 
 if(strpos($body, "三井住友銀行からの重要なお知らせ") !== false) {
-	// 重要なお知らせ画面の場合、スキップする
+	// 重要なお知らせ画面が表示される場合、次の画面を取得する
 	$forms = parse_tag($body, "form");
 	if(count($forms) == 1) {
 		$inputs = parse_tag($forms[0]["innerHTML"], "input");
@@ -179,7 +179,7 @@ if(strpos($body, "システムメンテナンスのため") !== false) {
 	
 	// 現在時刻より西暦と和暦の差を取得する
 	$delta = 0;
-	$divs = parse_tag($body, "div", true);
+	$divs = parse_tag($body, "div", true); // 再帰的に取得する
 	$c = parse_tag_search($divs, "class", "curTime");
 	if($c != -1) {
 		$geny = (preg_match("/([0-9]+)" . preg_quote("年") . "/", $divs[$c]["innerHTML"], $matches) > 0? $matches[1]: "0");
@@ -305,7 +305,7 @@ if(strpos($body, "システムメンテナンスのため") !== false) {
 			$body = $body_old;
 		} else {
 			// 残高を取得する
-			$spans = parse_tag($body, "span", true);
+			$spans = parse_tag($body, "span", true); // 再帰的に取得する
 			$c = parse_tag_search($spans, "class", "amount");
 			if($c != -1) $account["balance"] = parse_amount($spans[$c]["innerHTML"]);
 			
@@ -402,7 +402,7 @@ if(strpos($body, "システムメンテナンスのため") !== false) {
 		}
 	}
 	
-	// 未開封メッセージ画面をスキップする
+	// 未開封メッセージ画面が表示される場合、次の画面を取得する
 	$as = parse_tag($body, "a");
 	$c = parse_tag_search($as, "innerHTML", "確認せずにこのままログアウトする");
 	if($c != -1) {

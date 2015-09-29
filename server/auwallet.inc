@@ -340,7 +340,7 @@ if($sid > 0) {
 	}
 	
 	// 今月のチャージ履歴を取得する
-	$divs = parse_tag($body, "div", true);
+	$divs = parse_tag($body, "div", true); // 再帰的に取得する
 	foreach($divs as $div) if($div["class"] == "accordion") {
 		$memo = "";
 		$amount = "";
@@ -380,7 +380,7 @@ if($sid > 0) {
 	}
 	
 	// 前月のチャージ履歴を取得する
-	$divs = parse_tag($body, "div", true);
+	$divs = parse_tag($body, "div", true); // 再帰的に取得する
 	foreach($divs as $div) if($div["class"] == "accordion") {
 		$memo = "";
 		$amount = "";

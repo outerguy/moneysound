@@ -75,8 +75,6 @@ if($sid == 0) {
 		$queries["user_id"] = "user_id=" . $user;
 		$queries["password"] = "password=" . $pass;
 		$queries["image_key"] = "image_key=";
-		//$queries["submit.x"] = "submit.x=0";
-		//$queries["submit.y"] = "submit.y=0";
 		
 		$method = $forms[0]["method"];
 		$uris = parse_uri($forms[0]["action"], $uris);

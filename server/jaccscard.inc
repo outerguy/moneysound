@@ -141,7 +141,7 @@ if(strpos($body, "メンテナンスを行っております") !== false) {
 	}
 	
 	// お支払日を取得する
-	$trs = parse_tag($body, "tr", true);
+	$trs = parse_tag($body, "tr", true); // 再帰的に取得する
 	$c = parse_tag_search($trs, "class", "first");
 	if($c != -1) {
 		$tds = parse_tag($trs[$c]["innerHTML"], "td");
@@ -155,25 +155,6 @@ if(strpos($body, "メンテナンスを行っております") !== false) {
 		$account["name"] = $settings["name"];
 		$account["acctid"] = strip_tags(str_replace("&lowast;", "*", $dds[1]["innerHTML"]));
 	}
-	
-	/*
-	// 過去のご利用代金明細画面を表示する
-	$forms = parse_tag($body, "form");
-	$c = parse_tag_search($forms, "name", "MainForm");
-	if($c != -1) {
-		$inputs = parse_tag($forms[$c]["innerHTML"], "input");
-		$queries = array();
-		foreach($inputs as $input) if($input["name"] != "") $queries[$input["name"]] = urlencode($input["name"]) . "=" . urlencode($input["value"]);
-		$queries["_TRANID"] = "_TRANID=JAST00016_07M"; // 過去のご利用代金明細を確認
-		$queries["_SUBINDEX"] = "_SUBINDEX=201501"; // 年月
-		
-		$method = $forms[$c]["method"];
-		$uris = parse_uri($forms[$c]["action"], $uris);
-		$query = implode("&", $queries);
-		$cookie = jaccscard_update_cookie($head, $cookie);
-		list($head, $body) = jaccscard_http11($method, $uris, $query, $cookie);
-	}
-	*/
 	
 	$body_old = $body;
 	
