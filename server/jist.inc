@@ -90,7 +90,7 @@ if(count($forms) == 1) {
 	list($head, $body) = jist_http11($method, $uris, $query, $cookie);
 }
 
-if(strpos($body, "システムメンテナンス中") !== false) { // 要検討
+if(strpos($body, "サービスを停止しております") !== false) {
 	// システムメンテナンス画面の場合
 	$resp["status"] = ENV_NUM_STATUS_MAINTENANCE;
 	$resp["method"] = $method;
