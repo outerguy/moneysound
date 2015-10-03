@@ -1,6 +1,6 @@
 <?php
 /*
-jpbank.inc: ゆうちょ銀行のCSVよりOFXファイルを生成する
+jpbank.inc: ゆうちょ銀行のHTMLよりOFXファイルを生成する
 Copyright (C) 2012-2015 OFFICE OUTERGUY. All rights reserved.
 mailto:contact@beatrek.com
 Licensed under the GNU AGPLv3.
@@ -375,22 +375,24 @@ if($sid > 0) {
 		}
 	}
 	
-	// 明細CSVダウンロード画面を取得する
+	// 入出金明細を取得する
 	$forms = parse_tag($body, "form");
 	$c = parse_tag_search($forms, "name", "submitData");
 	if($c != -1) {
-		$as = parse_tag($body, "a");
-		foreach($as as $a) if($a["innerHTML"] == "データダウンロード（CSV形式）" && $a["onclick"] != "") {
-			$dcs = jpbank_parse_dcrequest($a["onclick"]);
-			break;
-		}
 		$inputs = parse_tag($forms[$c]["innerHTML"], "input");
 		$queries = array();
-		foreach($inputs as $input) if($input["name"] != "") $queries[$input["name"]] = urlencode($input["name"]) . "=" . urlencode($input["value"]);
+		foreach($inputs as $input) {
+			if($input["type"] == "button" && $input["onclick"] != "") $dcs = jpbank_parse_dcrequest($input["onclick"]);
+			if($input["name"] != "") $queries[$input["name"]] = urlencode($input["name"]) . "=" . urlencode($input["value"]);
+		}
 		$selects = parse_tag($forms[$c]["innerHTML"], "select");
 		foreach($selects as $select) {
 			$options = parse_tag($select["innerHTML"], "option");
-			foreach($options as $option) if($select["name"] != "" && $option["selected"] == "selected") $queries[$select["name"]] = urlencode($select["name"]) . "=" . urlencode($option["value"]);
+			// foreach($options as $option) if($select["name"] != "" && $option["selected"] == "selected") $queries[$select["name"]] = urlencode($select["name"]) . "=" . urlencode($option["value"]);
+			foreach($options as $option) {
+				if(preg_match("/[^0-9]+([0-9]+)\(([0-9]+)\)/", $option["innerHTML"], $matches) > 0) $account["yearconv"] = (integer)$matches[2] - (integer)$matches[1];
+				if($select["name"] != "" && $option["selected"] == "selected") $queries[$select["name"]] = urlencode($select["name"]) . "=" . urlencode($option["value"]);
+			}
 		}
 		
 		$forms[$c]["action"] = $dcs["path"];
@@ -403,6 +405,7 @@ if($sid > 0) {
 		$queries["nyuushukkinShoukaiHaniShuuryouNen"] = "nyuushukkinShoukaiHaniShuuryouNen=" . substr(ENV_STR_DATE_TODAY, 0, 4);
 		$queries["shiteiKanouShuuryouTsukiId"] = "shiteiKanouShuuryouTsukiId=" . substr(ENV_STR_DATE_TODAY, 4, 2);
 		$queries["shiteiKanouShuuryouHiId"] = "shiteiKanouShuuryouHiId=" . substr(ENV_STR_DATE_TODAY, 6, 2);
+		$queries["kensuuSentaku"] = "kensuuSentaku=100"; // 100=表示件数
 		
 		$method = $forms[$c]["method"];
 		$uris = parse_uri($forms[$c]["action"], $uris);
@@ -424,6 +427,15 @@ if($sid > 0) {
 		}
 	}
 	
+	// 明細を取得する
+	$tables = parse_tag($body, "table");
+	$c = parse_tag_search($tables, "class", "tblTy91 tblTy06");
+	if($c != -1) {
+		$tbodys = parse_tag($tables[$c]["innerHTML"], "tbody");
+		if(count($tbodys) > 0) $account["details"] = jpbank_get_details($tbodys[0]["innerHTML"]);
+	}
+	
+	/*
 	$body_old = $body;
 	
 	// CSVファイルをダウンロードする
@@ -472,6 +484,7 @@ if($sid > 0) {
 	}
 	
 	$body = $body_old;
+	*/
 	
 	// 実行時間（タイムアウト）を再設定する
 	@set_time_limit(ENV_NUM_TIMEOUT);
@@ -511,6 +524,45 @@ if($sid > 0) {
 		}
 	}
 	
+	// 実行時間（タイムアウト）を再設定する
+	@set_time_limit(ENV_NUM_TIMEOUT);
+	
+	$bankmsgsrsv1 = "";
+	$bankmsgsrsv1 .= "<BANKMSGSRSV1>";
+	$bankmsgsrsv1 .= "\r\n";
+	
+	// 口座情報を取得する
+	$bankmsgsrsv1 .= "<STMTTRNRS>";
+	$bankmsgsrsv1 .= "\r\n";
+	$bankmsgsrsv1 .= "<TRNUID>0</TRNUID>";
+	$bankmsgsrsv1 .= "\r\n";
+	$bankmsgsrsv1 .= "<STATUS><CODE>0</CODE><SEVERITY>INFO</SEVERITY></STATUS>";
+	$bankmsgsrsv1 .= "\r\n";
+	$bankmsgsrsv1 .= "<STMTRS>";
+	$bankmsgsrsv1 .= "\r\n";
+	$bankmsgsrsv1 .= "<CURDEF>" . ENV_STR_OFX_CURRENCY_JPY . "</CURDEF>";
+	$bankmsgsrsv1 .= "\r\n";
+	$bankmsgsrsv1 .= "<BANKACCTFROM>";
+	$bankmsgsrsv1 .= "<BANKID>" . $settings["code"] . "</BANKID>";
+	$bankmsgsrsv1 .= "<BRANCHID>" . $branchid . "</BRANCHID>";
+	$bankmsgsrsv1 .= "<ACCTID>" . $acctid . "</ACCTID>";
+	$bankmsgsrsv1 .= "<ACCTTYPE>" . $accttype . "</ACCTTYPE>";
+	$bankmsgsrsv1 .= "</BANKACCTFROM>";
+	$bankmsgsrsv1 .= "\r\n";
+	$bankmsgsrsv1 .= jpbank_parse_details($account);
+	$bankmsgsrsv1 .= "</STMTRS>";
+	$bankmsgsrsv1 .= "\r\n";
+	$bankmsgsrsv1 .= "</STMTTRNRS>";
+	$bankmsgsrsv1 .= "\r\n";
+	
+	$bankmsgsrsv1 .= "</BANKMSGSRSV1>";
+	$bankmsgsrsv1 .= "\r\n";
+	
+	// OFXファイルを出力する
+	$resp["status"] = ENV_NUM_STATUS_SUCCESS;
+	$resp["ofx"] = generate_ofx($resp["status"], $bankmsgsrsv1);
+	
+	/*
 	// OFXファイルを出力する
 	$resp["status"] = ENV_NUM_STATUS_SUCCESS;
 	if(strpos($bankmsgsrsv1, "<BANKTRANLIST>") === false) {
@@ -520,6 +572,7 @@ if($sid > 0) {
 		// 明細が存在する場合
 		$resp["ofx"] = generate_ofx($resp["status"], $bankmsgsrsv1);
 	}
+	*/
 }
 return $resp;
 
@@ -571,6 +624,136 @@ function jpbank_delete_quote($str) {
 	return preg_replace("/^.*?([\"\'])(.*?)\\1.*?$/", "\\2", $str);
 }
 
+function jpbank_get_details($body) {
+	$rets = array();
+	$i = 0;
+	$trs = parse_tag($body, "tr");
+	foreach($trs as $tr) {
+		$tds = parse_tag($tr["innerHTML"], "td");
+		if(count($tds) == 5) {
+			// 取引年月日を取得する
+			$ymds = explode("-", trim(strip_tags($tds[0]["innerHTML"])));
+			$rets[$i]["date"] = parse_date(implode("-", array((string)((integer)$ymds[0] + $account["yearconv"]), $ymds[1], $ymds[2])));
+			
+			// 預入／支払内容を取得する
+			$rets[$i]["summary"] = str_replace("&nbsp;", "", trim(strip_tags($tds[3]["innerHTML"])));
+			
+			// 預入／支払金額を取得する
+			$rets[$i]["amount"] = (string)((integer)parse_amount($tds[1]["innerHTML"]) - (integer)parse_amount($tds[2]["innerHTML"]));
+			
+			$i++;
+		}
+	}
+	
+	return $rets;
+}
+
+function jpbank_parse_details($account) {
+	$ret = "";
+	$cds = array();
+	$cd_date = "";
+	$cd_num = 0;
+	foreach($account["details"] as $line) {
+		$cd = array();
+		$trntypes = explode("　", $line["summary"], 2);
+		switch($trntypes[0]) {
+		case "振込":
+			$cd["TRNTYPE"] = ENV_STR_OFX_TRNTYPE_DIRECTDEP;
+			break;
+		case "振替":
+		case "自払":
+		case "割賦":
+			$cd["TRNTYPE"] = ENV_STR_OFX_TRNTYPE_DIRECTDEBIT;
+			break;
+		case "送金":
+			$cd["TRNTYPE"] = ENV_STR_OFX_TRNTYPE_XFER;
+			break;
+		case "払込":
+		case "払出":
+			$cd["TRNTYPE"] = ENV_STR_OFX_TRNTYPE_CASH;
+			break;
+		case "会費":
+			$cd["TRNTYPE"] = ENV_STR_OFX_TRNTYPE_REPEATPMT;
+			break;
+		/*
+		case "通　帳": // 要検討
+		*/
+		case "カード":
+			$cd["TRNTYPE"] = ENV_STR_OFX_TRNTYPE_ATM;
+			break;
+		/*
+		case "料　金": // 要検討
+			$cd["TRNTYPE"] = ENV_STR_OFX_TRNTYPE_FEE;
+			break;
+		*/
+		case "受取利子":
+		case "利子":
+			$cd["TRNTYPE"] = ENV_STR_OFX_TRNTYPE_INT;
+			break;
+		case "税金":
+			$cd["TRNTYPE"] = ENV_STR_OFX_TRNTYPE_INT;
+			break;
+		default:
+			$cd["TRNTYPE"] = ENV_STR_OFX_TRNTYPE_OTHER;
+			break;
+		}
+		
+		// 日付を取得する
+		$cd["DTPOSTED"] = $line["date"];
+		
+		// 通番を生成する
+		if($cd["DTPOSTED"] == $cd_date) $cd_num++; else $cd_num = 0;
+		
+		// トランザクション番号を生成する
+		$cd["FITID"] = $cd["DTPOSTED"] . "0000000" . sprintf("%05d", $cd_num);
+		
+		// 摘要を取得する
+		$cd["NAME"] = $line["summary"];
+		
+		// 金額を取得する
+		$cd["TRNAMT"] = parse_amount($line["amount"]);
+		$cd["MEMO"] = ENV_STR_OFX_MEMO;
+		
+		array_push($cds, $cd);
+		$cd_date = $cd["DTPOSTED"];
+	}
+	// BANKTRANLIST
+	$ret .= "<BANKTRANLIST>";
+	$ret .= "\r\n";
+	$ret .= "<DTSTART>" . ENV_STR_DATE_PASTDAY . ENV_STR_OFX_TZ . "</DTSTART>";
+	$ret .= "<DTEND>" . ENV_STR_DATE_TODAY . ENV_STR_OFX_TZ . "</DTEND>";
+	$ret .= "\r\n";
+	
+	foreach($cds as $cd) {
+		$ret .= "<STMTTRN>";
+		$ret .= "<TRNTYPE>" . $cd["TRNTYPE"] . "</TRNTYPE>";
+		$ret .= "<DTPOSTED>" . $cd["DTPOSTED"] . ENV_STR_OFX_TZ . "</DTPOSTED>";
+		$ret .= "<TRNAMT>" . $cd["TRNAMT"] . "</TRNAMT>";
+		$ret .= "<FITID>" . $cd["FITID"] . "</FITID>";
+		$ret .= "<NAME>" . $cd["NAME"] . "</NAME>";
+		$ret .= "<MEMO>" . $cd["MEMO"] . "</MEMO>";
+		$ret .= "</STMTTRN>";
+		$ret .= "\r\n";
+	}
+	
+	$ret .= "</BANKTRANLIST>";
+	$ret .= "\r\n";
+	$ret .= "<LEDGERBAL>";
+	$ret .= "<BALAMT>" . $account["balance"] . "</BALAMT>";
+	$ret .= "<DTASOF>" . ENV_STR_DATE_TODAY . ENV_STR_OFX_TZ . "</DTASOF>";
+	$ret .= "</LEDGERBAL>";
+	$ret .= "\r\n";
+	
+	// 口座名称を出力する
+	if($account["acctname"] != "") {
+		$ret .= "<MKTGINFO>" . $account["acctname"] . "</MKTGINFO>";
+		$ret .= "\r\n";
+	}
+	
+	return $ret;
+}
+
+/*
 function jpbank_parse_csv($str, $account) {
 	$ret = "";
 	$lines = parse_csv(mb_convert_string($str));
@@ -663,5 +846,6 @@ function jpbank_parse_csv($str, $account) {
 	
 	return $ret;
 }
+*/
 
 ?>
