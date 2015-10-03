@@ -428,6 +428,7 @@ if($sid > 0) {
 	}
 	
 	// 明細を取得する
+	$account["details"] = array();
 	$tables = parse_tag($body, "table");
 	$c = parse_tag_search($tables, "class", "tblTy91 tblTy06");
 	if($c != -1) {
