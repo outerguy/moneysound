@@ -323,6 +323,7 @@ if($sid > 0) {
 	$resp["ofx"] = generate_ofx($resp["status"]);
 } else {
 	$account = array();
+	$delta = 1988;
 	
 	// 実行時間（タイムアウト）を再設定する
 	@set_time_limit(ENV_NUM_TIMEOUT);
@@ -331,7 +332,7 @@ if($sid > 0) {
 	$divs = parse_tag($body, "div", true); // 再帰的に取得する
 	$c = parse_tag_search($divs, "class", "col w45");
 	if($c != -1) {
-		if(preg_match("/\((.+?)" . preg_quote("：") . "(.+?)&emsp;([0-9]{7})\)/", $divs[$c]["innerHTML"], $matches) > 0) {
+		if(preg_match("/\((.+?)" . preg_quote("：") . "(.+?)&emsp;([0-9]+)\)/", $divs[$c]["innerHTML"], $matches) > 0) {
 			$accttype = jpbank_getaccttype($matches[1]);
 			$branchid = str_replace(array("〇", "一", "二", "三", "四", "五" ,"六" ,"七", "八", "九", "店"), array("0", "1", "2", "3", "4", "5", "6", "7", "8", "9", ""), $matches[2]);
 			$acctid = $matches[3];
@@ -344,7 +345,7 @@ if($sid > 0) {
 	
 	// 入出金明細照会画面を取得する
 	$as = parse_tag($body, "a");
-	$c = parse_tag_search($as, "innerHTML", "もっと見る");
+	$c = parse_tag_search($as, "innerHTML", "入出金明細照会");
 	if($c != -1) $dcs = jpbank_parse_dcrequest($as[$c]["onclick"]);
 	$forms = parse_tag($body, "form");
 	$c = parse_tag_search($forms, "name", "simpleTransitionForm");
@@ -390,8 +391,9 @@ if($sid > 0) {
 			$options = parse_tag($select["innerHTML"], "option");
 			// foreach($options as $option) if($select["name"] != "" && $option["selected"] == "selected") $queries[$select["name"]] = urlencode($select["name"]) . "=" . urlencode($option["value"]);
 			foreach($options as $option) {
-				if(preg_match("/[^0-9]+([0-9]+)\(([0-9]+)\)/", $option["innerHTML"], $matches) > 0) $account["yearconv"] = (integer)$matches[2] - (integer)$matches[1];
 				if($select["name"] != "" && $option["selected"] == "selected") $queries[$select["name"]] = urlencode($select["name"]) . "=" . urlencode($option["value"]);
+				// 西暦と和暦の差を取得する
+				if(preg_match("/[^0-9]+([0-9]+)\(([0-9]+)\)/", $option["innerHTML"], $matches) > 0) $delta = (integer)$matches[2] - (integer)$matches[1];
 			}
 		}
 		
@@ -433,7 +435,7 @@ if($sid > 0) {
 	$c = parse_tag_search($tables, "class", "tblTy91 tblTy06");
 	if($c != -1) {
 		$tbodys = parse_tag($tables[$c]["innerHTML"], "tbody");
-		if(count($tbodys) > 0) $account["details"] = jpbank_get_details($tbodys[0]["innerHTML"]);
+		if(count($tbodys) > 0) $account["details"] = jpbank_get_details($tbodys[0]["innerHTML"], $delta);
 	}
 	
 	/*
@@ -625,7 +627,7 @@ function jpbank_delete_quote($str) {
 	return preg_replace("/^.*?([\"\'])(.*?)\\1.*?$/", "\\2", $str);
 }
 
-function jpbank_get_details($body) {
+function jpbank_get_details($body, $delta) {
 	$rets = array();
 	$i = 0;
 	$trs = parse_tag($body, "tr");
@@ -634,7 +636,7 @@ function jpbank_get_details($body) {
 		if(count($tds) == 5) {
 			// 取引年月日を取得する
 			$ymds = explode("-", trim(strip_tags($tds[0]["innerHTML"])));
-			$rets[$i]["date"] = parse_date(implode("-", array((string)((integer)$ymds[0] + $account["yearconv"]), $ymds[1], $ymds[2])));
+			$rets[$i]["date"] = parse_date(implode("-", array((string)((integer)$ymds[0] + $delta), $ymds[1], $ymds[2])));
 			
 			// 預入／支払内容を取得する
 			$rets[$i]["summary"] = str_replace("&nbsp;", "", trim(strip_tags($tds[3]["innerHTML"])));
