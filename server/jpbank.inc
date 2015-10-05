@@ -335,7 +335,7 @@ if($sid > 0) {
 		if(preg_match("/\((.+?)" . preg_quote("：") . "(.+?)&emsp;([0-9]+)\)/", $divs[$c]["innerHTML"], $matches) > 0) {
 			$accttype = jpbank_getaccttype($matches[1]);
 			$branchid = str_replace(array("〇", "一", "二", "三", "四", "五" ,"六" ,"七", "八", "九", "店"), array("0", "1", "2", "3", "4", "5", "6", "7", "8", "9", ""), $matches[2]);
-			$acctid = $matches[3];
+			$acctid = sprintf("%07d", (integer)$matches[3]);
 			$account["acctname"] = implode(ENV_CHR_CONCATENATOR, array($settings["name"], $matches[2], $matches[1]));
 		}
 	}
