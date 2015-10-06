@@ -438,57 +438,6 @@ if($sid > 0) {
 		if(count($tbodys) > 0) $account["details"] = jpbank_get_details($tbodys[0]["innerHTML"], $delta);
 	}
 	
-	/*
-	$body_old = $body;
-	
-	// CSVファイルをダウンロードする
-	$as = parse_tag($body, "a");
-	$c = parse_tag_search($as, "innerHTML", "ダウンロード");
-	if($c != -1) $dcs = jpbank_parse_dcrequest($as[$c]["onclick"]);
-	$forms = parse_tag($body, "form");
-	$c = parse_tag_search($forms, "name", "submitData");
-	if($c != -1) {
-		$inputs = parse_tag($forms[$c]["innerHTML"], "input");
-		$queries = array();
-		foreach($inputs as $input) if($input["name"] != "") $queries[$input["name"]] = urlencode($input["name"]) . "=" . urlencode($input["value"]);
-		$forms[$c]["action"] = $dcs["path"];
-		if(count($dcs["kvs"]) > 0) foreach($dcs["kvs"] as $k => $v) $queries[$k] = $v;
-		
-		$method = $forms[$c]["method"];
-		$uris = parse_uri($forms[$c]["action"], $uris);
-		$query = implode("&", $queries);
-		$cookie = jpbank_update_cookie($head, $cookie);
-		list($head, $body) = jpbank_http11($method, $uris, $query, $cookie);
-		
-		if(strpos($head, "Content-Type: text/html") === false) {
-			$bankmsgsrsv1 .= "<STMTTRNRS>";
-			$bankmsgsrsv1 .= "\r\n";
-			$bankmsgsrsv1 .= "<TRNUID>0</TRNUID>";
-			$bankmsgsrsv1 .= "\r\n";
-			$bankmsgsrsv1 .= "<STATUS><CODE>0</CODE><SEVERITY>INFO</SEVERITY></STATUS>";
-			$bankmsgsrsv1 .= "\r\n";
-			$bankmsgsrsv1 .= "<STMTRS>";
-			$bankmsgsrsv1 .= "\r\n";
-			$bankmsgsrsv1 .= "<CURDEF>" . ENV_STR_OFX_CURRENCY_JPY . "</CURDEF>";
-			$bankmsgsrsv1 .= "\r\n";
-			$bankmsgsrsv1 .= "<BANKACCTFROM>";
-			$bankmsgsrsv1 .= "<BANKID>" . $settings["code"] . "</BANKID>";
-			$bankmsgsrsv1 .= "<BRANCHID>" . $branchid . "</BRANCHID>";
-			$bankmsgsrsv1 .= "<ACCTID>" . $acctid . "</ACCTID>";
-			$bankmsgsrsv1 .= "<ACCTTYPE>" . $accttype . "</ACCTTYPE>";
-			$bankmsgsrsv1 .= "</BANKACCTFROM>";
-			$bankmsgsrsv1 .= "\r\n";
-			$bankmsgsrsv1 .= jpbank_parse_csv($body, $account);
-			$bankmsgsrsv1 .= "</STMTRS>";
-			$bankmsgsrsv1 .= "\r\n";
-			$bankmsgsrsv1 .= "</STMTTRNRS>";
-			$bankmsgsrsv1 .= "\r\n";
-		}
-	}
-	
-	$body = $body_old;
-	*/
-	
 	// 実行時間（タイムアウト）を再設定する
 	@set_time_limit(ENV_NUM_TIMEOUT);
 	
@@ -564,18 +513,6 @@ if($sid > 0) {
 	// OFXファイルを出力する
 	$resp["status"] = ENV_NUM_STATUS_SUCCESS;
 	$resp["ofx"] = generate_ofx($resp["status"], $bankmsgsrsv1);
-	
-	/*
-	// OFXファイルを出力する
-	$resp["status"] = ENV_NUM_STATUS_SUCCESS;
-	if(strpos($bankmsgsrsv1, "<BANKTRANLIST>") === false) {
-		// 明細が存在しない場合
-		$resp["ofx"] = generate_ofx($resp["status"]);
-	} else {
-		// 明細が存在する場合
-		$resp["ofx"] = generate_ofx($resp["status"], $bankmsgsrsv1);
-	}
-	*/
 }
 return $resp;
 
@@ -755,100 +692,5 @@ function jpbank_parse_details($account) {
 	
 	return $ret;
 }
-
-/*
-function jpbank_parse_csv($str, $account) {
-	$ret = "";
-	$lines = parse_csv(mb_convert_string($str));
-	$cds = array();
-	$cd_date = "";
-	foreach($lines as $line) {
-		$cd = array();
-		if(count($line) == 8 && $line[0] != "取引日") {
-			switch($line[4]) {
-			case "振込":
-				$cd["TRNTYPE"] = ENV_STR_OFX_TRNTYPE_DIRECTDEP;
-				break;
-			case "振替":
-			case "自払":
-			case "割賦":
-				$cd["TRNTYPE"] = ENV_STR_OFX_TRNTYPE_DIRECTDEBIT;
-				break;
-			case "送金":
-				$cd["TRNTYPE"] = ENV_STR_OFX_TRNTYPE_XFER;
-				break;
-			case "払込":
-			case "払出":
-				$cd["TRNTYPE"] = ENV_STR_OFX_TRNTYPE_CASH;
-				break;
-			case "会費":
-				$cd["TRNTYPE"] = ENV_STR_OFX_TRNTYPE_REPEATPMT;
-				break;
-			case "通　帳":
-			case "カード":
-				$cd["TRNTYPE"] = ENV_STR_OFX_TRNTYPE_ATM;
-				break;
-			case "料　金":
-				$cd["TRNTYPE"] = ENV_STR_OFX_TRNTYPE_FEE;
-				break;
-			case "受取利子":
-			case "利子":
-				$cd["TRNTYPE"] = ENV_STR_OFX_TRNTYPE_INT;
-				break;
-			case "税金":
-				$cd["TRNTYPE"] = ENV_STR_OFX_TRNTYPE_INT;
-				break;
-			default:
-				$cd["TRNTYPE"] = ENV_STR_OFX_TRNTYPE_OTHER;
-				break;
-			}
-			// 日付を取得する
-			$cd["DTPOSTED"] = $line[0];
-			// トランザクション番号を生成する
-			$cd["FITID"] = substr($line[1], 0, 8) . sprintf("%04d", (integer)substr($line[1], 8, 2)) . "000" . substr($line[1], 10, 5);
-			// 摘要を取得する
-			$cd["NAME"] = $line[4] . ($line[5] != ""? ENV_CHR_CONCATENATOR . $line[5]: "");
-			// 金額を取得する
-			$cd["TRNAMT"] = (string)((double)parse_amount($line[2]) - (double)parse_amount($line[3]));
-			$cd["MEMO"] = ENV_STR_OFX_MEMO;
-			
-			array_push($cds, $cd);
-			$cd_date = $cd["DTPOSTED"];
-		}
-	}
-	// BANKTRANLIST
-	$ret .= "<BANKTRANLIST>";
-	$ret .= "\r\n";
-	$ret .= "<DTSTART>" . ENV_STR_DATE_PASTDAY . ENV_STR_OFX_TZ . "</DTSTART>";
-	$ret .= "<DTEND>" . ENV_STR_DATE_TODAY . ENV_STR_OFX_TZ . "</DTEND>";
-	$ret .= "\r\n";
-	foreach($cds as $cd) {
-		$ret .= "<STMTTRN>";
-		$ret .= "<TRNTYPE>" . $cd["TRNTYPE"] . "</TRNTYPE>";
-		$ret .= "<DTPOSTED>" . $cd["DTPOSTED"] . ENV_STR_OFX_TZ . "</DTPOSTED>";
-		$ret .= "<TRNAMT>" . $cd["TRNAMT"] . "</TRNAMT>";
-		$ret .= "<FITID>" . $cd["FITID"] . "</FITID>";
-		$ret .= "<NAME>" . $cd["NAME"] . "</NAME>";
-		$ret .= "<MEMO>" . $cd["MEMO"] . "</MEMO>";
-		$ret .= "</STMTTRN>";
-		$ret .= "\r\n";
-	}
-	$ret .= "</BANKTRANLIST>";
-	$ret .= "\r\n";
-	$ret .= "<LEDGERBAL>";
-	$ret .= "<BALAMT>" . $account["balance"] . "</BALAMT>";
-	$ret .= "<DTASOF>" . ENV_STR_DATE_TODAY . ENV_STR_OFX_TZ . "</DTASOF>";
-	$ret .= "</LEDGERBAL>";
-	$ret .= "\r\n";
-	
-	// 口座名称を出力する
-	if($account["acctname"] != "") {
-		$ret .= "<MKTGINFO>" . $account["acctname"] . "</MKTGINFO>";
-		$ret .= "\r\n";
-	}
-	
-	return $ret;
-}
-*/
 
 ?>
