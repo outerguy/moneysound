@@ -648,7 +648,7 @@ function jpbank_parse_details($account) {
 		$cd["FITID"] = $cd["DTPOSTED"] . "0000000" . sprintf("%05d", $cd_num);
 		
 		// 摘要を取得する
-		$cd["NAME"] = $line["summary"];
+		$cd["NAME"] = ($line["summary"] != ""? $line["summary"]: "窓口");
 		
 		// 金額を取得する
 		$cd["TRNAMT"] = parse_amount($line["amount"]);
