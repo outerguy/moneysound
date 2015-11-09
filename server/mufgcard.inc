@@ -195,7 +195,8 @@ if(strpos($body, "現在サービス停止中") !== false || strpos($body, "シ�
     }
     
     // DOMツリーを生成
-    $ofxdom = new ofxDOM($account['acctid']);
+    $ofxdom = new ofxDOM("CREDITCARD");
+    $ofxdom->setAcctfrom(array("ACCTID" => $account["acctid"]));
     
     // 明細をパース
     $cds = array();
@@ -220,8 +221,8 @@ if(strpos($body, "現在サービス停止中") !== false || strpos($body, "シ�
         $cds_e = $dtposted;
     }
     
-    // BANKTRANLIST
-    $ofxdom->setBankTranList($cds_s, $cds_e);
+    // TRANLIST
+    $ofxdom->setTranList($cds_s, $cds_e);
     
     // 残高を処理
     $account["ledge_balamt"] = parse_amount($account["ledge_balamt"]);
