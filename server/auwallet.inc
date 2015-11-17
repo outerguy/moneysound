@@ -70,7 +70,8 @@ if($sid == 0) {
 	$forms = parse_tag($body, "form");
 	$c = parse_tag_search($forms, "name", "main");
 	if($c != -1) {
-		$inputs = parse_tag($forms[$c]["innerHTML"], "input");
+		// $inputs = parse_tag($forms[$c]["innerHTML"], "input");
+		$inputs = parse_tag($body, "input"); // 2015年11月17日に発生したサイトの不具合に暫定対処する
 		$queries = array();
 		foreach($inputs as $input) if($input["name"] != "") $queries[$input["name"]] = urlencode($input["name"]) . "=" . urlencode($input["value"]);
 		$queries["loginAliasId"] = "loginAliasId=" . $user;
