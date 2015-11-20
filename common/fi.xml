@@ -558,4 +558,21 @@
 </help>
 </fi>
 
+<fi id="waon" code="WAON">
+<type>PREPAID</type>
+<name>WAON</name>
+<home>https://www.waon.com/wmUseHistoryInq/init.do</home>
+<form>
+<input id="cardNo" type="text">WAON番号</input>
+<input id="secNo" type="password">コード</input>
+</form>
+<help>
+<h3>共通</h3>
+<ul>
+<li>前月1日から本日までの明細を取得します。</li>
+<li>残高は取得できないため、便宜的に0円とします。</li>
+</ul>
+</help>
+</fi>
+
 </filist>
