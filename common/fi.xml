@@ -315,8 +315,8 @@
 <ul>
 <li>入出金明細を取得します。</li>
 <li>現在の残高を取得します。</li>
-<li>現金残高等（合計）を<code>&lt;MARGINBALANCE&gt;</code>として出力します。</li>
-<li>買付余力（3営業日後）を<code>&lt;AVAILCASH&gt;</code>として出力します。</li>
+<li>現金残高等（合計）のうちSBI証券口座分を<code>&lt;MARGINBALANCE&gt;</code>として出力します。</li>
+<li>現金残高等（合計）を<code>&lt;AVAILCASH&gt;</code>として出力します。</li>
 </ul>
 </help>
 </fi>
