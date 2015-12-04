@@ -176,9 +176,14 @@ if(strpos($body, "ログイン後の全てのサービスを停止") !== false) 
 				$marginbalance = parse_amount($v);
 				break;
 			case "現金残高等（合計）":
-			case "現金残高等":
 				// 現金残高等（合計）を取得する
 				$availcash = parse_amount($v);
+				break;
+			case "現金残高等":
+				// 現金残高等を取得する
+				// （住信SBIネット銀行と未連携の場合が該当）
+				$availcash = parse_amount($v);
+				$marginbalance = $availcash;
 				break;
 			default:
 				break;
