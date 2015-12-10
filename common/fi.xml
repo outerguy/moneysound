@@ -354,6 +354,45 @@
 </help>
 </fi>
 
+<fi id="rakutensec" code="0036">
+<type>INVSTMT</type>
+<name>楽天証券</name>
+<home>https://www.rakuten-sec.co.jp/</home>
+<form>
+<input id="loginid" type="text">ログインID</input>
+<input id="passwd" type="password">パスワード</input>
+</form>
+<help>
+<h3>共通</h3>
+<ul>
+<li>前月1日から本日までの明細を取得します。</li>
+<li>口座名称を<code>&lt;MKTGINFO&gt;</code>として出力します。</li>
+</ul>
+<h3>国内株式（現物）</h3>
+<ul>
+<li>銘柄コード、銘柄名称、保有株数、現在値、評価額、損益額を取得します。</li>
+<li>売買履歴を取得します。</li>
+<li>損益額を<code>&lt;POSSTOCK&gt;</code>の<code>&lt;MEMO&gt;</code>として出力します。</li>
+</ul>
+<h3>投資信託</h3>
+<ul>
+<li>ファンド名、保有口数、基準価額、評価額、損益額を取得します。</li>
+<li>売買履歴を取得します。</li>
+<li>損益額を<code>&lt;POSMF&gt;</code>の<code>&lt;MEMO&gt;</code>として出力します。</li>
+</ul>
+<h3>債券</h3>
+<ul>
+<li>未対応です。</li>
+</ul>
+<h3>預り金</h3>
+<ul>
+<li>入出金明細を取得します。</li>
+<li>現在の残高を取得します。</li>
+<li>預り金（MRF）を<code>&lt;MARGINBALANCE&gt;</code>及び<code>&lt;AVAILCASH&gt;</code>として出力します。</li>
+</ul>
+</help>
+</fi>
+
 <fi id="nrkn" code="NRKN">
 <type>INVSTMT</type>
 <name>日本レコード・キーピング・ネットワーク</name>

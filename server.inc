@@ -112,13 +112,18 @@ function mb_convert_string($str) {
 
 class ofxDOM {
 	private $dom;
+	private $type;
 	private $acctfrom;
 	private $tranlist;
+	private $poslist;
+	private $seclist;
 	private $stmtrs;
+	private $balance;
 	
 	// XML DOMツリーを作成する
 	// $ofxdom = new ofxDOM("CREDITCARD");
-	public function __construct($type="CREDITCARD") {
+	public function __construct($type="CREDITCARD", $mktginfo="") {
+		$this->type = $type;
 		$this->dom = new DOMDocument('1.0', 'UTF-8');
 		$dom = $this->dom;
 		switch($type) {
@@ -139,10 +144,45 @@ class ofxDOM {
 				$node->appendChild($dom->createTextNode(ENV_STR_OFX_CURRENCY_JPY));
 				$this->acctfrom = $stmtrs->appendChild($dom->createElement('CCACCTFROM'));
 				$this->tranlist = $stmtrs->appendChild($dom->createElement('BANKTRANLIST'));
+
+				$this->balance = $stmtrs->appendChild($dom->createElement('LEDGERBAL'));
 				break;
 			case "INVSTMT":
-			    // 未実装
-			    break;
+				// INVSTMT
+				$msg = $dom->appendChild($dom->createElement('INVSTMTMSGSRSV1'));
+				$stmttrnrs = $msg->appendChild($dom->createElement('INVSTMTTRNRS'));
+				$node = $stmttrnrs->appendChild($dom->createElement('TRNUID'));
+					$node->appendChild($dom->createTextNode('0'));
+				$status = $stmttrnrs->appendChild($dom->createElement('STATUS'));
+				$node = $status->appendChild($dom->createElement('CODE'));
+					$node->appendChild($dom->createTextNode('0'));
+				$node = $status->appendChild($dom->createElement('SEVERITY'));
+					$node->appendChild($dom->createTextNode('INFO'));
+				$stmtrs = $stmttrnrs->appendChild($dom->createElement('INVSTMTRS'));
+
+				$this->stmtrs = $stmtrs;
+				$node = $stmtrs->appendChild($dom->createElement('DTASOF'));
+				$node->appendChild($dom->createTextNode(ENV_STR_DATE_TODAY . ENV_STR_OFX_TZ));
+				$node = $stmtrs->appendChild($dom->createElement('CURDEF'));
+				$node->appendChild($dom->createTextNode(ENV_STR_OFX_CURRENCY_JPY));
+				$this->acctfrom = $stmtrs->appendChild($dom->createElement('INVACCTFROM'));
+				$this->tranlist = $stmtrs->appendChild($dom->createElement('INVTRANLIST'));
+				$this->poslist = $stmtrs->appendChild($dom->createElement('INVPOSLIST'));
+
+				$this->balance = $stmtrs->appendChild($dom->createElement('INVBAL'));
+
+				// SECLIST
+				$msg = $dom->appendChild($dom->createElement('SECLISTMSGSRSV1'));
+				$trnrs = $msg->appendChild($dom->createElement('SECLISTTRNRS'));
+				$node = $trnrs->appendChild($dom->createElement('TRNUID'));
+					$node->appendChild($dom->createTextNode('0'));
+				$status = $trnrs->appendChild($dom->createElement('STATUS'));
+				$node = $status->appendChild($dom->createElement('CODE'));
+					$node->appendChild($dom->createTextNode('0'));
+				$node = $status->appendChild($dom->createElement('SEVERITY'));
+					$node->appendChild($dom->createTextNode('INFO'));
+				$this->seclist = $msg->appendChild($dom->createElement('SECLIST'));
+				break;
 			// 銀行、前払式帳票（電子マネー）
 			default:
 				$msg = $dom->appendChild($dom->createElement('BANKMSGSRSV1'));
@@ -161,8 +201,11 @@ class ofxDOM {
 				$node->appendChild($dom->createTextNode(ENV_STR_OFX_CURRENCY_JPY));
 				$this->acctfrom = $stmtrs->appendChild($dom->createElement('BANKACCTFROM'));
 				$this->tranlist = $stmtrs->appendChild($dom->createElement('BANKTRANLIST'));
+
+				$this->balance = $stmtrs->appendChild($dom->createElement('LEDGERBAL'));
 				break;
 		}
+		if ($mktginfo != "") $this->setMktginfo($mktginfo);
 	}
 
 	// 口座情報
@@ -174,30 +217,84 @@ class ofxDOM {
 	}
 	
 	// 明細を書き込む
+	// Deprecated. Use addTran instead.
 	public function setTrans($cds) {
-		$acctid = $this->dom->getElementsByTagName('ACCTID')->item(0)->nodeValue;
-		$dom = $this->dom;
-		$tranlist = $this->tranlist;
 		foreach($cds as $cd) {
-			$stmttrn = $tranlist->appendChild($dom->createElement('STMTTRN'));
-			
-			$node = $stmttrn->appendChild($dom->createElement('TRNTYPE'));
-			$node->appendChild($dom->createTextNode($cd["TRNTYPE"]));
-			
-			$node = $stmttrn->appendChild($dom->createElement('DTPOSTED'));
-			$node->appendChild($dom->createTextNode($cd["DTPOSTED"] . ENV_STR_OFX_TZ));
-			
-			$node = $stmttrn->appendChild($dom->createElement('TRNAMT'));
-			$node->appendChild($dom->createTextNode($cd["TRNAMT"]));
-			
-			// この時点では、FITIDは請求月とデータ種別のみ
-			$node = $stmttrn->appendChild($dom->createElement('FITID'));
-			$node->appendChild($dom->createTextNode($cd["FITID"]));
-			
-			$node = $stmttrn->appendChild($dom->createElement('NAME'));
-			$node->appendChild($dom->createTextNode($cd["NAME"]));
+			$this->addTran($cd);
 		}
 	}
+
+	// 明細を書き込む
+	public function addTran($cd) {
+		$dom = $this->dom;
+		$parent = $this->tranlist;
+
+		if ($this->type == 'INVSTMT') {
+			$parent = $this->tranlist->appendChild($dom->createElement('INVBANKTRAN'));
+			$node = $parent->appendChild($dom->createElement('SUBACCTFUND'));
+			$node->appendChild($dom->createTextNode('CASH'));
+		}
+
+		$stmttrn = $parent->appendChild($dom->createElement('STMTTRN'));
+
+		$node = $stmttrn->appendChild($dom->createElement('TRNTYPE'));
+		$node->appendChild($dom->createTextNode($cd["TRNTYPE"]));
+
+		$node = $stmttrn->appendChild($dom->createElement('DTPOSTED'));
+		$node->appendChild($dom->createTextNode($cd["DTPOSTED"] . ENV_STR_OFX_TZ));
+
+		$node = $stmttrn->appendChild($dom->createElement('TRNAMT'));
+		$node->appendChild($dom->createTextNode($cd["TRNAMT"]));
+
+		// この時点では、FITIDは請求月とデータ種別のみ
+		$node = $stmttrn->appendChild($dom->createElement('FITID'));
+		$node->appendChild($dom->createTextNode($cd["FITID"]));
+
+		$node = $stmttrn->appendChild($dom->createElement('NAME'));
+		$node->appendChild($dom->createTextNode($cd["NAME"]));
+	}
+
+	// 取引履歴を書き込む
+	public function addTrade($ct) {
+		$dom = $this->dom;
+		$tranlist = $this->tranlist;
+		$array = array('UNITS', 'UNITPRICE', 'FEES', 'TAXES', 'COMMISSION', 'TOTAL', 'SUBACCTSEC');
+
+		if ($ct['INVTYPE'] == ENV_STR_OFX_REINVEST) {
+			array_push($array, 'INCOMETYPE');
+			$parent = $tranlist->appendChild($dom->createElement('REINVEST'));
+		} else if ($ct['INVTYPE'] == ENV_STR_OFX_BUY) {
+			array_push($array, 'SUBACCTFUND');
+			$tran = $tranlist->appendChild($dom->createElement($ct['INVTYPE'] . $ct['CATEGORY']));
+			$node = $tran->appendChild($dom->createElement('BUYTYPE'));
+			$node->appendChild($dom->createTextNode($ct['INVTYPE']));
+			$parent = $tran->appendChild($dom->createElement('INV' . $ct['INVTYPE']));
+		} else {
+			array_push($array, 'SUBACCTFUND');
+			$tran = $tranlist->appendChild($dom->createElement($ct['INVTYPE'] . $ct['CATEGORY']));
+			$node = $tran->appendChild($dom->createElement('SELLTYPE'));
+			$node->appendChild($dom->createTextNode($ct['INVTYPE']));
+			$parent = $tran->appendChild($dom->createElement('INV' . $ct['INVTYPE']));
+		}
+
+		$invtran = $parent->appendChild($dom->createElement('INVTRAN'));
+		$node = $invtran->appendChild($dom->createElement('FITID'));
+		$node->appendChild($dom->createTextNode($ct['FITID']));
+		$node = $invtran->appendChild($dom->createElement('DTTRADE'));
+		$node->appendChild($dom->createTextNode($ct['DTTRADE']));
+
+		$secid = $parent->appendChild($dom->createElement('SECID'));
+		$node = $secid->appendChild($dom->createElement('UNIQUEID'));
+		$node->appendChild($dom->createTextNode($ct['UNIQUEID']));
+		$node = $secid->appendChild($dom->createElement('UNIQUEIDTYPE'));
+		$node->appendChild($dom->createTextNode($ct['UNIQUEIDTYPE']));
+
+		foreach($array as $key) {
+			$node = $parent->appendChild($dom->createElement($key));
+			$node->appendChild($dom->createTextNode($ct[$key]));
+		}
+	}
+
 	public function getTrans() {
 		return $this->dom->getElementsByTagName('STMTTRN');
 	}
@@ -211,15 +308,64 @@ class ofxDOM {
 		$node = $tranlist->insertBefore($dom->createElement('DTSTART'), $tranlist->firstChild);
 		$node->appendChild($dom->createTextNode($cds_s));
 	}
+
+	// 証券残高を書き込む
+	public function addPos($cl) {
+		$dom = $this->dom;
+		$poslist = $this->poslist;
+		$array = array('HELDINACCT', 'POSTYPE', 'UNITS', 'UNITPRICE',
+					   'MKTVAL', 'DTPRICEASOF', 'MEMO');
+		$pos = $poslist->appendChild($dom->createElement('POS' . $cl['CATEGORY']));
+		$invpos = $pos->appendChild($dom->createElement('INVPOS'));
+
+		$secid = $invpos->appendChild($dom->createElement('SECID'));
+		$node = $secid->appendChild($dom->createElement('UNIQUEID'));
+		$node->appendChild($dom->createTextNode($cl['UNIQUEID']));
+		$node = $secid->appendChild($dom->createElement('UNIQUEIDTYPE'));
+		$node->appendChild($dom->createTextNode($cl['UNIQUEIDTYPE']));
+
+		foreach($array as $key) {
+			$node = $invpos->appendChild($dom->createElement($key));
+			$node->appendChild($dom->createTextNode($cl[$key]));
+		}
+	}
+
+	// SECLIST
+	public function addSec($cl) {
+		$dom = $this->dom;
+		$seclist = $this->seclist;
+
+		$info = $seclist->appendChild($dom->createElement($cl['CATEGORY'] . 'INFO'));
+		$secinfo = $info->appendChild($dom->createElement('SECINFO'));
+
+		$secid = $secinfo->appendChild($dom->createElement('SECID'));
+		$node = $secid->appendChild($dom->createElement('UNIQUEID'));
+		$node->appendChild($dom->createTextNode($cl['UNIQUEID']));
+		$node = $secid->appendChild($dom->createElement('UNIQUEIDTYPE'));
+		$node->appendChild($dom->createTextNode($cl['UNIQUEIDTYPE']));
+
+		$node = $secinfo->appendChild($dom->createElement('SECNAME'));
+		$node->appendChild($dom->createTextNode($cl['SECNAME']));
+	}
+
+	// Deprecated. Use setBalance instead.
 	public function setLedgerBalance($ledge_balamt, $dtasof) {
 		$dom = $this->dom;
 		$stmtrs = $this->stmtrs;
-		$ledgerbal = $stmtrs->appendChild($dom->createElement('LEDGERBAL'));
+		$ledgerbal = $this->balance;
 		$node = $ledgerbal->appendChild($dom->createElement('BALAMT'));
 		$node->appendChild($dom->createTextNode($ledge_balamt));
 		$node = $ledgerbal->appendChild($dom->createElement('DTASOF'));
 		$node->appendChild($dom->createTextNode($dtasof));
 	}
+	public function setBalance($array) {
+		foreach($array as $key => $value) {
+			$node = $this->balance->appendChild($this->dom->createElement($key));
+				$node->appendChild($this->dom->createTextNode($value));
+		}
+	}
+
+	// Deprecated.
 	public function setMktginfo($mktginfo) {
 		$dom = $this->dom;
 		$stmtrs = $this->stmtrs;
@@ -229,17 +375,23 @@ class ofxDOM {
 	private function setFitid() {
 		$acctid = $this->dom->getElementsByTagName('ACCTID')->item(0)->nodeValue;
 		$acctid = substr($acctid, strlen($acctid) - 4);
-		$cd_num = 0;
-		$last_dtposted = "";
-		foreach ($this->getTrans() as $tran) {
-			$dtposted = $tran->getElementsByTagName('DTPOSTED')->item(0)->nodeValue;
+		$cd_nums = array();
+		$fitids = $this->dom->getElementsByTagName('FITID');
+		foreach ($fitids as $fitid) {
+			if ($fitid->parentNode->getElementsByTagName('DTPOSTED')->length != 0) {
+				$dt = $fitid->parentNode->getElementsByTagName('DTPOSTED')->item(0)->nodeValue;
+			} else {
+				$dt = $fitid->parentNode->getElementsByTagName('DTTRADE')->item(0)->nodeValue;
+			}
 			// 年月日のみを抽出
-			$dtposted = substr($dtposted, 0, 8);
-			if ($dtposted == $last_dtposted) $cd_num++; else $cd_num = 0;
-			$fitid = $tran->getElementsByTagName('FITID')->item(0);
-            // 口座種目は必要ないため、当面0000とする
-			$fitid->nodeValue = sprintf("%s0000%s%05d", $dtposted, $fitid->nodeValue, $cd_num);
-			$last_dtposted = $dtposted;
+			$dt = substr($dt, 0, 8);
+			if (array_key_exists($dt, $cd_nums)) {
+				$cd_nums[$dt]++;
+			} else {
+				$cd_nums[$dt] = 0;
+			}
+			// 口座種目は必要ないため、当面0000とする
+			$fitid->nodeValue = sprintf("%s0000%s%05d", $dt, $fitid->nodeValue, $cd_nums[$dt]);
 		}
 	}
 	public function getXML() {
