@@ -145,7 +145,7 @@ if($sid > 0) {
 	$mfachallengetrnrs .= "</MFACHALLENGETRNRS>";
 	
 	$resp["ofx"] = generate_ofx($resp["status"], $mfachallengetrnrs, $resp["sesscookie"], $resp["accesskey"]);
-} else if(strpos($body, "メンテナンス中") !== false) {
+} else if(strpos($body, "eさいふ | メンテナンス中") !== false) {
 	// システムメンテナンス画面の場合
 	$resp["status"] = ENV_NUM_STATUS_MAINTENANCE;
 	$resp["method"] = $method;
@@ -177,25 +177,22 @@ if($sid > 0) {
 	$account["acctid"] = $user;
 	
 	// 残高を取得する
-	$spans = parse_tag($body, "span");
-	$c = parse_tag_search($spans, "class", "balance");
-	if($c != -1) $account["balance"] = parse_amount(strip_tags($spans[$c]["innerHTML"]));
-	
-	// 履歴表示画面を取得する
-	$lis = parse_tag($body, "li");
-	$c = parse_tag_search($lis, "class", "navi_history");
-	if($c != -1) {
-		$as = parse_tag($lis[$c]["innerHTML"], "a");
-		if(count($as) == 1) {
-			$method = "GET";
-			$uris = parse_uri($as[0]["href"], $uris);
-			$query = "";
-			$cookie = esaifu_update_cookie($head, $cookie);
-			list($head, $body) = esaifu_http11($method, $uris, $query, $cookie);
-		}
-	}
+	$ps = parse_tag($body, "p");
+	$c = parse_tag_search($ps, "class", "price");
+	if($c != -1) $account["balance"] = parse_amount(strip_tags($spans[0]["innerHTML"]));
 	
 	// 履歴画面を取得する
+	$as = parse_tag($body, "a");
+	$c = parse_tag_search($as, "innerHTML", "履歴");
+	if($c != 1) {
+		$method = "GET";
+		$uris = parse_uri($as[$c]["href"], $uris);
+		$query = "";
+		$cookie = esaifu_update_cookie($head, $cookie);
+		list($head, $body) = esaifu_http11($method, $uris, $query, $cookie);
+	}
+	
+	// 履歴画面（1ページ目）を取得する
 	$forms = parse_tag($body, "form");
 	if(count($forms) > 0) {
 		$queries = array();
@@ -220,20 +217,46 @@ if($sid > 0) {
 		list($head, $body) = esaifu_http11($method, $uris, $query, $cookie);
 	}
 	
-	// 明細を取得する
-	$tables = parse_tag($body, "table");
-	$c = parse_tag_search($tables, "class", "generic");
-	if($c != -1) {
-		$tbodys = parse_tag($tables[$c]["innerHTML"], "tbody");
-		if(count($tbodys) > 0) $account["details"] = esaifu_get_details($tbodys[0]["innerHTML"]);
+	$tbody = "";
+	
+	// 無限ループする
+	while(true) {
+		// 明細を取得する
+		$tables = parse_tag($body, "table");
+		$c = parse_tag_search($tables, "class", "only_pc");
+		if($c != -1) {
+			$tbodys = parse_tag($tables[$c]["innerHTML"], "tbody");
+			if(count($tbodys) > 0) $tbody .= $tbodys[0]["innerHTML"];
+		}
+		
+		// 履歴画面（2ページ目以降）を取得する
+		$as = parse_tag($body, "a");
+		$found = false;
+		foreach($as as $a) {
+			if(trim(strip_tags($a["innerHTML"])) == "次へ") {
+				$method = "GET";
+				$uris = parse_uri($a["href"], $uris);
+				$query = "";
+				$cookie = esaifu_update_cookie($head, $cookie);
+				list($head, $body) = esaifu_http11($method, $uris, $query, $cookie);
+				
+				$found = true;
+				break;
+			}
+		}
+		
+		// 見つからない場合、ループを抜ける
+		if($found == false) break;
 	}
+	
+	$account["details"] = esaifu_get_details($tbody);
 	
 	// 実行時間（タイムアウト）を再設定する
 	@set_time_limit(ENV_NUM_TIMEOUT);
 	
 	// ログアウトする
 	$as = parse_tag($body, "a");
-	foreach($as as $a) if(parse_tag_search(parse_tag($a["innerHTML"], "img"), "alt", "ログアウト") != -1) {
+	foreach($as as $a) if(strip_tags($a["innerHTML"]) == "ログアウト") {
 		$method = "GET";
 		$uris = parse_uri($a["href"], $uris);
 		$query = "";
