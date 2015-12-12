@@ -215,7 +215,7 @@ if(strpos($body, "現在サービス停止中") !== false || strpos($body, "シ�
     $cds_e = "";
     $items = $ofxdom->getTrans();
     foreach ($items as $item) {
-        $dtposted = $item->getElementsByTagName('DTPOSTED')->item(0)->nodeValue;
+        $dtposted = $item->DTPOSTED;
         // DTSTART, DTENDを取得
         if($cds_s == "") $cds_s = $dtposted;
         $cds_e = $dtposted;

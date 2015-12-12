@@ -116,12 +116,12 @@ if(strpos($body, "只今メンテナンス中です") !== false) {
     $cds_e = "";
     $items = $ofxdom->getTrans();
     foreach ($items as $item) {
-        $dtposted = $item->getElementsByTagName('DTPOSTED')->item(0)->nodeValue;
+        $dtposted = $item->DTPOSTED;
         // DTSTART, DTENDを取得
         if($cds_s == "") $cds_s = $dtposted;
         $cds_e = $dtposted;
         // 残高を計算
-        $cds_balamt += (double)$item->getElementsByTagName('TRNAMT')->item(0)->nodeValue;
+        $cds_balamt += (double)$item->TRNAMT;
     }
     
     // TRANLIST
