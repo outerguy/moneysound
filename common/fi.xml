@@ -614,4 +614,23 @@
 </help>
 </fi>
 
+<fi id="osaifuponta" code="OSIFPONTA">
+<type>PREPAID</type>
+<name>おさいふPonta</name>
+<home>http://www.osaifuponta.lawson.co.jp/</home>
+<form>
+<input id="loginId" type="email">ログインID</input>
+<input id="password" type="password">ログインパスワード</input>
+</form>
+<help>
+<h3>共通</h3>
+<ul>
+<li>おさいふPonta口座の入出金履歴を取得します。</li>
+<li>前月1日から本日までの明細を取得します。</li>
+<li>会員IDを口座番号として取得します。</li>
+<li>口座名称を<code>&lt;MKTGINFO&gt;</code>として出力します。</li>
+</ul>
+</help>
+</fi>
+
 </filist>
