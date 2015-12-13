@@ -96,7 +96,7 @@ if (strpos($body, "未実装") !== false) {
     list($head, $body) = waon_http11('POST', $uris, $query, $cookie);
 
     // DOMツリーを生成
-    $ofxdom = new ofxDOM("BANK");
+    $ofxdom = new ofxDOM("BANK", $settings["name"]);
     $ofxdom->setAcctfrom(array(
         "BANKID" => $settings["code"],
         "BRANCHID" => "0",
@@ -107,16 +107,20 @@ if (strpos($body, "未実装") !== false) {
     usort($cds, function($a, $b) {
         return $a['DTPOSTED'] > $b['DTPOSTED'];
     });
-    $ofxdom->setTrans($cds);
-    // TRANLIST
-    $ofxdom->setTranList(ENV_STR_DATE_PASTDAY . ENV_STR_OFX_TZ, ENV_STR_DATE_TODAY . ENV_STR_OFX_TZ);
+    foreach($cds as $cd) {
+        $ofxdom->addTran($cd);
+    }
+    // DTSTARTとDTENDを設定する
+    $ofxdom->setDateRange(ENV_STR_DATE_PASTDAY . ENV_STR_OFX_TZ, ENV_STR_DATE_TODAY . ENV_STR_OFX_TZ);
 
     // 残高を処理。ただし、取得できないため、便宜上0円とする。
-    $ofxdom->setLedgerBalance(0, ENV_STR_DATE_TODAY . ENV_STR_OFX_TZ);
+    $ofxdom->setBalance(array(
+        'BALAMT' => 0,
+        'DTASOF' => ENV_STR_DATE_TODAY . ENV_STR_OFX_TZ
+    ));
 
-    //MKGTINFOを設定
-    $ofxdom->setMktginfo($settings["name"]);
-
+    // FITIDを仕上げる
+    $ofxdom->setFitid();
     // XML DOMツリーを文字列に変換
     $xml = $ofxdom->getXML();
     $resp["status"] = ENV_NUM_STATUS_SUCCESS;
@@ -162,6 +166,7 @@ function waon_parsedom($str) {
             break;
         }
         $cd["DTPOSTED"] = sprintf("%d%02d%02d", $matches[1], $matches[2], $matches[3]);
+        $cd["DTPOSTED"] .= ENV_STR_OFX_TZ;
 
         // トランザクション番号（請求月とデータ種別）を生成する
         $cd["FITID"] = '000';

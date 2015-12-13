@@ -122,7 +122,7 @@ class ofxDOM {
 	
 	// XML DOMツリーを作成する
 	// $ofxdom = new ofxDOM("CREDITCARD");
-	public function __construct($type="CREDITCARD", $mktginfo="") {
+	public function __construct($type, $mktginfo="") {
 		$this->type = $type;
 		$this->dom = simplexml_load_string('<?xml version="1.0" encoding="UTF-8"?' . '><OFX/>');
 		switch($type) {
@@ -167,7 +167,7 @@ class ofxDOM {
 				$this->seclist = $msg->addChild('SECLIST');
 				break;
 			// 銀行、前払式帳票（電子マネー）
-			default:
+			case "BANK":
 				$msg = $this->dom->addChild('BANKMSGSRSV1');
 				$trnrs = $msg->addChild('STMTTRNRS');
 				$trnrs->addChild('TRNUID', '0');
@@ -182,10 +182,13 @@ class ofxDOM {
 				$this->tranlist = $stmtrs->addChild('BANKTRANLIST');
 				$this->balance = $stmtrs->addChild('LEDGERBAL');
 				break;
+			default:
+				throw new Exception('第1引数はCREDITCARD, INVSTMT, BANKのいずれか');
+				break;
 		}
 		$this->tranlist->addChild('DTSTART');
 		$this->tranlist->addChild('DTEND');
-		if ($mktginfo != "") $this->setMktginfo($mktginfo);
+		$this->stmtrs->addChild('MKTGINFO', $mktginfo);
 	}
 
 	// 口座情報
@@ -195,15 +198,7 @@ class ofxDOM {
 		}
 	}
 	
-	// 明細を書き込む
-	// Deprecated. Use addTran instead.
-	public function setTrans($cds) {
-		foreach($cds as $cd) {
-			$this->addTran($cd);
-		}
-	}
-
-	// 明細を書き込む
+	// 明細を追記する
 	public function addTran($cd) {
 		if ($this->type == 'INVSTMT') {
 			$parent = $this->tranlist->addChild('INVBANKTRAN');
@@ -213,9 +208,8 @@ class ofxDOM {
 		}
 		$stmttrn = $parent->addChild('STMTTRN');
 		$stmttrn->addChild('TRNTYPE', $cd["TRNTYPE"]);
-		$stmttrn->addChild('DTPOSTED', $cd["DTPOSTED"] . ENV_STR_OFX_TZ);
+		$stmttrn->addChild('DTPOSTED', $cd["DTPOSTED"]);
 		$stmttrn->addChild('TRNAMT', $cd["TRNAMT"]);
-		// この時点では、FITIDは請求月とデータ種別のみ
 		$stmttrn->addChild('FITID', $cd["FITID"]);
 		$stmttrn->addChild('NAME', $cd["NAME"]);
 	}
@@ -255,7 +249,7 @@ class ofxDOM {
 		return $this->tranlist->STMTTRN;
 	}
 	
-	public function setTranList($dtstart, $dtend) {
+	public function setDateRange($dtstart, $dtend) {
 		$this->tranlist->DTSTART = $dtstart;
 		$this->tranlist->DTEND = $dtend;
 	}
@@ -288,12 +282,6 @@ class ofxDOM {
 		$secinfo->addChild('SECNAME', $cl['SECNAME']);
 	}
 
-	// Deprecated. Use setBalance instead.
-	public function setLedgerBalance($ledge_balamt, $dtasof) {
-		$this->balance->addChild('BALAMT', $ledge_balamt);
-		$this->balance->addChild('DTASOF', $dtasof);
-	}
-
 	public function setBalance($array) {
 		foreach($array as $key => $value) {
 			$this->balance->addChild($key, $value);
@@ -301,11 +289,7 @@ class ofxDOM {
 	}
 
 	// Deprecated.
-	public function setMktginfo($mktginfo) {
-		$this->stmtrs->addChild('MKTGINFO', $mktginfo);
-	}
-
-	private function setFitid() {
+	public function setFitid() {
 		$acctid = $this->acctfrom->ACCTID;
 		$acctid = substr($acctid, strlen($acctid) - 4);
 		$cd_nums = array();
@@ -329,8 +313,6 @@ class ofxDOM {
 	}
 
 	public function getXML() {
-		// FITIDを仕上げる
-		$this->setFitid();
 		// Pretty-printのためだけにDOMDocumentを利用する
 		$dom = dom_import_simplexml($this->dom)->ownerDocument;
 		$dom->formatOutput = TRUE;

@@ -84,7 +84,7 @@ if(strpos($body, "只今メンテナンス中です") !== false) {
     $account['acctname'] = 'スルガ Visaデビット/クレジット';
     $account['acctid'] = substr($user, 12);
     // DOMツリーを生成
-    $ofxdom = new ofxDOM("CREDITCARD");
+    $ofxdom = new ofxDOM("CREDITCARD", $settings["name"]);
     $ofxdom->setAcctfrom(array("ACCTID" => $account["acctid"]));
     
     // メニューから「ご利用明細」を選択
@@ -110,7 +110,9 @@ if(strpos($body, "只今メンテナンス中です") !== false) {
     usort($cds, function($a, $b) {
         return $a['DTPOSTED'] > $b['DTPOSTED'];
     });
-    $ofxdom->setTrans($cds);
+    foreach($cds as $cd) {
+        $ofxdom->addTran($cd);
+    }
     $cds_balamt = 0;
     $cds_s = "";
     $cds_e = "";
@@ -124,16 +126,18 @@ if(strpos($body, "只今メンテナンス中です") !== false) {
         $cds_balamt += (double)$item->TRNAMT;
     }
     
-    // TRANLIST
-    $ofxdom->setTranList($cds_s, $cds_e);
+    // DTSTARTとDTENDを設定する
+    $ofxdom->setDateRange($cds_s, $cds_e);
     
     // 残高を処理
     $cds_balamt = (-1)*$cds_balamt;
-    $ofxdom->setLedgerBalance($cds_balamt, ENV_STR_DATE_TODAY . ENV_STR_OFX_TZ);
+    $ofxdom->setBalance(array(
+        'BALAMT' => $cds_balamt,
+        'DTASOF' => ENV_STR_DATE_TODAY . ENV_STR_OFX_TZ
+    ));
     
-    //MKGTINFOを設定
-    $ofxdom->setMktginfo($settings["name"]);
-    
+    // FITIDを仕上げる
+    $ofxdom->setFitid();
     // XML DOMツリーを文字列に変換
     $xml = $ofxdom->getXML();
     
@@ -214,6 +218,7 @@ function surugavisa_parsedom($str) {
         // 日付を取得する
         preg_match("/([0-9]{4}).*?([0-9]{1,2}).*?([0-9]{1,2})/", str_replace(" ", "", $cols1->item(1)->nodeValue), $matches);
         $cd["DTPOSTED"] = sprintf("%d%02d%02d", $matches[1], $matches[2], $matches[3]);
+        $cd["DTPOSTED"] .= ENV_STR_OFX_TZ;
         
         // トランザクション番号（請求月とデータ種別）を生成する
         $cd["FITID"] = '000';

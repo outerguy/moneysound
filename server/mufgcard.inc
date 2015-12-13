@@ -195,7 +195,7 @@ if(strpos($body, "現在サービス停止中") !== false || strpos($body, "シ�
     }
     
     // DOMツリーを生成
-    $ofxdom = new ofxDOM("CREDITCARD");
+    $ofxdom = new ofxDOM("CREDITCARD", $account["acctname"]);
     $ofxdom->setAcctfrom(array("ACCTID" => $account["acctid"]));
     
     // 明細をパース
@@ -209,7 +209,9 @@ if(strpos($body, "現在サービス停止中") !== false || strpos($body, "シ�
     usort($cds, function($a, $b) {
         return $a['DTPOSTED'] > $b['DTPOSTED'];
     });
-    $ofxdom->setTrans($cds);
+    foreach($cds as $cd) {
+        $ofxdom->addTran($cd);
+    }
     
     $cds_s = "";
     $cds_e = "";
@@ -221,16 +223,18 @@ if(strpos($body, "現在サービス停止中") !== false || strpos($body, "シ�
         $cds_e = $dtposted;
     }
     
-    // TRANLIST
-    $ofxdom->setTranList($cds_s, $cds_e);
+    // DTSTARTとDTENDを設定する
+    $ofxdom->setDateRange($cds_s, $cds_e);
     
     // 残高を処理
     $account["ledge_balamt"] = parse_amount($account["ledge_balamt"]);
-    $ofxdom->setLedgerBalance($account["ledge_balamt"], ENV_STR_DATE_TODAY . ENV_STR_OFX_TZ);
+    $ofxdom->setBalance(array(
+        'BALAMT' => $account["ledge_balamt"],
+        'DTASOF' => ENV_STR_DATE_TODAY . ENV_STR_OFX_TZ
+    ));
     
-    //MKGTINFOを設定
-    $ofxdom->setMktginfo($account["acctname"]);
-    
+    // FITIDを仕上げる
+    $ofxdom->setFitid();
     // XML DOMツリーを文字列に変換
     $xml = $ofxdom->getXML();
     
@@ -332,6 +336,7 @@ function mufgcard_parsedom($str) {
         
         // 日付を取得する
         $cd["DTPOSTED"] = parse_date(trim($cols->item(0)->nodeValue));
+        $cd["DTPOSTED"] .= ENV_STR_OFX_TZ;
         // トランザクション番号（請求月とデータ種別）を生成する
         $cd["FITID"] = sprintf("%02d0", $month);
         // 摘要を取得する
