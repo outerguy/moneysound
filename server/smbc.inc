@@ -25,13 +25,13 @@ list($head, $body) = smbc_http11($method, $uris, $query, $cookie);
 
 // ログイン画面を取得する
 $as = parse_tag($body, "a");
-$c = parse_tag_search($as, "innerHTML", "SMBCダイレクト ログイン");
-if($c != -1) {
+foreach($as as $a) if(strip_tags($a["innerHTML"]) == "ログイン") {
 	$method = "GET";
-	$uris = parse_uri($as[$c]["href"], $uris);
+	$uris = parse_uri($a["href"], $uris);
 	$query = "";
 	$cookie = smbc_update_cookie($head, $cookie);
 	list($head, $body) = smbc_http11($method, $uris, $query, $cookie);
+	break;
 }
 
 // ログインする
