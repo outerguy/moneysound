@@ -178,7 +178,7 @@ if(strpos($body, "前回ログイン") === false) {
 		}
 		
 		// お支払日は4日であると仮定する
-		if(strpos($body, "今月分のご請求（カード年会費は除く）はありません。") !== false) {
+		if(strpos($body, "ご請求はございません。") !== false) {
 			$body = "";
 			$account["paydate"] = substr(ENV_STR_DATE_TODAY, 0, 6) . "04";
 		}
@@ -206,28 +206,28 @@ if(strpos($body, "前回ログイン") === false) {
 			$query = implode("&", $queries);
 			$cookie = viewcard_update_cookie($head, $cookie);
 			list($head, $body) = viewcard_http11($method, $uris, $query, $cookie);
-			
-			if(strpos($head, "Content-Type: text/html") === false) {
-				$creditcardmsgsrsv1 .= "<CCSTMTTRNRS>";
-				$creditcardmsgsrsv1 .= "\r\n";
-				$creditcardmsgsrsv1 .= "<TRNUID>0</TRNUID>";
-				$creditcardmsgsrsv1 .= "\r\n";
-				$creditcardmsgsrsv1 .= "<STATUS><CODE>0</CODE><SEVERITY>INFO</SEVERITY></STATUS>";
-				$creditcardmsgsrsv1 .= "\r\n";
-				$creditcardmsgsrsv1 .= "<CCSTMTRS>";
-				$creditcardmsgsrsv1 .= "\r\n";
-				$creditcardmsgsrsv1 .= "<CURDEF>" . ENV_STR_OFX_CURRENCY_JPY . "</CURDEF>";
-				$creditcardmsgsrsv1 .= "\r\n";
-				$creditcardmsgsrsv1 .= "<CCACCTFROM>";
-				$creditcardmsgsrsv1 .= "<ACCTID>" . $account["acctid"] . "</ACCTID>";
-				$creditcardmsgsrsv1 .= "</CCACCTFROM>";
-				$creditcardmsgsrsv1 .= "\r\n";
-				$creditcardmsgsrsv1 .= viewcard_parse_csv($body, $account);
-				$creditcardmsgsrsv1 .= "</CCSTMTRS>";
-				$creditcardmsgsrsv1 .= "\r\n";
-				$creditcardmsgsrsv1 .= "</CCSTMTTRNRS>";
-				$creditcardmsgsrsv1 .= "\r\n";
-			}
+		}
+		
+		if($body == "" || strpos($head, "Content-Type: text/html") === false) {
+			$creditcardmsgsrsv1 .= "<CCSTMTTRNRS>";
+			$creditcardmsgsrsv1 .= "\r\n";
+			$creditcardmsgsrsv1 .= "<TRNUID>0</TRNUID>";
+			$creditcardmsgsrsv1 .= "\r\n";
+			$creditcardmsgsrsv1 .= "<STATUS><CODE>0</CODE><SEVERITY>INFO</SEVERITY></STATUS>";
+			$creditcardmsgsrsv1 .= "\r\n";
+			$creditcardmsgsrsv1 .= "<CCSTMTRS>";
+			$creditcardmsgsrsv1 .= "\r\n";
+			$creditcardmsgsrsv1 .= "<CURDEF>" . ENV_STR_OFX_CURRENCY_JPY . "</CURDEF>";
+			$creditcardmsgsrsv1 .= "\r\n";
+			$creditcardmsgsrsv1 .= "<CCACCTFROM>";
+			$creditcardmsgsrsv1 .= "<ACCTID>" . $account["acctid"] . "</ACCTID>";
+			$creditcardmsgsrsv1 .= "</CCACCTFROM>";
+			$creditcardmsgsrsv1 .= "\r\n";
+			$creditcardmsgsrsv1 .= viewcard_parse_csv($body, $account);
+			$creditcardmsgsrsv1 .= "</CCSTMTRS>";
+			$creditcardmsgsrsv1 .= "\r\n";
+			$creditcardmsgsrsv1 .= "</CCSTMTTRNRS>";
+			$creditcardmsgsrsv1 .= "\r\n";
 		}
 		
 		$body = $body_old;
