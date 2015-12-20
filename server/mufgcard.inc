@@ -26,12 +26,25 @@ list($head, $body) = mun_http11($method, $uris, $query, $cookie);
 
 // ログイン画面を取得する（NEWS+PLUS）
 $as = parse_tag($body, "a");
-foreach($as as $a) if(parse_tag_search(parse_tag($a["innerHTML"], "img"), "alt", "ログイン") != -1) {
+$c = parse_tag_search($as, "innerHTML", "ログインする");
+if($c != -1) {
     $method = "GET";
-    $uris = parse_uri($a["href"], $uris);
+    $uris = parse_uri($as[$c]["href"], $uris);
     $cookie = mun_update_cookie($head, $cookie);
     list($head, $body) = mun_http11($method, $uris, $query, $cookie);
-    break;
+}
+
+// カードブランドを選択する
+$as = parse_tag($body, "a");
+foreach($as as $a) {
+    $imgs = parse_tag($a["innerHTML"], "img");
+    if(parse_tag_search($imgs, "alt", "MUFGカード（UFJカード含む）") != -1) {
+        $method = "GET";
+        $uris = parse_uri($a["href"], $uris);
+        $cookie = mun_update_cookie($head, $cookie);
+        list($head, $body) = mun_http11($method, $uris, $query, $cookie);
+        break;
+    }
 }
 
 // ログインする（NEWS+PLUS）
@@ -41,13 +54,10 @@ if($c != -1) {
     $inputs = parse_tag($forms[$c]["innerHTML"], "input");
     $queries = array();
     foreach($inputs as $input) if($input["name"] != "") $queries[$input["name"]] = urlencode($input["name"]) . "=" . urlencode($input["value"]);
-    $queries["cardBrand"] = "cardBrand=" . $settings["brand"];
     $queries["webId"] = "webId=" . $user;
     $queries["webPassword"] = "webPassword=" . $pass;
     $queries["webAddAuthType"] = "webAddAuthType=2";
     $queries["webBirthDay"] = "webBirthDay=" . $birth;
-    
-    $head .= "Set-Cookie: m_cardBrand=" . $settings["brand"] . "\r\n";
     
     $method = $forms[$c]["method"];
     $uris = parse_uri($forms[$c]["action"], $uris);
