@@ -315,6 +315,7 @@ function osaifuponta_get_details($csv) {
 			$rets[$i]["summary"] = $line[3];
 			$rets[$i]["amount"] = parse_amount($line[4]);
 			$rets[$i]["memo"] = $line[1];
+			if($line[1] == "お買い物") $rets[$i]["amount"] = "-" . $rets[$i]["amount"];
 			if($line[3] == "") {
 				$rets[$i]["summary"] = $line[1];
 				$rets[$i]["memo"] = ENV_STR_OFX_MEMO;
