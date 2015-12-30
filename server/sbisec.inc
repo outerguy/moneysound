@@ -163,6 +163,13 @@ if(strpos($body, "ログイン後の全てのサービスを停止") !== false) 
 	// 口座番号を取得する
 	if(preg_match("/([Z1][0-9]{2})\-(0[0-9]{6})/", $body, $matches) > 0) $acctid = $matches[1] . "-" . $matches[2];
 	
+	// DOMツリーを生成
+	$ofxdom = new ofxDOM("INVSTMT", $acctname);
+	$ofxdom->setAcctfrom(array(
+		"BROKERID" => $settings["code"],
+		"ACCTID" => $acctid
+	));
+
 	// 口座情報を取得する
 	$trs = parse_tag($body, "tr", true); // 再帰的に取得する
 	foreach($trs as $tr) {
@@ -470,8 +477,6 @@ if(strpos($body, "ログイン後の全てのサービスを停止") !== false) 
 		}
 	}
 	
-	$invposlist = "";
-	$seclist = "";
 	foreach($investments as $investment) {
 		// INVPOSLIST
 		$cl = array();
@@ -482,9 +487,9 @@ if(strpos($body, "ログイン後の全てのサービスを停止") !== false) 
 		$cl["UNITS"] = (double)$investment[4];
 		$cl["POSTYPE"] = "LONG";
 		$cl["MKTVAL"] = (double)$investment[6];
-		$cl["PL"] = (string)((double)$investment[7]);
-		$cl["DTPRICEASOF"] = ENV_STR_DATE_TODAY;
-		
+		$cl["MEMO"] = (string)((double)$investment[7]);
+		$cl["DTPRICEASOF"] = ENV_STR_DATE_TODAY . ENV_STR_OFX_TZ;
+
 		switch($cl["CATEGORY"]) {
 		case ENV_STR_OFX_STOCK:
 			$cl["UNIQUEIDTYPE"] = ENV_STR_OFX_CODE_STOCK;
@@ -504,34 +509,17 @@ if(strpos($body, "ログイン後の全てのサービスを停止") !== false) 
 			break;
 		}
 		
+		$cl["PARVALUE"] = $cl["UNITPRICE"];
+		$cl["DEBTTYPE"] = (parse_amount($investment[8]) > 0? "COUPON": "ZERO");
+		$cl["COUPONRT"] = $investment[8];
+		$cl["DTMAT"] = $investment[9];
+
 		if($cl["CATEGORY"] != "") {
 			// INVPOSLIST
-			$invposlist .= "<POS" . $cl["CATEGORY"] . "><INVPOS>";
-			$invposlist .= "<SECID><UNIQUEID>" . $cl["UNIQUEID"] . "</UNIQUEID><UNIQUEIDTYPE>" . $cl["UNIQUEIDTYPE"] . "</UNIQUEIDTYPE></SECID>";
-			$invposlist .= "<HELDINACCT>" . $cl["HELDINACCT"] . "</HELDINACCT>";
-			$invposlist .= "<POSTYPE>" . $cl["POSTYPE"] . "</POSTYPE>";
-			$invposlist .= "<UNITS>" . $cl["UNITS"] . "</UNITS>";
-			$invposlist .= "<UNITPRICE>" . $cl["UNITPRICE"] . "</UNITPRICE>";
-			$invposlist .= "<MKTVAL>" . $cl["MKTVAL"] . "</MKTVAL>";
-			$invposlist .= "<DTPRICEASOF>" . $cl["DTPRICEASOF"] . ENV_STR_OFX_TZ . "</DTPRICEASOF>";
-			$invposlist .= "<MEMO>" . $cl["PL"] . "</MEMO>";
-			$invposlist .= "</INVPOS></POS" . $cl["CATEGORY"] . ">";
-			$invposlist .= "\r\n";
+			$ofxdom->addPos($cl);
 			
 			// SECLIST
-			$seclist .= "<" . $cl["CATEGORY"] . "INFO>";
-			$seclist .= "<SECINFO>";
-			$seclist .= "<SECID><UNIQUEID>" . $cl["UNIQUEID"] . "</UNIQUEID><UNIQUEIDTYPE>" . $cl["UNIQUEIDTYPE"] . "</UNIQUEIDTYPE></SECID>";
-			$seclist .= "<SECNAME>" . $cl["SECNAME"] . "</SECNAME>";
-			$seclist .= "</SECINFO>";
-			if($cl["CATEGORY"] == ENV_STR_OFX_DEBT) {
-				$seclist .= "<PARVALUE>" . $cl["UNITPRICE"] . "</PARVALUE>";
-				$seclist .= "<DEBTTYPE>" . (parse_amount($investment[8]) > 0? "COUPON": "ZERO") . "</DEBTTYPE>";
-				$seclist .= "<COUPONRT>" . $investment[8] . "</COUPONRT>";
-				$seclist .= "<DTMAT>" . $investment[9] . "</DTMAT>";
-			}
-			$seclist .= "</" . $cl["CATEGORY"] . "INFO>";
-			$seclist .= "\r\n";
+			$ofxdom->addSec($cl);
 		}
 	}
 	
@@ -571,12 +559,12 @@ if(strpos($body, "ログイン後の全てのサービスを停止") !== false) 
 					
 					if(strpos($seclist, $ct_uniqueid) === false) {
 						// SECLIST
-						$seclist .= "<!-- SOLD -->";
-						$seclist .= "<" . $ct_category . "INFO><SECINFO>";
-						$seclist .= "<SECID><UNIQUEID>" . $ct_uniqueid . "</UNIQUEID><UNIQUEIDTYPE>" . $ct_uniqueidtype . "</UNIQUEIDTYPE></SECID>";
-						$seclist .= "<SECNAME>" . $ct_secname . "</SECNAME>";
-						$seclist .= "</SECINFO></" . $ct_category . "INFO>";
-						$seclist .= "\r\n";
+						$cl = array();
+						$cl["CATEGORY"] = $ct_category;
+						$cl["UNIQUEID"] = $ct_uniqueid;
+						$cl["UNIQUEIDTYPE"] = $ct_uniqueidtype;
+						$cl["SECNAME"] = $ct_secname;
+						$ofxdom->addSec($cl);
 					}
 				}
 				
@@ -633,12 +621,12 @@ if(strpos($body, "ログイン後の全てのサービスを停止") !== false) 
 					
 					if(strpos($seclist, $ct_uniqueid) === false) {
 						// SECLIST
-						$seclist .= "<!-- SOLD -->";
-						$seclist .= "<" . $ct_category . "INFO><SECINFO>";
-						$seclist .= "<SECID><UNIQUEID>" . $ct_uniqueid . "</UNIQUEID><UNIQUEIDTYPE>" . $ct_uniqueidtype . "</UNIQUEIDTYPE></SECID>";
-						$seclist .= "<SECNAME>" . $ct_secname . "</SECNAME>";
-						$seclist .= "</SECINFO></" . $ct_category . "INFO>";
-						$seclist .= "\r\n";
+						$cl = array();
+						$cl["CATEGORY"] = $ct_category;
+						$cl["UNIQUEID"] = $ct_uniqueid;
+						$cl["UNIQUEIDTYPE"] = $ct_uniqueidtype;
+						$cl["SECNAME"] = $ct_secname;
+						$ofxdom->addSec($cl);
 					}
 				}
 				
@@ -697,7 +685,7 @@ if(strpos($body, "ログイン後の全てのサービスを停止") !== false) 
 			$ct = array();
 			$ct["CATEGORY"] = $ct_category;
 			$ct["FITID"] = $ct_fitid;
-			$ct["DTTRADE"] = $ct_dttrade;
+			$ct["DTTRADE"] = $ct_dttrade . ENV_STR_OFX_TZ;
 			$ct["UNIQUEID"] = $ct_uniqueid;
 			$ct["SECNAME"] = $ct_secname;
 			$ct["UNIQUEIDTYPE"] = $ct_uniqueidtype;
@@ -718,54 +706,9 @@ if(strpos($body, "ログイン後の全てのサービスを停止") !== false) 
 	}
 	
 	// INVTRANLIST
-	$invtranlist = "";
-	$invtranlist .= "<DTSTART>" . $cts_s . ENV_STR_OFX_TZ . "</DTSTART>";
-	$invtranlist .= "<DTEND>" . $cts_e . ENV_STR_OFX_TZ . "</DTEND>";
-	$invtranlist .= "\r\n";
-	foreach($cts as $ct) if($ct["BUYTYPE"] == ENV_STR_OFX_REINVEST) {
-		// 再投資の場合、再投資の明細を生成する
-		$invtranlist .= "<" . $ct["BUYTYPE"] . ">";
-		$invtranlist .= "<INVTRAN><FITID>" . $ct["FITID"] . "</FITID><DTTRADE>" . $ct["DTTRADE"] . ENV_STR_OFX_TZ . "</DTTRADE></INVTRAN>";
-		$invtranlist .= "<SECID><UNIQUEID>" . $ct["UNIQUEID"] . "</UNIQUEID><UNIQUEIDTYPE>" . $ct["UNIQUEIDTYPE"] . "</UNIQUEIDTYPE></SECID>";
-		$invtranlist .= "<INCOMETYPE>" . ENV_STR_OFX_TRNTYPE_DIV . "</INCOMETYPE>";
-		$invtranlist .= "<TOTAL>" . $ct["TOTAL"] . "</TOTAL>";
-		$invtranlist .= "<SUBACCTSEC>" . $ct["SUBACCTSEC"] . "</SUBACCTSEC>";
-		$invtranlist .= "<UNITS>" . $ct["UNITS"] . "</UNITS>";
-		$invtranlist .= "<UNITPRICE>" . $ct["UNITPRICE"] . "</UNITPRICE>";
-		$invtranlist .= "<COMMISSION>" . $ct["COMMISSION"] . "</COMMISSION>";
-		$invtranlist .= "<TAXES>" . $ct["TAXES"] . "</TAXES>";
-		$invtranlist .= "</" . $ct["BUYTYPE"] . ">";
-		$invtranlist .= "\r\n";
-	} else {
-		// その他の場合、売買の明細を生成する
-		$invtranlist .= "<" . $ct["BUYTYPE"] . $ct["CATEGORY"] . ">";
-		$invtranlist .= "<INV" . $ct["BUYTYPE"] . ">";
-		$invtranlist .= "<INVTRAN><FITID>" . $ct["FITID"] . "</FITID><DTTRADE>" . $ct["DTTRADE"] . ENV_STR_OFX_TZ . "</DTTRADE></INVTRAN>";
-		$invtranlist .= "<SECID><UNIQUEID>" . $ct["UNIQUEID"] . "</UNIQUEID><UNIQUEIDTYPE>" . $ct["UNIQUEIDTYPE"] . "</UNIQUEIDTYPE></SECID>";
-		$invtranlist .= "<UNITS>" . $ct["UNITS"] . "</UNITS>";
-		$invtranlist .= "<UNITPRICE>" . $ct["UNITPRICE"] . "</UNITPRICE>";
-		
-		switch($ct["CATEGORY"]) {
-		case ENV_STR_OFX_STOCK:
-			$invtranlist .= "<TAXES>" . $ct["TAXES"] . "</TAXES>";
-			$invtranlist .= "<FEES>" . $ct["FEES"] . "</FEES>";
-			break;
-		case ENV_STR_OFX_FUND:
-			$invtranlist .= "<COMMISSION>" . $ct["COMMISSION"] . "</COMMISSION>";
-			$invtranlist .= "<TAXES>" . $ct["TAXES"] . "</TAXES>";
-			break;
-		case ENV_STR_OFX_CASH:
-		default:
-			break;
-		}
-		
-		$invtranlist .= "<TOTAL>" . $ct["TOTAL"] . "</TOTAL>";
-		$invtranlist .= "<SUBACCTSEC>" . $ct["SUBACCTSEC"] . "</SUBACCTSEC>";
-		$invtranlist .= "<SUBACCTFUND>" . $ct["SUBACCTFUND"] . "</SUBACCTFUND>";
-		$invtranlist .= "</INV" . $ct["BUYTYPE"] . ">";
-		$invtranlist .= "<" . $ct["BUYTYPE"] . "TYPE>" . $ct["BUYTYPE"] . "</" . $ct["BUYTYPE"] . "TYPE>";
-		$invtranlist .= "</" . $ct["BUYTYPE"] . $ct["CATEGORY"] . ">";
-		$invtranlist .= "\r\n";
+	$ofxdom->setDateRange($cts_s . ENV_STR_OFX_TZ, $cts_e . ENV_STR_OFX_TZ);
+	foreach($cts as $ct) {
+		$ofxdom->addTrade($ct);
 	}
 	
 	// 入出金一覧を生成する
@@ -839,7 +782,7 @@ if(strpos($body, "ログイン後の全てのサービスを停止") !== false) 
 			
 			// トランザクション番号を生成する
 			$cd["FITID"] = $cd_dtposted . "0000000" . sprintf("%05d", $cd_num);
-			$cd["DTPOSTED"] = $cd_dtposted;
+			$cd["DTPOSTED"] = $cd_dtposted . ENV_STR_OFX_TZ;
 			
 			switch($line[1]) {
 			case ENV_STR_ASSET_CASH_DEPOSIT:
@@ -855,87 +798,21 @@ if(strpos($body, "ログイン後の全てのサービスを停止") !== false) 
 			$cd["SUBACCTFUND"] = ENV_STR_OFX_CASH;
 			
 			// INVTRANLIST
-			$invtranlist .= "<INVBANKTRAN>";
-			$invtranlist .= "<STMTTRN>";
-			$invtranlist .= "<TRNTYPE>" . $cd["TRNTYPE"] . "</TRNTYPE>";
-			$invtranlist .= "<DTPOSTED>" . $cd["DTPOSTED"] . ENV_STR_OFX_TZ . "</DTPOSTED>";
-			$invtranlist .= "<TRNAMT>" . $cd["TRNAMT"] . "</TRNAMT>";
-			$invtranlist .= "<FITID>" . $cd["FITID"] . "</FITID>";
-			$invtranlist .= "<NAME>" . $cd["NAME"] . "</NAME>";
-			$invtranlist .= "<MEMO>" . $cd["MEMO"] . "</MEMO>";
-			$invtranlist .= "</STMTTRN>";
-			$invtranlist .= "<SUBACCTFUND>" . $cd["SUBACCTFUND"] . "</SUBACCTFUND>";
-			$invtranlist .= "</INVBANKTRAN>";
-			$invtranlist .= "\r\n";
+			$ofxdom->addtran($cd);
 			
 			$cd_date = $cd_dtposted;
 		}
 	}
 	
-	$invstmtmsgsrsv1 = "";
-	$invstmtmsgsrsv1 .= "<INVSTMTMSGSRSV1>";
-	$invstmtmsgsrsv1 .= "\r\n";
-	$invstmtmsgsrsv1 .= "<INVSTMTTRNRS>";
-	$invstmtmsgsrsv1 .= "\r\n";
-	$invstmtmsgsrsv1 .= "<TRNUID>0</TRNUID>";
-	$invstmtmsgsrsv1 .= "\r\n";
-	$invstmtmsgsrsv1 .= "<STATUS><CODE>0</CODE><SEVERITY>INFO</SEVERITY></STATUS>";
-	$invstmtmsgsrsv1 .= "\r\n";
-	$invstmtmsgsrsv1 .= "<INVSTMTRS>";
-	$invstmtmsgsrsv1 .= "\r\n";
-	$invstmtmsgsrsv1 .= "<DTASOF>" . ENV_STR_DATE_TODAY . ENV_STR_OFX_TZ . "</DTASOF>";
-	$invstmtmsgsrsv1 .= "\r\n";
-	$invstmtmsgsrsv1 .= "<CURDEF>" . ENV_STR_OFX_CURRENCY_JPY . "</CURDEF>";
-	$invstmtmsgsrsv1 .= "\r\n";
-	$invstmtmsgsrsv1 .= "<INVACCTFROM>";
-	$invstmtmsgsrsv1 .= "<BROKERID>" . $settings["code"] . "</BROKERID>";
-	$invstmtmsgsrsv1 .= "<ACCTID>" . $acctid . "</ACCTID>";
-	$invstmtmsgsrsv1 .= "</INVACCTFROM>";
-	$invstmtmsgsrsv1 .= "\r\n";
-	$invstmtmsgsrsv1 .= "<INVTRANLIST>";
-	$invstmtmsgsrsv1 .= "\r\n";
-	$invstmtmsgsrsv1 .= $invtranlist;
-	$invstmtmsgsrsv1 .= "</INVTRANLIST>";
-	$invstmtmsgsrsv1 .= "\r\n";
-	$invstmtmsgsrsv1 .= "<INVPOSLIST>";
-	$invstmtmsgsrsv1 .= "\r\n";
-	$invstmtmsgsrsv1 .= $invposlist;
-	$invstmtmsgsrsv1 .= "</INVPOSLIST>";
-	$invstmtmsgsrsv1 .= "\r\n";
-	$invstmtmsgsrsv1 .= "<INVBAL>";
-	$invstmtmsgsrsv1 .= "<AVAILCASH>" . $availcash . "</AVAILCASH>";
-	$invstmtmsgsrsv1 .= "<MARGINBALANCE>" . $marginbalance . "</MARGINBALANCE>";
-	$invstmtmsgsrsv1 .= "<SHORTBALANCE>0</SHORTBALANCE>";
-	$invstmtmsgsrsv1 .= "</INVBAL>";
-	$invstmtmsgsrsv1 .= "\r\n";
-	$invstmtmsgsrsv1 .= "<MKTGINFO>" . $acctname . "</MKTGINFO>";
-	$invstmtmsgsrsv1 .= "\r\n";
-	$invstmtmsgsrsv1 .= "</INVSTMTRS>";
-	$invstmtmsgsrsv1 .= "\r\n";
-	$invstmtmsgsrsv1 .= "</INVSTMTTRNRS>";
-	$invstmtmsgsrsv1 .= "\r\n";
-	$invstmtmsgsrsv1 .= "</INVSTMTMSGSRSV1>";
-	$invstmtmsgsrsv1 .= "\r\n";
-	$invstmtmsgsrsv1 .= "<SECLISTMSGSRSV1>";
-	$invstmtmsgsrsv1 .= "\r\n";
-	$invstmtmsgsrsv1 .= "<SECLISTTRNRS>";
-	$invstmtmsgsrsv1 .= "\r\n";
-	$invstmtmsgsrsv1 .= "<TRNUID>0</TRNUID>";
-	$invstmtmsgsrsv1 .= "\r\n";
-	$invstmtmsgsrsv1 .= "<STATUS><CODE>0</CODE><SEVERITY>INFO</SEVERITY></STATUS>";
-	$invstmtmsgsrsv1 .= "\r\n";
-	$invstmtmsgsrsv1 .= "</SECLISTTRNRS>";
-	$invstmtmsgsrsv1 .= "\r\n";
-	$invstmtmsgsrsv1 .= "<SECLIST>";
-	$invstmtmsgsrsv1 .= "\r\n";
-	$invstmtmsgsrsv1 .= $seclist;
-	$invstmtmsgsrsv1 .= "</SECLIST>";
-	$invstmtmsgsrsv1 .= "\r\n";
-	$invstmtmsgsrsv1 .= "</SECLISTMSGSRSV1>";
-	$invstmtmsgsrsv1 .= "\r\n";
+	// 残高を設定
+	$ofxdom->setBalance(array(
+		'AVAILCASH' => $availcash,
+		'MARGINBALANCE' => $marginbalance,
+		'SHORTBALANCE' => 0
+	));
 	
 	$resp["status"] = ENV_NUM_STATUS_SUCCESS;
-	$resp["ofx"] = generate_ofx($resp["status"], $invstmtmsgsrsv1);
+	$resp["ofx"] = generate_ofx($resp["status"], $ofxdom->getXML());
 }
 return $resp;
 
