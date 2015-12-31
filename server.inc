@@ -216,20 +216,26 @@ class ofxDOM {
 
 	// 取引履歴を書き込む
 	public function addTrade($ct) {
-		$array = array('UNITS', 'UNITPRICE', 'COMMISSION', 'TAXES', 'FEES', 'TOTAL', 'SUBACCTSEC');
 		if ($ct['BUYTYPE'] == ENV_STR_OFX_REINVEST) {
-			array_push($array, 'INCOMETYPE');
+			$array = array('INCOMETYPE', 'TOTAL', 'SUBACCTSEC', 'UNITS', 'UNITPRICE');
 			$parent = $this->tranlist->addChild('REINVEST');
-		} else if ($ct['BUYTYPE'] == ENV_STR_OFX_BUY) {
-			array_push($array, 'SUBACCTFUND');
-			$tran = $this->tranlist->addChild($ct['BUYTYPE'] . $ct['CATEGORY']);
-			$parent = $tran->addChild('INV' . $ct['BUYTYPE']);
-			$tran->addChild('BUYTYPE', $ct['BUYTYPE']);
 		} else {
-			array_push($array, 'SUBACCTFUND');
+			$array = array('UNITS', 'UNITPRICE');
+			switch($ct['CATEGORY']) {
+			case ENV_STR_OFX_STOCK:
+				array_push($array, 'TAXES', 'FEES');
+				break;
+			case ENV_STR_OFX_FUND:
+				array_push($array, 'COMMISSION', 'TAXES');
+				break;
+			case ENV_STR_OFX_CASH:
+			default:
+				break;
+			}
+			array_push($array, 'TOTAL', 'SUBACCTSEC', 'SUBACCTFUND');
 			$tran = $this->tranlist->addChild($ct['BUYTYPE'] . $ct['CATEGORY']);
 			$parent = $tran->addChild('INV' . $ct['BUYTYPE']);
-			$tran->addChild('SELLTYPE', $ct['BUYTYPE']);
+			$tran->addChild($ct["BUYTYPE"] . 'TYPE', $ct['BUYTYPE']);
 		}
 		$invtran = $parent->addChild('INVTRAN');
 		$invtran->addChild('FITID', $ct['FITID']);

@@ -699,6 +699,9 @@ if(strpos($body, "ログイン後の全てのサービスを停止") !== false) 
 			$ct["SUBACCTSEC"] = ENV_STR_OFX_CASH;
 			$ct["SUBACCTFUND"] = ENV_STR_OFX_CASH;
 			$ct["BUYTYPE"] = $ct_buytype;
+			if ($ct["BUYTYPE"] == ENV_STR_OFX_REINVEST) {
+				$ct["INCOMETYPE"] = ENV_STR_OFX_TRNTYPE_DIV;
+			}
 			array_push($cts, $ct);
 			
 			$ct_date = $ct_dttrade;

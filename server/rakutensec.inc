@@ -215,10 +215,10 @@ foreach ($rows as $row) {
     $ct['SUBACCTFUND'] = ENV_STR_OFX_CASH;
     $ct['FITID'] = '000';
     if (preg_match('/買付/', $row[7]) > 0) {
-        $ct['INVTYPE'] = ENV_STR_OFX_BUY;
+        $ct['BUYTYPE'] = ENV_STR_OFX_BUY;
         $ct['TOTAL'] *= -1;
     } else {
-        $ct['INVTYPE'] = ENV_STR_OFX_SELL;
+        $ct['BUYTYPE'] = ENV_STR_OFX_SELL;
         $ct['UNITS'] *= -1;
     }
 
@@ -252,18 +252,18 @@ foreach ($rows as $row) {
     $ct['FITID'] = '000';
     switch ($row[5]) {
         case '買付':
-            $ct['INVTYPE'] = ENV_STR_OFX_BUY;
+            $ct['BUYTYPE'] = ENV_STR_OFX_BUY;
             $ct['SUBACCTFUND'] = ENV_STR_OFX_CASH;
             $ct['TOTAL'] *= -1;
             break;
         case '解約':
-            $ct['INVTYPE'] = ENV_STR_OFX_SELL;
+            $ct['BUYTYPE'] = ENV_STR_OFX_SELL;
             $ct['SUBACCTFUND'] = ENV_STR_OFX_CASH;
             $ct['UNITS'] *= -1;
             break;
         case '再投資':
         default:
-            $ct['INVTYPE'] = ENV_STR_OFX_REINVEST;
+            $ct['BUYTYPE'] = ENV_STR_OFX_REINVEST;
             $ct['INCOMETYPE'] = ENV_STR_OFX_TRNTYPE_INT;
             $ct['TOTAL'] *= -1;
             break;
