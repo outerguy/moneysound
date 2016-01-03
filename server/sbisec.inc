@@ -464,7 +464,7 @@ if(strpos($body, "ログイン後の全てのサービスを停止") !== false) 
 					array_push($investments, array(ENV_STR_OFX_FUND, ($i !== false? $funds["code"][$i]: mb_convert_uniquename($line[0])), $line[0], mb_convert_uniquename($line[0]), $line[1], $line[4], $line[6], rtrim($line[7])));
 					break;
 				case ENV_STR_OFX_DEBT: // 債券
-					array_push($investments, array(ENV_STR_OFX_DEBT, md5($line[0]), $line[0], mb_convert_uniquename($line[0]), (string)((integer)$line[4] / (double)$line[5] * 100), (string)((double)$line[5]), rtrim($line[8]), (string)((integer)rtrim($line[8]) - (integer)$line[4]), $line[1], parse_date($line[2]), (string)((integer)rtrim($line[8]) - (integer)$line[4])));
+					array_push($investments, array(ENV_STR_OFX_DEBT, md5($line[0]), $line[0], mb_convert_uniquename($line[0]), (string)((integer)$line[8] / (double)$line[5] * 100), (string)((double)$line[5]), rtrim($line[8]), (string)((integer)rtrim($line[8]) - (integer)$line[4]), $line[1], parse_date($line[2]), (string)((integer)rtrim($line[8]) - (integer)$line[4])));
 					break;
 				default:
 					// その他（処理対象外）
