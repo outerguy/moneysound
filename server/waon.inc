@@ -173,7 +173,7 @@ function waon_parsedom($str) {
 
         $cd['NAME'] = trim($cols->item(1)->nodeValue);
         $cd['TRNAMT'] = (int)parse_amount(trim($cols->item(2)->nodeValue));
-        if (preg_match("/支払/", $cols->item(3)->nodeValue)) {
+        if (preg_match("/支払/", $cols->item(3)->nodeValue) && !preg_match("/支払取消/", $cols->item(3)->nodeValue)) {
             $cd['TRNAMT'] *= -1;
         }
         array_push($cds, $cd);
