@@ -40,7 +40,7 @@ if($sid == 0) {
 	
 	// ログイン画面を取得する
 	$as = parse_tag($body, "a");
-	foreach($as as $a) if(parse_tag_search(parse_tag($a["innerHTML"], "img"), "alt", "ゆうちょダイレクト　ログイン") != -1) {
+	foreach($as as $a) if(strip_tags($a["innerHTML"]) == "ログイン") {
 		$method = "GET";
 		$uris = parse_uri($a["href"], $uris);
 		$query = "";
