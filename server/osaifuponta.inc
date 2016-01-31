@@ -142,15 +142,17 @@ if(strpos($body, "メンテナンス中") !== false) { // 要検討
 		if(isset($queries["menu_registerCreditCard"]) == true) unset($queries["menu_registerCreditCard"]);
 		if(isset($queries["menu_deleteCreditCard"]) == true) unset($queries["menu_deleteCreditCard"]);
 		if(isset($queries["menu_pointComb"]) == true) unset($queries["menu_pointComb"]);
-		if(isset($queries["btn_getNoticeList"]) == true) unset($queries["btn_getNoticeList"]);
 		// if(isset($queries["btn_searchRetrieveTransactionDetail"]) == true) unset($queries["btn_searchRetrieveTransactionDetail"]); // 検索
 		if(isset($queries["btn_clear"]) == true) unset($queries["btn_clear"]);
 		if(isset($queries["btn_getRetriveBalanceInfoCsvData"]) == true) unset($queries["btn_getRetriveBalanceInfoCsvData"]);
 		if(isset($queries["btn_outputRetriveBalanceInfoPdf"]) == true) unset($queries["btn_outputRetriveBalanceInfoPdf"]);
+		if(isset($queries["btn_getMemberTopInfo"]) == true) unset($queries["btn_getMemberTopInfo"]);
+		
 		$queries["retrieveTargetEraFrom"] = "retrieveTargetEraFrom=1"; // 西暦
 		$queries["retrieveTargetDateFrom"] = "retrieveTargetDateFrom=" . ENV_STR_DATE_PASTDAY;
 		$queries["retrieveTargetEraTo"] = "retrieveTargetEraTo=1"; // 西暦
 		$queries["retrieveTargetDateTo"] = "retrieveTargetDateTo=" . ENV_STR_DATE_TODAY;
+		$queries["rowNum"] = "rowNum=10"; // 表示件数
 		
 		$method = $forms[$c]["method"];
 		$uris = parse_uri($forms[$c]["action"], $uris);
@@ -179,11 +181,12 @@ if(strpos($body, "メンテナンス中") !== false) { // 要検討
 		if(isset($queries["menu_registerCreditCard"]) == true) unset($queries["menu_registerCreditCard"]);
 		if(isset($queries["menu_deleteCreditCard"]) == true) unset($queries["menu_deleteCreditCard"]);
 		if(isset($queries["menu_pointComb"]) == true) unset($queries["menu_pointComb"]);
-		if(isset($queries["btn_getNoticeList"]) == true) unset($queries["btn_getNoticeList"]);
 		if(isset($queries["btn_searchRetrieveTransactionDetail"]) == true) unset($queries["btn_searchRetrieveTransactionDetail"]);
 		if(isset($queries["btn_clear"]) == true) unset($queries["btn_clear"]);
 		// if(isset($queries["btn_getRetriveBalanceInfoCsvData"]) == true) unset($queries["btn_getRetriveBalanceInfoCsvData"]); // CSVダウンロード
 		if(isset($queries["btn_outputRetriveBalanceInfoPdf"]) == true) unset($queries["btn_outputRetriveBalanceInfoPdf"]);
+		if(isset($queries["btn_getMemberTopInfo"]) == true) unset($queries["btn_getMemberTopInfo"]);
+		
 		$queries["retrieveTargetEraFrom"] = "retrieveTargetEraFrom=1"; // 西暦
 		$queries["retrieveTargetDateFrom"] = "retrieveTargetDateFrom=" . ENV_STR_DATE_PASTDAY;
 		$queries["retrieveTargetEraTo"] = "retrieveTargetEraTo=1"; // 西暦
@@ -239,13 +242,15 @@ if(strpos($body, "メンテナンス中") !== false) { // 要検討
 		if(isset($queries["menu_registerCreditCard"]) == true) unset($queries["menu_registerCreditCard"]);
 		if(isset($queries["menu_deleteCreditCard"]) == true) unset($queries["menu_deleteCreditCard"]);
 		if(isset($queries["menu_pointComb"]) == true) unset($queries["menu_pointComb"]);
-		if(isset($queries["btn_getNoticeList"]) == true) unset($queries["btn_getNoticeList"]);
+		if(isset($queries["retrieveTargetEraFrom"]) == true) unset($queries["retrieveTargetEraFrom"]);
+		if(isset($queries["retrieveTargetDateFrom"]) == true) unset($queries["retrieveTargetDateFrom"]);
+		if(isset($queries["retrieveTargetEraTo"]) == true) unset($queries["retrieveTargetEraTo"]);
+		if(isset($queries["retrieveTargetDateTo"]) == true) unset($queries["retrieveTargetDateTo"]);
 		if(isset($queries["btn_searchRetrieveTransactionDetail"]) == true) unset($queries["btn_searchRetrieveTransactionDetail"]);
 		if(isset($queries["btn_clear"]) == true) unset($queries["btn_clear"]);
-		if(isset($queries["btn_getRetriveBalanceInfoCsvData"]) == true) unset($queries["btn_getRetriveBalanceInfoCsvData"]);
+		if(isset($queries["btn_getRetriveBalanceInfoCsvData"]) == true) unset($queries["btn_getRetriveBalanceInfoCsvData"]); // CSVダウンロード
 		if(isset($queries["btn_outputRetriveBalanceInfoPdf"]) == true) unset($queries["btn_outputRetriveBalanceInfoPdf"]);
-		if(isset($queries["retrieveTargetDateFrom"]) == true) unset($queries["retrieveTargetDateFrom"]);
-		if(isset($queries["retrieveTargetDateTo"]) == true) unset($queries["retrieveTargetDateTo"]);
+		if(isset($queries["btn_getMemberTopInfo"]) == true) unset($queries["btn_getMemberTopInfo"]);
 		
 		$method = $forms[$c]["method"];
 		$uris = parse_uri($forms[$c]["action"], $uris);
@@ -315,7 +320,7 @@ function osaifuponta_get_details($csv) {
 			$rets[$i]["summary"] = $line[3];
 			$rets[$i]["amount"] = parse_amount($line[4]);
 			$rets[$i]["memo"] = $line[1];
-			if($line[1] == "お買い物") $rets[$i]["amount"] = "-" . $rets[$i]["amount"];
+			if($line[1] == "お買い物" || $line[1] == "お買い物（確定前）") $rets[$i]["amount"] = "-" . $rets[$i]["amount"];
 			if($line[3] == "") {
 				$rets[$i]["summary"] = $line[1];
 				$rets[$i]["memo"] = ENV_STR_OFX_MEMO;
