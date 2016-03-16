@@ -208,10 +208,15 @@ class ofxDOM {
 			$parent = $this->tranlist;
 			$stmttrn = $parent->addChild('STMTTRN');
 		}
-		$array = array('TRNTYPE', 'DTPOSTED', 'TRNAMT', 'FITID', 'NAME', 'MEMO');
+		$array = array('TRNTYPE', 'DTPOSTED', 'TRNAMT', 'FITID');
 		foreach($array as $key) {
 			$stmttrn->addChild($key, $cd[$key]);
 		}
+		// 特殊文字に関するPHPのバグ（https://bugs.php.net/bug.php?id=39521）を回避
+		$stmttrn->addChild('NAME');
+		$stmttrn->NAME = $cd['NAME'];
+		$stmttrn->addChild('MEMO');
+		$stmttrn->MEMO = $cd['MEMO'];
 	}
 
 	// 取引履歴を書き込む
