@@ -201,6 +201,20 @@ if(strpos($body, "現在サービス停止中") !== false || strpos($body, "シ�
             $cookie = mufgcard_updatecookie($head, $cookie);
             list($head, $body) = mufgcard_http11($method, $uris["scheme"], $uris["host"], $uris["path"], $uris["query"], $cookie);
             array_push($bodies, $body);
+            while(preg_match("/.*next\.html.*/", $body)) {
+                $forms = parse_tag($body, "form");
+                $c = parse_tag_search($forms, "action", "/inet/dy/meisaisyokai/next.html#meisai");
+                $inputs = parse_tag($forms[$c]["innerHTML"], "input");
+                $queries = array();
+                foreach($inputs as $input) if($input["name"] != "") $queries[$input["name"]] = urlencode($input["name"]) . "=" . urlencode($input["value"]);
+
+                $method = $forms[$c]["method"];
+                $uris = parse_uri($forms[$c]["action"], $uris);
+                $query = implode("&", $queries);
+                $cookie = mufgcard_updatecookie($head, $cookie);
+                list($head, $body) = mufgcard_http11($method, $uris["scheme"], $uris["host"], $uris["path"], $query, $cookie);
+                array_push($bodies, $body);
+            }
         }
     }
     

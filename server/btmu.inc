@@ -81,7 +81,7 @@ if($sid == 0) {
 	}
 }
 
-if(strpos($body, "普段と異なる環境からのアクセス") !== false) {
+if(strpos($body, "ご本人確認") !== false) {
 	// ワンタイムパスワードを入力する
 	$divs = parse_tag($body, "div");
 	$c = parse_tag_search($divs, "class", "serviceContents");
