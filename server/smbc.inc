@@ -493,9 +493,11 @@ function smbc_get_branchid($settings, $str) {
 	
 	$body = mb_convert_encoding($body, "UTF-8", "EUC-JP");
 	
-	$as = parse_tag($body, "a");
-	$c = parse_tag_search($as, "innerHTML", $ret);
-	if($c != -1 && preg_match("/javascript:[^\']+?\'([0-9]+)\'.*?/i", stripslashes($as[$c]["href"]), $matches) > 0) $ret = substr($matches[1], strlen($matches[1]) - 3);
+	$divs = parse_tag($body, "div");
+	foreach($divs as $div) if(preg_match("/^[0-9]+_SENDNUM$/", $div["id"]) > 0) {
+		$ret = $div["flagvalue"];
+		break;
+	}
 	
 	return $ret;
 }
