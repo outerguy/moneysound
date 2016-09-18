@@ -276,7 +276,7 @@ function jaccscard_parse_csv($str, $account) {
 			$cd["TRNTYPE"] = ENV_STR_OFX_TRNTYPE_PAYMENT;
 			
 			// 日付を取得する
-			$cd["DTPOSTED"] = parse_date("20" . $line[0]);
+			$cd["DTPOSTED"] = parse_date($line[0]);
 			if($cds_s == "") $cds_s = $cd["DTPOSTED"];
 			$cds_e = $cd["DTPOSTED"];
 			
