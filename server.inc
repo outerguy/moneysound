@@ -563,7 +563,7 @@ function http11($method, $protocol, $host, $port = 0, $page = "/", $query = "", 
 	// 接続情報を決定する
 	switch($protocol) {
 	case "https":
-		$prefix = "ssl://";
+		$prefix = "tls://";
 		break;
 	case "http":
 	default:
@@ -574,7 +574,10 @@ function http11($method, $protocol, $host, $port = 0, $page = "/", $query = "", 
 	$querystring = ($method == "GET" && $query != "")? "?" . $query: "";
 	
 	// ソケットを開く
-	$fp = fsockopen($prefix . $host, $port, $errno, $errstr);
+	$context = stream_context_create();
+	$result = stream_context_set_option($context, "ssl", "verify_peer", false);
+	$result = stream_context_set_option($context, "ssl", "verify_host", false);
+	$fp = stream_socket_client($prefix . $host . ":" . (string)$port, $errno, $errstr, 10, STREAM_CLIENT_CONNECT, $context);
 	if($fp) {
 		fputs($fp, $method . " " . $page . $querystring . " HTTP/1.1\r\n");
 		fputs($fp, "Host: " . $host . "\r\n");

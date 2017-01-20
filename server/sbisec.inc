@@ -499,7 +499,6 @@ if(strpos($body, "ログイン後の全てのサービスを停止") !== false) 
 			$cl["UNIQUEIDTYPE"] = ENV_STR_OFX_CODE_FUND;
 			$cl["UNITPRICE"] = round((double)$investment[5] / round((double)$investment[4] * (double)$investment[5] / (double)$investment[6], 0), 4);
 			break;
-		default:
 		case ENV_STR_OFX_DEBT:
 			$cl["UNIQUEIDTYPE"] = ENV_STR_OFX_CODE_HC;
 			$cl["UNITPRICE"] = $investment[5];
