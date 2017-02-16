@@ -563,7 +563,8 @@ function http11($method, $protocol, $host, $port = 0, $page = "/", $query = "", 
 	// 接続情報を決定する
 	switch($protocol) {
 	case "https":
-		$prefix = "tls://";
+		// $prefix = "tls://";
+		$prefix = "ssl://";
 		break;
 	case "http":
 	default:
