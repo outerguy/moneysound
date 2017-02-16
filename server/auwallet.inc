@@ -504,7 +504,7 @@ return $resp;
 // HTTP/1.1
 function auwallet_http11($method, $uris, $query = "", $cookie = "") {
 	$ret = "INVALID HOST";
-	if(preg_match("/\.auone\.jp$/", $uris["host"]) > 0) $ret = http11(strtoupper($method), $uris["scheme"], $uris["host"], 0, $uris["path"], $query, "", $cookie);
+	if(preg_match("/\.auone\.jp$/", $uris["host"]) > 0 || preg_match("/\.au\.com$/", $uris["host"]) > 0) $ret = http11(strtoupper($method), $uris["scheme"], $uris["host"], 0, $uris["path"], $query, "", $cookie);
 	return explode("\r\n\r\n", $ret, 2);
 }
 
