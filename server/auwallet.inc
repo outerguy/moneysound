@@ -220,13 +220,13 @@ if($sid > 0) {
 	
 	// メニュー一覧画面を取得する
 	$as = parse_tag($body, "a");
-	$c = parse_tag_search($as, "innerHTML", "メニュー一覧");
-	if($c != -1) {
+	foreach($as as $a) if(strip_tags($a["innerHTML"]) == "メニュー一覧") {
 		$method = "GET";
-		$uris = parse_uri($as[$c]["href"], $uris);
+		$uris = parse_uri($a["href"], $uris);
 		$query = "";
 		$cookie = auwallet_update_cookie($head, $cookie);
 		list($head, $body) = auwallet_http11($method, $uris, $query, $cookie);
+		break;
 	}
 	
 	// カード情報照会/設定画面を取得する
@@ -270,6 +270,7 @@ if($sid > 0) {
 		$inputs = parse_tag($forms[$c]["innerHTML"], "input");
 		$queries = array();
 		foreach($inputs as $input) if($input["name"] != "") $queries[$input["name"]] = urlencode($input["name"]) . "=" . urlencode($input["value"]);
+		$queries["menuFormDto.history.selectedDlBtnName"] = "menuFormDto.history.selectedDlBtnName=prepaid";
 		
 		$forms[$c]["action"] = "history_print.html";
 		
