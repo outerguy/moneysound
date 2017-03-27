@@ -415,10 +415,9 @@ if($sid > 0) {
 		if($c >= 9 && $line[0] != "" && $line[1] != "利用日時") {
 			// $details[$j]["date"] = parse_date($line[1]);
 			$details[$j]["date"] = $line[1];
-			$details[$j]["summary"] = $line[3];
-			$details[$j]["amount"] = parse_amount($line[4]);
+			$details[$j]["summary"] = $line[2];
+			$details[$j]["amount"] = (string)(($line[3] == "支払"? -1: 1) * (double)parse_amount($line[4]));
 			$details[$j]["memo"] = ($line[6] != ""? $line[6]: ENV_STR_OFX_MEMO);
-			// $details[$j]["trntype"] = ($line[2] != ""? $line[2]: "");
 			
 			if($line[2] == "キャンペーン" && $line[3] == "キャンペーン" && $details[$j]["amount"] == "0" && $line[6] != "") {
 				$cs = explode(":", $line[6]);
