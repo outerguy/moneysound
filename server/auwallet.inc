@@ -313,6 +313,7 @@ if($sid > 0) {
 		$inputs = parse_tag($forms[$c]["innerHTML"], "input");
 		$queries = array();
 		foreach($inputs as $input) if($input["name"] != "") $queries[$input["name"]] = urlencode($input["name"]) . "=" . urlencode($input["value"]);
+		$queries["menuFormDto.history.selectedDlBtnName"] = "menuFormDto.history.selectedDlBtnName=prepaid";
 		
 		$forms[$c]["action"] = "history_print.html";
 		
@@ -361,7 +362,7 @@ if($sid > 0) {
 			$summary = $dds[1]["innerHTML"];
 		}
 		
-		if($date != "" && $summary != "" && $amount != "" && $memo != "") $csv .= implode(",", array("0", $date, "", $summary, $amount, "", $memo, "", "", "")) . "\r\n";
+		if($date != "" && $summary != "" && $amount != "" && $memo != "") $csv .= implode(",", array("0", $date, $summary, "チャージ", $amount, "", $memo, "", "", "")) . "\r\n";
 	}
 	
 	// 前月の画面を取得する
@@ -401,7 +402,7 @@ if($sid > 0) {
 			$summary = $dds[1]["innerHTML"];
 		}
 		
-		if($date != "" && $summary != "" && $amount != "" && $memo != "") $csv .= implode(",", array("0", $date, "", $summary, $amount, "", $memo, "", "", "")) . "\r\n";
+		if($date != "" && $summary != "" && $amount != "" && $memo != "") $csv .= implode(",", array("0", $date, $summary, "チャージ", $amount, "", $memo, "", "", "")) . "\r\n";
 	}
 	
 	// 実行時間（タイムアウト）を再設定する
