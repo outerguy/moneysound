@@ -626,7 +626,9 @@ function jpbank_parse_details($account) {
 			$cd["TRNTYPE"] = ENV_STR_OFX_TRNTYPE_FEE;
 			break;
 		*/
-		case "受取利子":
+		case "利息": // 利子と税金を取り込んで利息を取り込まない
+			$cd["TRNTYPE"] = "";
+			break;
 		case "利子":
 			$cd["TRNTYPE"] = ENV_STR_OFX_TRNTYPE_INT;
 			break;
@@ -654,8 +656,10 @@ function jpbank_parse_details($account) {
 		$cd["TRNAMT"] = parse_amount($line["amount"]);
 		$cd["MEMO"] = ENV_STR_OFX_MEMO;
 		
-		array_push($cds, $cd);
-		$cd_date = $cd["DTPOSTED"];
+		if($cd["TRNTYPE"] != "") {
+			array_push($cds, $cd);
+			$cd_date = $cd["DTPOSTED"];
+		}
 	}
 	// BANKTRANLIST
 	$ret .= "<BANKTRANLIST>";
