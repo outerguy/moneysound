@@ -626,14 +626,13 @@ function jpbank_parse_details($account) {
 			$cd["TRNTYPE"] = ENV_STR_OFX_TRNTYPE_FEE;
 			break;
 		*/
-		case "利息": // 利子と税金を取り込んで利息を取り込まない
-			$cd["TRNTYPE"] = "";
+		case "利息":
+		case "受取利子":
+			$cd["TRNTYPE"] = ENV_STR_OFX_TRNTYPE_INT;
 			break;
 		case "利子":
-			$cd["TRNTYPE"] = ENV_STR_OFX_TRNTYPE_INT;
-			break;
 		case "税金":
-			$cd["TRNTYPE"] = ENV_STR_OFX_TRNTYPE_INT;
+			$cd["TRNTYPE"] = "";
 			break;
 		default:
 			$cd["TRNTYPE"] = ENV_STR_OFX_TRNTYPE_OTHER;
