@@ -316,18 +316,16 @@ if(strpos($body, "ログイン後の全てのサービスを停止") !== false) 
 	}
 	
 	// リダイレクトする
-	$forms = parse_tag($body, "form");
-	$c = parse_tag_search($forms, "name", "formSwitch");
-	if($c != -1) {
-		$inputs = parse_tag($forms[$c]["innerHTML"], "input");
-		$queries = array();
-		foreach($inputs as $input) if($input["name"] != "") $queries[$input["name"]] = urlencode($input["name"]) . "=" . urlencode($input["value"]);
-		
-		$method = $forms[$c]["method"];
-		$uris = parse_uri($forms[$c]["action"], $uris);
-		$query = implode("&", $queries);
-		$cookie = sbisec_update_cookie($head, $cookie);
-		list($head, $body) = sbisec_http11($method, $uris, $query, $cookie);
+	$retry = 0;
+	while($retry++ < ENV_NUM_HTTP11_RETRY) {
+		$locations = parse_header($head, "location");
+		if(count($locations) > 0) {
+			$method = "GET";
+			$uris = parse_uri(rtrim($locations[0]), $uris);
+			$query = "";
+			$cookie = sbisec_update_cookie($head, $cookie);
+			list($head, $body) = sbisec_http11($method, $uris, $query, $cookie);
+		}
 	}
 	
 	// 入出金明細画面を取得する
@@ -337,21 +335,6 @@ if(strpos($body, "ログイン後の全てのサービスを停止") !== false) 
 		$method = "GET";
 		$uris = parse_uri($as[$c]["href"], $uris);
 		$query = "";
-		$cookie = sbisec_update_cookie($head, $cookie);
-		list($head, $body) = sbisec_http11($method, $uris, $query, $cookie);
-	}
-	
-	// リダイレクトする
-	$forms = parse_tag($body, "form");
-	$c = parse_tag_search($forms, "name", "formSwitch");
-	if($c != -1) {
-		$inputs = parse_tag($forms[$c]["innerHTML"], "input");
-		$queries = array();
-		foreach($inputs as $input) if($input["name"] != "") $queries[$input["name"]] = urlencode($input["name"]) . "=" . urlencode($input["value"]);
-		
-		$method = $forms[$c]["method"];
-		$uris = parse_uri($forms[$c]["action"], $uris);
-		$query = implode("&", $queries);
 		$cookie = sbisec_update_cookie($head, $cookie);
 		list($head, $body) = sbisec_http11($method, $uris, $query, $cookie);
 	}
@@ -373,10 +356,16 @@ if(strpos($body, "ログイン後の全てのサービスを停止") !== false) 
 	$cashs = array();
 	
 	// CSVファイルをダウンロードする
+	$as = parse_tag($body, "a");
+	$c = parse_tag_search($as, "innerHTML", "明細ダウンロード(CSV形式)");
+	if($c != -1) {
+		if(preg_match("/csvDownLoad\(\'[^\']+\'[^\']+\'([^\']+)\'\).+/", $as[$c]["onclick"], $matches) > 0) $action = $matches[1]; else $action = "";
+	}
+	
 	$forms = parse_tag($body, "form");
 	$c = parse_tag_search($forms, "id", "detailInquiryForm");
 	if($c != -1) {
-		$forms[$c]["action"] = "/marble/deposit/detail/inquiry/detailInquiryCsvDownload.do";
+		if($action != "") $forms[$c]["action"] = $action;
 		$inputs = parse_tag($forms[$c]["innerHTML"], "input");
 		$queries = array();
 		foreach($inputs as $input) if($input["name"] != "") $queries[$input["name"]] = urlencode($input["name"]) . "=" . urlencode($input["value"]);
@@ -825,7 +814,7 @@ function sbisec_http11($method, $uris, $query = "", $cookie = "") {
 }
 
 function sbisec_update_cookie($head, $cookie) {
-	return update_cookie(array("trading_site", "JSESSIONID", "line1", "line2", "masso_sid", "marble_sid", "AWSELB"), parse_header($head, "set-cookie"), $cookie);
+	return update_cookie(array("trading_site", "JSESSIONID", "line1", "line2", "masso_sid", "marble_sid", "AWSELB", "WebLogicSession", "BIGipServerswweb_81-pool", "AWSELB"), parse_header($head, "set-cookie"), $cookie);
 }
 
 ?>
