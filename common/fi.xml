@@ -64,7 +64,7 @@
 <item id="getbranchid">http://www.e-map.ne.jp/pc/zdcemaphttp.cgi?zdccnt=10&amp;enc=EUC&amp;encodeflg=0&amp;target=http%3A%2F%2F127.0.0.1%2Fpc%2Fsearch.htm%3Fcid%3Dsmbcbank%26type%3DComb%26keyword%3D</item>
 </itemlist>
 <help>
-<h3>普通預金</h3>
+<h3>普通預金・貯蓄預金</h3>
 <ul>
 <li>前月1日から本日までの明細を取得します。</li>
 <li>口座が複数存在する場合、すべての口座の明細を取得します。</li>

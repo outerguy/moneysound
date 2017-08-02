@@ -164,12 +164,13 @@ if(strpos($body, "システムメンテナンスのため") !== false) {
 		$tds = parse_tag($tr["innerHTML"], "td");
 		if(count($tds) == 5) {
 			$inputs = parse_tag($tds[4]["innerHTML"], "input");
-			foreach($inputs as $input) if(preg_match("/[^\']+?\'([0-9]+)\'.*?/", $input["onclick"], $matches) > 0) {
+			foreach($inputs as $input) if(preg_match("/selectSubmitRyu(Web)?\(\'([0-9]+)\'\)/", $input["onclick"], $matches) > 0) {
 				$branch = str_replace("　", "", trim(strip_tags($tds[1]["innerHTML"])));
 				$accttype = trim(strip_tags($tds[2]["innerHTML"]));
 				$accounts[$c]["branchid"] = smbc_get_branchid($settings, $branch);
 				$accounts[$c]["acctid"] = trim(strip_tags($tds[3]["innerHTML"]));
-				$accounts[$c]["id"] = $matches[1];
+				$accounts[$c]["id"] = $matches[2];
+				$accounts[$c]["web"] = ($matches[1] != ""? "_" . strtolower($matches[1]): "");
 				$accounts[$c]["acctname"] = implode(ENV_CHR_CONCATENATOR, array($settings["name"], $branch, $accttype));
 				$c++;
 				break;
@@ -193,8 +194,7 @@ if(strpos($body, "システムメンテナンスのため") !== false) {
 		
 		// 残高・明細画面を取得する
 		$forms = parse_tag($body, "form");
-		$c = parse_tag_search($forms, "name", "accnt_ryu_web");
-		if($c == -1) $c = parse_tag_search($forms, "name", "accnt_ryu");
+		$c = parse_tag_search($forms, "name", "accnt_ryu" . $account["web"]);
 		if($c != -1) {
 			$inputs = parse_tag($forms[$c]["innerHTML"], "input");
 			$queries = array();
@@ -230,7 +230,6 @@ if(strpos($body, "システムメンテナンスのため") !== false) {
 			}
 			$queries["select_mode"] = "select_mode=1"; // 1=期間指定
 			$queries["RYUDO_ACCNT_IDX"] = "RYUDO_ACCNT_IDX=" . $account["id"];
-			
 			$method = $forms[$c]["method"];
 			$uris = parse_uri($forms[$c]["action"], $uris);
 			$query = implode("&", $queries);
@@ -372,6 +371,30 @@ if(strpos($body, "システムメンテナンスのため") !== false) {
 			if($c !== false) $ofx = substr($ofx, 0, $c - 1) . $str;
 		} else {
 			$ofx .= $str;
+		}
+		
+		// 所有口座一覧画面を取得する
+		$as = parse_tag($body, "a");
+		$c = parse_tag_search($as, "innerHTML", "所有口座一覧に戻る");
+		if($c != -1) {
+			$method = "GET";
+			$uris = parse_uri($as[$c]["href"], $uris);
+			$query = "";
+			$cookie = smbc_update_cookie($head, $cookie);
+			list($head, $body) = smbc_http11($method, $uris, $query, $cookie);
+		}
+		
+		// リダイレクトする
+		$retry = 0;
+		while($retry++ < ENV_NUM_HTTP11_RETRY) {
+			$locations = parse_header($head, "location");
+			if(count($locations) > 0) {
+				$method = "GET";
+				$uris = parse_uri($locations[0], $uris);
+				$query = "";
+				$cookie = smbc_update_cookie($head, $cookie);
+				list($head, $body) = smbc_http11($method, $uris, $query, $cookie);
+			}
 		}
 	}
 	
