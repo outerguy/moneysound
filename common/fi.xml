@@ -455,6 +455,37 @@
 </help>
 </fi>
 
+<fi id="benefit401k" code="SBIBS">
+<type>INVSTMT</type>
+<name>SBIベネフィット・システムズ</name>
+<home>http://www.benefit401k.com/customer/</home>
+<form>
+<input id="txtUserID" type="text">ID</input>
+<input id="txtPassword" type="password">パスワード</input>
+</form>
+<help>
+<h3>共通</h3>
+<ul>
+<li>運営管理機関名を<code>&lt;MKTGINFO&gt;</code>として出力します。</li>
+</ul>
+<h3>投資信託</h3>
+<ul>
+<li>ファンド名、保有口数、基準価額、評価額を取得します。</li>
+<li>売買履歴を取得します。</li>
+<li>口数と基準価額より算出した金額と売買金額が異なる場合、基準価額を補正します。</li>
+</ul>
+<h3>投資信託以外の商品</h3>
+<ul>
+<li>投資信託として取得します。</li>
+</ul>
+<h3>現金</h3>
+<ul>
+<li>入出金明細を取得します。</li>
+<li>現金残高を<code>&lt;MARGINBALANCE&gt;</code>・<code>&lt;AVAILCASH&gt;</code>として出力します。</li>
+</ul>
+</help>
+</fi>
+
 <fi id="mobilesuica" code="MSUICA">
 <type>PREPAID</type>
 <name>モバイルSuica</name>
