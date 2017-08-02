@@ -23,24 +23,14 @@ $query = "";
 $cookie = "";
 list($head, $body) = nanaco_http11($method, $uris, $query, $cookie);
 
-// PC版トップページを取得する
-$as = parse_tag($body, "a");
-$c = parse_tag_search($as, "innerHTML", "PC版トップページ");
-if($c != -1) {
-	$method = "GET";
-	$uris = parse_uri($as[$c]["href"], $uris);
-	$query = "";
-	list($head, $body) = nanaco_http11($method, $uris, $query, $cookie);
-}
-
 // ログイン画面を取得する
 $as = parse_tag($body, "a");
-foreach($as as $a) if(parse_tag_search(parse_tag($a["innerHTML"], "img"), "alt", "マネー/ポイント残高履歴確認　クレジットチャージなど会員ログイン") != -1) {
+$c = parse_tag_search($as, "innerHTML", "会員メニューログイン");
+if($c != -1) {
 	$method = "GET";
-	$uris = parse_uri(($a["href"] == "javascript:WinOpenLogin()"? "https://www.nanaco-net.jp/pc/emServlet": $a["href"]), $uris);
+	$uris = parse_uri($as[$c]["href"]);
 	$query = "";
 	list($head, $body) = nanaco_http11($method, $uris, $query, $cookie);
-	break;
 }
 
 // ログインする
