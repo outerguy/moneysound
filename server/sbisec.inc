@@ -747,6 +747,7 @@ if(strpos($body, "ログイン後の全てのサービスを停止") !== false) 
 			case "信用配当金":
 			case "外証配当金":
 			case "株式配当金":
+			case "株式配当金（NISA：非課税）":
 				$cd["TRNTYPE"] = ENV_STR_OFX_TRNTYPE_DIV;
 				break;
 			case "利金収益金":
