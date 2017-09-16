@@ -61,6 +61,7 @@ if(strpos($body, "前回ログイン日時") === false) {
 	$acctid = $user;
 	$acctname = "";
 	$bill = "0";
+	$balance = "0";
 	
 	$spans = parse_tag($body, "span");
 	$c = parse_tag_search($spans, "id", "D_Header1_lblContributionUnit");
@@ -96,7 +97,11 @@ if(strpos($body, "前回ログイン日時") === false) {
 			$bufs["POSTYPE"] = "LONG";
 			$bufs["DTPRICEASOF"] = $dtpriceasof;
 			$bufs["UNIQUEIDTYPE"] = $settings["code"];
-			array_push($securities, $bufs);
+			if($bufs["TYPE"] == "待機資金") {
+				$balance = $bufs["MKTVAL"];
+			} else {
+				array_push($securities, $bufs);
+			}
 			$bufs = array();
 		}
 	}
@@ -290,13 +295,21 @@ if(strpos($body, "前回ログイン日時") === false) {
 		}
 	}
 	
-	// 手続き書類の請求画面を取得する
-	list($head, $body, $uris, $cookie) = benefit401k_post($head, $body, $uris, $cookie, "", "D_Header1:btnRequestDocuments"); // 手続き書類の請求
+	$body_old = $body;
+	
+	// 運用商品ラインナップ（CSV）を取得する
+	list($head, $body, $uris, $cookie) = benefit401k_post($head, $body, $uris, $cookie, "btnProductLineupCSV"); // 運用商品ラインナップ（CSV）
 	
 	// 運営管理機関名を取得する
-	$spans = parse_tag($body, "span");
-	$c = parse_tag_search($spans, "class", "tableName-txt");
-	if($c != -1) $acctname = ENV_CHR_CONCATENATOR . trim(strip_tags(str_replace("での手続き", "", $spans[$c]["innerHTML"]))); // 運営管理機関
+	$csvs = parse_csv(mb_convert_string($body));
+	foreach($csvs as $csv) {
+		if($csv[1] == "元本変動" && $acctname == "") {
+			$acctname = ENV_CHR_CONCATENATOR . trim(strip_tags($csv[6])); // 商品提供会社
+			break;
+		}
+	}
+	
+	$body = $body_old;
 	
 	// ログアウトする
 	list($head, $body, $uris, $cookie) = benefit401k_post($head, $body, $uris, $cookie, "D_Header1\$btnLogout"); // ログアウト
@@ -420,9 +433,6 @@ if(strpos($body, "前回ログイン日時") === false) {
 		}
 	}
 	
-	$availcash = "0";
-	$marginbalance = "0";
-	
 	$invstmtmsgsrsv1 = "";
 	$invstmtmsgsrsv1 .= "<INVSTMTMSGSRSV1>";
 	$invstmtmsgsrsv1 .= "\r\n";
@@ -454,8 +464,8 @@ if(strpos($body, "前回ログイン日時") === false) {
 	$invstmtmsgsrsv1 .= "</INVPOSLIST>";
 	$invstmtmsgsrsv1 .= "\r\n";
 	$invstmtmsgsrsv1 .= "<INVBAL>";
-	$invstmtmsgsrsv1 .= "<AVAILCASH>" . $availcash . "</AVAILCASH>";
-	$invstmtmsgsrsv1 .= "<MARGINBALANCE>" . $marginbalance . "</MARGINBALANCE>";
+	$invstmtmsgsrsv1 .= "<AVAILCASH>" . $balance . "</AVAILCASH>";
+	$invstmtmsgsrsv1 .= "<MARGINBALANCE>" . $balance . "</MARGINBALANCE>";
 	$invstmtmsgsrsv1 .= "<SHORTBALANCE>0</SHORTBALANCE>";
 	$invstmtmsgsrsv1 .= "</INVBAL>";
 	$invstmtmsgsrsv1 .= "\r\n";
