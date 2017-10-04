@@ -85,7 +85,7 @@ if(strpos($body, "前回ログイン日時") === false) {
 		foreach($trs as $tr) {
 			$tds = parse_tag($tr["innerHTML"], "td");
 			$bufs["TYPE"] = trim(strip_tags($tds[0]["innerHTML"])); // 商品タイプ
-			$bufs["UNIQUEID"] = (preg_match("/\?SCD=([0-9]+)&/", $tds[1]["innerHTML"], $matches) > 0? $matches[1]: (string)$cnt++); // 商品コード
+			$bufs["UNIQUEID"] = (preg_match("/\?SCD=([0-9]+)&/", $tds[1]["innerHTML"], $matches) == 1? $matches[1]: (string)$cnt++); // 商品コード
 			$bufs["SECNAME"] = trim(strip_tags($tds[1]["innerHTML"])); // 商品名
 			$bufs["UNITS"] = parse_amount(trim(strip_tags($tds[3]["innerHTML"]))); // 口数
 			$bufs["UNITPRICE"] = (string)((double)parse_amount(trim(strip_tags($tds[2]["innerHTML"]))) / 10000); // 基準価額
@@ -332,12 +332,12 @@ if(strpos($body, "前回ログイン日時") === false) {
 		
 		$uniqueid = "";
 		foreach($investments as $investment) {
-			if(mb_convert_kana($investment["SECNAME"], "ask", "UTF-8") == $exchange["SECNAME"]) {
+			if(mb_convert_kana(str_replace("・", "", $investment["SECNAME"]), "ask", "UTF-8") == $exchange["SECNAME"]) {
 				$uniqueid = $investment["UNIQUEID"];
 				break;
 			}
 		}
-		if($uniqueid == "") $unieuqid = mb_convert_uniqueid($exchange["SECNAME"]);
+		if($uniqueid == "") $uniqueid = mb_convert_uniqueid($exchange["SECNAME"]);
 		
 		// 売買の明細を生成する
 		$invtranlist .= "<" . $exchange["BUYTYPE"] . $exchange["CATEGORY"] . ">";
@@ -420,7 +420,7 @@ if(strpos($body, "前回ログイン日時") === false) {
 			}
 		}
 		if($secname == "") $secname = $exchange["SECNAME"];
-		if($uniqueid == "") $unieuqid = mb_convert_uniqueid($exchange["SECNAME"]);
+		if($uniqueid == "") $uniqueid = mb_convert_uniqueid($exchange["SECNAME"]);
 		
 		if(strpos($seclist, $secname) === false) {
 			// SECLIST
