@@ -192,34 +192,6 @@
 </help>
 </fi>
 
-<fi id="saisoncard">
-<type>CREDITCARD</type>
-<name>セゾンカード</name>
-<home>http://www.saisoncard.co.jp/</home>
-<form>
-<input id="inputId" type="text">NetアンサーID</input>
-<input id="inputPassword" type="password">パスワード</input>
-</form>
-<additional input="text" type="text">秘密の答え</additional>
-<help>
-<h3>共通</h3>
-<ul>
-<li>最新月の確定済み明細を取得します。</li>
-<li>カードが複数存在する場合、最初のカードの明細を取得します。</li>
-<li>「IDおまとめ設定」には対応していません。そのため、個々のNetアンサーIDでログインしてください。</li>
-<li>支払請求金額は、支払請求日に「セゾンカード」という名称で、明細に追加します。</li>
-<li>最新月の確定済み明細が0件の場合、支払請求日に「セゾンカード」という名称で、0円の明細を追加します。このとき、支払請求日は各月4日に固定されており、実際の請求日と異なる場合があります。</li>
-<li>カード名称を<code>&lt;MKTGINFO&gt;</code>として出力します。</li>
-</ul>
-<h3>追加認証</h3>
-<ul>
-<li>ログイン時、本人確認のため秘密の質問によるご本人様確認を求められる場合があります。</li>
-<li>金融機関に予め登録した秘密の答えを入力してください。</li>
-<li>なお、「秘密の質問対象サービス一覧」の「任意グループ」には、「設定なし」、または「ログイン（全サービス）」を選択してください。「個別設定」には対応していません。</li>
-</ul>
-</help>
-</fi>
-
 <fi id="jaccscard">
 <type>CREDITCARD</type>
 <name>ジャックスカード</name>
