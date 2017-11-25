@@ -1,7 +1,7 @@
 <?php
 /*
 jist.inc: 日本インベスター・ソリューション・アンド・テクノロジーのHTMLよりOFXファイルを生成する
-Copyright (C) 2015 OFFICE OUTERGUY. All rights reserved.
+Copyright (C) 2015-2017 OFFICE OUTERGUY. All rights reserved.
 mailto:contact@beatrek.com
 Licensed under the GNU AGPLv3.
 */

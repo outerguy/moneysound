@@ -1,7 +1,7 @@
 <?php
 /*
 smcprepaide.inc: 三井住友VISAプリペイドeのHTMLよりOFXファイルを生成する
-Copyright (C) 2014-2015 OFFICE OUTERGUY. All rights reserved.
+Copyright (C) 2014-2017 OFFICE OUTERGUY. All rights reserved.
 mailto:contact@beatrek.com
 Licensed under the GNU AGPLv3.
 */

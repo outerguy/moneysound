@@ -1,7 +1,7 @@
 <?php
 /*
 surugavisacard.inc: スルガ銀行 VISAデビット/VISAクレジットのHTMLよりOFXファイルを生成する
-Copyright (C) 2012-2015 Hiromu2000. All Rights Reserved.
+Copyright (C) 2012-2017 Hiromu2000. All Rights Reserved.
 mailto:hiromu2000@hotmail.com
 Licensed under the GNU AGPLv3.
 */

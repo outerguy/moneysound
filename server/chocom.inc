@@ -1,7 +1,7 @@
 <?php
 /*
 chocom.inc: ちょコムeマネーのHTMLよりOFXファイルを生成する
-Copyright (C) 2012-2015 OFFICE OUTERGUY. All rights reserved.
+Copyright (C) 2012-2017 OFFICE OUTERGUY. All rights reserved.
 mailto:contact@beatrek.com
 Licensed under the GNU AGPLv3.
 */

@@ -1,7 +1,7 @@
 <?php
 /*
 kabucom.inc: カブドットコム証券のCSVよりOFXファイルを生成する
-Copyright (C) 2010-2015 OFFICE OUTERGUY. All rights reserved.
+Copyright (C) 2010-2017 OFFICE OUTERGUY. All rights reserved.
 mailto:contact@beatrek.com
 Licensed under the GNU AGPLv3.
 */

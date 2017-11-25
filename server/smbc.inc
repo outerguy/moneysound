@@ -1,7 +1,7 @@
 <?php
 /*
 smbc.inc: 三井住友銀行のOFXよりOFXファイルを変換・結合する
-Copyright (C) 2012-2015 OFFICE OUTERGUY. All rights reserved.
+Copyright (C) 2012-2017 OFFICE OUTERGUY. All rights reserved.
 mailto:contact@beatrek.com
 Licensed under the GNU AGPLv3.
 */

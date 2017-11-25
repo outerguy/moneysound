@@ -1,7 +1,7 @@
 <?php
 /*
 esaifu.inc: e-さいふのHTMLよりOFXファイルを生成する
-Copyright (C) 2013-2015 OFFICE OUTERGUY. All rights reserved.
+Copyright (C) 2013-2017 OFFICE OUTERGUY. All rights reserved.
 mailto:contact@beatrek.com
 Licensed under the GNU AGPLv3.
 */

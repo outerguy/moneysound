@@ -33,7 +33,7 @@ $strより32バイトの一意な文字列を生成する。
 文字エンコーディングをShift_JISからUTF-8へと変換する。
 
 ■class ofxDOM
-Copyright (C) 2012-2015 Hiromu Takahashi All Rights Reserved.
+Copyright (C) 2012-2017 Hiromu Takahashi All Rights Reserved.
 mailto:hiromu2000@hotmail.com
 
 ■(string)parse_amount((string)$str)
