@@ -1,7 +1,7 @@
 <?php
 /*
 index.php: HTMLを生成する
-Copyright (C) 2012-2015 OFFICE OUTERGUY. All rights reserved.
+Copyright (C) 2012-2017 OFFICE OUTERGUY. All rights reserved.
 mailto:contact@beatrek.com
 Dual-licensed under the GNU All-Permissive License and Beatrek Origin License.
 */

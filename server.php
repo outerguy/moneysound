@@ -1,7 +1,7 @@
 <?php
 /*
 server.php: 認証情報を受け取って金融機関毎の処理を実行する
-Copyright (C) 2012-2015 OFFICE OUTERGUY. All rights reserved.
+Copyright (C) 2012-2017 OFFICE OUTERGUY. All rights reserved.
 mailto:contact@beatrek.com
 Dual-licensed under the GNU AGPLv3 and Beatrek Origin License.
 */

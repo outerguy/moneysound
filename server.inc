@@ -1,12 +1,12 @@
 <?php
 /*
 server.inc: サーバー側の定数・共通関数を定義する
-Copyright (C) 2008-2015 OFFICE OUTERGUY. All rights reserved.
+Copyright (C) 2008-2017 OFFICE OUTERGUY. All rights reserved.
 mailto:contact@beatrek.com
 Dual-licensed under the GNU AGPLv3 and Beatrek Origin License.
 
 class ofxDOM
-Copyright (C) 2012-2015 Hiromu2000. All Rights Reserved.
+Copyright (C) 2012-2017 Hiromu2000. All Rights Reserved.
 mailto:hiromu2000@hotmail.com
 Licensed under the GNU AGPLv3.
 */
@@ -376,7 +376,7 @@ function parse_tag($html, $tag, $recursive = false) {
 	$strips = array("script", "style");
 	foreach($strips as $strip) if($strip != strtolower($tag)) $buf = preg_replace("/<" . preg_quote($strip) . "(?!\w)[^>]*>.*?<\/" . preg_quote($strip) . ">/ims", "", $buf);
 	
-	$c = preg_match_all("/<(\/?)" . preg_quote($tag) . "((?!\w)[^>]*)>/ims", $buf, $matches);
+	$c = preg_match_all("/<(\/?)" . preg_quote($tag) . "((?!\w).*?(?<!--))>/ims", $buf, $matches);
 	if(array_search("/", $matches[1]) !== false) {
 		// 終了タグが存在する場合
 		$bufs = array(); // タグのネスト構造を保持する配列

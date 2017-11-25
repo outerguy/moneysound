@@ -1,7 +1,7 @@
 <?php
 /*
 client.inc: クライアント側の定数・共通関数を定義する
-Copyright (C) 2008-2015 OFFICE OUTERGUY. All rights reserved.
+Copyright (C) 2008-2017 OFFICE OUTERGUY. All rights reserved.
 mailto:contact@beatrek.com
 Dual-licensed under the Apache License 2.0 and Beatrek Origin License.
 */
