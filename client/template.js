@@ -1420,7 +1420,7 @@ function fnc_detail(rowid) {
 								tag_tr.appendChild(tag_td);
 								
 								tag_td = dom_create_tag("td", { "class": "note" });
-								tag_td.appendChild(dom_create_text(utf8_zentohan((parseInt(total, 10) < 0? "買付": "売付") + " " + security)));
+								tag_td.appendChild(dom_create_text(utf8_zentohan((parseInt(total, 10) > 0? "売付": "買付") + " " + security)));
 								tag_tr.appendChild(tag_td);
 								
 								tag_td = dom_create_tag("td", { "class": "amt" });
