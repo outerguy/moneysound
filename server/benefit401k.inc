@@ -196,7 +196,7 @@ if(strpos($body, "前回ログイン日時") === false) {
 				$bufs["SUBACCTSEC"] = ENV_STR_OFX_CASH; // 現金
 				$bufs["SUBACCTFUND"] = ENV_STR_OFX_CASH; // 現金
 				// 約定単価を補正する
-				$bufs["UNITPRICECALC"] = sprintf("%.6f", abs((integer)$bufs["TOTAL"]) / abs((integer)$bufs["UNITS"]));
+				$bufs["UNITPRICECALC"] = ((integer)$bufs["UNITS"] === 0? 0: sprintf("%.6f", abs((integer)$bufs["TOTAL"]) / abs((integer)$bufs["UNITS"])));
 				if($bufs["UNITPRICE"] != substr($bufs["UNITPRICECALC"], 0, strlen($bufs["UNITPRICE"]))) $bufs["UNITPRICE"] = $bufs["UNITPRICECALC"];
 				array_unshift($exchanges, $bufs);
 				$bufs = array();
