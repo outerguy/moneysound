@@ -32,6 +32,19 @@ $query = ($urls["query"] != ""? $urls["query"]: "");
 $cookie = "";
 list($head, $body) = kabucom_http11($method, $protocol, $host, $page, $query, $cookie);
 
+// リダイレクトする
+$retry = 0;
+while($retry++ < ENV_NUM_HTTP11_RETRY && preg_match("/[Ll][Oo][Cc][Aa][Tt][Ii][Oo][Nn][\s\t]*:[\s\t]*([^\r\n]+)/", $head, $matches) > 0) {
+	$method = "GET";
+	$urls = parse_url($matches[1]);
+	if($urls["scheme"] != "") $protocol = $urls["scheme"];
+	if($urls["host"] != "") $host = $urls["host"];
+	if($urls["path"] != "") $page = $urls["path"];
+	$query = ($urls["query"] != ""? $urls["query"]: "");
+	$cookie = kabucom_updatecookie($head, $cookie);
+	list($head, $body) = kabucom_http11($method, $protocol, $host, $page, $query, $cookie);
+}
+
 // ログイン画面を取得する
 $as = parse_tag($body, "a");
 foreach($as as $a) if(trim(strip_tags($a["innerHTML"])) == "ログイン") {
