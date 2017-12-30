@@ -44,7 +44,17 @@ if(strpos($body, "パスワード変更のお願い") !== false) {
 	list($head, $body, $uris, $cookie) = benefit401k_post($head, $body, $uris, $cookie, "btnHome"); // ホームへ
 }
 
-if(strpos($body, "前回ログイン日時") === false) {
+if(strpos($body, "システムメンテナンス中") !== false) {
+	// システムメンテナンス画面の場合
+	$resp["status"] = ENV_NUM_STATUS_MAINTENANCE;
+	$resp["method"] = $method;
+	$resp["uri"] = $uris["scheme"] . "://" . $uris["host"] . $uris["path"];
+	$resp["query"] = $query;
+	$resp["cookie"] = $cookie;
+	$resp["head"] = $head;
+	$resp["body"] = $body;
+	$resp["ofx"] = generate_ofx($resp["status"]);
+} else if(strpos($body, "前回ログイン日時") === false) {
 	// ログイン失敗の場合
 	$resp["status"] = ENV_NUM_STATUS_FAILURE;
 	$resp["method"] = $method;
