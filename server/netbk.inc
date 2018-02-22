@@ -109,7 +109,7 @@ if(strpos($body, "現在この取引はお取扱いできません") !== false) 
 } else {
 	// 残高照会（口座別）画面を取得する
 	$as = parse_tag($body, "a");
-	foreach($as as $a) if(parse_tag_search(parse_tag($a["innerHTML"], "img"), "alt", "口座情報") != -1) {
+	foreach($as as $a) if(parse_tag_search(parse_tag($a["innerHTML"], "span"), "innerHTML", "口座情報") != -1) {
 		$method = "GET";
 		$uris = parse_uri($a["href"], $uris);
 		$query = "";
