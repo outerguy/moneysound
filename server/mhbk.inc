@@ -53,9 +53,20 @@ if($sid == 0) {
 		}
 	}
 	
+	// 個人のお客さま画面を取得する
+	$as = parse_tag($body, "a");
+	foreach($as as $a) if(trim(strip_tags($a["innerHTML"])) == "個人のお客さま") {
+		$method = "GET";
+		$uris = parse_uri($a["href"], $uris);
+		$query = "";
+		$cookie = mhbk_update_cookie($head, $cookie);
+		list($head, $body) = mhbk_http11($method, $uris, $query, $cookie);
+		break;
+	}
+	
 	// ログイン画面を取得する
 	$as = parse_tag($body, "a");
-	foreach($as as $a) if(strip_tags($a["innerHTML"]) == "みずほダイレクト") {
+	foreach($as as $a) if(trim(strip_tags($a["innerHTML"])) == "インターネットバンキングみずほダイレクトにログイン") {
 		$method = "GET";
 		$uris = parse_uri($a["href"], $uris);
 		$query = "";
