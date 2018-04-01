@@ -1,6 +1,6 @@
 <?php
 /*
-btmu.inc: 三菱東京UFJ銀行のCSVよりOFXファイルを生成する
+btmu.inc: 三菱UFJ銀行のCSVよりOFXファイルを生成する
 Copyright (C) 2012-2017 OFFICE OUTERGUY. All rights reserved.
 mailto:contact@beatrek.com
 Licensed under the GNU AGPLv3.
@@ -40,7 +40,7 @@ if($sid == 0) {
 	
 	// ログイン画面を取得する
 	$as = parse_tag($body, "a");
-	foreach($as as $a) if(parse_tag_search(parse_tag($a["innerHTML"], "img"), "alt", "ログイン") != -1 && preg_match("/javascript:[^\']+?\'([^\']+)\'.*?/i", $a["href"], $matches) > 0) {
+	foreach($as as $a) if(strip_tags($a["innerHTML"]) == "ログイン" && preg_match("/javascript:[^\']+?\'([^\']+)\'.*?/i", $a["href"], $matches) > 0) {
 		$method = "GET";
 		$uris = parse_uri($matches[1], $uris);
 		$query = "";

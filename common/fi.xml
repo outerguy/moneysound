@@ -27,7 +27,7 @@
 
 <fi id="btmu" code="0005">
 <type>BANK</type>
-<name>三菱東京UFJ銀行</name>
+<name>三菱UFJ銀行</name>
 <home>http://www.bk.mufg.jp/</home>
 <form>
 <input id="KEIYAKU_NO" type="text">ご契約番号</input>
