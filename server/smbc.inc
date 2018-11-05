@@ -23,6 +23,19 @@ $query = "";
 $cookie = "";
 list($head, $body) = smbc_http11($method, $uris, $query, $cookie);
 
+// リダイレクトする
+$retry = 0;
+while($retry++ < ENV_NUM_HTTP11_RETRY) {
+	$locations = parse_header($head, "location");
+	if(count($locations) > 0) {
+		$method = "GET";
+		$uris = parse_uri($locations[0], $uris);
+		$query = "";
+		$cookie = smbc_update_cookie($head, $cookie);
+		list($head, $body) = smbc_http11($method, $uris, $query, $cookie);
+	}
+}
+
 // ログイン画面を取得する
 $as = parse_tag($body, "a");
 foreach($as as $a) if(strip_tags($a["innerHTML"]) == "ログイン") {
